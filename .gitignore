@@ -24,6 +24,8 @@ ref_code
 
 **inputs/
 **outputs/
+figures
+data_mock/mock_RQ_data
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
