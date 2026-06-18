@@ -1,0 +1,17 @@
+pandas
+xarray
+rioxarray
+h5py
+joblib
+scipy
+matplotlib
+cartopy
+ipykernel
+shapely
+tqdm
+netCDF4
+h5netcdf
+dask
+numpy
+fiona
+rasterio
