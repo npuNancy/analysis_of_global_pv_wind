@@ -137,6 +137,66 @@
 
 ---
 
+## 6. 候选 / 探索图 —— SSP 差异专题（输出在 `outputs/RQ1_future_generation/tmp/`）
+
+以下 6 个脚本专门用于**对比不同 SSP 的差异**，参考 Nature 的画图逻辑，每个脚本单独运行、结果暂存于 `tmp/`，用于挑选最终方案。除特别说明外均：固定部署机队（`deploy=SSP2-4.5`）、仅变化 `climate_ssp`、目标年份 2050。
+
+### 6.1 `plot_RQ1_ssp_fan.py` —— SSP 发散扇形图
+[fig_sspfan.png](../outputs/RQ1_future_generation/tmp/fig_sspfan.png) ｜ 单图 2 面板（光伏 / 风电）
+
+![SSP 发散](../outputs/RQ1_future_generation/tmp/fig_sspfan.png)
+
+- 横轴：目标年份；纵轴：CF 相对 2030 的异常值 (%)。
+- 实线 = 全球容量加权异常；阴影带 = 28 国异常值的 25–75% 分布；2050 处标注 SSP1-2.6↔SSP5-8.5 差距。
+- **可读出**：差异从 0 张开成"扇形"，扇口即 SSP 差异，随时间放大。
+
+### 6.2 `plot_RQ1_deploy_climate_matrix.py` —— 部署×气候 3×3 矩阵 ★
+[fig_matrix_solar.png](../outputs/RQ1_future_generation/tmp/fig_matrix_solar.png) ｜ [fig_matrix_wind.png](../outputs/RQ1_future_generation/tmp/fig_matrix_wind.png)（风/光各一张，每张 2 个矩阵）
+
+![部署×气候矩阵（光伏）](../outputs/RQ1_future_generation/tmp/fig_matrix_solar.png)
+
+- 行 = `deploy_ssp`，列 = `climate_ssp`（用满 9 组交叉，2050）。左矩阵=全球发电量(TWh)，右矩阵=容量加权 CF(%)。
+- 颜色 = 相对各自矩阵均值的偏差(%)；格内标注原值；黑框 = 自洽情景（对角线）。
+- **可读出**：发电量沿**行（部署）**变化大、CF 沿**列（气候）**变化大——两个 SSP 维度作用在不同指标上。
+
+### 6.3 `plot_RQ1_country_dumbbell.py` —— 各国哑铃对比 ★
+[fig_dumbbell.png](../outputs/RQ1_future_generation/tmp/fig_dumbbell.png) ｜ 单图 2 栏（光伏 / 风电）
+
+![各国哑铃](../outputs/RQ1_future_generation/tmp/fig_dumbbell.png)
+
+- 横轴：容量加权 CF (%)；纵轴：国家，**按 SSP5-8.5 的 CF 升序**排列（脚本内 `SORT_BY` 可改为 `ssp126`）。
+- 每国一条哑铃：蓝点=SSP1-2.6、红点=SSP5-8.5，连线=气候路径造成的差距（红=CF 下降、蓝=上升）。
+- **可读出**：逐国 SSP 间 CF 差距与方向，资源由低到高排开。
+
+### 6.4 `plot_RQ1_latitude_profile.py` —— 纬度 / 资源带剖面
+[fig_latprofile_solar.png](../outputs/RQ1_future_generation/tmp/fig_latprofile_solar.png) ｜ [fig_latprofile_wind.png](../outputs/RQ1_future_generation/tmp/fig_latprofile_wind.png)（风/光各一张，2 面板）
+
+![纬度剖面（光伏）](../outputs/RQ1_future_generation/tmp/fig_latprofile_solar.png)
+
+- (a) 横轴=纬度带，(b) 横轴=`resource_index` 十分位；纵轴均为场站 CF (%)。3 条 SSP 线 + 25–75% 带。
+- 经 `station_id` 把场站 CF（随气候变化）关联到 catalog 的纬度/资源等级（二者不随气候情景变化）。
+- **可读出**：SSP 差异沿纬度/资源等级的分布；SSP5-8.5 全程低于 SSP1-2.6。
+
+### 6.5 `plot_RQ1_seasonal_divergence.py` —— 季节循环中的 SSP 分歧
+[fig_seasondiv_solar.png](../outputs/RQ1_future_generation/tmp/fig_seasondiv_solar.png) ｜ [fig_seasondiv_wind.png](../outputs/RQ1_future_generation/tmp/fig_seasondiv_wind.png)（风/光各一张，2 面板）
+
+![季节分歧（风电）](../outputs/RQ1_future_generation/tmp/fig_seasondiv_wind.png)
+
+- (a) 横轴=月份、纵轴=容量加权 CF (%)，2050 三情景 + 2030 基准灰线；(b) 横轴=月份、纵轴=逐月 (SSP5-8.5 − SSP1-2.6) 差值。
+- **可读出**：气候分歧具有季节结构，(b) 定位差异最大的月份。
+
+### 6.6 `plot_RQ1_stability_complementarity.py` —— 出力稳定性与风光互补 ★
+[fig_stability.png](../outputs/RQ1_future_generation/tmp/fig_stability.png) ｜ 单图 3 面板
+
+![稳定性与互补](../outputs/RQ1_future_generation/tmp/fig_stability.png)
+
+- (a)(b) 横轴=SSP、纵轴=场站 12 月 CF 的变异系数 CV(%)（光伏 / 风电）；(c) 横轴=SSP、纵轴=各国月度"风×光发电量"相关系数（越负互补越好）。小提琴 + 中位数。
+- **可读出**：超越均值的维度——增暖下出力波动与风光互补如何变化。
+
+> 这些图当前仅存于 `tmp/`（探索阶段）。挑定后再移入正式目录并并入上文章节。
+
+---
+
 ## 运行方式
 
 ```bash
@@ -146,4 +206,12 @@ python3 plot_RQ1_generation.py            # 风光发电量（自洽情景）
 python3 plot_RQ1_generation_cfstyle.py    # 风光发电量（与 CF 图布局一致）
 python3 plot_RQ1_synthesis.py             # CF 与发电量综合对比
 python3 plot_RQ1_cf_capacity_quadrant.py  # CF vs 装机 四象限
+
+# 候选 / 探索图（SSP 差异专题，输出到 tmp/）
+python3 plot_RQ1_ssp_fan.py                    # SSP 发散扇形图
+python3 plot_RQ1_deploy_climate_matrix.py      # 部署×气候 3×3 矩阵
+python3 plot_RQ1_country_dumbbell.py           # 各国哑铃对比
+python3 plot_RQ1_latitude_profile.py           # 纬度 / 资源带剖面
+python3 plot_RQ1_seasonal_divergence.py        # 季节循环中的 SSP 分歧
+python3 plot_RQ1_stability_complementarity.py  # 出力稳定性与风光互补
 ```
