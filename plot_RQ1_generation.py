@@ -16,6 +16,7 @@ import numpy as np
 import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+from matplotlib.patches import Patch
 
 # --------------------------------------------------------------------------- #
 # 路径
@@ -62,6 +63,14 @@ SSP_L = {"ssp126": "SSP1-2.6", "ssp245": "SSP2-4.5", "ssp585": "SSP5-8.5"}
 YEARS = [2030, 2040, 2050]
 SSPS = ["ssp126", "ssp245", "ssp585"]
 
+# 分时段标签（柱子的堆叠层）。每个 SSP 用一个色系，系内由深到浅对应三个时段
+SEG_LABELS = ["2030", "2030→2040", "2040→2050"]
+SSP_SHADES = {
+    "ssp126": ["#10254a", "#3a6ea5", "#9cc0e0"],   # 蓝系（深 → 浅）
+    "ssp245": ["#b9742a", "#e7a13b", "#f6d28a"],   # 橙系
+    "ssp585": ["#6e0f0f", "#c0392b", "#e8a39c"],   # 红系
+}
+
 
 def panel_tag(ax, tag, dx=-0.08, dy=1.04):
     """在子图左上角标注面板字母（a/b/c/d）。"""
@@ -99,15 +108,43 @@ def monthly_cycle(tech, climate, year, deploy="ssp245"):
     return g.reindex(range(1, 13)).values
 
 
+def country_segments(tech, ntop=8):
+    """Top 国家在 3 个自洽情景下的分时段发电量 (TWh)。
+
+    返回 (countries, seg)：
+      countries —— 国家列表，按 SSP2-4.5 下 2050 发电量升序（最大者在最上）；
+      seg       —— dict[ssp] -> DataFrame(index=country, cols=base/inc40/inc50/total)。
+    """
+    d = country[(country.technology == tech) & (country.deploy_ssp == country.climate_ssp)]
+    # 取 SSP2-4.5 下 2050 发电量最高的 ntop 国，升序排列便于横向柱图自下而上
+    ref = d[d.climate_ssp == "ssp245"].pivot_table(
+        index="country", columns="target_year", values="annual_generation_mwh")
+    order = (ref[2050] / 1e6).sort_values(ascending=False).head(ntop).index.tolist()[::-1]
+    seg = {}
+    for s in SSPS:
+        p = d[d.climate_ssp == s].pivot_table(
+            index="country", columns="target_year",
+            values="annual_generation_mwh").reindex(order) / 1e6
+        t = pd.DataFrame(index=order)
+        t["base"]  = p[2030].values                              # 2030 基底
+        t["inc40"] = (p[2040] - p[2030]).clip(lower=0).values    # 2030→2040 增量
+        t["inc50"] = (p[2050] - p[2040]).clip(lower=0).values    # 2040→2050 增量
+        t["total"] = t[["base", "inc40", "inc50"]].sum(axis=1)   # = 2050 总量
+        seg[s] = t
+    return order, seg
+
+
 # =========================================================================== #
 # 发电量图（风/光各一张）
 # =========================================================================== #
 def figure_gen(tech):
     g = gen_trajectory(tech)
-    fig = plt.figure(figsize=(7.2, 6.4))
-    gs = fig.add_gridspec(2, 2, height_ratios=[1, 1.15],
-                          hspace=0.42, wspace=0.34,
-                          left=0.1, right=0.97, top=0.9, bottom=0.1)
+    countries, seg = country_segments(tech, ntop=8)
+
+    fig = plt.figure(figsize=(7.4, 9.2))
+    gs = fig.add_gridspec(3, 2, height_ratios=[0.95, 1.65, 0.85],
+                          hspace=0.5, wspace=0.3,
+                          left=0.1, right=0.96, top=0.92, bottom=0.07)
 
     # (a) 全球发电量时间轨迹 --------------------------------------------------
     axa = fig.add_subplot(gs[0, 0])
@@ -141,33 +178,55 @@ def figure_gen(tech):
     axb.legend(loc="best")
     panel_tag(axb, "b")
 
-    # (c) Top 国家：按时段堆叠的发电量增长 2030 / 2040 / 2050 -----------------
+    # (c) Top 国家：分情景 × 分时段发电量（绝对值，每国 3 柱）-----------------
     axc = fig.add_subplot(gs[1, 0])
-    d = country[(country.technology == tech) & (country.deploy_ssp == "ssp245")
-                & (country.climate_ssp == "ssp245")]
-    p = d.pivot_table(index="country", columns="target_year",
-                      values="annual_generation_mwh") / 1e6
-    p = p.sort_values(2050, ascending=True).tail(14)           # 取 2050 最高的 14 国
-    yp = np.arange(len(p))
-    # 堆叠累积轨迹：2030 基底 + 各时段增量，使柱高等于 2050 总量
-    base = p[2030].values
-    inc40 = (p[2040] - p[2030]).clip(lower=0).values
-    inc50 = (p[2050] - p[2040]).clip(lower=0).values
-    shades = {"solar": ["#c77b06", "#f6b339", "#fdd98a"],
-              "wind":  ["#1f5f8b", "#5fa3cf", "#bcd9ec"]}[tech]
-    axc.barh(yp, base, color=shades[0], edgecolor="white", lw=0.4, label="2030")
-    axc.barh(yp, inc40, left=base, color=shades[1], edgecolor="white", lw=0.4,
-             label="2030→2040")
-    axc.barh(yp, inc50, left=base + inc40, color=shades[2], edgecolor="white",
-             lw=0.4, label="2040→2050")
-    axc.set_yticks(yp); axc.set_yticklabels(p.index, fontsize=6)
+    w, bar_h = 0.27, 0.24                                      # 组内 SSP 偏移 / 柱高
+    for ci, c_ in enumerate(countries):
+        for si, s in enumerate(SSPS):
+            y = ci + (si - 1) * w                              # 三柱：ssp126/245/585
+            r = seg[s].loc[c_]
+            cols = SSP_SHADES[s]                               # 该情景的色系（深→浅）
+            axc.barh(y, r.base, height=bar_h, color=cols[0], edgecolor="white", lw=0.4)
+            axc.barh(y, r.inc40, height=bar_h, left=r.base, color=cols[1],
+                     edgecolor="white", lw=0.4)
+            axc.barh(y, r.inc50, height=bar_h, left=r.base + r.inc40, color=cols[2],
+                     edgecolor="white", lw=0.4)
+    axc.set_yticks(range(len(countries)))
+    axc.set_yticklabels(countries, fontsize=6)
+    axc.set_ylim(-0.6, len(countries) - 0.4)
     axc.set_xlabel("年发电量 (TWh)")
-    axc.set_title("Top 国家：分时段增长（SSP2-4.5）", fontsize=8.5)
-    axc.legend(loc="lower right", fontsize=6)
+    axc.set_title("分情景 · 分时段发电量（绝对值）", fontsize=8.5)
     panel_tag(axc, "c")
 
-    # (d) 装机 vs 气候 的发电量增量分解 2030→2050 ----------------------------
+    # (d) 相对值：每国 SSP1-2.6 固定为 100%，柱顶标注 2050 发电量 --------------
     axd = fig.add_subplot(gs[1, 1])
+    for ci, c_ in enumerate(countries):
+        t126 = seg["ssp126"].loc[c_, "total"]
+        if t126 <= 0:
+            continue
+        sc = 100.0 / t126                                      # 归一到 SSP1-2.6 = 100%
+        for si, s in enumerate(SSPS):
+            y = ci + (si - 1) * w
+            r = seg[s].loc[c_]
+            cols = SSP_SHADES[s]                               # 该情景的色系（深→浅）
+            b, i40, i50 = r.base * sc, r.inc40 * sc, r.inc50 * sc
+            axd.barh(y, b, height=bar_h, color=cols[0], edgecolor="white", lw=0.4)
+            axd.barh(y, i40, height=bar_h, left=b, color=cols[1], edgecolor="white", lw=0.4)
+            axd.barh(y, i50, height=bar_h, left=b + i40, color=cols[2],
+                     edgecolor="white", lw=0.4)
+            axd.text(b + i40 + i50, y, f" {r.total:.0f}", va="center", ha="left",
+                     fontsize=4.6, color="0.2")                # 柱顶标 2050 TWh
+    axd.axvline(100, color="0.45", lw=0.8, ls="--", zorder=0)
+    axd.set_yticks(range(len(countries)))
+    axd.set_yticklabels([])
+    axd.set_ylim(-0.6, len(countries) - 0.4)
+    axd.set_xlabel("相对 SSP1-2.6 (%)")
+    axd.set_title("相对值（柱顶标 2050 TWh）", fontsize=8.5)
+    axd.set_xlim(0, axd.get_xlim()[1] * 1.18)                  # 右侧留白给数值
+    panel_tag(axd, "d")
+
+    # (e) 装机 vs 气候 的发电量增量分解 2030→2050 ----------------------------
+    axe = fig.add_subplot(gs[2, 0])
     rows = []
     for s in SSPS:
         d = country[(country.technology == tech) & (country.deploy_ssp == s)
@@ -186,30 +245,56 @@ def figure_gen(tech):
         rows.append((s, cap_eff, cli_eff, inter))
     dec = pd.DataFrame(rows, columns=["ssp", "cap", "cli", "int"]).set_index("ssp")
     x = np.arange(len(SSPS))
-    axd.bar(x, dec["cap"], color="#7a7a7a", label="装机增长")
-    axd.bar(x, dec["cli"], bottom=dec["cap"], color=SSP_C["ssp585"],
+    axe.bar(x, dec["cap"], color="#7a7a7a", label="装机增长")
+    axe.bar(x, dec["cli"], bottom=dec["cap"], color=SSP_C["ssp585"],
             label="气候 (ΔCF)")
-    axd.bar(x, dec["int"], bottom=dec["cap"] + dec["cli"], color="#cfa3a3",
+    axe.bar(x, dec["int"], bottom=dec["cap"] + dec["cli"], color="#cfa3a3",
             label="交互项")
     # 显式标注（较小的）气候驱动项
     for xi, s in zip(x, SSPS):
         tot = dec.loc[s, ["cap", "cli", "int"]].sum()
-        axd.annotate(f"气候 {dec.loc[s,'cli']:+.1f}", (xi, tot),
+        axe.annotate(f"气候 {dec.loc[s,'cli']:+.1f}", (xi, tot),
                      textcoords="offset points", xytext=(0, 3),
                      ha="center", fontsize=5.8, color=SSP_C["ssp585"])
-    axd.axhline(0, color="0.3", lw=0.7)
-    axd.set_xticks(x); axd.set_xticklabels([SSP_L[s] for s in SSPS],
+    axe.axhline(0, color="0.3", lw=0.7)
+    axe.set_xticks(x); axe.set_xticklabels([SSP_L[s] for s in SSPS],
                                            rotation=12, fontsize=7)
-    axd.set_ylabel("发电量增量 2030→2050 (TWh)")
-    axd.set_title("装机 vs 气候 的增量分解", fontsize=8.5)
-    axd.legend(loc="upper right")
-    panel_tag(axd, "d")
+    axe.set_ylabel("发电量增量 2030→2050 (TWh)")
+    axe.set_title("装机 vs 气候 的增量分解", fontsize=8.5)
+    axe.legend(loc="upper right")
+    panel_tag(axe, "e")
+
+    # 共享图例（子图 c / d）：3×3 色块矩阵 —— 行=情景色系，列=发电量时段 -------
+    from matplotlib.patches import Rectangle
+    axl = fig.add_subplot(gs[2, 1]); axl.axis("off")
+    axl.set_xlim(0, 1); axl.set_ylim(0, 1)
+    axl.text(0.04, 0.95, "子图 c / d 图例", fontsize=7.5, fontweight="bold",
+             va="top")
+    x0, y_top = 0.42, 0.74                                     # 矩阵左上角
+    cw, ch = 0.16, 0.17                                        # 单元格宽 / 高
+    # 列标题：发电量时段
+    for j, lab in enumerate(SEG_LABELS):
+        axl.text(x0 + (j + 0.5) * cw, y_top + 0.04, lab, ha="center", va="bottom",
+                 fontsize=5.6, rotation=22)
+    # 行标题（情景）+ 3×3 色块
+    for i, s in enumerate(SSPS):
+        yc = y_top - (i + 1) * ch
+        axl.text(x0 - 0.03, yc + ch * 0.5, SSP_L[s], ha="right", va="center",
+                 fontsize=6.8)
+        for j in range(3):
+            axl.add_patch(Rectangle((x0 + j * cw, yc), cw, ch,
+                                    facecolor=SSP_SHADES[s][j], edgecolor="white",
+                                    lw=0.6))
+    axl.text(0.04, y_top - 3 * ch - 0.04,
+             "色系区分情景，系内由深到浅对应时段",
+             fontsize=5.8, color="0.4", va="top")
 
     tech_cn = {"solar": "光伏", "wind": "风电"}[tech]
     fig.suptitle(f"未来气候对{tech_cn}发电量的影响",
                  fontsize=11, fontweight="bold", y=0.975)
-    fig.text(0.5, 0.005,
-             "自洽情景（部署 = 气候）；子图 d 将装机增长与气候驱动的 CF 变化分离。",
+    fig.text(0.5, 0.012,
+             "自洽情景（部署 = 气候）；子图 c/d 每国按 SSP 分三柱、按时段堆叠，"
+             "d 为相对 SSP1-2.6 的占比；子图 e 将装机增长与气候驱动的 CF 变化分离。",
              ha="center", fontsize=6.2, color="0.4")
     p = f"{OUT}/fig_GEN_{tech}.png"
     fig.savefig(p, bbox_inches="tight"); plt.close(fig)
