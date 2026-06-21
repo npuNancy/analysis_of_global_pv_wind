@@ -4,7 +4,7 @@
 
 - **数据目录**：`data_mock/mock_RQ_data/RQ1_future_generation/`
 - **输出目录**：`outputs/RQ1_future_generation/`
-- **绘图字体**：思源黑体 `Source Han Sans SC`（`/data4/yanxiaokai/SourceHanSansSC-Normal.otf`）
+- **绘图字体**：思源黑体 `Source Han Sans SC`（`data/tracked/SourceHanSansSC-Normal.otf`）
 
 ## 通用约定
 

@@ -23,7 +23,7 @@ DATA = "data_mock/mock_RQ_data/RQ1_future_generation"
 OUT  = "outputs/RQ1_future_generation/tmp"
 os.makedirs(OUT, exist_ok=True)
 
-FONT_PATH = "/data4/yanxiaokai/SourceHanSansSC-Normal.otf"
+FONT_PATH = "data/tracked/SourceHanSansSC-Normal.otf"
 fm.fontManager.addfont(FONT_PATH)
 FONT_NAME = fm.FontProperties(fname=FONT_PATH).get_name()
 mpl.rcParams.update({

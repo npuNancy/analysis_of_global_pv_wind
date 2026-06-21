@@ -128,7 +128,7 @@ mpl.rcParams.update(
     }
 )
 
-font_path = "/data4/yanxiaokai/SourceHanSansSC-Normal.otf"
+font_path = "data/tracked/SourceHanSansSC-Normal.otf"
 if os.path.exists(font_path):
     fm.fontManager.addfont(font_path)
     plt.rcParams["font.family"] = [fm.FontProperties(fname=font_path).get_name()]

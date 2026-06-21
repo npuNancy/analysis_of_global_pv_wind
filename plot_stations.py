@@ -48,7 +48,7 @@ MAT_PATTERNS = {
 # 字体
 # ══════════════════════════════════════════════════════════════════════
 
-font_path = "/data4/yanxiaokai/SourceHanSansSC-Normal.otf"
+font_path = "data/tracked/SourceHanSansSC-Normal.otf"
 if os.path.exists(font_path):
     fm.fontManager.addfont(font_path)
     font_name = fm.FontProperties(fname=font_path).get_name()
