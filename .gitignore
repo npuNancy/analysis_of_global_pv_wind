@@ -1,26 +1,9 @@
 # Custom
 .claude
-*.zip
-*.tif.bak
-*.tif
-*.mat
-*.mat.bak
-*.h5
 test.ipynb
-Data/CMIP6/*
-Data/CMIP6_bcsd/*
-Data/position/*
-Data/processed/*
-output/*
-data
-results/*
-Optimization/results/
-Optimization_ssp126/results/
-Optimization_ssp245/results/
-Optimization_ssp560/results/
-Optimization_ssp126_test_capacity/results/
-
 ref_code
+data/*
+!data/tracked/
 
 **inputs/
 **outputs/

@@ -53,10 +53,10 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 OUTPUT_DIR = os.path.join(
     BASE_DIR, "outputs", "plot_stations", os.path.splitext(os.path.basename(__file__))[0]
 )
-GRW_DIR = os.path.join(BASE_DIR, "data", "global-renewables-watch", "data")
+GRW_DIR = os.path.join(BASE_DIR, "data", "ignored", "global-renewables-watch", "data")
 SOLAR_GPKG = os.path.join(GRW_DIR, "solar_all_2024q2_v1.gpkg")
 WIND_GPKG = os.path.join(GRW_DIR, "wind_all_2024q2_v1.gpkg")
-GRID_DIV_NAMES = os.path.join(BASE_DIR, "data", "grid_division", "region_id_to_name.json")
+GRID_DIV_NAMES = os.path.join(BASE_DIR, "data", "tracked", "grid_division", "region_id_to_name.json")
 
 GRID_FILES = {
     "1deg": (

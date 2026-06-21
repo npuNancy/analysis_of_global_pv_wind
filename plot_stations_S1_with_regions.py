@@ -19,7 +19,7 @@
     - 在图上叠加 20 个大区的边界
     - 逐大区统计：本大区内的场站数 / 装机量，其中被「项目区域」
       （AREA_DICT 国家框 + NAM-12 域）覆盖的部分及覆盖比例
-    - 区域划分栅格来自 data/grid_division/Global_Grid_Division.tif
+    - 区域划分栅格来自 data/tracked/grid_division/Global_Grid_Division.tif
       （0.1°，EPSG:4326，取值 0=背景，1..20=大区编号），
        由 globally_interconnected_10km 的 S03_Global_Grid_Division_from_UN_M49.py 生成
 
@@ -52,13 +52,13 @@ import cartopy.feature as cfeature
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 OUTPUT_DIR = os.path.join(BASE_DIR, "outputs", "plot_stations",
                           os.path.splitext(os.path.basename(__file__))[0])
-NAM_GRID_NC = os.path.join(BASE_DIR, "data", "NAM-12_grid.nc")
+NAM_GRID_NC = os.path.join(BASE_DIR, "data", "tracked", "NAM-12_grid.nc")
 
 # 全球 20 大区划分（UN M49）：0.1° 栅格 + 编号→名称映射
-GRID_DIV_TIF = os.path.join(BASE_DIR, "data", "grid_division", "Global_Grid_Division.tif")
-GRID_DIV_NAMES = os.path.join(BASE_DIR, "data", "grid_division", "region_id_to_name.json")
+GRID_DIV_TIF = os.path.join(BASE_DIR, "data", "tracked", "grid_division", "Global_Grid_Division.tif")
+GRID_DIV_NAMES = os.path.join(BASE_DIR, "data", "tracked", "grid_division", "region_id_to_name.json")
 
-# NAM-12 rotated-pole 网格参数（硬编码，取自 data/NAM-12_grid.nc 的 crs）
+# NAM-12 rotated-pole 网格参数（硬编码，取自 data/tracked/NAM-12_grid.nc 的 crs）
 NAM_POLE_LON = 83.0
 NAM_POLE_LAT = 42.5
 

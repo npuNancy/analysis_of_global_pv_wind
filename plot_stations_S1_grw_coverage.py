@@ -4,7 +4,7 @@
 区域口径（注意区分）：
   - 二十多个高分辨率区域 = AREA_DICT 国家经纬度框 + NAM-12 rotated-pole 弯曲域
     （即 plot_stations_S1_with_regions.py 里画的那些未来气候情景数据范围）。
-  - 20 个大区 = UN M49 区域电网划分（data/grid_division/Global_Grid_Division.tif）。
+  - 20 个大区 = UN M49 区域电网划分（data/tracked/grid_division/Global_Grid_Division.tif）。
     本脚本逐大区统计「区内总量」中被「项目区域」覆盖的份额。
 
 场站数据 = global-renewables-watch (Microsoft, 2024Q2) 识别到的现状风光设施：
@@ -14,7 +14,7 @@
 
 两种统计口径（回答「多少比例场站？多少比例发电量？」）：
   - 场站数量：光伏多边形数 + 风机台数
-  - 装机容量(GW)：与 data/global-renewables-watch/compute_regional_capacity.py 完全同款密度公式
+  - 装机容量(GW)：与 data/ignored/global-renewables-watch/compute_regional_capacity.py 完全同款密度公式
       · 光伏：cap = 占地面积(km²) × [161.9 × Ω(lat) × 0.15]  MW（Ω=GCR，纬度依赖）
       · 风电：cap = 台数 × 0.64 km² × 3.68 MW/km² ≈ 2.355 MW/台
     GRW 不含实际发电量，装机容量在此作为「发电/产能」的代理口径；按技术分别给出，
@@ -69,7 +69,7 @@ from plot_stations_S1_with_regions import (
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 # 约定：plot_stations_*.py 的图都存到 outputs/plot_stations/<本脚本文件名>/
 OUTPUT_DIR = os.path.join(BASE_DIR, "outputs", "plot_stations", os.path.splitext(os.path.basename(__file__))[0])
-GRW_DIR = os.path.join(BASE_DIR, "data", "global-renewables-watch", "data")
+GRW_DIR = os.path.join(BASE_DIR, "data", "ignored", "global-renewables-watch", "data")
 SOLAR_GPKG = os.path.join(GRW_DIR, "solar_all_2024q2_v1.gpkg")
 WIND_GPKG = os.path.join(GRW_DIR, "wind_all_2024q2_v1.gpkg")
 
