@@ -3,8 +3,8 @@
 """
 RQ1：未来气候如何改变风/光的容量因子（CF）。
 
-思路：CF 是纯气候驱动的资源质量指标。为隔离气候信号，固定部署机队
-（deploy_ssp = ssp245），只让 climate_ssp 变化。风电、光伏分别成图。
+思路：CF 是纯气候驱动的资源质量指标。全部采用自洽情景
+（deploy_ssp == climate_ssp）。风电、光伏分别成图。
 
 说明：mock 数据没有气候模型维度，按要求整体当作 NESM3 情形处理。
 
@@ -84,9 +84,9 @@ st_ann  = pd.read_csv(f"{DATA}/station_annual_generation.csv")
 # --------------------------------------------------------------------------- #
 # 辅助函数
 # --------------------------------------------------------------------------- #
-def global_cf(tech, deploy="ssp245"):
-    """固定机队下，按（climate_ssp, 年份）计算全球容量加权 CF。"""
-    d = country[(country.technology == tech) & (country.deploy_ssp == deploy)].copy()
+def global_cf(tech):
+    """自洽情景（deploy==climate）下，按（climate_ssp, 年份）计算全球容量加权 CF。"""
+    d = country[(country.technology == tech) & (country.deploy_ssp == country.climate_ssp)].copy()
     d["wcf"] = d.capacity_mw * d.capacity_weighted_cf          # 容量 × CF
     g = d.groupby(["climate_ssp", "target_year"]).agg(
         cf=("wcf", "sum"), cap=("capacity_mw", "sum")).reset_index()
@@ -94,18 +94,18 @@ def global_cf(tech, deploy="ssp245"):
     return g
 
 
-def country_cf_change(tech, deploy="ssp245"):
-    """各国 × climate_ssp 的容量加权 CF 变化率（2050 相对 2030，%）。"""
-    d = country[(country.technology == tech) & (country.deploy_ssp == deploy)]
+def country_cf_change(tech):
+    """自洽情景（deploy==climate）下各国 × climate_ssp 的容量加权 CF 变化率（2050 相对 2030，%）。"""
+    d = country[(country.technology == tech) & (country.deploy_ssp == country.climate_ssp)]
     p = d.pivot_table(index=["country", "climate_ssp"], columns="target_year",
                       values="capacity_weighted_cf")
     p["pct"] = (p[2050] - p[2030]) / p[2030] * 100.0
     return p.reset_index().pivot(index="country", columns="climate_ssp", values="pct")
 
 
-def cf_array(tech, climate, year, deploy="ssp245"):
-    """某技术 / 气候情景 / 年份下，全部场站的年 CF（%）。"""
-    d = st_ann[(st_ann.technology == tech) & (st_ann.deploy_ssp == deploy)
+def cf_array(tech, climate, year):
+    """自洽情景（deploy==climate）下，场站年 CF（%）。"""
+    d = st_ann[(st_ann.technology == tech) & (st_ann.deploy_ssp == climate)
                & (st_ann.climate_ssp == climate) & (st_ann.target_year == year)]
     return d.annual_capacity_factor.values * 100.0
 
@@ -208,7 +208,7 @@ def figure_cf(tech):
     fig.suptitle(f"未来气候对{tech_cn}容量因子的影响",
                  fontsize=11, fontweight="bold", y=0.975)
     fig.text(0.5, 0.005,
-             "固定部署机队（deploy = SSP2-4.5），仅变化气候情景；28 个区域容量加权。",
+             "自洽情景（部署 = 气候）；28 个区域容量加权。",
              ha="center", fontsize=6.2, color="0.4")
     p = f"{OUT}/fig_CF_{tech}.png"
     fig.savefig(p, bbox_inches="tight"); plt.close(fig)

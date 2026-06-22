@@ -4,12 +4,11 @@
 RQ1：未来气候如何改变风/光的场站发电量（出力）。
 
 思路：发电量 = 装机容量 × 容量因子，同时受部署（装机）与气候（CF）影响。
-用自洽情景（deploy_ssp == climate_ssp）画真实发电量轨迹，并额外做一个
-“装机增长 vs 气候(ΔCF)”分解，把两类驱动力拆开。风电、光伏分别成图。
+全部采用自洽情景（deploy_ssp == climate_ssp）。风电、光伏分别成图。
 
 说明：mock 数据没有气候模型维度，按要求整体当作 NESM3 情形处理。
 
-输出：Nature 风格多面板图，保存到 ./figures/RQ1_future_generation/
+输出：Nature 风格多面板图，保存到 ./outputs/RQ1_future_generation/
 """
 import os
 import numpy as np
@@ -17,6 +16,8 @@ import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
+from matplotlib.lines import Line2D
+from scipy.stats import gaussian_kde
 
 # --------------------------------------------------------------------------- #
 # 路径
@@ -70,6 +71,7 @@ SSP_SHADES = {
     "ssp245": ["#b9742a", "#e7a13b", "#f6d28a"],   # 橙系
     "ssp585": ["#6e0f0f", "#c0392b", "#e8a39c"],   # 红系
 }
+YEAR_ALPHA = {2030: 0.85, 2040: 0.55, 2050: 0.30}
 
 
 def panel_tag(ax, tag, dx=-0.08, dy=1.04):
@@ -83,6 +85,7 @@ def panel_tag(ax, tag, dx=-0.08, dy=1.04):
 # --------------------------------------------------------------------------- #
 country = pd.read_csv(f"{DATA}/country_annual_generation.csv")
 st_mon  = pd.read_csv(f"{DATA}/station_monthly_generation.csv")
+st_ann  = pd.read_csv(f"{DATA}/station_annual_generation.csv")
 
 
 # --------------------------------------------------------------------------- #
@@ -106,6 +109,21 @@ def monthly_cycle(tech, climate, year, deploy="ssp245"):
     g = d.groupby("month").apply(
         lambda x: x.wcf.sum() / x.capacity_mw.sum(), include_groups=False)
     return g.reindex(range(1, 13)).values
+
+
+def gen_array_coherent(tech, ssp, year):
+    """自洽情景（deploy==climate）下，场站年发电量（GWh）。"""
+    d = st_ann[(st_ann.technology == tech) & (st_ann.deploy_ssp == ssp)
+               & (st_ann.climate_ssp == ssp) & (st_ann.target_year == year)]
+    return d.annual_generation_mwh.values / 1e3
+
+
+def gen_log_limits(tech):
+    """该技术全部 (情景×年份) 发电量的 log10 范围，用于统一对数网格与坐标。"""
+    vals = np.concatenate([gen_array_coherent(tech, s, y) for s in SSPS for y in YEARS])
+    lo, hi = np.log10(vals.min()), np.log10(vals.max())
+    pad = (hi - lo) * 0.08
+    return lo - pad, hi + pad
 
 
 def country_segments(tech, ntop=8):
@@ -163,11 +181,11 @@ def figure_gen(tech):
     # (b) 季节循环位移：2030 vs 2050 ----------------------------------------
     axb = fig.add_subplot(gs[0, 1])
     months = np.arange(1, 13)
-    axb.plot(months, monthly_cycle(tech, "ssp585", 2030) * 100, "-",
+    axb.plot(months, monthly_cycle(tech, "ssp585", 2030, deploy="ssp585") * 100, "-",
              color="0.55", lw=1.4, label="2030 基准")
-    axb.plot(months, monthly_cycle(tech, "ssp126", 2050) * 100, "--o",
+    axb.plot(months, monthly_cycle(tech, "ssp126", 2050, deploy="ssp126") * 100, "--o",
              color=SSP_C["ssp126"], lw=1.5, ms=3, label="2050 SSP1-2.6")
-    axb.plot(months, monthly_cycle(tech, "ssp585", 2050) * 100, "-o",
+    axb.plot(months, monthly_cycle(tech, "ssp585", 2050, deploy="ssp585") * 100, "-o",
              color=SSP_C["ssp585"], lw=1.8, ms=3.5, label="2050 SSP5-8.5")
     axb.set_xticks(months)
     axb.set_xticklabels(["1","2","3","4","5","6","7","8","9","10","11","12"],
@@ -225,43 +243,34 @@ def figure_gen(tech):
     axd.set_xlim(0, axd.get_xlim()[1] * 1.18)                  # 右侧留白给数值
     panel_tag(axd, "d")
 
-    # (e) 装机 vs 气候 的发电量增量分解 2030→2050 ----------------------------
+    # (e) 场站发电量分布：嵌套小提琴（2030/2040/2050，对数轴）-----------------
     axe = fig.add_subplot(gs[2, 0])
-    rows = []
-    for s in SSPS:
-        d = country[(country.technology == tech) & (country.deploy_ssp == s)
-                    & (country.climate_ssp == s)]
-        a = d.groupby("target_year").apply(
-            lambda x: pd.Series({
-                "cap": x.capacity_mw.sum(),
-                "cf": (x.capacity_mw * x.capacity_weighted_cf).sum() / x.capacity_mw.sum()
-            }), include_groups=False)
-        c30, c50 = a.loc[2030, "cap"], a.loc[2050, "cap"]
-        f30, f50 = a.loc[2030, "cf"], a.loc[2050, "cf"]
-        H = 8760                                               # 年小时数
-        cap_eff = (c50 - c30) * f30 * H / 1e6                  # 装机增长贡献
-        cli_eff = c30 * (f50 - f30) * H / 1e6                  # 气候(ΔCF)贡献
-        inter   = (c50 - c30) * (f50 - f30) * H / 1e6          # 交互项
-        rows.append((s, cap_eff, cli_eff, inter))
-    dec = pd.DataFrame(rows, columns=["ssp", "cap", "cli", "int"]).set_index("ssp")
-    x = np.arange(len(SSPS))
-    axe.bar(x, dec["cap"], color="#7a7a7a", label="装机增长")
-    axe.bar(x, dec["cli"], bottom=dec["cap"], color=SSP_C["ssp585"],
-            label="气候 (ΔCF)")
-    axe.bar(x, dec["int"], bottom=dec["cap"] + dec["cli"], color="#cfa3a3",
-            label="交互项")
-    # 显式标注（较小的）气候驱动项
-    for xi, s in zip(x, SSPS):
-        tot = dec.loc[s, ["cap", "cli", "int"]].sum()
-        axe.annotate(f"气候 {dec.loc[s,'cli']:+.1f}", (xi, tot),
-                     textcoords="offset points", xytext=(0, 3),
-                     ha="center", fontsize=5.8, color=SSP_C["ssp585"])
-    axe.axhline(0, color="0.3", lw=0.7)
-    axe.set_xticks(x); axe.set_xticklabels([SSP_L[s] for s in SSPS],
-                                           rotation=12, fontsize=7)
-    axe.set_ylabel("发电量增量 2030→2050 (TWh)")
-    axe.set_title("装机 vs 气候 的增量分解", fontsize=8.5)
-    axe.legend(loc="upper right")
+    axe.set_yscale("log")
+    loglo, loghi = gen_log_limits(tech)
+    grid_log = np.linspace(loglo, loghi, 240)
+    ygrid = 10 ** grid_log
+    base_w = 0.42
+    for j, s in enumerate(SSPS):
+        arrs = {y: gen_array_coherent(tech, s, y) for y in YEARS}
+        dens = {y: gaussian_kde(np.log10(arrs[y]))(grid_log) * len(arrs[y])
+                for y in YEARS}
+        scale = base_w / max(d.max() for d in dens.values())
+        for y in [2050, 2040, 2030]:
+            d = dens[y] * scale
+            axe.fill_betweenx(ygrid, j - d, j + d, color=SSP_C[s],
+                              alpha=YEAR_ALPHA[y], lw=0.4, edgecolor="white",
+                              zorder=2 + YEARS.index(y))
+            axe.plot(j, np.median(arrs[y]), "o", ms=3, mfc="white", mec="k",
+                     mew=0.8, zorder=10)
+    axe.set_xticks(range(len(SSPS)))
+    axe.set_xticklabels([SSP_L[s] for s in SSPS], rotation=12, fontsize=7)
+    axe.set_ylabel("场站年发电量 (GWh，对数)")
+    axe.set_ylim(10 ** loglo, 10 ** loghi)
+    axe.set_title("场站发电量分布（宽度∝场站数）", fontsize=8.5)
+    handles_vio = [Patch(fc="0.4", alpha=YEAR_ALPHA[y], label=str(y)) for y in YEARS]
+    handles_vio.append(Line2D([], [], marker="o", ls="", mfc="white", mec="k",
+                              mew=0.8, ms=4, label="中位数"))
+    axe.legend(handles=handles_vio, loc="upper right", fontsize=6)
     panel_tag(axe, "e")
 
     # 共享图例（子图 c / d）：3×3 色块矩阵 —— 行=情景色系，列=发电量时段 -------
@@ -294,7 +303,7 @@ def figure_gen(tech):
                  fontsize=11, fontweight="bold", y=0.975)
     fig.text(0.5, 0.012,
              "自洽情景（部署 = 气候）；子图 c/d 每国按 SSP 分三柱、按时段堆叠，"
-             "d 为相对 SSP1-2.6 的占比；子图 e 将装机增长与气候驱动的 CF 变化分离。",
+             "d 为相对 SSP1-2.6 的占比；子图 e 为场站发电量分布（对数轴，宽度∝场站数）。",
              ha="center", fontsize=6.2, color="0.4")
     p = f"{OUT}/fig_GEN_{tech}.png"
     fig.savefig(p, bbox_inches="tight"); plt.close(fig)
