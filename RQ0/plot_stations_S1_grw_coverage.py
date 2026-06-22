@@ -49,8 +49,8 @@ from scipy import ndimage
 
 # 复用 plot_stations_S1_with_regions.py 的区域几何与栅格逻辑，避免重复实现
 # （该模块在 import 时已完成中文字体注册，柱状图/地图均可直接用中文）
-import plot_stations_S1_with_regions as prs
-from plot_stations_S1_with_regions import (
+import RQ0.plot_stations_S1_with_regions as prs
+from RQ0.plot_stations_S1_with_regions import (
     PC,
     AREA_DICT,
     in_any_region,
