@@ -3,7 +3,9 @@
 test.ipynb
 ref_code
 data/*
-!data/tracked/
+!data/grid_division/
+!data/NAM-12_grid.nc
+!data/SourceHanSansSC-Normal.otf
 
 **inputs/
 **outputs/
