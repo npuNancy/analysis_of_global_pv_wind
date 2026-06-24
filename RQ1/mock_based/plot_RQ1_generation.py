@@ -33,7 +33,7 @@ os.makedirs(OUT, exist_ok=True)
 # 中文字体（思源黑体）
 # --------------------------------------------------------------------------- #
 from matplotlib import font_manager as fm
-FONT_PATH = "data/tracked/SourceHanSansSC-Normal.otf"
+FONT_PATH = "data/SourceHanSansSC-Normal.otf"
 fm.fontManager.addfont(FONT_PATH)
 FONT_NAME = fm.FontProperties(fname=FONT_PATH).get_name()
 
