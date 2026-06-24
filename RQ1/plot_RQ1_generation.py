@@ -111,6 +111,20 @@ def monthly_cycle(tech, climate, year):
     return g.reindex(range(1, 13)).values
 
 
+def monthly_total_gen(tech, climate, year):
+    """自洽情景下全部场站逐月总发电量（TWh）。"""
+    d = st_mon[
+        (st_mon.technology == tech)
+        & (st_mon.deploy_ssp == climate)
+        & (st_mon.climate_ssp == climate)
+        & (st_mon.target_year == year)
+    ]
+    if d.empty:
+        return np.full(12, np.nan)
+    g = d.groupby("month")["monthly_generation_mwh"].sum() / 1e6
+    return g.reindex(range(1, 13)).values
+
+
 def gen_array_coherent(tech, ssp, year):
     """自洽情景下场站年发电量（GWh），排除零值（用于 KDE）。"""
     d = st_ann[
@@ -194,30 +208,20 @@ def figure_gen(tech):
     axa.grid(axis="y", lw=0.4, alpha=0.5)
     panel_tag(axa, "a")
 
-    # (b) 季节循环：2030 vs 2050 -----------------------------------------------
-    # 基准用 SSP2-4.5（覆盖最全），对比 SSP1-2.6 和 SSP5-8.5 的 2050
+    # (b) 2050 年三情景逐月发电量 -----------------------------------------------
     axb = fig.add_subplot(gs[0, 1])
     months = np.arange(1, 13)
-    base_cycle = monthly_cycle(tech, "ssp245", 2030)
-    axb.plot(months, base_cycle * 100, "-", color="0.55", lw=1.4, label="2030 基准 (SSP2-4.5)")
-    for s, ls, lbl in [("ssp126", "--o", "2050 SSP1-2.6"), ("ssp585", "-o", "2050 SSP5-8.5")]:
-        cy = monthly_cycle(tech, s, 2050)
-        if not np.all(np.isnan(cy)):
-            axb.plot(
-                months,
-                cy * 100,
-                ls,
-                color=SSP_C[s],
-                lw=1.5 if s == "ssp126" else 1.8,
-                ms=3 if s == "ssp126" else 3.5,
-                label=lbl,
-            )
+    for s in SSPS:
+        gen = monthly_total_gen(tech, s, 2050)
+        if not np.all(np.isnan(gen)):
+            axb.plot(months, gen, "-o", color=SSP_C[s], lw=1.5, ms=3, label=f"2050 {SSP_L[s]}")
     axb.set_xticks(months)
     axb.set_xticklabels(list("123456789") + ["10", "11", "12"], fontsize=6.5)
     axb.set_xlabel("月份")
-    axb.set_ylabel("容量加权 CF (%)")
-    axb.set_title("季节循环：2030 vs 2050", fontsize=8.5)
+    axb.set_ylabel("月发电量 (TWh)")
+    axb.set_title("2050 年季节循环（三情景）", fontsize=8.5)
     axb.legend(loc="best", fontsize=6)
+    axb.grid(axis="y", lw=0.4, alpha=0.5)
     panel_tag(axb, "b")
 
     # (c) Top 国家分情景分时段发电量（绝对值）-----------------------------------
@@ -226,7 +230,7 @@ def figure_gen(tech):
         w, bar_h = 0.27, 0.24
         for ci, c_ in enumerate(countries):
             for si, s in enumerate(SSPS):
-                y = ci + (si - 1) * w
+                y = ci - (si - 1) * w
                 r = seg[s].loc[c_]
                 cols = SSP_SHADES[s]
                 axc.barh(y, r.base, height=bar_h, color=cols[0], edgecolor="white", lw=0.4)
@@ -248,7 +252,7 @@ def figure_gen(tech):
                 continue
             sc = 100.0 / t126
             for si, s in enumerate(SSPS):
-                y = ci + (si - 1) * w
+                y = ci - (si - 1) * w
                 r = seg[s].loc[c_]
                 cols = SSP_SHADES[s]
                 b, i40, i50 = r.base * sc, r.inc40 * sc, r.inc50 * sc
