@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 from matplotlib import font_manager as fm
 
 DATA = "data_mock/mock_RQ_data/RQ1_future_generation"
-OUT  = "outputs/RQ1_future_generation/tmp"
+OUT  = "outputs/mock/RQ1_future_generation/tmp"
 os.makedirs(OUT, exist_ok=True)
 
 FONT_PATH = "data/tracked/SourceHanSansSC-Normal.otf"

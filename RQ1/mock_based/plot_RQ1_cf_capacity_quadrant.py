@@ -31,7 +31,7 @@ from matplotlib.colors import LogNorm
 # 路径
 # --------------------------------------------------------------------------- #
 DATA = "data_mock/mock_RQ_data/RQ1_future_generation"
-OUT  = "outputs/RQ1_future_generation"
+OUT  = "outputs/mock/RQ1_future_generation"
 os.makedirs(OUT, exist_ok=True)
 
 # --------------------------------------------------------------------------- #
