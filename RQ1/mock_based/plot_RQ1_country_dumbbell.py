@@ -18,7 +18,7 @@ from matplotlib.lines import Line2D
 from matplotlib import font_manager as fm
 
 DATA = "data_mock/mock_RQ_data/RQ1_future_generation"
-OUT  = "outputs/mock/RQ1_future_generation/tmp"
+OUT  = "RQ1/outputs/mock/tmp"
 os.makedirs(OUT, exist_ok=True)
 
 FONT_PATH = "data/SourceHanSansSC-Normal.otf"

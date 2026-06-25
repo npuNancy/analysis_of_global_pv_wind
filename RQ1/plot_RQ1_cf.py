@@ -4,7 +4,7 @@
 RQ1：未来气候如何改变风/光的容量因子（CF）。NESM3 真实数据版。
 
 数据：data/real/RQ1_generation/{MODEL}/（由 prepare_RQ1_data.py 生成，按气候模式分目录）
-输出：outputs/real/RQ1_generation/{MODEL}/fig_CF_{solar,wind}.png
+输出：RQ1/outputs/real/{MODEL}/fig_CF_{solar,wind}.png
 
 用法示例
 --------
@@ -36,7 +36,7 @@ from scipy.stats import gaussian_kde
 # --------------------------------------------------------------------------- #
 MODEL = "NESM3"  # 气候模式名；切换模式只需改此处，数据/输出走对应子目录
 DATA = f"data/real/RQ1_generation/{MODEL}"
-OUT = f"outputs/real/RQ1_generation/{MODEL}"
+OUT = f"RQ1/outputs/real/{MODEL}"
 os.makedirs(OUT, exist_ok=True)
 
 # --------------------------------------------------------------------------- #
@@ -207,6 +207,7 @@ def figure_cf(tech, cf_ts, era5land_df=None):
     lo, hi = cf_limits(tech)
     grid = np.linspace(lo, hi, 300)
     base_w = 0.42
+    med_x, med_y = [], []  # 收集各 SSP 各年份中位数，用于整体线性拟合
     for j, s in enumerate(SSPS):
         arrs = {y: cf_array(tech, s, y) for y in YEARS}
         if any(len(v) < 3 for v in arrs.values()):
@@ -220,7 +221,15 @@ def figure_cf(tech, cf_ts, era5land_df=None):
                 color=SSP_C[s], alpha=YEAR_ALPHA[y],
                 lw=0.4, edgecolor="white", zorder=2 + YEARS.index(y),
             )
-            axb.plot(j, np.median(arrs[y]), "o", ms=3, mfc="white", mec="k", mew=0.8, zorder=10)
+            med = np.median(arrs[y])
+            axb.plot(j, med, "o", ms=3, mfc="white", mec="k", mew=0.8, zorder=10)
+            med_x.append(j)
+            med_y.append(med)
+    # 三个 SSP 中位数的线性拟合（虚线，无 legend）
+    if len(med_x) >= 2:
+        coef = np.polyfit(med_x, med_y, 1)
+        xs = np.array([min(med_x), max(med_x)])
+        axb.plot(xs, np.polyval(coef, xs), "--", color="0.3", lw=1.2, zorder=11)
     axb.set_xticks(range(len(SSPS)))
     axb.set_xticklabels([SSP_L[s] for s in SSPS], rotation=12)
     axb.set_ylabel("场站容量因子 (%)")

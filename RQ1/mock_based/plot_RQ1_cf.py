@@ -24,7 +24,7 @@ from scipy.stats import gaussian_kde
 # 路径
 # --------------------------------------------------------------------------- #
 DATA = "data_mock/mock_RQ_data/RQ1_future_generation"
-OUT  = "outputs/mock/RQ1_future_generation"
+OUT  = "RQ1/outputs/mock"
 os.makedirs(OUT, exist_ok=True)
 
 # --------------------------------------------------------------------------- #

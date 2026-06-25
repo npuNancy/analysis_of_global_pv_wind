@@ -16,7 +16,7 @@ RQ1 补充图 —— 各场站的容量因子 vs 装机容量（四象限）。N
   便于比较 SSP1-2.6 / SSP5-8.5 相对于"中间路径"的偏移。
 
 数据：data/real/RQ1_generation/{MODEL}/（由 prepare_RQ1_data.py 生成，按气候模式分目录）
-输出：outputs/real/RQ1_generation/{MODEL}/fig_CFvsCAP_quadrant_{solar,wind}.png
+输出：RQ1/outputs/real/{MODEL}/fig_CFvsCAP_quadrant_{solar,wind}.png
 """
 
 import os
@@ -31,7 +31,7 @@ from matplotlib.colors import LogNorm
 # --------------------------------------------------------------------------- #
 MODEL = "NESM3"  # 气候模式名；切换模式只需改此处，数据/输出走对应子目录
 DATA = f"data/real/RQ1_generation/{MODEL}"
-OUT = f"outputs/real/RQ1_generation/{MODEL}"
+OUT = f"RQ1/outputs/real/{MODEL}"
 os.makedirs(OUT, exist_ok=True)
 
 # --------------------------------------------------------------------------- #

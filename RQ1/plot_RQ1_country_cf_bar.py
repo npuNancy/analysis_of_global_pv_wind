@@ -4,7 +4,7 @@
 RQ1: 各国多年平均容量因子柱状图
   上图：光伏（ERA5Land 2015–2025 均值 vs NESM3 SSP 2015–2025 均值）
   下图：风电（ERA5Land 2015–2020 均值 vs NESM3 SSP 2015–2020 均值）
-输出：outputs/real/RQ1_generation/{MODEL}/fig_CF_country_bar.png（按气候模式分目录）
+输出：RQ1/outputs/real/{MODEL}/fig_CF_country_bar.png（按气候模式分目录）
 """
 
 import os
@@ -20,7 +20,7 @@ from matplotlib.patches import Patch
 MODEL        = "NESM3"  # 气候模式名；切换模式只需改此处，源目录/输出走对应子目录
 ERA5LAND_DIR = "data/cfs/annual_mean_cf_ERA5Land"
 NESM3_DIR    = f"data/cfs/annual_mean_cf/{MODEL}"
-OUT          = f"outputs/real/RQ1_generation/{MODEL}"
+OUT          = f"RQ1/outputs/real/{MODEL}"
 os.makedirs(OUT, exist_ok=True)
 
 # --------------------------------------------------------------------------- #

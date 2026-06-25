@@ -18,7 +18,7 @@ data/cfs/annual_mean_cf/<MODEL>/per_country_annual_cf_*.csv
 
 输出
 ----
-outputs/real/RQ1_generation/cross_cmip6_model/
+RQ1/outputs/real/cross_cmip6_model/
   violin_dCF_solar.png / violin_dCF_wind.png
   —— x=气候模式，每个模式内按 SSP 分组的标准小提琴图；
      小提琴体=各国 ΔCF 的核密度，内部粗线=四分位距(IQR)，细线=全距，白点=中位数。
@@ -43,7 +43,7 @@ from scipy.stats import gaussian_kde
 # --------------------------------------------------------------------------- #
 ROOT = Path(__file__).resolve().parent.parent
 CF_BASE = ROOT / "data/cfs/annual_mean_cf"
-OUT = ROOT / "outputs/real/RQ1_generation/cross_cmip6_model"
+OUT = ROOT / "RQ1/outputs/real/cross_cmip6_model"
 OUT.mkdir(parents=True, exist_ok=True)
 
 # 排除非 CMIP6-模式 的目录（如 ERA5Land 再分析参考）
