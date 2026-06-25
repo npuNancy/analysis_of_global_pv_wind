@@ -50,13 +50,19 @@ import cartopy.feature as cfeature
 # ══════════════════════════════════════════════════════════════════════
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(BASE_DIR)
 OUTPUT_DIR = os.path.join(BASE_DIR, "outputs", "plot_stations",
                           os.path.splitext(os.path.basename(__file__))[0])
-NAM_GRID_NC = os.path.join(BASE_DIR, "data", "tracked", "NAM-12_grid.nc")
+NAM_GRID_NC = os.path.join(PROJECT_ROOT, "data", "NAM-12_grid.nc")
+
+# 场站出力 NC 文件默认根目录（用于零出力场站图）
+DEFAULT_NC_OUTPUT_DIR = os.path.join(
+    PROJECT_ROOT, "data", "wind_solar_output", "outputs_0p1deg_2030_2040_2050"
+)
 
 # 全球 20 大区划分（UN M49）：0.1° 栅格 + 编号→名称映射
-GRID_DIV_TIF = os.path.join(BASE_DIR, "data", "tracked", "grid_division", "Global_Grid_Division.tif")
-GRID_DIV_NAMES = os.path.join(BASE_DIR, "data", "tracked", "grid_division", "region_id_to_name.json")
+GRID_DIV_TIF = os.path.join(PROJECT_ROOT, "data", "grid_division", "Global_Grid_Division.tif")
+GRID_DIV_NAMES = os.path.join(PROJECT_ROOT, "data", "grid_division", "region_id_to_name.json")
 
 # NAM-12 rotated-pole 网格参数（硬编码，取自 data/tracked/NAM-12_grid.nc 的 crs）
 NAM_POLE_LON = 83.0
@@ -103,7 +109,7 @@ AREA_DICT: dict[str, list[float]] = {
 # 字体
 # ══════════════════════════════════════════════════════════════════════
 
-font_path = "data/tracked/SourceHanSansSC-Normal.otf"
+font_path = os.path.join(PROJECT_ROOT, "data", "SourceHanSansSC-Normal.otf")
 if os.path.exists(font_path):
     fm.fontManager.addfont(font_path)
     font_name = fm.FontProperties(fname=font_path).get_name()
@@ -268,6 +274,102 @@ def load_stations(csv_path):
     }
 
 
+def _ssp_code(ssp):
+    """将各种 SSP 表达形式统一为 'ssp126' / 'ssp245' / 'ssp585'。"""
+    s = ssp.lower()
+    if re.search(r'1.?2.?6', s):
+        return "ssp126"
+    if re.search(r'2.?4.?5', s):
+        return "ssp245"
+    if re.search(r'5.?8.?5', s) or re.search(r'5.?6.?0', s):
+        return "ssp585"
+    m = re.search(r'ssp(\d{3})', s)
+    if m:
+        return f"ssp{m.group(1)}"
+    return ssp
+
+
+def load_zero_cf_stations(nc_output_dir, ssp_code):
+    """从场站出力 NC 文件提取 2050 年 CF=0 的场站，按激活年份分组。
+
+    扫描 nc_output_dir 下的 pv_out 和 wind_out 子目录（仅 NESM3 模型），
+    对每个区域读取 NC 文件，以 2050 年出力计算年 CF，将 CF=0 的场站按
+    其 activation_year 归入 YEARS 对应的年份桶（2030/2040/2050）。
+
+    返回与 load_stations() 相同的结构：
+        {year: {'solar': (lon, lat, cap), 'wind': (lon, lat, cap)}}
+    """
+    import netCDF4 as nc_lib
+
+    ssp = _ssp_code(ssp_code)
+    result = {y: {"solar": [[], [], []], "wind": [[], [], []]} for y in YEARS}
+
+    for tech, tech_dir, prefix in [
+        ("solar", "pv_out",   "pv"),
+        ("wind",  "wind_out", "wind"),
+    ]:
+        base = os.path.join(nc_output_dir, tech_dir, "NESM3")
+        if not os.path.isdir(base):
+            print(f"  [零出力] 目录不存在，跳过 {tech}: {base}")
+            continue
+
+        for region in sorted(os.listdir(base)):
+            nc_path = os.path.join(
+                base, region,
+                f"{prefix}_stations_out_{region}_NESM3_{ssp}_allmonths.nc",
+            )
+            if not os.path.isfile(nc_path):
+                continue
+
+            try:
+                ds = nc_lib.Dataset(nc_path, "r")
+                power = ds.variables["power"][:]
+                if hasattr(power, "filled"):
+                    power = power.filled(np.nan)
+
+                t_var = ds.variables["time"]
+                times = nc_lib.num2date(t_var[:], t_var.units)
+                years_arr = np.array([t.year for t in times], dtype=np.int32)
+
+                cap_gw   = np.asarray(ds.variables["capacity_gw"][:],    dtype=np.float64)
+                act_year = np.asarray(ds.variables["activation_year"][:], dtype=np.int32)
+                sta_lons = np.asarray(ds.variables["station_lon"][:],     dtype=np.float64)
+                sta_lats = np.asarray(ds.variables["station_lat"][:],     dtype=np.float64)
+                ds.close()
+            except Exception as e:
+                print(f"  [零出力] 读取失败 {nc_path}: {e}")
+                continue
+
+            mask_2050 = years_arr == 2050
+            if not mask_2050.any():
+                continue
+
+            pwr_2050 = power[mask_2050, :]
+            n_steps  = int(mask_2050.sum())
+
+            active   = act_year <= 2050
+            has_data = ~np.all(np.isnan(pwr_2050), axis=0)
+            valid    = active & has_data & (cap_gw > 0)
+
+            pwr_sum = np.nansum(pwr_2050, axis=0)
+            with np.errstate(invalid="ignore", divide="ignore"):
+                ann_cf = np.where(valid, pwr_sum / (n_steps * cap_gw), np.nan)
+
+            zero_idx = np.where(valid & (ann_cf == 0))[0]
+            for i in zero_idx:
+                ay = int(act_year[i])
+                yr_key = 2030 if ay <= 2030 else (2040 if ay <= 2040 else 2050)
+                result[yr_key][tech][0].append(float(sta_lons[i]))
+                result[yr_key][tech][1].append(float(sta_lats[i]))
+                result[yr_key][tech][2].append(float(cap_gw[i]))
+
+    return {
+        y: {t: (np.array(v[0]), np.array(v[1]), np.array(v[2]))
+            for t, v in d.items()}
+        for y, d in result.items()
+    }
+
+
 def in_any_region(lon, lat, domain):
     """点是否落在任一 AREA_DICT 框或 NAM-12 域内。"""
     if len(lon) == 0:
@@ -348,14 +450,15 @@ def plot_regions_map(ssp, domain, region_geoms, names, out_path):
     print(f"  -> {out_path}")
 
 
-def plot_stations_map(ssp, stations, domain, region_geoms, names, out_path):
+def plot_stations_map(ssp, stations, domain, region_geoms, names, out_path,
+                      title_suffix=""):
     """图2：场站位置（上=光伏，下=风电），按年份着色，叠加区域边界。"""
     fig, (ax_s, ax_w) = plt.subplots(
         2, 1, figsize=(16, 16), subplot_kw={"projection": PC}
     )
     for ax, typ, title in [
-        (ax_s, "solar", f"{ssp} — 光伏场站选址"),
-        (ax_w, "wind", f"{ssp} — 风电场站选址"),
+        (ax_s, "solar", f"{ssp} — 光伏场站选址{title_suffix}"),
+        (ax_w, "wind",  f"{ssp} — 风电场站选址{title_suffix}"),
     ]:
         setup_basemap(ax)
         draw_macro_regions(ax, region_geoms, names, label=True)
@@ -565,6 +668,9 @@ def main():
     parser.add_argument("--ssp", default=None, help="情景标识，用于输出文件名（默认从路径推断，如 ssp126）")
     parser.add_argument("--draw-macro-regions", action="store_true",
                         help="在图上叠加 20 大区边界（默认关闭；大区统计始终输出）")
+    parser.add_argument("--nc-output-dir", default=DEFAULT_NC_OUTPUT_DIR,
+                        help="场站出力 NC 文件根目录，用于生成零出力场站图"
+                             f"（默认：{DEFAULT_NC_OUTPUT_DIR}）")
     args = parser.parse_args()
 
     ssp = derive_ssp(args.stations, args.ssp)
@@ -583,6 +689,20 @@ def main():
                      os.path.join(OUTPUT_DIR, f"regions_{ssp}.png"))
     plot_stations_map(ssp, stations, domain, region_geoms, names,
                       os.path.join(OUTPUT_DIR, f"stations_{ssp}.png"))
+
+    # 零出力场站图
+    if os.path.isdir(args.nc_output_dir):
+        print(f"\n  生成零出力场站图 (NC 目录: {args.nc_output_dir}) ...")
+        zero_stations = load_zero_cf_stations(args.nc_output_dir, ssp)
+        n_zero = sum(len(zero_stations[y][t][0]) for y in YEARS for t in ("solar", "wind"))
+        print(f"  找到 {n_zero} 个零出力场站（2050 年，各年份合计）")
+        plot_stations_map(
+            ssp, zero_stations, domain, region_geoms, names,
+            os.path.join(OUTPUT_DIR, f"zero_cf_stations_{ssp}.png"),
+            title_suffix=" — 零出力场站（CF=0）",
+        )
+    else:
+        print(f"\n  [跳过] NC 出力目录不存在，不生成零出力场站图：{args.nc_output_dir}")
 
     rows = compute_stats(stations, domain)
     report_stats(ssp, rows, os.path.join(OUTPUT_DIR, f"stats_in_regions_{ssp}.csv"))
