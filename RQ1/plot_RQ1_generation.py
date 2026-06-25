@@ -3,8 +3,8 @@
 """
 RQ1：未来气候如何改变风/光的场站发电量（出力）。NESM3 真实数据版。
 
-数据：data/real/RQ1_generation/（由 prepare_RQ1_data.py 生成）
-输出：outputs/real/RQ1_generation/fig_GEN_{solar,wind}.png
+数据：data/real/RQ1_generation/{MODEL}/（由 prepare_RQ1_data.py 生成，按气候模式分目录）
+输出：outputs/real/RQ1_generation/{MODEL}/fig_GEN_{solar,wind}.png
 """
 
 import os
@@ -19,8 +19,9 @@ from scipy.stats import gaussian_kde
 # --------------------------------------------------------------------------- #
 # 路径
 # --------------------------------------------------------------------------- #
-DATA = "data/real/RQ1_generation"
-OUT = "outputs/real/RQ1_generation"
+MODEL = "NESM3"  # 气候模式名；切换模式只需改此处，数据/输出走对应子目录
+DATA = f"data/real/RQ1_generation/{MODEL}"
+OUT = f"outputs/real/RQ1_generation/{MODEL}"
 os.makedirs(OUT, exist_ok=True)
 
 # --------------------------------------------------------------------------- #

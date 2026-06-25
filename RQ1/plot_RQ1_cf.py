@@ -3,8 +3,8 @@
 """
 RQ1：未来气候如何改变风/光的容量因子（CF）。NESM3 真实数据版。
 
-数据：data/real/RQ1_generation/（由 prepare_RQ1_data.py 生成）
-输出：outputs/real/RQ1_generation/fig_CF_{solar,wind}.png
+数据：data/real/RQ1_generation/{MODEL}/（由 prepare_RQ1_data.py 生成，按气候模式分目录）
+输出：outputs/real/RQ1_generation/{MODEL}/fig_CF_{solar,wind}.png
 
 用法示例
 --------
@@ -34,8 +34,9 @@ from scipy.stats import gaussian_kde
 # --------------------------------------------------------------------------- #
 # 路径
 # --------------------------------------------------------------------------- #
-DATA = "data/real/RQ1_generation"
-OUT = "outputs/real/RQ1_generation"
+MODEL = "NESM3"  # 气候模式名；切换模式只需改此处，数据/输出走对应子目录
+DATA = f"data/real/RQ1_generation/{MODEL}"
+OUT = f"outputs/real/RQ1_generation/{MODEL}"
 os.makedirs(OUT, exist_ok=True)
 
 # --------------------------------------------------------------------------- #
@@ -248,10 +249,10 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser(description="RQ1 图 a/b（图 a 读取全球逐年 CF 时间序列）")
     ap.add_argument(
         "--data-dir",
-        default="data/cfs/annual_mean_cf/NESM3",
-        help="全球逐年 CF 数据目录，默认 data/cfs/annual_mean_cf/NESM3",
+        default=f"data/cfs/annual_mean_cf/{MODEL}",
+        help=f"全球逐年 CF 数据目录，默认 data/cfs/annual_mean_cf/{MODEL}",
     )
-    ap.add_argument("--model", default="NESM3", help="气象模式名（用于定位 CSV 文件名）")
+    ap.add_argument("--model", default=MODEL, help="气象模式名（用于定位 CSV 文件名）")
     ap.add_argument(
         "--era5land-dir",
         default=None,
