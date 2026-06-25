@@ -97,6 +97,24 @@ def load_global_cf_ts(data_dir, model):
     return df
 
 
+def load_era5land_cf_ts(base_dir, tech):
+    """读取 ERA5Land 全球逐年平均 CF 时间序列，用于图 a 中的黑色参考线。
+
+    输入：{base_dir}/{tech}/global_annual_cf_ERA5Land.csv
+    列：energy, source, year, mean_cf, ...
+    返回 DataFrame（year, mean_cf），若文件不存在则返回 None。
+    """
+    f = os.path.join(base_dir, tech, "global_annual_cf_ERA5Land.csv")
+    if not os.path.exists(f):
+        print(f"[警告] 找不到 ERA5Land CF 文件：{f}，跳过黑色参考线。")
+        return None
+    df = pd.read_csv(f, skipinitialspace=True)
+    df.columns = [c.strip() for c in df.columns]
+    df["year"] = df["year"].astype(int)
+    df["mean_cf"] = df["mean_cf"].astype(float)
+    return df[["year", "mean_cf"]].sort_values("year")
+
+
 def country_cf_change(tech):
     """各国格点 CF 变化率（2050 vs 2030，%）。用于图 c 热图、图 d 柱图。
     缺失国家/SSP 组合以 NaN 填充。"""
@@ -136,7 +154,7 @@ def cf_limits(tech):
 # =========================================================================== #
 # 主绘图函数
 # =========================================================================== #
-def figure_cf(tech, cf_ts):
+def figure_cf(tech, cf_ts, era5land_df=None):
     fig, (axa, axb) = plt.subplots(1, 2, figsize=(7.2, 3.4))
     fig.subplots_adjust(left=0.1, right=0.97, top=0.86, bottom=0.14, wspace=0.34)
 
@@ -147,6 +165,11 @@ def figure_cf(tech, cf_ts):
         if sub.empty:
             continue
         axa.plot(sub.year, sub.mean_cf * 100, "-", color=SSP_C[s], lw=1.6, label=SSP_L[s])
+    if era5land_df is not None and not era5land_df.empty:
+        axa.plot(
+            era5land_df.year, era5land_df.mean_cf * 100,
+            "-", color="black", lw=1.6, label="ERA5-Land",
+        )
     axa.set_xlim(2015, 2060)
     axa.set_xticks(range(2015, 2061, 10))
     axa.set_xlabel("年份")
@@ -206,8 +229,19 @@ if __name__ == "__main__":
         help="全球逐年 CF 数据目录，默认 data/cfs/annual_mean_cf/NESM3",
     )
     ap.add_argument("--model", default="NESM3", help="气象模式名（用于定位 CSV 文件名）")
+    ap.add_argument(
+        "--era5land-dir",
+        default="data/cfs/annual_mean_cf_ERA5Land",
+        help="ERA5Land 全球逐年 CF 数据根目录，默认 data/cfs/annual_mean_cf_ERA5Land；"
+             "传入空字符串或 none 则不绘制 ERA5Land 参考线",
+    )
     args = ap.parse_args()
+
+    era5land_base = args.era5land_dir
+    if not era5land_base or era5land_base.lower() == "none":
+        era5land_base = None
 
     cf_ts = load_global_cf_ts(args.data_dir, args.model)
     for tech in ["solar", "wind"]:
-        print("已保存:", figure_cf(tech, cf_ts))
+        era5land_df = load_era5land_cf_ts(era5land_base, tech) if era5land_base else None
+        print("已保存:", figure_cf(tech, cf_ts, era5land_df=era5land_df))
