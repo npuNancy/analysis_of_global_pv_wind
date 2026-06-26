@@ -12,8 +12,8 @@ RQ1 补充图 —— 各场站的容量因子 vs 装机容量（四象限）。N
   y：装机容量（MW，对数轴）      → 部署规模
   颜色：年发电量（GWh，对数）    → 实际出力
 
-  参考线（四象限分界）固定为 SSP2-4.5 面板的中位 CF 和中位装机，
-  便于比较 SSP1-2.6 / SSP5-8.5 相对于"中间路径"的偏移。
+  参考线（四象限分界）固定为全部三情景合并数据的中位 CF 和中位装机，
+  三面板共用同一基准，便于比较各 SSP 路径相对于"整体中位场站"的偏移。
 
 数据：data/real/RQ1_generation/{MODEL}/（由 prepare_RQ1_data.py 生成，按气候模式分目录）
 输出：RQ1/outputs/real/{MODEL}/fig_CFvsCAP_quadrant_{solar,wind}.png
@@ -97,10 +97,9 @@ def figure_quadrant(tech):
         print(f"  [{tech}] 无有效数据，跳过四象限图")
         return None
 
-    # 参考线：取 SSP2-4.5 面板的中位数作为全局四象限分界
-    ref = d[d.climate_ssp == "ssp245"]
-    cf_line = ref.cf.median() if not ref.empty else d.cf.median()
-    cap_line = ref.capacity_mw.median() if not ref.empty else d.capacity_mw.median()
+    # 参考线：取全部三情景合并数据的中位数作为全局四象限分界
+    cf_line = d.cf.median()
+    cap_line = d.capacity_mw.median()
 
     # 各面板共用坐标范围与颜色映射
     gmin = d.gen_gwh.min()
@@ -133,8 +132,8 @@ def figure_quadrant(tech):
         ax.set_yscale("log")
         ax.set_xlim(*cf_lim)
         ax.set_ylim(*cap_lim)
-        ax.axvline(cf_line, color="0.25", lw=0.9, ls="--", zorder=0)
-        ax.axhline(cap_line, color="0.25", lw=0.9, ls="--", zorder=0)
+        ax.axvline(cf_line, color="0.25", lw=0.9, ls="--", zorder=3)
+        ax.axhline(cap_line, color="0.25", lw=0.9, ls="--", zorder=3)
         ax.set_xlabel("容量因子 (%)")
 
         # 各象限注释（站数 + 发电占比）
@@ -161,7 +160,7 @@ def figure_quadrant(tech):
                 fontsize=5.8,
                 color="0.15",
                 linespacing=1.25,
-                bbox=dict(boxstyle="round,pad=0.2", fc="white", ec="0.7", lw=0.4, alpha=0.82),
+                bbox=dict(boxstyle="round,pad=0.2", fc="white", ec="red", lw=0.4, alpha=0.82),
             )
 
         n_sta = len(sub)
@@ -183,7 +182,7 @@ def figure_quadrant(tech):
     fig.text(
         0.48,
         0.005,
-        f"自洽情景（部署=气候）；虚线为 SSP2-4.5 中位 CF（{cf_line:.1f}%）"
+        f"自洽情景（部署=气候）；虚线为三情景合并中位 CF（{cf_line:.1f}%）"
         f"与装机（{cap_line:.0f} MW），三面板共用；已过滤零出力场站。",
         ha="center",
         fontsize=6.2,
