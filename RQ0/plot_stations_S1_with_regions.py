@@ -51,14 +51,11 @@ import cartopy.feature as cfeature
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(BASE_DIR)
-OUTPUT_DIR = os.path.join(BASE_DIR, "outputs", "plot_stations",
-                          os.path.splitext(os.path.basename(__file__))[0])
-NAM_GRID_NC = os.path.join(PROJECT_ROOT, "data", "NAM-12_grid.nc")
+OUTPUT_DIR = os.path.join(BASE_DIR, "outputs", "plot_stations", os.path.splitext(os.path.basename(__file__))[0])
+NAM_GRID_NC = os.path.join(PROJECT_ROOT, "data", "grid_of_regions", "NAM-12_grid.nc")
 
 # 场站出力 NC 文件默认根目录（用于零出力场站图）
-DEFAULT_NC_OUTPUT_DIR = os.path.join(
-    PROJECT_ROOT, "data", "wind_solar_output", "outputs_0p1deg_2030_2040_2050"
-)
+DEFAULT_NC_OUTPUT_DIR = os.path.join(PROJECT_ROOT, "data", "wind_solar_output", "outputs_0p1deg_2030_2040_2050")
 
 # 全球 20 大区划分（UN M49）：0.1° 栅格 + 编号→名称映射
 GRID_DIV_TIF = os.path.join(PROJECT_ROOT, "data", "grid_division", "Global_Grid_Division.tif")
@@ -139,14 +136,22 @@ def bbox_edges_180(north, lon_w, south, lon_e, n=50):
     w, e = float(to180(lon_w)), float(to180(lon_e))
     if w > e:  # 真正跨 180° 经线（AREA_DICT 实际不出现）——退化为连续直绘
         e += 360.0
-    lons = np.concatenate([
-        np.linspace(w, e, n), np.full(n, e),
-        np.linspace(e, w, n), np.full(n, w),
-    ])
-    lats = np.concatenate([
-        np.full(n, north), np.linspace(north, south, n),
-        np.full(n, south), np.linspace(south, north, n),
-    ])
+    lons = np.concatenate(
+        [
+            np.linspace(w, e, n),
+            np.full(n, e),
+            np.linspace(e, w, n),
+            np.full(n, w),
+        ]
+    )
+    lats = np.concatenate(
+        [
+            np.full(n, north),
+            np.linspace(north, south, n),
+            np.full(n, south),
+            np.linspace(south, north, n),
+        ]
+    )
     return lons, lats
 
 
@@ -177,14 +182,22 @@ def nam_boundary_rotated(domain, n=200):
     以 transform=NAM_CRS 绘制时，cartopy 自动渲染为真实的弯曲域边界并正确处理跨经线。
     """
     rlon0, rlon1, rlat0, rlat1 = domain
-    rlons = np.concatenate([
-        np.linspace(rlon0, rlon1, n), np.full(n, rlon1),
-        np.linspace(rlon1, rlon0, n), np.full(n, rlon0),
-    ])
-    rlats = np.concatenate([
-        np.full(n, rlat0), np.linspace(rlat0, rlat1, n),
-        np.full(n, rlat1), np.linspace(rlat1, rlat0, n),
-    ])
+    rlons = np.concatenate(
+        [
+            np.linspace(rlon0, rlon1, n),
+            np.full(n, rlon1),
+            np.linspace(rlon1, rlon0, n),
+            np.full(n, rlon0),
+        ]
+    )
+    rlats = np.concatenate(
+        [
+            np.full(n, rlat0),
+            np.linspace(rlat0, rlat1, n),
+            np.full(n, rlat1),
+            np.linspace(rlat1, rlat0, n),
+        ]
+    )
     return rlons, rlats
 
 
@@ -268,22 +281,19 @@ def load_stations(csv_path):
             data[year][typ][0].append(float(row["lon"]))
             data[year][typ][1].append(float(row["lat"]))
             data[year][typ][2].append(float(row.get("capacity_gw") or 0.0))
-    return {
-        y: {t: (np.array(v[0]), np.array(v[1]), np.array(v[2])) for t, v in d.items()}
-        for y, d in data.items()
-    }
+    return {y: {t: (np.array(v[0]), np.array(v[1]), np.array(v[2])) for t, v in d.items()} for y, d in data.items()}
 
 
 def _ssp_code(ssp):
     """将各种 SSP 表达形式统一为 'ssp126' / 'ssp245' / 'ssp585'。"""
     s = ssp.lower()
-    if re.search(r'1.?2.?6', s):
+    if re.search(r"1.?2.?6", s):
         return "ssp126"
-    if re.search(r'2.?4.?5', s):
+    if re.search(r"2.?4.?5", s):
         return "ssp245"
-    if re.search(r'5.?8.?5', s) or re.search(r'5.?6.?0', s):
+    if re.search(r"5.?8.?5", s) or re.search(r"5.?6.?0", s):
         return "ssp585"
-    m = re.search(r'ssp(\d{3})', s)
+    m = re.search(r"ssp(\d{3})", s)
     if m:
         return f"ssp{m.group(1)}"
     return ssp
@@ -305,8 +315,8 @@ def load_zero_cf_stations(nc_output_dir, ssp_code):
     result = {y: {"solar": [[], [], []], "wind": [[], [], []]} for y in YEARS}
 
     for tech, tech_dir, prefix in [
-        ("solar", "pv_out",   "pv"),
-        ("wind",  "wind_out", "wind"),
+        ("solar", "pv_out", "pv"),
+        ("wind", "wind_out", "wind"),
     ]:
         base = os.path.join(nc_output_dir, tech_dir, "NESM3")
         if not os.path.isdir(base):
@@ -315,7 +325,8 @@ def load_zero_cf_stations(nc_output_dir, ssp_code):
 
         for region in sorted(os.listdir(base)):
             nc_path = os.path.join(
-                base, region,
+                base,
+                region,
                 f"{prefix}_stations_out_{region}_NESM3_{ssp}_allmonths.nc",
             )
             if not os.path.isfile(nc_path):
@@ -331,10 +342,10 @@ def load_zero_cf_stations(nc_output_dir, ssp_code):
                 times = nc_lib.num2date(t_var[:], t_var.units)
                 years_arr = np.array([t.year for t in times], dtype=np.int32)
 
-                cap_gw   = np.asarray(ds.variables["capacity_gw"][:],    dtype=np.float64)
+                cap_gw = np.asarray(ds.variables["capacity_gw"][:], dtype=np.float64)
                 act_year = np.asarray(ds.variables["activation_year"][:], dtype=np.int32)
-                sta_lons = np.asarray(ds.variables["station_lon"][:],     dtype=np.float64)
-                sta_lats = np.asarray(ds.variables["station_lat"][:],     dtype=np.float64)
+                sta_lons = np.asarray(ds.variables["station_lon"][:], dtype=np.float64)
+                sta_lats = np.asarray(ds.variables["station_lat"][:], dtype=np.float64)
                 ds.close()
             except Exception as e:
                 print(f"  [零出力] 读取失败 {nc_path}: {e}")
@@ -345,11 +356,11 @@ def load_zero_cf_stations(nc_output_dir, ssp_code):
                 continue
 
             pwr_2050 = power[mask_2050, :]
-            n_steps  = int(mask_2050.sum())
+            n_steps = int(mask_2050.sum())
 
-            active   = act_year <= 2050
+            active = act_year <= 2050
             has_data = ~np.all(np.isnan(pwr_2050), axis=0)
-            valid    = active & has_data & (cap_gw > 0)
+            valid = active & has_data & (cap_gw > 0)
 
             pwr_sum = np.nansum(pwr_2050, axis=0)
             with np.errstate(invalid="ignore", divide="ignore"):
@@ -363,11 +374,7 @@ def load_zero_cf_stations(nc_output_dir, ssp_code):
                 result[yr_key][tech][1].append(float(sta_lats[i]))
                 result[yr_key][tech][2].append(float(cap_gw[i]))
 
-    return {
-        y: {t: (np.array(v[0]), np.array(v[1]), np.array(v[2]))
-            for t, v in d.items()}
-        for y, d in result.items()
-    }
+    return {y: {t: (np.array(v[0]), np.array(v[1]), np.array(v[2])) for t, v in d.items()} for y, d in result.items()}
 
 
 def in_any_region(lon, lat, domain):
@@ -403,15 +410,33 @@ def draw_regions(ax, domain, label=False):
         if label:
             e = lon_e if lon_e >= lon_w else lon_e + 360
             cx = float(to180((lon_w + e) / 2.0))
-            ax.text(cx, (north + south) / 2.0, name, transform=PC, fontsize=6,
-                    ha="center", va="center", color="#7a0000", zorder=5)
+            ax.text(
+                cx,
+                (north + south) / 2.0,
+                name,
+                transform=PC,
+                fontsize=6,
+                ha="center",
+                va="center",
+                color="#7a0000",
+                zorder=5,
+            )
 
     rlons, rlats = nam_boundary_rotated(domain)
     ax.plot(rlons, rlats, transform=NAM_CRS, color="#1f77b4", lw=1.6, zorder=4)
     if label:
         rlon0, rlon1, rlat0, rlat1 = domain
-        ax.text((rlon0 + rlon1) / 2, (rlat0 + rlat1) / 2, "NAM-12", transform=NAM_CRS,
-                fontsize=8, ha="center", va="center", color="#0b3d61", zorder=5)
+        ax.text(
+            (rlon0 + rlon1) / 2,
+            (rlat0 + rlat1) / 2,
+            "NAM-12",
+            transform=NAM_CRS,
+            fontsize=8,
+            ha="center",
+            va="center",
+            color="#0b3d61",
+            zorder=5,
+        )
 
 
 def draw_macro_regions(ax, region_geoms, names, label=False):
@@ -419,15 +444,22 @@ def draw_macro_regions(ax, region_geoms, names, label=False):
     if not region_geoms:
         return
     for rid, geom in region_geoms.items():
-        ax.add_geometries([geom], crs=PC, facecolor="none",
-                          edgecolor="#2f7d32", linewidth=0.6, zorder=2)
+        ax.add_geometries([geom], crs=PC, facecolor="none", edgecolor="#2f7d32", linewidth=0.6, zorder=2)
         if label:
             try:
                 pt = geom.representative_point()
-                ax.text(pt.x, pt.y, str(rid), transform=PC, fontsize=7,
-                        ha="center", va="center", color="#14521a", zorder=5,
-                        bbox=dict(boxstyle="circle,pad=0.1", fc="white",
-                                  ec="#2f7d32", lw=0.4, alpha=0.7))
+                ax.text(
+                    pt.x,
+                    pt.y,
+                    str(rid),
+                    transform=PC,
+                    fontsize=7,
+                    ha="center",
+                    va="center",
+                    color="#14521a",
+                    zorder=5,
+                    bbox=dict(boxstyle="circle,pad=0.1", fc="white", ec="#2f7d32", lw=0.4, alpha=0.7),
+                )
             except Exception:
                 pass
 
@@ -450,29 +482,33 @@ def plot_regions_map(ssp, domain, region_geoms, names, out_path):
     print(f"  -> {out_path}")
 
 
-def plot_stations_map(ssp, stations, domain, region_geoms, names, out_path,
-                      title_suffix=""):
+def plot_stations_map(ssp, stations, domain, region_geoms, names, out_path, title_suffix=""):
     """图2：场站位置（上=光伏，下=风电），按年份着色，叠加区域边界。"""
-    fig, (ax_s, ax_w) = plt.subplots(
-        2, 1, figsize=(16, 16), subplot_kw={"projection": PC}
-    )
+    fig, (ax_s, ax_w) = plt.subplots(2, 1, figsize=(16, 16), subplot_kw={"projection": PC})
     for ax, typ, title in [
         (ax_s, "solar", f"{ssp} — 光伏场站选址{title_suffix}"),
-        (ax_w, "wind",  f"{ssp} — 风电场站选址{title_suffix}"),
+        (ax_w, "wind", f"{ssp} — 风电场站选址{title_suffix}"),
     ]:
         setup_basemap(ax)
         draw_macro_regions(ax, region_geoms, names, label=True)
         draw_regions(ax, domain, label=False)
         for year in YEARS:
             lon, lat, _cap = stations[year][typ]
-            ax.scatter(lon, lat, s=3, c=YEAR_COLORS[year], transform=PC,
-                       label=f"{year} ({len(lon):,})", rasterized=True, zorder=3)
+            ax.scatter(
+                lon,
+                lat,
+                s=3,
+                c=YEAR_COLORS[year],
+                transform=PC,
+                label=f"{year} ({len(lon):,})",
+                rasterized=True,
+                zorder=3,
+            )
         if region_geoms:
             ax.plot([], [], color="#2f7d32", lw=0.8, label="20 大区边界")
         ax.plot([], [], color="#d62728", lw=1.0, label="AREA_DICT")
         ax.plot([], [], color="#1f77b4", lw=1.6, label="NAM-12")
-        ax.legend(loc="lower left", fontsize=10, markerscale=4,
-                  framealpha=0.9, edgecolor="#888")
+        ax.legend(loc="lower left", fontsize=10, markerscale=4, framealpha=0.9, edgecolor="#888")
         ax.set_title(title, fontsize=14, pad=10)
     plt.tight_layout()
     plt.savefig(out_path, dpi=200, bbox_inches="tight")
@@ -506,34 +542,51 @@ def compute_stats(stations, domain):
             inside_cap = float(cap[mask].sum()) if total_n else 0.0
             ratio_cap = inside_cap / total_cap if total_cap else 0.0
 
-            rows.append((year, typ, total_n, inside_n, ratio_n,
-                         total_cap, inside_cap, ratio_cap))
+            rows.append((year, typ, total_n, inside_n, ratio_n, total_cap, inside_cap, ratio_cap))
     return rows
 
 
 def report_stats(ssp, rows, out_path):
     """打印并保存统计结果（场站个数口径 + 装机容量口径）。"""
     print(f"\n  当前区域可覆盖的风光场站 / 装机量统计（{ssp}）")
-    print(f"  {'year':<6}{'type':<7}"
-          f"{'n_tot':>8}{'n_in':>8}{'n_ratio':>9}   "
-          f"{'cap_tot':>11}{'cap_in':>11}{'cap_ratio':>11}")
+    print(
+        f"  {'year':<6}{'type':<7}"
+        f"{'n_tot':>8}{'n_in':>8}{'n_ratio':>9}   "
+        f"{'cap_tot':>11}{'cap_in':>11}{'cap_ratio':>11}"
+    )
     print("  " + "-" * 80)
     with open(out_path, "w", newline="") as f:
         writer = csv.writer(f)
-        writer.writerow([
-            "year", "type",
-            "total", "inside_region", "ratio",
-            "total_cap_gw", "inside_cap_gw", "cap_ratio",
-        ])
-        for (year, typ, total_n, inside_n, ratio_n,
-             total_cap, inside_cap, ratio_cap) in rows:
-            print(f"  {year:<6}{typ:<7}"
-                  f"{total_n:>8,}{inside_n:>8,}{ratio_n:>8.1%}   "
-                  f"{total_cap:>11,.0f}{inside_cap:>11,.0f}{ratio_cap:>10.1%}")
-            writer.writerow([
-                year, typ, total_n, inside_n, f"{ratio_n:.4f}",
-                f"{total_cap:.4f}", f"{inside_cap:.4f}", f"{ratio_cap:.4f}",
-            ])
+        writer.writerow(
+            [
+                "year",
+                "type",
+                "total",
+                "inside_region",
+                "ratio",
+                "total_cap_gw",
+                "inside_cap_gw",
+                "cap_ratio",
+            ]
+        )
+        for year, typ, total_n, inside_n, ratio_n, total_cap, inside_cap, ratio_cap in rows:
+            print(
+                f"  {year:<6}{typ:<7}"
+                f"{total_n:>8,}{inside_n:>8,}{ratio_n:>8.1%}   "
+                f"{total_cap:>11,.0f}{inside_cap:>11,.0f}{ratio_cap:>10.1%}"
+            )
+            writer.writerow(
+                [
+                    year,
+                    typ,
+                    total_n,
+                    inside_n,
+                    f"{ratio_n:.4f}",
+                    f"{total_cap:.4f}",
+                    f"{inside_cap:.4f}",
+                    f"{ratio_cap:.4f}",
+                ]
+            )
 
         tot_n = sum(r[2] for r in rows)
         ins_n = sum(r[3] for r in rows)
@@ -542,13 +595,23 @@ def report_stats(ssp, rows, out_path):
         ratio_n_all = ins_n / tot_n if tot_n else 0.0
         ratio_cap_all = ins_cap / tot_cap if tot_cap else 0.0
         print("  " + "-" * 80)
-        print(f"  {'ALL':<6}{'':<7}"
-              f"{tot_n:>8,}{ins_n:>8,}{ratio_n_all:>8.1%}   "
-              f"{tot_cap:>11,.0f}{ins_cap:>11,.0f}{ratio_cap_all:>10.1%}")
-        writer.writerow([
-            "ALL", "", tot_n, ins_n, f"{ratio_n_all:.4f}",
-            f"{tot_cap:.4f}", f"{ins_cap:.4f}", f"{ratio_cap_all:.4f}",
-        ])
+        print(
+            f"  {'ALL':<6}{'':<7}"
+            f"{tot_n:>8,}{ins_n:>8,}{ratio_n_all:>8.1%}   "
+            f"{tot_cap:>11,.0f}{ins_cap:>11,.0f}{ratio_cap_all:>10.1%}"
+        )
+        writer.writerow(
+            [
+                "ALL",
+                "",
+                tot_n,
+                ins_n,
+                f"{ratio_n_all:.4f}",
+                f"{tot_cap:.4f}",
+                f"{ins_cap:.4f}",
+                f"{ratio_cap_all:.4f}",
+            ]
+        )
     print(f"  -> {out_path}")
 
 
@@ -590,17 +653,23 @@ def compute_region_stats(stations, domain, grid, transform, names):
     n_ids = max(names) if names else 20
     rows = []
     for year in sorted(stations):
-        n_total, n_inside, cap_total, cap_inside = _region_accumulate(
-            stations[year], domain, grid, transform, n_ids
-        )
+        n_total, n_inside, cap_total, cap_inside = _region_accumulate(stations[year], domain, grid, transform, n_ids)
         for rid in range(1, n_ids + 1):
             nt, ni = int(n_total[rid]), int(n_inside[rid])
             ct, ci = float(cap_total[rid]), float(cap_inside[rid])
-            rows.append((
-                year, rid, names.get(rid, f"region {rid}"),
-                nt, ni, (ni / nt if nt else 0.0),
-                ct, ci, (ci / ct if ct else 0.0),
-            ))
+            rows.append(
+                (
+                    year,
+                    rid,
+                    names.get(rid, f"region {rid}"),
+                    nt,
+                    ni,
+                    (ni / nt if nt else 0.0),
+                    ct,
+                    ci,
+                    (ci / ct if ct else 0.0),
+                )
+            )
     return rows
 
 
@@ -612,39 +681,66 @@ def report_region_stats(ssp, rows, out_path):
     print(f"\n  各大区内被项目区域覆盖的场站 / 装机量统计（{ssp}，分年份）")
     with open(out_path, "w", newline="") as f:
         writer = csv.writer(f)
-        writer.writerow([
-            "year", "region_id", "region_name",
-            "n_total", "n_inside", "n_cover_ratio",
-            "cap_total_gw", "cap_inside_gw", "cap_cover_ratio",
-        ])
+        writer.writerow(
+            [
+                "year",
+                "region_id",
+                "region_name",
+                "n_total",
+                "n_inside",
+                "n_cover_ratio",
+                "cap_total_gw",
+                "cap_inside_gw",
+                "cap_cover_ratio",
+            ]
+        )
         for year in years:
             year_rows = [r for r in rows if r[0] == year]
             print(f"\n  ── {year} 年 ──")
-            print(f"  {'id':<3}{'region':<22}"
-                  f"{'n_tot':>8}{'n_in':>8}{'n_cov':>8}   "
-                  f"{'cap_tot':>11}{'cap_in':>11}{'cap_cov':>9}")
+            print(
+                f"  {'id':<3}{'region':<22}"
+                f"{'n_tot':>8}{'n_in':>8}{'n_cov':>8}   "
+                f"{'cap_tot':>11}{'cap_in':>11}{'cap_cov':>9}"
+            )
             print("  " + "-" * 88)
             for _y, rid, name, nt, ni, nr, ct, ci, cr in year_rows:
-                print(f"  {rid:<3}{name:<22}"
-                      f"{nt:>8,}{ni:>8,}{nr:>7.1%}   "
-                      f"{ct:>11,.0f}{ci:>11,.0f}{cr:>8.1%}")
-                writer.writerow([
-                    year, rid, name, nt, ni, f"{nr:.4f}",
-                    f"{ct:.4f}", f"{ci:.4f}", f"{cr:.4f}",
-                ])
+                print(f"  {rid:<3}{name:<22}" f"{nt:>8,}{ni:>8,}{nr:>7.1%}   " f"{ct:>11,.0f}{ci:>11,.0f}{cr:>8.1%}")
+                writer.writerow(
+                    [
+                        year,
+                        rid,
+                        name,
+                        nt,
+                        ni,
+                        f"{nr:.4f}",
+                        f"{ct:.4f}",
+                        f"{ci:.4f}",
+                        f"{cr:.4f}",
+                    ]
+                )
             tot_n = sum(r[3] for r in year_rows)
             ins_n = sum(r[4] for r in year_rows)
             tot_c = sum(r[6] for r in year_rows)
             ins_c = sum(r[7] for r in year_rows)
             print("  " + "-" * 88)
-            print(f"  {'':3}{'ALL (20 区合计)':<22}"
-                  f"{tot_n:>8,}{ins_n:>8,}{(ins_n / tot_n if tot_n else 0):>7.1%}   "
-                  f"{tot_c:>11,.0f}{ins_c:>11,.0f}{(ins_c / tot_c if tot_c else 0):>8.1%}")
-            writer.writerow([
-                year, "ALL", "20 区合计", tot_n, ins_n,
-                f"{(ins_n / tot_n if tot_n else 0):.4f}",
-                f"{tot_c:.4f}", f"{ins_c:.4f}", f"{(ins_c / tot_c if tot_c else 0):.4f}",
-            ])
+            print(
+                f"  {'':3}{'ALL (20 区合计)':<22}"
+                f"{tot_n:>8,}{ins_n:>8,}{(ins_n / tot_n if tot_n else 0):>7.1%}   "
+                f"{tot_c:>11,.0f}{ins_c:>11,.0f}{(ins_c / tot_c if tot_c else 0):>8.1%}"
+            )
+            writer.writerow(
+                [
+                    year,
+                    "ALL",
+                    "20 区合计",
+                    tot_n,
+                    ins_n,
+                    f"{(ins_n / tot_n if tot_n else 0):.4f}",
+                    f"{tot_c:.4f}",
+                    f"{ins_c:.4f}",
+                    f"{(ins_c / tot_c if tot_c else 0):.4f}",
+                ]
+            )
     print(f"\n  -> {out_path}")
 
 
@@ -666,11 +762,14 @@ def main():
     parser = argparse.ArgumentParser(description="项目区域范围与风光场站可视化/统计")
     parser.add_argument("--stations", required=True, help="场站选址结果 CSV（year,type,lon,lat,...）")
     parser.add_argument("--ssp", default=None, help="情景标识，用于输出文件名（默认从路径推断，如 ssp126）")
-    parser.add_argument("--draw-macro-regions", action="store_true",
-                        help="在图上叠加 20 大区边界（默认关闭；大区统计始终输出）")
-    parser.add_argument("--nc-output-dir", default=DEFAULT_NC_OUTPUT_DIR,
-                        help="场站出力 NC 文件根目录，用于生成零出力场站图"
-                             f"（默认：{DEFAULT_NC_OUTPUT_DIR}）")
+    parser.add_argument(
+        "--draw-macro-regions", action="store_true", help="在图上叠加 20 大区边界（默认关闭；大区统计始终输出）"
+    )
+    parser.add_argument(
+        "--nc-output-dir",
+        default=DEFAULT_NC_OUTPUT_DIR,
+        help="场站出力 NC 文件根目录，用于生成零出力场站图" f"（默认：{DEFAULT_NC_OUTPUT_DIR}）",
+    )
     args = parser.parse_args()
 
     ssp = derive_ssp(args.stations, args.ssp)
@@ -685,10 +784,8 @@ def main():
     # 大区边界默认不绘制；仅在 --draw-macro-regions 时才矢量化（较耗时）
     region_geoms = macro_region_geometries(grid, transform) if args.draw_macro_regions else {}
 
-    plot_regions_map(ssp, domain, region_geoms, names,
-                     os.path.join(OUTPUT_DIR, f"regions_{ssp}.png"))
-    plot_stations_map(ssp, stations, domain, region_geoms, names,
-                      os.path.join(OUTPUT_DIR, f"stations_{ssp}.png"))
+    plot_regions_map(ssp, domain, region_geoms, names, os.path.join(OUTPUT_DIR, f"regions_{ssp}.png"))
+    plot_stations_map(ssp, stations, domain, region_geoms, names, os.path.join(OUTPUT_DIR, f"stations_{ssp}.png"))
 
     # 零出力场站图
     if os.path.isdir(args.nc_output_dir):
@@ -697,7 +794,11 @@ def main():
         n_zero = sum(len(zero_stations[y][t][0]) for y in YEARS for t in ("solar", "wind"))
         print(f"  找到 {n_zero} 个零出力场站（2050 年，各年份合计）")
         plot_stations_map(
-            ssp, zero_stations, domain, region_geoms, names,
+            ssp,
+            zero_stations,
+            domain,
+            region_geoms,
+            names,
             os.path.join(OUTPUT_DIR, f"zero_cf_stations_{ssp}.png"),
             title_suffix=" — 零出力场站（CF=0）",
         )
@@ -708,8 +809,7 @@ def main():
     report_stats(ssp, rows, os.path.join(OUTPUT_DIR, f"stats_in_regions_{ssp}.csv"))
 
     region_rows = compute_region_stats(stations, domain, grid, transform, names)
-    report_region_stats(ssp, region_rows,
-                        os.path.join(OUTPUT_DIR, f"stats_by_macro_region_{ssp}.csv"))
+    report_region_stats(ssp, region_rows, os.path.join(OUTPUT_DIR, f"stats_by_macro_region_{ssp}.csv"))
 
 
 if __name__ == "__main__":

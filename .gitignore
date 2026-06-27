@@ -4,7 +4,7 @@ test.ipynb
 ref_code
 data/*
 !data/grid_division/
-!data/NAM-12_grid.nc
+!data/grid_of_regions
 !data/SourceHanSansSC-Normal.otf
 
 **inputs/
