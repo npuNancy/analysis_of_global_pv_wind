@@ -482,8 +482,14 @@ def plot_regions_map(ssp, domain, region_geoms, names, out_path):
     print(f"  -> {out_path}")
 
 
-def plot_stations_map(ssp, stations, domain, region_geoms, names, out_path, title_suffix=""):
-    """图2：场站位置（上=光伏，下=风电），按年份着色，叠加区域边界。"""
+def plot_stations_map(ssp, stations, domain, region_geoms, names, out_path,
+                      title_suffix="", by_year=True, single_color="#ff7f0e", ratio_denominator=None):
+    """图2：场站位置（上=光伏，下=风电），叠加区域边界。
+
+    by_year=True（默认）：按年份着色，每年一个图例项（普通场站图）。
+    by_year=False：合并所有年份、用 single_color 单色绘制（用于零出力 CF=0 场站图）；
+        此时若提供 ratio_denominator={tech: 总数}，则图例标注 CF=0 场站占比。
+    """
     fig, (ax_s, ax_w) = plt.subplots(2, 1, figsize=(16, 16), subplot_kw={"projection": PC})
     for ax, typ, title in [
         (ax_s, "solar", f"{ssp} — 光伏场站选址{title_suffix}"),
@@ -492,18 +498,42 @@ def plot_stations_map(ssp, stations, domain, region_geoms, names, out_path, titl
         setup_basemap(ax)
         draw_macro_regions(ax, region_geoms, names, label=True)
         draw_regions(ax, domain, label=False)
-        for year in YEARS:
-            lon, lat, _cap = stations[year][typ]
+
+        if by_year:
+            for year in YEARS:
+                lon, lat, _cap = stations[year][typ]
+                ax.scatter(
+                    lon,
+                    lat,
+                    s=3,
+                    c=YEAR_COLORS[year],
+                    transform=PC,
+                    label=f"{year} ({len(lon):,})",
+                    rasterized=True,
+                    zorder=3,
+                )
+        else:
+            # 合并所有年份，单色绘制
+            lons = np.concatenate([stations[y][typ][0] for y in YEARS])
+            lats = np.concatenate([stations[y][typ][1] for y in YEARS])
+            n = len(lons)
+            if ratio_denominator is not None:
+                denom = ratio_denominator.get(typ, 0)
+                ratio = (n / denom) if denom else 0.0
+                label = f"CF=0 场站 {n:,} / {denom:,} ({ratio:.2%})"
+            else:
+                label = f"场站 {n:,}"
             ax.scatter(
-                lon,
-                lat,
-                s=3,
-                c=YEAR_COLORS[year],
+                lons,
+                lats,
+                s=5,
+                c=single_color,
                 transform=PC,
-                label=f"{year} ({len(lon):,})",
+                label=label,
                 rasterized=True,
                 zorder=3,
             )
+
         if region_geoms:
             ax.plot([], [], color="#2f7d32", lw=0.8, label="20 大区边界")
         ax.plot([], [], color="#d62728", lw=1.0, label="AREA_DICT")
@@ -793,6 +823,11 @@ def main():
         zero_stations = load_zero_cf_stations(args.nc_output_dir, ssp)
         n_zero = sum(len(zero_stations[y][t][0]) for y in YEARS for t in ("solar", "wind"))
         print(f"  找到 {n_zero} 个零出力场站（2050 年，各年份合计）")
+        # 比例分母：2050 年各类型全部场站数（零出力基于 2050 年 CF 计算）
+        ratio_denominator = {
+            "solar": len(stations[2050]["solar"][0]),
+            "wind": len(stations[2050]["wind"][0]),
+        }
         plot_stations_map(
             ssp,
             zero_stations,
@@ -801,6 +836,8 @@ def main():
             names,
             os.path.join(OUTPUT_DIR, f"zero_cf_stations_{ssp}.png"),
             title_suffix=" — 零出力场站（CF=0）",
+            by_year=False,
+            ratio_denominator=ratio_denominator,
         )
     else:
         print(f"\n  [跳过] NC 出力目录不存在，不生成零出力场站图：{args.nc_output_dir}")
