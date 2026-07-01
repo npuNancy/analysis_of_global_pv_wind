@@ -53,24 +53,17 @@ from RQ0.plot_stations_S1_with_regions import PC, setup_basemap, in_any_region, 
 # ══════════════════════════════════════════════════════════════════════
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(BASE_DIR)  # 项目根（data/ 所在），与 plot_stations_S1_with_regions.py 一致
 OUTPUT_DIR = os.path.join(BASE_DIR, "outputs", "plot_stations", os.path.splitext(os.path.basename(__file__))[0])
-GRW_DIR = os.path.join(BASE_DIR, "data", "ignored", "global-renewables-watch", "data")
+GRW_DIR = os.path.join(PROJECT_ROOT, "data", "global-renewables-watch", "data")
 SOLAR_GPKG = os.path.join(GRW_DIR, "solar_all_2024q2_v1.gpkg")
 WIND_GPKG = os.path.join(GRW_DIR, "wind_all_2024q2_v1.gpkg")
-GRID_DIV_NAMES = os.path.join(BASE_DIR, "data", "tracked", "grid_division", "region_id_to_name.json")
+GRID_DIV_NAMES = os.path.join(PROJECT_ROOT, "data", "grid_division", "region_id_to_name.json")
 
-GRID_FILES = {
-    "1deg": (
-        "/data4/yanxiaokai/project_energy_climate"
-        "/globally_interconnected_10km/GlobalPotential_10km"
-        "/inputs/Global_Grid_Division.tif"
-    ),
-    "01deg": (
-        "/data4/yanxiaokai/project_energy_climate"
-        "/globally_interconnected_10km/GlobalPotential_10km"
-        "/outputs/Global_Grid_Division.tif"
-    ),
-}
+# 唯一数据源：0.1° Global_Grid_Division.tif（1800×3600，0=海洋，1–20=大区 ID）。
+# 0.1° 直接用；1° 复用同一份，在 load_macro_grid 里按 10×10 块粗化到 180×360。
+_GRID_TIF = os.path.join(PROJECT_ROOT, "data", "grid_division", "Global_Grid_Division.tif")
+GRID_FILES = {"1deg": _GRID_TIF, "01deg": _GRID_TIF}
 RES_LABEL = {"1deg": "1°", "01deg": "0.1°"}
 
 # 装机密度参数（与 plot_stations_S1_grw_coverage.py / compute_regional_capacity.py 完全一致）
@@ -163,14 +156,35 @@ def load_grw():
 # ══════════════════════════════════════════════════════════════════════
 
 
+def _coarsen_mode(arr, b=10):
+    """按 b×b 块取众数粗化（大区 ID 为分类值；海洋 0 不参与投票，全海块记 0）。"""
+    H, W = arr.shape
+    nh, nw = H // b, W // b
+    a = arr[: nh * b, : nw * b].reshape(nh, b, nw, b).transpose(0, 2, 1, 3).reshape(nh, nw, b * b)
+    counts = np.zeros((nh, nw, 21), dtype=np.int32)
+    for v in range(1, 21):
+        counts[:, :, v] = (a == v).sum(axis=2)
+    out = counts.argmax(axis=2).astype(np.int16)
+    out[counts[:, :, 1:].sum(axis=2) == 0] = 0  # 全海洋块保持 0
+    return out
+
+
 def load_macro_grid(res_key):
-    """读取 Grid_Division TIF，返回 (macro_grid[H,W], transform)。
-    像元值 0=海洋，1–20=大区 ID。
+    """读取 Grid_Division TIF，返回 (macro_grid[H,W], transform)。像元值 0=海洋，1–20=大区 ID。
+
+    - 0.1°：直接用 0.1° TIF（1800×3600，0.1° 步长）。
+    - 1°：复用同一份 0.1° TIF，按 10×10 块取众数粗化到 180×360，并构造 1° transform。
+      网格聚合分辨率由 transform 决定，故 1° 不能直接指向 0.1° TIF（否则聚合仍是 0.1°）。
     """
-    path = GRID_FILES[res_key]
-    with rasterio.open(path) as src:
-        macro_grid = src.read(1).astype(np.int16)
-        transform = src.transform
+    from affine import Affine
+
+    with rasterio.open(GRID_FILES[res_key]) as src:
+        grid01, t01 = src.read(1).astype(np.int16), src.transform
+    if res_key == "1deg":
+        macro_grid = _coarsen_mode(grid01, 10)
+        transform = Affine(t01.a * 10, t01.b, t01.c, t01.d, t01.e * 10, t01.f)
+    else:
+        macro_grid, transform = grid01, t01
     return macro_grid, transform
 
 

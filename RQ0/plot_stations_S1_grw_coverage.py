@@ -14,7 +14,7 @@
 
 两种统计口径（回答「多少比例场站？多少比例发电量？」）：
   - 场站数量：光伏多边形数 + 风机台数
-  - 装机容量(GW)：与 data/ignored/global-renewables-watch/compute_regional_capacity.py 完全同款密度公式
+  - 装机容量(GW)：与 data/global-renewables-watch/compute_regional_capacity.py 完全同款密度公式
       · 光伏：cap = 占地面积(km²) × [161.9 × Ω(lat) × 0.15]  MW（Ω=GCR，纬度依赖）
       · 风电：cap = 台数 × 0.64 km² × 3.68 MW/km² ≈ 2.355 MW/台
     GRW 不含实际发电量，装机容量在此作为「发电/产能」的代理口径；按技术分别给出，
@@ -71,9 +71,10 @@ from RQ0.plot_stations_S1_with_regions import (
 # ══════════════════════════════════════════════════════════════════════
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(BASE_DIR)  # 项目根（data/ 所在），与 plot_stations_S1_with_regions.py 一致
 # 约定：plot_stations_*.py 的图都存到 outputs/plot_stations/<本脚本文件名>/
 OUTPUT_DIR = os.path.join(BASE_DIR, "outputs", "plot_stations", os.path.splitext(os.path.basename(__file__))[0])
-GRW_DIR = os.path.join(BASE_DIR, "data", "ignored", "global-renewables-watch", "data")
+GRW_DIR = os.path.join(PROJECT_ROOT, "data", "global-renewables-watch", "data")
 SOLAR_GPKG = os.path.join(GRW_DIR, "solar_all_2024q2_v1.gpkg")
 WIND_GPKG = os.path.join(GRW_DIR, "wind_all_2024q2_v1.gpkg")
 
