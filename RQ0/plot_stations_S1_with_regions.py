@@ -1,39 +1,53 @@
 """
-用 cartopy 画出
-1. 本项目所用各区域的范围：
-  1.1 AREA_DICT 里的各个国家，画其经纬度边界框
-  2.2 NAM-12 区域 —— rotated-pole 网格，画其真实的弯曲域边界
+项目区域范围 / 风光场站 / CF=0-or-nan 场站 的可视化与统计（cartopy）。
 
-2. 所有风光场站的站点位置：
-    - 区分风电和光伏
-    - 区分不同年份
+对单个 SSP 的场站选址结果（--stations CSV），写入 outputs/plot_stations/plot_stations_S1_with_regions/，
+产出如下文件：
 
-3. 统计有多少场站落在上述区域内：
-    - 区分风光、区分不同年份
-    - 打印绝对值和比例
-    - 同时按「场站个数」和「装机容量(GW)」两种口径，给出区域覆盖比例
-      （装机容量直接取自 CSV 的 capacity_gw 列，其值由 plot_stations.py
-       依据 calc_capacity_from_optimization.py 同款容量公式逐站算得）
+【图】
+1. regions_{ssp}.png
+   项目所用区域范围 = 20 大区（UN M49）边界 + AREA_DICT 各国经纬度矩形框 + NAM-12 弯曲域。
+   均为"项目自有的边界定义"（矩形 bbox / rotated 矩形），并非真实国界。
 
-4. 全球 20 个大区（UN M49 区域电网划分）：
-    - 在图上叠加 20 个大区的边界
-    - 逐大区统计：本大区内的场站数 / 装机量，其中被「项目区域」
-      （AREA_DICT 国家框 + NAM-12 域）覆盖的部分及覆盖比例
-    - 区域划分栅格来自 data/tracked/grid_division/Global_Grid_Division.tif
-      （0.1°，EPSG:4326，取值 0=背景，1..20=大区编号），
-       由 globally_interconnected_10km 的 S03_Global_Grid_Division_from_UN_M49.py 生成
+2. stations_{ssp}.png
+   全部风光场站位置（上=光伏 / 下=风电），按建设年份 2030/2040/2050 着色，叠加 1 的区域边界。
+
+3. zero_cf_stations_{ssp}.png
+   零出力（CF=0）场站图，来自场站出力 NC（data/wind_solar_output）：以 2050 年出力算年 CF，
+   CF==0 的场站合并所有年份单色绘制，图例标注占 2050 全部场站的比例。
+   注：此图只识别 CF==0，不识别 CF==nan（出力 NC 中 CF=nan 的场站年化后仍为 nan，被判 !=0）。
+
+4. cf_zero_nan_ne_border_{ssp}.png   ★ natural-earth 精确国界口径（新增）
+   以 natural-earth 矢量国界（ne_110m_admin_0_countries）为口径，绘制：
+     - 各国精确国界（绿色描边）
+     - 气象数据边界：AREA_DICT 矩形框（红）+ NAM-12 弯曲域（蓝），与精确国界同框对照
+     - CF=0 或 nan 的场站（红点） vs 正常场站（灰点）
+   CF=0/nan 判定取自容量因子数据 data/cfs（2050 年均），与 plot_stations_S0E2_zero_or_nan.py 同口径。
+   图例标注：精确国界内 CF=0/nan 场站数 / 精确国界内全部场站数（比例）。
+
+【CSV 统计】
+- stats_in_regions_{ssp}.csv：场站数 / 装机量 落在 AREA_DICT+NAM 区域内的数量与比例（按年份、风光）
+- stats_by_macro_region_{ssp}.csv：20 大区维度的场站数 / 装机量 与项目区域覆盖比例
+- stats_cf_zero_nan_by_country_{ssp}.csv：★ 各 natural-earth 精确国界内 CF=0/nan 场站数与比例（按风光）
+
+边界口径说明（重要）：
+- AREA_DICT（矩形 bbox）：项目气象数据 BCSD 的国家矩形定义，粗糙（含邻国领土 / 领海）。
+- natural-earth（精确国界）：真实国界，与出力计算 / 极端天气识别的国家归属口径一致。
+- 本脚本把两种口径同框呈现，便于直观对比 bbox 与真实国界的偏差。
 
 用法:
     python plot_stations_S1_with_regions.py --stations <场站选址结果.csv> [--ssp ssp126]
+        [--draw-macro-regions] [--nc-output-dir <出力NC根目录>]
 
 场站选址结果 CSV 列：year,type,lon,lat,capacity_gw
-其中 year 为场站建设时间（2030 即 2030；2030+2040 记为 2040；2030+2040+2050 记为 2050），
+其中 year 为场站建设时间（2030；2030+2040 记为 2040；2030+2040+2050 记为 2050），
 lon ∈ [-180, 180]，lat ∈ [-90, 90]。
 """
 
 import os
 import re
 import csv
+import sys
 import argparse
 import warnings
 
@@ -101,6 +115,19 @@ AREA_DICT: dict[str, list[float]] = {
     "Egypt": [31.7, 24.7, 22.0, 36.9],
     "Australia": [-9.1, 112.9, -43.6, 153.6],
 }
+
+# ══════════════════════════════════════════════════════════════════════
+# natural-earth 精确国界（用于 CF=0/nan 精确口径图；与出力计算/极端天气同口径）
+# ══════════════════════════════════════════════════════════════════════
+NE_SHP = os.path.join(PROJECT_ROOT, "data", "maps", "natural_earth", "ne_110m_admin_0_countries.shp")
+# AREA_DICT 国家名 → natural-earth shapefile 的 NAME 字段（其余已验证同名）
+NE_NAME_MAP = {"México": "Mexico"}
+# 精确国界图覆盖的国家：AREA_DICT 全部（含 México→Mexico）+ NAM-12 另两国（Canada / USA）
+NE_TARGET_COUNTRIES = list(AREA_DICT.keys()) + ["Canada", "United States of America"]
+
+# 复用 S0E2 的 CF 查值（assign_regions/query_cf），保证 CF=0/nan 判定与其完全同口径
+sys.path.insert(0, BASE_DIR)
+import plot_stations_S0E2_zero_or_nan as P0  # noqa: E402
 
 # ══════════════════════════════════════════════════════════════════════
 # 字体
@@ -387,6 +414,66 @@ def in_any_region(lon, lat, domain):
     return mask
 
 
+# ── natural-earth 精确国界（point-in-polygon）─────────────────────────
+
+
+def load_ne_country_shapes(shp_path=NE_SHP):
+    """读取 natural-earth admin-0 shapefile，返回 {AREA_DICT国家名: shapely geometry}。
+
+    仅保留 NE_TARGET_COUNTRIES 涉及国家（经 NE_NAME_MAP 把 AREA_DICT 名映射到 NE 的 NAME 字段）。
+    返回普通几何（未 prep）；批量 point-in-polygon 在 assign_country_ne 内临时 prep。
+    """
+    import fiona
+    from shapely.geometry import shape
+
+    # {NE_NAME: AREA_DICT国家名}
+    target = {NE_NAME_MAP.get(c, c): c for c in NE_TARGET_COUNTRIES}
+    shapes = {}
+    with fiona.open(shp_path) as src:
+        for rec in src:
+            ne_name = rec["properties"].get("NAME")
+            if ne_name in target:
+                geom = shape(rec["geometry"])
+                if not geom.is_valid:
+                    geom = geom.buffer(0)
+                shapes[target[ne_name]] = geom
+    missing = set(NE_TARGET_COUNTRIES) - set(shapes.keys())
+    if missing:
+        print(f"  [警告] natural-earth 未匹配国家: {sorted(missing)}")
+    return shapes
+
+
+def assign_country_ne(lon, lat, shapes):
+    """逐场站判定属于哪个国家（natural-earth point-in-polygon）。
+
+    返回国家名数组（AREA_DICT 名）；不属于任何目标国家的记为 "outside"。
+    lon/lat 为 [-180,180]。按 NE_TARGET_COUNTRIES 顺序判定，首个命中即归属。
+    """
+    from shapely.geometry import Point
+    from shapely.prepared import prep
+
+    lon = np.asarray(lon, dtype=float)
+    lat = np.asarray(lat, dtype=float)
+    labels = np.array(["outside"] * len(lon), dtype=object)
+    for name in NE_TARGET_COUNTRIES:
+        geom = shapes.get(name)
+        if geom is None:
+            continue
+        undecided = labels == "outside"
+        if not undecided.any():
+            break
+        prep_geom = prep(geom)
+        sub_lon, sub_lat = lon[undecided], lat[undecided]
+        hit = np.fromiter(
+            (prep_geom.contains(Point(float(lo), float(la))) for lo, la in zip(sub_lon, sub_lat)),
+            dtype=bool,
+            count=int(undecided.sum()),
+        )
+        idx = np.where(undecided)[0][hit]
+        labels[idx] = name
+    return labels
+
+
 # ══════════════════════════════════════════════════════════════════════
 # 绘图
 # ══════════════════════════════════════════════════════════════════════
@@ -544,6 +631,76 @@ def plot_stations_map(ssp, stations, domain, region_geoms, names, out_path,
     plt.savefig(out_path, dpi=200, bbox_inches="tight")
     plt.close()
     print(f"  -> {out_path}")
+
+
+def _plot_ne_borders(ax, ne_shapes, color="#0a5d0a", lw=1.2, zorder=5):
+    """用 ax.plot 画各国精确国界（描边）。
+
+    cartopy 的 add_geometries 对散点图的 zorder 不可靠（国界会被点遮盖），
+    故遍历 Polygon 的 exterior/interiors 用 ax.plot 绘制，与 draw_regions 的
+    红色 bbox 用同一套绘制机制，zorder=5 保证位于场站点（3/4）之上。
+    """
+    from shapely.geometry import Polygon, MultiPolygon
+
+    for geom in ne_shapes.values():
+        polys = list(geom.geoms) if isinstance(geom, MultiPolygon) else [geom]
+        for poly in polys:
+            if not isinstance(poly, Polygon):
+                continue
+            xs, ys = poly.exterior.xy
+            ax.plot(xs, ys, color=color, lw=lw, zorder=zorder, transform=PC)
+            for interior in poly.interiors:
+                xi, yi = interior.xy
+                ax.plot(xi, yi, color=color, lw=lw, zorder=zorder, transform=PC)
+
+
+def plot_cf_zero_nan_ne_map(ssp, stations, domain, ne_shapes, out_path):
+    """图4：natural-earth 精确国界 + 气象边界(AREA_DICT/NAM) + CF=0/nan 场站。
+
+    上=光伏 / 下=风电。CF=0/nan 由 data/cfs 的 2050 年均判定（复用 S0E2 的 assign_regions/query_cf）。
+    比例 = 精确国界内 CF=0/nan 场站数 / 精确国界内全部场站数。
+    """
+    P0.SSP = _ssp_code(ssp)  # 让 S0E2 的 CF 查值走当前 ssp
+    fig, axes = plt.subplots(2, 1, figsize=(16, 16), subplot_kw={"projection": PC})
+    for ax, typ, title in [
+        (axes[0], "solar", f"{ssp} — 光伏：精确国界内 CF=0/nan 场站（data/cfs，2050 年均）"),
+        (axes[1], "wind", f"{ssp} — 风电：精确国界内 CF=0/nan 场站（data/cfs，2050 年均）"),
+    ]:
+        setup_basemap(ax)
+        # 2) 气象边界：AREA_DICT 矩形框(红) + NAM-12 弯曲域(蓝)
+        draw_regions(ax, domain, label=False)
+        # 3) 2050 场站 + CF 判定
+        lon, lat, _cap = stations[2050][typ]
+        labels = P0.assign_regions(lon, lat)
+        cf_vals = P0.query_cf(lon, lat, labels, typ)
+        bad = np.isnan(cf_vals) | (cf_vals == 0)
+        in_ne = assign_country_ne(lon, lat, ne_shapes) != "outside"
+        n_in = int(in_ne.sum())
+        n_bad_in = int((bad & in_ne).sum())
+        ratio = n_bad_in / n_in if n_in else 0.0
+        # 仅绘制「各国精确国界内 CF=0/nan」的场站（红色），不画正常场站、不画国界外场站
+        bad_in_ne = bad & in_ne
+        if bad_in_ne.any():
+            ax.scatter(lon[bad_in_ne], lat[bad_in_ne], s=6, c="#d62728", transform=PC, rasterized=True,
+                       label=f"精确国界内 CF=0/nan {int(bad_in_ne.sum()):,}", zorder=4)
+        # 1) NE 精确国界（最后画，ax.plot + zorder=5 置于场站点之上）
+        _plot_ne_borders(ax, ne_shapes, color="#0a5d0a", lw=1.2, zorder=5)
+        # 边界图例
+        ax.plot([], [], color="#2f7d32", lw=0.8, label="精确国界（natural-earth）")
+        ax.plot([], [], color="#d62728", lw=1.0, label="AREA_DICT 气象边界框")
+        ax.plot([], [], color="#1f77b4", lw=1.6, label="NAM-12 弯曲域")
+        # 比例标注框
+        ax.text(0.99, 0.02, f"精确国界内 CF=0/nan：{n_bad_in:,} / {n_in:,}（{ratio:.2%}）",
+                transform=ax.transAxes, ha="right", va="bottom", fontsize=11,
+                bbox=dict(boxstyle="round,pad=0.4", fc="white", ec="#888", alpha=0.9))
+        ax.legend(loc="lower left", fontsize=9, markerscale=3, framealpha=0.9, edgecolor="#888")
+        ax.set_title(title, fontsize=13, pad=8)
+    fig.suptitle(f"{ssp} · 2050：natural-earth 精确国界 vs 气象边界（AREA_DICT+NAM-12）· CF=0/nan 场站",
+                 fontsize=15, y=0.997)
+    plt.tight_layout()
+    plt.savefig(out_path, dpi=200, bbox_inches="tight")
+    plt.close()
+    print(f"  -> {out_path}（精确国界内 CF=0/nan: 光伏/风电见标题区）")
 
 
 # ══════════════════════════════════════════════════════════════════════
@@ -774,6 +931,56 @@ def report_region_stats(ssp, rows, out_path):
     print(f"\n  -> {out_path}")
 
 
+def compute_cf_zero_nan_by_country(ssp, stations, ne_shapes):
+    """逐国家（natural-earth 精确边界）统计 2050 年 CF=0/nan 场站。
+
+    CF 判定复用 S0E2（data/cfs 2050 年均，isnan | ==0）。
+    返回 [(tech, country, n_total_in_border, n_cf_zero_nan, bad_ratio), ...]，
+    仅含场站数>0 的国家，并附一行 "outside(精确国界外)"。
+    """
+    P0.SSP = _ssp_code(ssp)
+    rows = []
+    for typ in ("solar", "wind"):
+        lon, lat, _cap = stations[2050][typ]
+        if len(lon) == 0:
+            continue
+        labels = P0.assign_regions(lon, lat)
+        cf_vals = P0.query_cf(lon, lat, labels, typ)
+        bad = np.isnan(cf_vals) | (cf_vals == 0)
+        countries = assign_country_ne(lon, lat, ne_shapes)
+        for name in NE_TARGET_COUNTRIES:
+            m = countries == name
+            nt = int(m.sum())
+            if nt == 0:
+                continue
+            nb = int((bad & m).sum())
+            rows.append((typ, name, nt, nb, nb / nt if nt else 0.0))
+        m_out = countries == "outside"
+        nt = int(m_out.sum())
+        if nt:
+            nb = int((bad & m_out).sum())
+            rows.append((typ, "outside(精确国界外)", nt, nb, nb / nt if nt else 0.0))
+    return rows
+
+
+def report_cf_zero_nan_by_country(ssp, rows, out_path):
+    """打印并保存逐国 CF=0/nan 统计。"""
+    print(f"\n  各 natural-earth 精确国界内 CF=0/nan 场站统计（{ssp}，2050）")
+    with open(out_path, "w", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(["tech", "country", "n_total_in_border", "n_cf_zero_nan", "bad_ratio"])
+        last_tech = None
+        for tech, country, nt, nb, r in rows:
+            if tech != last_tech:
+                print(f"\n  ── {tech} ──")
+                print(f"  {'country':<26}{'n_total':>9}{'n_bad':>9}{'ratio':>9}")
+                print("  " + "-" * 57)
+                last_tech = tech
+            print(f"  {country:<26}{nt:>9,}{nb:>9,}{r:>8.2%}")
+            w.writerow([tech, country, nt, nb, f"{r:.4f}"])
+    print(f"\n  -> {out_path}")
+
+
 # ══════════════════════════════════════════════════════════════════════
 # 主函数
 # ══════════════════════════════════════════════════════════════════════
@@ -847,6 +1054,24 @@ def main():
 
     region_rows = compute_region_stats(stations, domain, grid, transform, names)
     report_region_stats(ssp, region_rows, os.path.join(OUTPUT_DIR, f"stats_by_macro_region_{ssp}.csv"))
+
+    # ★ natural-earth 精确国界 + CF=0/nan 场站（新增）
+    if os.path.isfile(NE_SHP):
+        print(f"\n  生成 natural-earth 精确国界 CF=0/nan 场站图 ...")
+        P0.SSP = _ssp_code(ssp)
+        P0.get_nam_tree()  # P0.assign_regions 需要 NAM-12 网格做区域归属
+        ne_shapes = load_ne_country_shapes()
+        plot_cf_zero_nan_ne_map(
+            ssp, stations, domain, ne_shapes,
+            os.path.join(OUTPUT_DIR, f"cf_zero_nan_ne_border_{ssp}.png"),
+        )
+        cz_rows = compute_cf_zero_nan_by_country(ssp, stations, ne_shapes)
+        report_cf_zero_nan_by_country(
+            ssp, cz_rows,
+            os.path.join(OUTPUT_DIR, f"stats_cf_zero_nan_by_country_{ssp}.csv"),
+        )
+    else:
+        print(f"\n  [跳过] natural-earth shapefile 不存在：{NE_SHP}")
 
 
 if __name__ == "__main__":
