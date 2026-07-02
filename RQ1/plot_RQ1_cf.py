@@ -88,7 +88,8 @@ def panel_tag(ax, tag, dx=-0.08, dy=1.04):
 # --------------------------------------------------------------------------- #
 country = pd.read_csv(f"{DATA}/country_annual_generation.csv")
 st_ann  = pd.read_csv(f"{DATA}/station_annual_generation.csv")
-grid_cf = pd.read_csv(f"{DATA}/country_grid_cf.csv")
+grid_cf_path = f"{DATA}/country_grid_cf.csv"
+grid_cf = pd.read_csv(grid_cf_path) if os.path.exists(grid_cf_path) else pd.DataFrame()
 
 
 # --------------------------------------------------------------------------- #
