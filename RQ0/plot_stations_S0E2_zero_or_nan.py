@@ -26,11 +26,14 @@
                  {tech}_CF_NAM-12_CanESM5_r1i1p2f1_CRCM5_{ssp}_2050_allmonths.nc
         NAM-12 模式固定 CanESM5（rotated grid，2D lat/lon，按年分文件，2050 年即整文件）。
 
-区域归属：场站先用 AREA_DICT 经纬框分配到 26 国 / China；剩余场站用 NAM-12 CF 网格的
-2D lat/lon 建最近邻树，距离 < 阈值者归 NAM-12；其余为「区域外(无数据)」。
+区域归属：场站先用 data/maps/natural_earth 的 admin-0 国界分配到 26 国 / China；
+剩余场站用 NAM-12 CF 网格的 2D lat/lon 建最近邻树，距离 < 阈值者归 NAM-12；
+其余为「区域外(无数据)」。
 
 用法:
     python plot_stations_S0E2_zero_or_nan.py [--model NESM3] [--ssp ssp126] [--stations <场站.csv>]
+    python plot_stations_S0E2_zero_or_nan.py --plot-scope met  # 只画 BCSD 气象（上排两图）
+    python plot_stations_S0E2_zero_or_nan.py --plot-scope cf   # 只画 CF 容量因子（下排两图）
 """
 
 import os
@@ -48,6 +51,8 @@ import matplotlib.font_manager as fm
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 from scipy.spatial import cKDTree
+
+from natural_earth_regions import DEFAULT_NE_SHP, assign_countries
 
 # ══════════════════════════════════════════════════════════════════════
 # 配置
@@ -72,39 +77,37 @@ SSP_STATION_FILE = {
     "ssp585": "stations_SSP5-6.0.csv",
 }
 
-# AREA_DICT: [北纬N, lonW, 南纬S, lonE]，经度 [0,360)（lonW>lonE 表示跨 0° 经线）
-AREA_DICT: dict[str, list[float]] = {
-    "China": [54.95, 70.05, 15.05, 139.95],
-    "Japan": [45.5, 122.9, 24.2, 145.8],
-    "South Korea": [38.6, 124.6, 33.2, 130.9],
-    "India": [37, 68, 6, 98],
-    "Turkey": [42.1, 25.7, 35.8, 44.8],
-    "Vietnam": [23.4, 102.1, 8.6, 109.5],
-    "Germany": [55, 5, 47, 15],
-    "Italy": [48, 6, 36, 19],
-    "Spain": [44, 350, 35, 5],
-    "France": [51.1, 354.9, 41.3, 9.6],
-    "United Kingdom": [60.9, 351.4, 50.0, 1.8],
-    "Poland": [54.8, 14.1, 49.0, 24.2],
-    "Greece": [41.8, 19.4, 34.8, 28.2],
-    "Sweden": [69.1, 11.1, 55.3, 24.2],
-    "Denmark": [57.8, 8.1, 54.6, 15.2],
-    "Portugal": [42.2, 328.7, 37.0, 353.8],
-    "Netherlands": [53.6, 3.4, 50.8, 7.2],
-    "Ireland": [55.4, 349.5, 51.4, 354.0],
-    "Romania": [48.3, 20.3, 43.7, 29.7],
-    "Ukraine": [52.4, 22.2, 44.4, 40.2],
-    "Austria": [49.0, 9.5, 46.4, 17.2],
-    "México": [32.7, 241.6, 14.5, 273.3],
-    "Brazil": [5.3, 286.0, -33.8, 325.3],
-    "Chile": [-17.5, 283.5, -55.9, 293.6],
-    "South Africa": [-22.1, 16.3, -28.3, 32.9],
-    "Egypt": [31.7, 24.7, 22.0, 36.9],
-    "Australia": [-9.1, 112.9, -43.6, 153.6],
-}
-COUNTRIES_26 = [k for k in AREA_DICT if k != "China"]  # 有气象+CF 的 26 国
+COUNTRIES_26 = [
+    "Japan",
+    "South Korea",
+    "India",
+    "Turkey",
+    "Vietnam",
+    "Germany",
+    "Italy",
+    "Spain",
+    "France",
+    "United Kingdom",
+    "Poland",
+    "Greece",
+    "Sweden",
+    "Denmark",
+    "Portugal",
+    "Netherlands",
+    "Ireland",
+    "Romania",
+    "Ukraine",
+    "Austria",
+    "México",
+    "Brazil",
+    "Chile",
+    "South Africa",
+    "Egypt",
+    "Australia",
+]  # 有气象+CF 的 26 国
+NE_REGION_COUNTRIES = COUNTRIES_26 + ["China"]
 
-# AREA_DICT 国家名 → bcsd/cfs 目录名（空格 vs 连字符差异）
+# Natural Earth 国家名 → bcsd/cfs 目录名（空格 vs 连字符差异）
 _AREA_DIR_FIX = {"South Korea": "South-Korea", "United Kingdom": "United-Kingdom", "South Africa": "South-Africa"}
 
 
@@ -311,39 +314,32 @@ def load_met_grid(country, tech, model, ssp, year):
 # ══════════════════════════════════════════════════════════════════════
 
 
-def point_in_bbox(lon, lat, bbox):
-    """点是否落在 AREA_DICT 边界框内。bbox=[N,lonW,S,lonE]（0-360）。"""
-    north, lon_w, south, lon_e = bbox
-    lon360 = np.asarray(lon, dtype=float) % 360.0
-    in_lat = (lat <= north) & (lat >= south)
-    if lon_w <= lon_e:
-        in_lon = (lon360 >= lon_w) & (lon360 <= lon_e)
-    else:
-        in_lon = (lon360 >= lon_w) | (lon360 <= lon_e)
-    return in_lat & in_lon
-
-
-def get_nam_tree():
+def get_nam_tree(ssp=None, year=None):
     """NAM-12 CF 网格 2D lat/lon 的最近邻树（用 solar 网格；solar/wind 同域）。"""
-    if "nam_tree" in _CACHE:
-        return _CACHE["nam_tree"]
-    grid = load_cf_grid_nam("solar", SSP, YEAR)
+    ssp = ssp or SSP
+    year = year or YEAR
+    key = ("nam_tree", ssp, year)
+    if key in _CACHE:
+        return _CACHE[key]
+    grid = load_cf_grid_nam("solar", ssp, year)
     if grid is None:
-        _CACHE["nam_tree"] = None
+        _CACHE[key] = None
         return None
     _, lat2d, lon2d = grid
     pts = np.column_stack([lat2d.ravel(), lon2d.ravel() % 360.0])
-    _CACHE["nam_tree"] = cKDTree(pts)
-    return _CACHE["nam_tree"]
+    _CACHE[key] = cKDTree(pts)
+    return _CACHE[key]
 
 
-def assign_regions(lon, lat):
-    """返回每个场站的区域标签：26国名/'China'/'NAM-12'/'outside'。"""
-    labels = np.array(["outside"] * len(lon), dtype=object)
-    for name, bbox in AREA_DICT.items():  # 含 China
-        m = point_in_bbox(lon, lat, bbox) & (labels == "outside")
-        labels[m] = name
+def assign_regions(lon, lat, include_nam=True):
+    """返回每个场站的区域标签：26国名/'China'/'NAM-12'/'outside'。
+
+    国家归属使用 Natural Earth admin-0 国界；NAM-12 仍按其 CF 网格域判断。
+    """
+    labels = assign_countries(lon, lat, NE_REGION_COUNTRIES, shp_path=DEFAULT_NE_SHP)
     # NAM-12：剩余 outside 中距 NAM 网格最近邻 < 阈值者
+    if not include_nam:
+        return labels
     tree = get_nam_tree()
     if tree is not None:
         out = labels == "outside"
@@ -467,23 +463,38 @@ def plot_panel(ax, lon, lat, status, title):
     return n_bad, n_ok
 
 
-def plot_2x2(data, out_path, model, ssp, year):
-    """data = {(dtype, tech): status_array}。dtype∈{met,cf}, tech∈{wind,solar}。"""
-    fig, axes = plt.subplots(2, 2, figsize=(20, 14), subplot_kw={"projection": PC})
-    panels = [
+def _panel_defs(model):
+    return [
         (0, 0, "met", "wind", f"气象·风电（bcsd {model}，仅 26 国）"),
         (0, 1, "met", "solar", f"气象·光伏（bcsd {model}，仅 26 国）"),
         (1, 0, "cf", "wind", f"容量因子·风电（cfs {model} + NAM-12 {NAM_MODEL}）"),
         (1, 1, "cf", "solar", f"容量因子·光伏（cfs {model} + NAM-12 {NAM_MODEL}）"),
     ]
+
+
+def plot_panels(data, out_path, model, ssp, year, plot_scope):
+    """data = {(dtype, tech): status_array}。dtype∈{met,cf}, tech∈{wind,solar}。"""
+    if plot_scope == "all":
+        panels = _panel_defs(model)
+        fig, axes = plt.subplots(2, 2, figsize=(20, 14), subplot_kw={"projection": PC})
+        axes_by_panel = {(r, c): axes[r, c] for r, c, *_ in panels}
+        title_data = "气象/容量因子"
+    else:
+        panels = [(0, i, dtype, tech, title)
+                  for i, (_, _, dtype, tech, title) in enumerate(_panel_defs(model))
+                  if dtype == plot_scope]
+        fig, axes = plt.subplots(1, 2, figsize=(20, 7), subplot_kw={"projection": PC})
+        axes_by_panel = {(0, i): axes[i] for i in range(2)}
+        title_data = "BCSD 气象" if plot_scope == "met" else "容量因子"
+
     stats = []
     for r, c, dtype, tech, title in panels:
         lon, lat = data["lonlat"][tech]
-        n_bad, n_ok = plot_panel(axes[r, c], lon, lat, data[(dtype, tech)], title)
+        n_bad, n_ok = plot_panel(axes_by_panel[(r, c)], lon, lat, data[(dtype, tech)], title)
         stats.append((dtype, tech, n_bad, n_ok))
 
     fig.text(0.5, 0.965,
-             f"{ssp} · {year} 年 场站位置 气象/容量因子 为 0 或 nan（红=0/nan，灰=正常；仅画有数据覆盖的场站）",
+             f"{ssp} · {year} 年 场站位置 {title_data} 为 0 或 nan（红=0/nan，灰=正常；仅画有数据覆盖的场站）",
              ha="center", fontsize=14, weight="bold")
     plt.tight_layout(rect=[0, 0, 1, 0.95])
     plt.savefig(out_path, dpi=200, bbox_inches="tight")
@@ -523,6 +534,8 @@ def main():
     parser.add_argument("--model", default=MODEL, help=f"26国/china CMIP6 模式（默认 {MODEL}；NAM-12 固定 {NAM_MODEL}）")
     parser.add_argument("--ssp", default=SSP, choices=list(SSP_STATION_FILE), help=f"情景（默认 {SSP}）")
     parser.add_argument("--stations", default=None, help="场站 CSV 路径（默认按 --ssp 取 data/stations/）")
+    parser.add_argument("--plot-scope", default="all", choices=["all", "met", "cf"],
+                        help="绘制范围：all=默认 2×2；met=只画 BCSD 气象上排两图；cf=只画 CF 下排两图。")
     args = parser.parse_args()
 
     MODEL, SSP = args.model, args.ssp
@@ -531,37 +544,48 @@ def main():
         raise FileNotFoundError(f"场站 CSV 不存在：{csv_path}")
 
     os.makedirs(OUTPUT_DIR, exist_ok=True)
-    print(f"{'=' * 60}\n  气象/CF 为 0 或 nan 场站图：{MODEL} / {SSP} / {YEAR}\n  stations: {csv_path}\n{'=' * 60}")
+    print(f"{'=' * 60}\n  气象/CF 为 0 或 nan 场站图：{MODEL} / {SSP} / {YEAR} / scope={args.plot_scope}\n  stations: {csv_path}\n{'=' * 60}")
 
     stations = load_stations_2050(csv_path)
     for t in ("wind", "solar"):
         print(f"  {YEAR} 年 {t}: {len(stations[t][0]):,} 个场站")
 
-    # 预加载 NAM-12 solar 网格（用于区域归属判断）
-    print("  预加载 NAM-12 网格用于区域归属判断 ...")
-    get_nam_tree()
+    include_nam = args.plot_scope in ("all", "cf")
+    if include_nam:
+        # 预加载 NAM-12 solar 网格（用于区域归属判断）
+        print("  预加载 NAM-12 网格用于区域归属判断 ...")
+        get_nam_tree()
 
     data = {"lonlat": stations}
     for tech in ("wind", "solar"):
         lon, lat = stations[tech]
         print(f"\n  处理 {tech} ...")
-        labels = assign_regions(lon, lat)
+        labels = assign_regions(lon, lat, include_nam=include_nam)
         # 区域分布
         uniq, counts = np.unique(labels, return_counts=True)
         dist = ", ".join(f"{u}:{c:,}" for u, c in zip(uniq, counts) if u != "outside")
         n_out = int(np.sum(labels == "outside"))
         print(f"    区域归属: {dist}, outside:{n_out:,}")
 
-        cf_vals = query_cf(lon, lat, labels, tech)
-        met_vals = query_met(lon, lat, labels, tech)
+        if args.plot_scope in ("all", "cf"):
+            cf_vals = query_cf(lon, lat, labels, tech)
+            cf_has = labels != "outside"           # CF 覆盖 26国+china+NAM
+            data[("cf", tech)] = classify(cf_vals, cf_has)
+        if args.plot_scope in ("all", "met"):
+            met_vals = query_met(lon, lat, labels, tech)
+            met_has = np.isin(labels, COUNTRIES_26)  # 气象仅覆盖 26 国
+            data[("met", tech)] = classify(met_vals, met_has)
 
-        cf_has = labels != "outside"           # CF 覆盖 26国+china+NAM
-        met_has = np.isin(labels, COUNTRIES_26)  # 气象仅覆盖 26 国
-        data[("cf", tech)] = classify(cf_vals, cf_has)
-        data[("met", tech)] = classify(met_vals, met_has)
-
-    stats = plot_2x2(data, os.path.join(OUTPUT_DIR, f"zero_or_nan_{MODEL}_{SSP}_{YEAR}.png"), MODEL, SSP, YEAR)
-    report_stats(stats, os.path.join(OUTPUT_DIR, f"stats_zero_or_nan_{MODEL}_{SSP}_{YEAR}.csv"), MODEL, SSP, YEAR)
+    suffix = "" if args.plot_scope == "all" else f"_{args.plot_scope}"
+    stats = plot_panels(
+        data,
+        os.path.join(OUTPUT_DIR, f"zero_or_nan{suffix}_{MODEL}_{SSP}_{YEAR}.png"),
+        MODEL,
+        SSP,
+        YEAR,
+        args.plot_scope,
+    )
+    report_stats(stats, os.path.join(OUTPUT_DIR, f"stats_zero_or_nan{suffix}_{MODEL}_{SSP}_{YEAR}.csv"), MODEL, SSP, YEAR)
 
 
 if __name__ == "__main__":

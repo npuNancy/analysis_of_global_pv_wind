@@ -258,7 +258,7 @@ def report_global(grids_by_res, stations, domain, out_path):
       - occ_ratio        = 含场站格 / 陆地格（受网格粒度影响）
       - cell_cover_ratio = 含覆盖场站格 / 含场站格（项目区域覆盖的格点占比；受粒度影响）
       - cap_cover_ratio  = 被覆盖装机 / 总装机（场站级，与 coverage 脚本同口径，不受粒度影响）
-    「含覆盖场站格」= 格内至少有一个场站落在项目区域（AREA_DICT + NAM-12）内。
+    「含覆盖场站格」= 格内至少有一个场站落在项目区域（Natural Earth 目标国家 + NAM-12）内。
     cell_cover_ratio 即「项目区域覆盖的格点 / 含场站的格点」，对应站点级覆盖率（见 coverage
     脚本 grw_coverage_global.csv 的 n_cover_ratio=0.9680）的网格口径版本。
     """
@@ -465,8 +465,8 @@ def assign_region(lon, lat, region_grid, transform):
 def compute_coverage_by_region(stations, domain, region_grid, transform):
     """场站级：每个大区内，被项目区域覆盖的装机 vs 区内总装机。
 
-    与 plot_stations_S1_grw_coverage.py 完全同口径：covered = 场站质心落在任一 AREA_DICT
-    框或 NAM-12 弯曲域内（in_any_region）。大区归属由 region_grid 查表。
+    与 plot_stations_S1_grw_coverage.py 完全同口径：covered = 场站质心落在任一
+    Natural Earth 目标国家或 NAM-12 弯曲域内（in_any_region）。大区归属由 region_grid 查表。
     装机按场站求和，与聚合网格粒度无关。
 
     返回 (cap_tot_by, cap_in_by)，各为 {tech: np.ndarray[21]}（索引 0 未用，1–20 大区）。

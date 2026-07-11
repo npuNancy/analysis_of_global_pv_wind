@@ -6,8 +6,7 @@
 
 【图】
 1. regions_{ssp}.png
-   项目所用区域范围 = 20 大区（UN M49）边界 + AREA_DICT 各国经纬度矩形框 + NAM-12 弯曲域。
-   均为"项目自有的边界定义"（矩形 bbox / rotated 矩形），并非真实国界。
+   项目所用区域范围 = 20 大区（UN M49）边界 + Natural Earth 目标国家国界 + NAM-12 弯曲域。
 
 2. stations_{ssp}.png
    全部风光场站位置（上=光伏 / 下=风电），按建设年份 2030/2040/2050 着色，叠加 1 的区域边界。
@@ -20,20 +19,19 @@
 4. cf_zero_nan_ne_border_{ssp}.png   ★ natural-earth 精确国界口径（新增）
    以 natural-earth 矢量国界（ne_110m_admin_0_countries）为口径，绘制：
      - 各国精确国界（绿色描边）
-     - 气象数据边界：AREA_DICT 矩形框（红）+ NAM-12 弯曲域（蓝），与精确国界同框对照
+     - 项目区域边界：Natural Earth 目标国家国界（红）+ NAM-12 弯曲域（蓝）
      - CF=0 或 nan 的场站（红点） vs 正常场站（灰点）
    CF=0/nan 判定取自容量因子数据 data/cfs（2050 年均），与 plot_stations_S0E2_zero_or_nan.py 同口径。
    图例标注：精确国界内 CF=0/nan 场站数 / 精确国界内全部场站数（比例）。
 
 【CSV 统计】
-- stats_in_regions_{ssp}.csv：场站数 / 装机量 落在 AREA_DICT+NAM 区域内的数量与比例（按年份、风光）
+- stats_in_regions_{ssp}.csv：场站数 / 装机量 落在 Natural Earth 目标国家+NAM 区域内的数量与比例（按年份、风光）
 - stats_by_macro_region_{ssp}.csv：20 大区维度的场站数 / 装机量 与项目区域覆盖比例
 - stats_cf_zero_nan_by_country_{ssp}.csv：★ 各 natural-earth 精确国界内 CF=0/nan 场站数与比例（按风光）
 
 边界口径说明（重要）：
-- AREA_DICT（矩形 bbox）：项目气象数据 BCSD 的国家矩形定义，粗糙（含邻国领土 / 领海）。
 - natural-earth（精确国界）：真实国界，与出力计算 / 极端天气识别的国家归属口径一致。
-- 本脚本把两种口径同框呈现，便于直观对比 bbox 与真实国界的偏差。
+- NAM-12：区域气候模式网格域，仍按 rotated-pole 网格范围判断。
 
 用法:
     python plot_stations_S1_with_regions.py --stations <场站选址结果.csv> [--ssp ssp126]
@@ -82,52 +80,52 @@ NAM_POLE_LAT = 42.5
 YEARS = [2050, 2040, 2030]  # 由远及近绘制，使早期年份叠在上层
 YEAR_COLORS = {2030: "#c501ff", 2040: "#00ffc5", 2050: "#d48a8b"}
 
-# Key: [北纬N, lonW, 南纬S, lonE]；经度统一使用 [0,360)（可用 lonW>lonE 表示跨 0° 经线）
-AREA_DICT: dict[str, list[float]] = {
-    # "global": [90, 0, -90, 360],
-    # "Canada": [83.1, 219.0, 41.7, 307.4],
-    # "Tibetan Plateau": [30, 119, 28, 120],
-    "China": [54.95, 70.05, 15.05, 139.95],
-    "Japan": [45.5, 122.9, 24.2, 145.8],
-    "South Korea": [38.6, 124.6, 33.2, 130.9],
-    "India": [37, 68, 6, 98],
-    "Turkey": [42.1, 25.7, 35.8, 44.8],
-    "Vietnam": [23.4, 102.1, 8.6, 109.5],
-    "Germany": [55, 5, 47, 15],
-    "Italy": [48, 6, 36, 19],
-    "Spain": [44, 350, 35, 5],
-    "France": [51.1, 354.9, 41.3, 9.6],
-    "United Kingdom": [60.9, 351.4, 50.0, 1.8],
-    "Poland": [54.8, 14.1, 49.0, 24.2],
-    "Greece": [41.8, 19.4, 34.8, 28.2],
-    "Sweden": [69.1, 11.1, 55.3, 24.2],
-    "Denmark": [57.8, 8.1, 54.6, 15.2],
-    "Portugal": [42.2, 328.7, 37.0, 353.8],
-    "Netherlands": [53.6, 3.4, 50.8, 7.2],
-    "Ireland": [55.4, 349.5, 51.4, 354.0],
-    "Romania": [48.3, 20.3, 43.7, 29.7],
-    "Ukraine": [52.4, 22.2, 44.4, 40.2],
-    "Austria": [49.0, 9.5, 46.4, 17.2],
-    "México": [32.7, 241.6, 14.5, 273.3],
-    "Brazil": [5.3, 286.0, -33.8, 325.3],
-    "Chile": [-17.5, 283.5, -55.9, 293.6],  # 实际上 BCSD 的智利经度是 250.5-293.6
-    "South Africa": [-22.1, 16.3, -28.3, 32.9],
-    "Egypt": [31.7, 24.7, 22.0, 36.9],
-    "Australia": [-9.1, 112.9, -43.6, 153.6],
-}
+PROJECT_COUNTRIES = [
+    "China",
+    "Japan",
+    "South Korea",
+    "India",
+    "Turkey",
+    "Vietnam",
+    "Germany",
+    "Italy",
+    "Spain",
+    "France",
+    "United Kingdom",
+    "Poland",
+    "Greece",
+    "Sweden",
+    "Denmark",
+    "Portugal",
+    "Netherlands",
+    "Ireland",
+    "Romania",
+    "Ukraine",
+    "Austria",
+    "México",
+    "Brazil",
+    "Chile",
+    "South Africa",
+    "Egypt",
+    "Australia",
+]
 
 # ══════════════════════════════════════════════════════════════════════
 # natural-earth 精确国界（用于 CF=0/nan 精确口径图；与出力计算/极端天气同口径）
 # ══════════════════════════════════════════════════════════════════════
-NE_SHP = os.path.join(PROJECT_ROOT, "data", "maps", "natural_earth", "ne_110m_admin_0_countries.shp")
-# AREA_DICT 国家名 → natural-earth shapefile 的 NAME 字段（其余已验证同名）
-NE_NAME_MAP = {"México": "Mexico"}
-# 精确国界图覆盖的国家：AREA_DICT 全部（含 México→Mexico）+ NAM-12 另两国（Canada / USA）
-NE_TARGET_COUNTRIES = list(AREA_DICT.keys()) + ["Canada", "United States of America"]
-
 # 复用 S0E2 的 CF 查值（assign_regions/query_cf），保证 CF=0/nan 判定与其完全同口径
 sys.path.insert(0, BASE_DIR)
 import plot_stations_S0E2_zero_or_nan as P0  # noqa: E402
+from natural_earth_regions import (  # noqa: E402
+    DEFAULT_NE_SHP,
+    assign_countries,
+    load_target_country_shapes,
+    points_in_target_countries,
+)
+
+NE_SHP = str(DEFAULT_NE_SHP)
+# 精确国界图覆盖的国家：项目目标国家 + NAM-12 另两国（Canada / USA）
+NE_TARGET_COUNTRIES = PROJECT_COUNTRIES + ["Canada", "United States of America"]
 
 # ══════════════════════════════════════════════════════════════════════
 # 字体
@@ -153,45 +151,6 @@ PC = ccrs.PlateCarree()
 def to180(lon):
     """经度归一化到 [-180, 180)。"""
     return ((np.asarray(lon, dtype=float) + 180.0) % 360.0) - 180.0
-
-
-def bbox_edges_180(north, lon_w, south, lon_e, n=50):
-    """返回边界框四条边的折线坐标 (lons, lats)，经度转为连续的 [-180,180]。
-
-    AREA_DICT 中跨 0° 经线（lon_w>lon_e）的框，归一化后 w<=e 仍连续，可直接绘制。
-    """
-    w, e = float(to180(lon_w)), float(to180(lon_e))
-    if w > e:  # 真正跨 180° 经线（AREA_DICT 实际不出现）——退化为连续直绘
-        e += 360.0
-    lons = np.concatenate(
-        [
-            np.linspace(w, e, n),
-            np.full(n, e),
-            np.linspace(e, w, n),
-            np.full(n, w),
-        ]
-    )
-    lats = np.concatenate(
-        [
-            np.full(n, north),
-            np.linspace(north, south, n),
-            np.full(n, south),
-            np.linspace(south, north, n),
-        ]
-    )
-    return lons, lats
-
-
-def point_in_bbox(lon, lat, bbox):
-    """点是否落在 AREA_DICT 边界框内。lon/lat 为数组，bbox=[N,lonW,S,lonE]（0-360）。"""
-    north, lon_w, south, lon_e = bbox
-    lon360 = np.asarray(lon, dtype=float) % 360.0
-    in_lat = (lat <= north) & (lat >= south)
-    if lon_w <= lon_e:
-        in_lon = (lon360 >= lon_w) & (lon360 <= lon_e)
-    else:  # 跨 0° 经线
-        in_lon = (lon360 >= lon_w) | (lon360 <= lon_e)
-    return in_lat & in_lon
 
 
 def load_nam_domain():
@@ -405,12 +364,11 @@ def load_zero_cf_stations(nc_output_dir, ssp_code):
 
 
 def in_any_region(lon, lat, domain):
-    """点是否落在任一 AREA_DICT 框或 NAM-12 域内。"""
+    """点是否落在任一 Natural Earth 目标国家或 NAM-12 域内。"""
     if len(lon) == 0:
         return np.zeros(0, dtype=bool)
     mask = point_in_nam(lon, lat, domain)
-    for bbox in AREA_DICT.values():
-        mask = mask | point_in_bbox(lon, lat, bbox)
+    mask = mask | points_in_target_countries(lon, lat, PROJECT_COUNTRIES, shp_path=NE_SHP)
     return mask
 
 
@@ -418,25 +376,12 @@ def in_any_region(lon, lat, domain):
 
 
 def load_ne_country_shapes(shp_path=NE_SHP):
-    """读取 natural-earth admin-0 shapefile，返回 {AREA_DICT国家名: shapely geometry}。
+    """读取 natural-earth admin-0 shapefile，返回 {项目国家名: shapely geometry}。
 
-    仅保留 NE_TARGET_COUNTRIES 涉及国家（经 NE_NAME_MAP 把 AREA_DICT 名映射到 NE 的 NAME 字段）。
-    返回普通几何（未 prep）；批量 point-in-polygon 在 assign_country_ne 内临时 prep。
+    仅保留 NE_TARGET_COUNTRIES 涉及国家。
     """
-    import fiona
-    from shapely.geometry import shape
-
-    # {NE_NAME: AREA_DICT国家名}
-    target = {NE_NAME_MAP.get(c, c): c for c in NE_TARGET_COUNTRIES}
-    shapes = {}
-    with fiona.open(shp_path) as src:
-        for rec in src:
-            ne_name = rec["properties"].get("NAME")
-            if ne_name in target:
-                geom = shape(rec["geometry"])
-                if not geom.is_valid:
-                    geom = geom.buffer(0)
-                shapes[target[ne_name]] = geom
+    records = load_target_country_shapes(shp_path, tuple(NE_TARGET_COUNTRIES))
+    shapes = {rec["name"]: rec["geom"] for rec in records}
     missing = set(NE_TARGET_COUNTRIES) - set(shapes.keys())
     if missing:
         print(f"  [警告] natural-earth 未匹配国家: {sorted(missing)}")
@@ -446,32 +391,10 @@ def load_ne_country_shapes(shp_path=NE_SHP):
 def assign_country_ne(lon, lat, shapes):
     """逐场站判定属于哪个国家（natural-earth point-in-polygon）。
 
-    返回国家名数组（AREA_DICT 名）；不属于任何目标国家的记为 "outside"。
+    返回项目国家名数组；不属于任何目标国家的记为 "outside"。
     lon/lat 为 [-180,180]。按 NE_TARGET_COUNTRIES 顺序判定，首个命中即归属。
     """
-    from shapely.geometry import Point
-    from shapely.prepared import prep
-
-    lon = np.asarray(lon, dtype=float)
-    lat = np.asarray(lat, dtype=float)
-    labels = np.array(["outside"] * len(lon), dtype=object)
-    for name in NE_TARGET_COUNTRIES:
-        geom = shapes.get(name)
-        if geom is None:
-            continue
-        undecided = labels == "outside"
-        if not undecided.any():
-            break
-        prep_geom = prep(geom)
-        sub_lon, sub_lat = lon[undecided], lat[undecided]
-        hit = np.fromiter(
-            (prep_geom.contains(Point(float(lo), float(la))) for lo, la in zip(sub_lon, sub_lat)),
-            dtype=bool,
-            count=int(undecided.sum()),
-        )
-        idx = np.where(undecided)[0][hit]
-        labels[idx] = name
-    return labels
+    return assign_countries(lon, lat, NE_TARGET_COUNTRIES, shp_path=NE_SHP)
 
 
 # ══════════════════════════════════════════════════════════════════════
@@ -489,25 +412,26 @@ def setup_basemap(ax):
 
 
 def draw_regions(ax, domain, label=False):
-    """在 ax 上绘制所有 AREA_DICT 边界框与 NAM-12 弯曲域。"""
-    for name, bbox in AREA_DICT.items():
-        north, lon_w, south, lon_e = bbox
-        lons, lats = bbox_edges_180(north, lon_w, south, lon_e)
-        ax.plot(lons, lats, transform=PC, color="#d62728", lw=1.0, zorder=4)
+    """在 ax 上绘制 Natural Earth 目标国家国界与 NAM-12 弯曲域。"""
+    for rec in load_target_country_shapes(NE_SHP, tuple(PROJECT_COUNTRIES)):
+        geom = rec["geom"]
+        ax.add_geometries([geom], crs=PC, facecolor="none", edgecolor="#d62728", linewidth=1.0, zorder=4)
         if label:
-            e = lon_e if lon_e >= lon_w else lon_e + 360
-            cx = float(to180((lon_w + e) / 2.0))
-            ax.text(
-                cx,
-                (north + south) / 2.0,
-                name,
-                transform=PC,
-                fontsize=6,
-                ha="center",
-                va="center",
-                color="#7a0000",
-                zorder=5,
-            )
+            try:
+                pt = geom.representative_point()
+                ax.text(
+                    pt.x,
+                    pt.y,
+                    rec["name"],
+                    transform=PC,
+                    fontsize=6,
+                    ha="center",
+                    va="center",
+                    color="#7a0000",
+                    zorder=5,
+                )
+            except Exception:
+                pass
 
     rlons, rlats = nam_boundary_rotated(domain)
     ax.plot(rlons, rlats, transform=NAM_CRS, color="#1f77b4", lw=1.6, zorder=4)
@@ -560,10 +484,10 @@ def plot_regions_map(ssp, domain, region_geoms, names, out_path):
     draw_regions(ax, domain, label=True)
     if region_geoms:
         ax.plot([], [], color="#2f7d32", lw=0.8, label="20 大区边界（UN M49）")
-    ax.plot([], [], color="#d62728", lw=1.2, label="AREA_DICT 国家边界框")
+    ax.plot([], [], color="#d62728", lw=1.2, label="Natural Earth 目标国家国界")
     ax.plot([], [], color="#1f77b4", lw=1.6, label="NAM-12 弯曲域")
     ax.legend(loc="lower left", fontsize=10, framealpha=0.9, edgecolor="#888")
-    ax.set_title(f"项目区域范围（{ssp}）：20 大区 + AREA_DICT 国家 + NAM-12", fontsize=14, pad=10)
+    ax.set_title(f"项目区域范围（{ssp}）：20 大区 + Natural Earth 目标国家 + NAM-12", fontsize=14, pad=10)
     plt.savefig(out_path, dpi=200, bbox_inches="tight")
     plt.close()
     print(f"  -> {out_path}")
@@ -623,7 +547,7 @@ def plot_stations_map(ssp, stations, domain, region_geoms, names, out_path,
 
         if region_geoms:
             ax.plot([], [], color="#2f7d32", lw=0.8, label="20 大区边界")
-        ax.plot([], [], color="#d62728", lw=1.0, label="AREA_DICT")
+        ax.plot([], [], color="#d62728", lw=1.0, label="Natural Earth 目标国家")
         ax.plot([], [], color="#1f77b4", lw=1.6, label="NAM-12")
         ax.legend(loc="lower left", fontsize=10, markerscale=4, framealpha=0.9, edgecolor="#888")
         ax.set_title(title, fontsize=14, pad=10)
@@ -638,7 +562,7 @@ def _plot_ne_borders(ax, ne_shapes, color="#0a5d0a", lw=1.2, zorder=5):
 
     cartopy 的 add_geometries 对散点图的 zorder 不可靠（国界会被点遮盖），
     故遍历 Polygon 的 exterior/interiors 用 ax.plot 绘制，与 draw_regions 的
-    红色 bbox 用同一套绘制机制，zorder=5 保证位于场站点（3/4）之上。
+    红色 Natural Earth 目标国家边界用同一套绘制机制，zorder=5 保证位于场站点（3/4）之上。
     """
     from shapely.geometry import Polygon, MultiPolygon
 
@@ -655,7 +579,7 @@ def _plot_ne_borders(ax, ne_shapes, color="#0a5d0a", lw=1.2, zorder=5):
 
 
 def plot_cf_zero_nan_ne_map(ssp, stations, domain, ne_shapes, out_path):
-    """图4：natural-earth 精确国界 + 气象边界(AREA_DICT/NAM) + CF=0/nan 场站。
+    """图4：natural-earth 精确国界 + NAM-12 边界 + CF=0/nan 场站。
 
     上=光伏 / 下=风电。CF=0/nan 由 data/cfs 的 2050 年均判定（复用 S0E2 的 assign_regions/query_cf）。
     比例 = 精确国界内 CF=0/nan 场站数 / 精确国界内全部场站数。
@@ -667,7 +591,7 @@ def plot_cf_zero_nan_ne_map(ssp, stations, domain, ne_shapes, out_path):
         (axes[1], "wind", f"{ssp} — 风电：精确国界内 CF=0/nan 场站（data/cfs，2050 年均）"),
     ]:
         setup_basemap(ax)
-        # 2) 气象边界：AREA_DICT 矩形框(红) + NAM-12 弯曲域(蓝)
+        # 2) 项目区域边界：Natural Earth 目标国家国界(红) + NAM-12 弯曲域(蓝)
         draw_regions(ax, domain, label=False)
         # 3) 2050 场站 + CF 判定
         lon, lat, _cap = stations[2050][typ]
@@ -687,7 +611,7 @@ def plot_cf_zero_nan_ne_map(ssp, stations, domain, ne_shapes, out_path):
         _plot_ne_borders(ax, ne_shapes, color="#0a5d0a", lw=1.2, zorder=5)
         # 边界图例
         ax.plot([], [], color="#2f7d32", lw=0.8, label="精确国界（natural-earth）")
-        ax.plot([], [], color="#d62728", lw=1.0, label="AREA_DICT 气象边界框")
+        ax.plot([], [], color="#d62728", lw=1.0, label="Natural Earth 目标国家")
         ax.plot([], [], color="#1f77b4", lw=1.6, label="NAM-12 弯曲域")
         # 比例标注框
         ax.text(0.99, 0.02, f"精确国界内 CF=0/nan：{n_bad_in:,} / {n_in:,}（{ratio:.2%}）",
@@ -695,7 +619,7 @@ def plot_cf_zero_nan_ne_map(ssp, stations, domain, ne_shapes, out_path):
                 bbox=dict(boxstyle="round,pad=0.4", fc="white", ec="#888", alpha=0.9))
         ax.legend(loc="lower left", fontsize=9, markerscale=3, framealpha=0.9, edgecolor="#888")
         ax.set_title(title, fontsize=13, pad=8)
-    fig.suptitle(f"{ssp} · 2050：natural-earth 精确国界 vs 气象边界（AREA_DICT+NAM-12）· CF=0/nan 场站",
+    fig.suptitle(f"{ssp} · 2050：natural-earth 目标国家 + NAM-12 · CF=0/nan 场站",
                  fontsize=15, y=0.997)
     plt.tight_layout()
     plt.savefig(out_path, dpi=200, bbox_inches="tight")
@@ -714,7 +638,7 @@ def compute_stats(stations, domain):
     返回的每行包含两种口径：
       - 场站个数：total_n / inside_n / ratio_n
       - 装机容量(GW)：total_cap / inside_cap / ratio_cap
-    其中 inside 指落在 AREA_DICT 框或 NAM-12 域内（即「当前区域」能覆盖的部分）。
+    其中 inside 指落在 Natural Earth 目标国家或 NAM-12 域内（即「当前区域」能覆盖的部分）。
     """
     rows = []
     for year in sorted(stations):
@@ -828,7 +752,7 @@ def compute_region_stats(stations, domain, grid, transform, names):
 
     各年份独立计算（CSV 年份为累积存量，不能相加）。对某年某大区 R：
       - n_total / cap_total：落在大区 R 内的场站数 / 装机量(GW)
-      - n_inside / cap_inside：其中又被「项目区域」（AREA_DICT 框 + NAM-12 域）
+      - n_inside / cap_inside：其中又被「项目区域」（Natural Earth 目标国家 + NAM-12 域）
         覆盖的场站数 / 装机量
       - cover_ratio：本大区内被项目区域覆盖的比例（inside / total）
     返回 (year, rid, name, n_total, n_inside, n_ratio, cap_total, cap_inside, cap_ratio) 行列表，

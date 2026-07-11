@@ -9,7 +9,7 @@ plot_stations_S0E2_zero_or_nan.py 发现场站气象/CF 为 0 或 nan 有两类�
 
 核心思路
 --------
-bcsd 气象在每个国家是一个矩形经纬度网格（AREA_DICT bbox），其中 nan 格点有两类来源：
+bcsd 气象在每个国家是一个经纬度网格；场站国家归属使用 Natural Earth 国界，其中 nan 格点有两类来源：
   (a) 海洋格点：ERA5-Land 本身在海洋缺测（=第一类海岸线 nan）；
   (b) 数据边界：网格边缘一圈格点，落在陆地上却无数据（=第二类边界 nan）。
 

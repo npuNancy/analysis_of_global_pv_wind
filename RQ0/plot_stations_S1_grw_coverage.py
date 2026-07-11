@@ -2,8 +2,7 @@
 统计「项目高分辨率气象区域」对全球**实测**风光场站的覆盖比例。
 
 区域口径（注意区分）：
-  - 二十多个高分辨率区域 = AREA_DICT 国家经纬度框 + NAM-12 rotated-pole 弯曲域
-    （即 plot_stations_S1_with_regions.py 里画的那些未来气候情景数据范围）。
+  - 二十多个高分辨率区域 = Natural Earth 目标国家国界 + NAM-12 rotated-pole 弯曲域。
   - 20 个大区 = UN M49 区域电网划分（data/tracked/grid_division/Global_Grid_Division.tif）。
     本脚本逐大区统计「区内总量」中被「项目区域」覆盖的份额。
 
@@ -20,7 +19,7 @@
     GRW 不含实际发电量，装机容量在此作为「发电/产能」的代理口径；按技术分别给出，
     故「发电量比例」= 该技术装机容量的覆盖比例（同一技术内 CF 为常数时二者相等）。
 
-覆盖判定：场站质心落在 任一 AREA_DICT 框 或 NAM-12 弯曲域内 → 被项目区域覆盖。
+覆盖判定：场站质心落在任一 Natural Earth 目标国家或 NAM-12 弯曲域内 → 被项目区域覆盖。
 区域几何/栅格查表逻辑直接复用 plot_stations_S1_with_regions.py，确保与既有图口径一致。
 
 用法：
@@ -56,7 +55,6 @@ from scipy import ndimage
 import RQ0.plot_stations_S1_with_regions as prs
 from RQ0.plot_stations_S1_with_regions import (
     PC,
-    AREA_DICT,
     in_any_region,
     load_nam_domain,
     load_grid_division,
@@ -355,7 +353,7 @@ def plot_coverage_map(cov, domain, region_geoms, names, out_path):
             zorder=4,
         )
         cr = float(d["cap"][m].sum()) / float(d["cap"].sum()) if d["cap"].sum() else 0.0
-        ax.plot([], [], color="#1f77b4", lw=1.6, label="NAM-12 / AREA_DICT 边界")
+        ax.plot([], [], color="#1f77b4", lw=1.6, label="Natural Earth 目标国家 / NAM-12 边界")
         if region_geoms:
             ax.plot([], [], color="#2f7d32", lw=0.8, label="20 大区边界")
         ax.legend(loc="lower left", fontsize=10, markerscale=6, framealpha=0.9, edgecolor="#888")
