@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""临时分析：逐国家统计 BCSD 气象在场站位置的 0/nan 占比。
+"""逐国家统计 BCSD 气象在场站位置的 0/nan 占比。
 
 国家归属复用 RQ0/plot_stations_S0E2_zero_or_nan.py 的 Natural Earth 口径；
 气象取值也复用同一脚本的 query_met，确保与 S0E2 图的上排完全同口径。
@@ -43,6 +43,23 @@ def bad_stats(vals, mask):
     return n_nan, n_zero, n_bad, n_ok, n_covered, ratio
 
 
+def country_has_met_data(country, tech, model, ssp, year):
+    """检查该模式/情景/国家是否有对应 BCSD 气象文件。
+
+    wind 需要 uas 与 vas 同时存在；solar 需要 rsds 存在。区域不全的模式中，
+    缺失国家不应计入分母，也不应被误算为 100% NaN。
+    """
+    if tech == "wind":
+        variables = ("uas", "vas")
+    else:
+        variables = ("rsds",)
+    for var in variables:
+        path = P.met_path(country, var, model, ssp, year)
+        if not path or not os.path.isfile(path):
+            return False
+    return True
+
+
 def main():
     args = parse_args()
     P.MODEL = args.model
@@ -51,7 +68,7 @@ def main():
 
     csv_path = args.stations or os.path.join(P.STATIONS_DIR, P.SSP_STATION_FILE[args.ssp])
     out_path = Path(args.out) if args.out else (
-        THIS_DIR / "outputs" / f"tmp_country_met_zero_nan_ratio_{args.model}_{args.ssp}_{args.year}.csv"
+        THIS_DIR / "outputs" / f"country_met_zero_nan_ratio_{args.model}_{args.ssp}_{args.year}.csv"
     )
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -61,9 +78,22 @@ def main():
     for tech in ("wind", "solar"):
         lon, lat = stations[tech]
         labels = P.assign_regions(lon, lat, include_nam=False)
-        vals = P.query_met(lon, lat, labels, tech)
+        vals = np.full(len(lon), np.nan)
+        available_countries = [
+            country
+            for country in P.COUNTRIES_26
+            if country_has_met_data(country, tech, args.model, args.ssp, args.year)
+        ]
 
-        for country in P.COUNTRIES_26:
+        for country in available_countries:
+            m = labels == country
+            if not m.any():
+                continue
+            grid = P.load_met_grid(country, tech, args.model, args.ssp, args.year)
+            if grid is not None:
+                vals[m] = P.lookup_1d(lon[m], lat[m], *grid)
+
+        for country in available_countries:
             m = labels == country
             n_nan, n_zero, n_bad, n_ok, n_covered, ratio = bad_stats(vals, m)
             if n_covered == 0:
@@ -84,7 +114,7 @@ def main():
                 }
             )
 
-        m26 = np.isin(labels, P.COUNTRIES_26)
+        m26 = np.isin(labels, available_countries)
         n_nan, n_zero, n_bad, n_ok, n_covered, ratio = bad_stats(vals, m26)
         rows.append(
             {
@@ -102,7 +132,36 @@ def main():
             }
         )
 
-    header = ["model", "ssp", "year", "tech", "country", "n_nan", "n_zero", "n_bad", "n_ok", "n_covered", "bad_ratio"]
+        missing_countries = [c for c in P.COUNTRIES_26 if c not in available_countries]
+        for country in missing_countries:
+            n_stations = int(np.sum(labels == country))
+            if n_stations:
+                rows.append(
+                    {
+                        "model": args.model,
+                        "ssp": args.ssp,
+                        "year": args.year,
+                        "tech": tech,
+                        "country": country,
+                        "n_nan": "",
+                        "n_zero": "",
+                        "n_bad": "",
+                        "n_ok": "",
+                        "n_covered": "",
+                        "bad_ratio": "",
+                        "status": "MISSING_BCSD",
+                        "n_stations_in_country": n_stations,
+                    }
+                )
+
+    for row in rows:
+        row.setdefault("status", "OK")
+        row.setdefault("n_stations_in_country", "")
+
+    header = [
+        "model", "ssp", "year", "tech", "country", "status",
+        "n_nan", "n_zero", "n_bad", "n_ok", "n_covered", "bad_ratio", "n_stations_in_country",
+    ]
     with out_path.open("w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=header)
         writer.writeheader()
@@ -110,7 +169,7 @@ def main():
 
     print(f"-> {out_path}")
     for tech in ("wind", "solar"):
-        sub = [r for r in rows if r["tech"] == tech and r["country"] != "ALL_26_COUNTRIES"]
+        sub = [r for r in rows if r["tech"] == tech and r["country"] != "ALL_26_COUNTRIES" and r["status"] == "OK"]
         sub.sort(key=lambda r: (float(r["bad_ratio"]), int(r["n_bad"])), reverse=True)
         print(f"\n{tech} top countries by bad_ratio:")
         print(f"{'country':<18}{'n_bad':>8}{'n_ok':>8}{'covered':>9}{'ratio':>10}")
@@ -123,4 +182,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

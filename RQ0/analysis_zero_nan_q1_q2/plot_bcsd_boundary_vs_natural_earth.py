@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""临时绘图：逐国家对比 BCSD 有效值边界与 Natural Earth 国界。
+"""逐国家对比 BCSD 有效值边界与 Natural Earth 国界。
 
 每个国家输出一张 PNG，包含：
   1. Natural Earth admin-0 国界；
@@ -50,7 +50,7 @@ def parse_args():
     parser.add_argument("--countries", nargs="*", default=None, help="可选，只画指定国家；默认画 26 国")
     parser.add_argument(
         "--out-dir",
-        default=str(THIS_DIR / "outputs" / "tmp_bcsd_boundary_vs_natural_earth"),
+        default=str(THIS_DIR / "outputs" / "bcsd_boundary_vs_natural_earth"),
         help="输出目录",
     )
     return parser.parse_args()
@@ -185,4 +185,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
