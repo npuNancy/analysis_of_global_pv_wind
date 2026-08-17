@@ -60,7 +60,7 @@ from natural_earth_regions import DEFAULT_NE_SHP, assign_countries
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(BASE_DIR)
-OUTPUT_DIR = os.path.join(BASE_DIR, "outputs", "plot_stations", os.path.splitext(os.path.basename(__file__))[0])
+OUTPUT_DIR = os.path.join(BASE_DIR, "outputs", "plot_stations", os.path.splitext(os.path.basename(__file__))[0])  # 按 {model} 分子目录，见 main()
 
 BCSD_DIR = os.path.join(PROJECT_ROOT, "data", "bcsd_outputs")          # 气象（仅 26 国）
 CFS_DIR = os.path.join(PROJECT_ROOT, "data", "cfs")                     # 容量因子
@@ -543,7 +543,8 @@ def main():
     if not os.path.isfile(csv_path):
         raise FileNotFoundError(f"场站 CSV 不存在：{csv_path}")
 
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    out_dir = os.path.join(OUTPUT_DIR, MODEL)
+    os.makedirs(out_dir, exist_ok=True)
     print(f"{'=' * 60}\n  气象/CF 为 0 或 nan 场站图：{MODEL} / {SSP} / {YEAR} / scope={args.plot_scope}\n  stations: {csv_path}\n{'=' * 60}")
 
     stations = load_stations_2050(csv_path)
@@ -579,13 +580,13 @@ def main():
     suffix = "" if args.plot_scope == "all" else f"_{args.plot_scope}"
     stats = plot_panels(
         data,
-        os.path.join(OUTPUT_DIR, f"zero_or_nan{suffix}_{MODEL}_{SSP}_{YEAR}.png"),
+        os.path.join(out_dir, f"zero_or_nan{suffix}_{MODEL}_{SSP}_{YEAR}.png"),
         MODEL,
         SSP,
         YEAR,
         args.plot_scope,
     )
-    report_stats(stats, os.path.join(OUTPUT_DIR, f"stats_zero_or_nan{suffix}_{MODEL}_{SSP}_{YEAR}.csv"), MODEL, SSP, YEAR)
+    report_stats(stats, os.path.join(out_dir, f"stats_zero_or_nan{suffix}_{MODEL}_{SSP}_{YEAR}.csv"), MODEL, SSP, YEAR)
 
 
 if __name__ == "__main__":
