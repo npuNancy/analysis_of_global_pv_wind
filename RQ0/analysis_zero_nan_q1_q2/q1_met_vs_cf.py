@@ -61,6 +61,14 @@ def is_bad(vals):
 
 
 def main():
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Q1：气象 vs CF 0/nan 比例口径拆解")
+    parser.add_argument("--model", default=P.MODEL, help=f"CMIP6 模式，默认 {P.MODEL}")
+    parser.add_argument("--ssp", default=P.SSP, choices=list(P.SSP_STATION_FILE), help=f"情景，默认 {P.SSP}")
+    args = parser.parse_args()
+    P.MODEL, P.SSP = args.model, args.ssp
+
     os.makedirs(OUT_DIR, exist_ok=True)
     print(f"{'='*60}\n  Q1 分析：气象 vs CF 0/nan 比例不一致（{P.MODEL}/{P.SSP}/{YEAR}）\n{'='*60}")
 
@@ -118,7 +126,7 @@ def main():
     h1 = ["tech", "met_cov(26国)", "cf_cov(26+CN+NAM)",
           "met_bad", "cf_bad_total", "cf_bad_26", "cf_bad_china", "cf_bad_nam",
           "met_ratio_26(上排)", "cf_ratio_total(下排)", "cf_ratio_26(同口径)"]
-    p1 = os.path.join(OUT_DIR, "q1_decomposition.csv")
+    p1 = os.path.join(OUT_DIR, f"q1_decomposition_{P.MODEL}_{P.SSP}_{YEAR}.csv")
     with open(p1, "w", newline="") as f:
         csv.writer(f).writerow(h1); csv.writer(f).writerows(decomp_rows)
     print(f"\n  [分母/分子拆解] -> {p1}")
@@ -129,7 +137,7 @@ def main():
 
     # 写 agreement
     h2 = ["tech", "n_26", "both_bad", "met_bad_only", "cf_bad_only", "both_ok", "agreement"]
-    p2 = os.path.join(OUT_DIR, "q1_station_agreement.csv")
+    p2 = os.path.join(OUT_DIR, f"q1_station_agreement_{P.MODEL}_{P.SSP}_{YEAR}.csv")
     with open(p2, "w", newline="") as f:
         csv.writer(f).writerow(h2); csv.writer(f).writerows(agree_rows)
     print(f"\n  [26国同站对应] -> {p2}")
@@ -158,7 +166,7 @@ def main():
     ax.legend(fontsize=9, loc="upper right")
     ax.set_ylim(0, max(compare[t]["met_26"] for t in techs) * 120)
     plt.tight_layout()
-    p3 = os.path.join(OUT_DIR, "q1_ratio_compare.png")
+    p3 = os.path.join(OUT_DIR, f"q1_ratio_compare_{P.MODEL}_{P.SSP}_{YEAR}.png")
     plt.savefig(p3, dpi=160)
     plt.close()
     print(f"\n  [比例对比图] -> {p3}")

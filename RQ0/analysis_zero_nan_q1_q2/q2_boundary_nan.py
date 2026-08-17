@@ -91,7 +91,8 @@ def lsm_at(la2d, lo2d):
 def met_nan_mask(country, var):
     """读某国某变量(var in uas/vas/rsds) 2050 年均的 nan 掩码 + lat1d/lon1d。无数据返回 None。"""
     d = P.area_to_dir(country)
-    pat = os.path.join(P.BCSD_DIR, P.MODEL, d, P.MODEL, f"{var}_3h_bcsd_on_0p1deg_{d}_{P.MODEL}_{P.SSP}_*.nc")
+    # 文件名中的模式名大小写可能与目录名不一致（如 CANESM5 目录下文件名为 CanESM5），模式名段用通配
+    pat = os.path.join(P.BCSD_DIR, P.MODEL, d, P.MODEL, f"{var}_3h_bcsd_on_0p1deg_{d}_*_{P.SSP}_*.nc")
     p = P._pick_year_file(pat, YEAR)
     if not (p and os.path.isfile(p)):
         return None
@@ -158,7 +159,7 @@ def analyze_grids():
     header = ["country", "tech", "status", "n_grid", "n_nan", "n_nan_land", "n_nan_sea",
               "nan_ratio", "land_nan_frac_of_nan", "band_top_deg", "band_bot_deg",
               "band_left_deg", "band_right_deg"]
-    out = os.path.join(OUT_DIR, "q2_grid_nan_landsea_by_country.csv")
+    out = os.path.join(OUT_DIR, f"q2_grid_nan_landsea_by_country_{P.MODEL}_{P.SSP}_{YEAR}.csv")
     with open(out, "w", newline="") as f:
         w = csv.writer(f)
         w.writerow(header)
@@ -203,7 +204,7 @@ def analyze_stations():
                          f"{n_nan_land / max(n_nan, 1):.4f}"])
     header = ["tech", "n_covered(26国)", "n_nan", "n_nan_land(type2)", "n_nan_sea(type1)",
               "nan_ratio", "land_nan_frac_of_nan"]
-    out = os.path.join(OUT_DIR, "q2_stations_nan_landsea.csv")
+    out = os.path.join(OUT_DIR, f"q2_stations_nan_landsea_{P.MODEL}_{P.SSP}_{YEAR}.csv")
     with open(out, "w", newline="") as f:
         w = csv.writer(f)
         w.writerow(header)
@@ -238,13 +239,21 @@ def plot_landsea_nan(rows, header):
     ax.set_ylim(0, 1.05)
     ax.legend()
     plt.tight_layout()
-    out = os.path.join(OUT_DIR, "q2_land_nan_fraction_by_country.png")
+    out = os.path.join(OUT_DIR, f"q2_land_nan_fraction_by_country_{P.MODEL}_{P.SSP}_{YEAR}.png")
     plt.savefig(out, dpi=160)
     plt.close()
     print(f"  -> {out}")
 
 
 def main():
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Q2：bcsd 气象边界 nan 陆/海机制拆解")
+    parser.add_argument("--model", default=P.MODEL, help=f"CMIP6 模式，默认 {P.MODEL}")
+    parser.add_argument("--ssp", default=P.SSP, choices=list(P.SSP_STATION_FILE), help=f"情景，默认 {P.SSP}")
+    args = parser.parse_args()
+    P.MODEL, P.SSP = args.model, args.ssp
+
     os.makedirs(OUT_DIR, exist_ok=True)
     print(f"{'='*60}\n  Q2 分析：bcsd 气象边界 nan 机制（{P.MODEL}/{P.SSP}/{YEAR}）\n{'='*60}")
     print("\n[1/3] 预加载 lsm 与 NAM 网格 ...")

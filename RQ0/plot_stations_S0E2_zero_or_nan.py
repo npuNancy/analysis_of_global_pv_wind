@@ -17,11 +17,12 @@
     - 风电气象：年均 RMS 风速 = sqrt(mean(uas²)+mean(vas²))（用 uas/vas 两文件合成）。
     - 光伏气象：年均辐射 rsds（time-mean）。
 
-数据源与路径：
-    - 气象 bcsd_outputs/{MODEL}/{Country}/{MODEL}/{var}_3h_bcsd_on_0p1deg_{Country}_{MODEL}_{ssp}_*.nc
+数据源与路径（文件名中的模式名段一律用通配匹配，避免目录名与文件名大小写不一致，
+如目录 CANESM5 而文件名内为 CanESM5）：
+    - 气象 bcsd_outputs/{MODEL}/{Country}/{MODEL}/{var}_3h_bcsd_on_0p1deg_{Country}_{model?}_{ssp}_*.nc
         仅 26 国（不含 china/NAM-12）；风电用 uas+vas，光伏用 rsds。
-    - CF 26 国：cfs/CFs_of_{tech}/{MODEL}/{Country}/{tech}_CF_{Country}_{MODEL}_{ssp}_*_allmonths.nc
-    - CF china：cfs/CFs_of_{tech}_china/{MODEL}/{tech}_CF_china_{MODEL}_{ssp}_*_allmonths.nc
+    - CF 26 国：cfs/CFs_of_{tech}/{MODEL}/{Country}/{tech}_CF_{Country}_{model?}_{ssp}_*_allmonths.nc
+    - CF china：cfs/CFs_of_{tech}_china/{MODEL}/{tech}_CF_china_{model?}_{ssp}_*_allmonths.nc
     - CF NAM-12：cfs/CFs_of_{tech}_NAM-12/CanESM5/r1i1p2f1/{ssp}/yearly/
                  {tech}_CF_NAM-12_CanESM5_r1i1p2f1_CRCM5_{ssp}_2050_allmonths.nc
         NAM-12 模式固定 CanESM5（rotated grid，2D lat/lon，按年分文件，2050 年即整文件）。
@@ -183,14 +184,20 @@ def _pick_year_file(pattern, year):
 
 
 def cf_path_26(country, tech, model, ssp, year):
-    """26 国 CF 文件路径（Country 用目录名）。"""
+    """26 国 CF 文件路径（Country 用目录名）。
+
+    文件名中的模式名大小写可能与传入 model 不一致（如 CANESM5 目录下 china 文件名为
+    CanESM5；目录已按模式分层），模式名段用通配匹配。
+    """
     d = area_to_dir(country)
-    pat = os.path.join(CFS_DIR, f"CFs_of_{tech}", model, d, f"{tech}_CF_{d}_{model}_{ssp}_*_allmonths.nc")
+    pat = os.path.join(CFS_DIR, f"CFs_of_{tech}", model, d, f"{tech}_CF_{d}_*_{ssp}_*_allmonths.nc")
     return _pick_year_file(pat, year)
 
 
 def cf_path_china(tech, model, ssp, year):
-    pat = os.path.join(CFS_DIR, f"CFs_of_{tech}_china", model, f"{tech}_CF_china_{model}_{ssp}_*_allmonths.nc")
+    # 文件名中的模式名大小写可能与目录名不一致（如 CANESM5 目录下文件名为 CanESM5），
+    # 目录已按模式区分，文件名中的模式名用通配匹配。
+    pat = os.path.join(CFS_DIR, f"CFs_of_{tech}_china", model, f"{tech}_CF_china_*_{ssp}_*_allmonths.nc")
     return _pick_year_file(pat, year)
 
 
@@ -201,9 +208,9 @@ def cf_path_nam(tech, ssp, year):
 
 
 def met_path(country, var, model, ssp, year):
-    """气象文件路径（仅 26 国）。"""
+    """气象文件路径（仅 26 国）。文件名中的模式名大小写可能不一致，用通配匹配。"""
     d = area_to_dir(country)
-    pat = os.path.join(BCSD_DIR, model, d, model, f"{var}_3h_bcsd_on_0p1deg_{d}_{model}_{ssp}_*.nc")
+    pat = os.path.join(BCSD_DIR, model, d, model, f"{var}_3h_bcsd_on_0p1deg_{d}_*_{ssp}_*.nc")
     return _pick_year_file(pat, year)
 
 

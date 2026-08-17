@@ -66,8 +66,11 @@ PROJECT_ROOT = os.path.dirname(BASE_DIR)
 OUTPUT_DIR = os.path.join(BASE_DIR, "outputs", "plot_stations", os.path.splitext(os.path.basename(__file__))[0])
 NAM_GRID_NC = os.path.join(PROJECT_ROOT, "data", "grid_of_regions", "NAM-12_grid.nc")
 
-# 场站出力 NC 文件默认根目录（用于零出力场站图）
-DEFAULT_NC_OUTPUT_DIR = os.path.join(PROJECT_ROOT, "data", "wind_solar_output", "outputs_0p1deg_2030_2040_2050")
+# 场站出力 NC 文件默认根目录（用于零出力场站图）；outputs_0p1deg 下按 {model} 分子目录
+DEFAULT_NC_OUTPUT_DIR = os.path.join(PROJECT_ROOT, "data", "wind_solar_output", "outputs_0p1deg")
+
+# 零出力场站图使用的 CMIP6 模式（场站出力目录下的 {model} 层）
+DEFAULT_MODEL = "NESM3"
 
 # 全球 20 大区划分（UN M49）：0.1° 栅格 + 编号→名称映射
 GRID_DIV_TIF = os.path.join(PROJECT_ROOT, "data", "grid_division", "Global_Grid_Division.tif")
@@ -285,16 +288,20 @@ def _ssp_code(ssp):
     return ssp
 
 
-def load_zero_cf_stations(nc_output_dir, ssp_code):
+def load_zero_cf_stations(nc_output_dir, ssp_code, model=DEFAULT_MODEL):
     """从场站出力 NC 文件提取 2050 年 CF=0 的场站，按激活年份分组。
 
-    扫描 nc_output_dir 下的 pv_out 和 wind_out 子目录（仅 NESM3 模型），
+    扫描 nc_output_dir 下的 pv_out 和 wind_out 子目录（指定 model），
     对每个区域读取 NC 文件，以 2050 年出力计算年 CF，将 CF=0 的场站按
     其 activation_year 归入 YEARS 对应的年份桶（2030/2040/2050）。
+
+    文件名中的模式名大小写可能与目录名不一致（如目录 CANESM5 下 china
+    文件名为 CanESM5），模式名段用通配 glob 匹配。
 
     返回与 load_stations() 相同的结构：
         {year: {'solar': (lon, lat, cap), 'wind': (lon, lat, cap)}}
     """
+    import glob as _glob
     import netCDF4 as nc_lib
 
     ssp = _ssp_code(ssp_code)
@@ -304,19 +311,17 @@ def load_zero_cf_stations(nc_output_dir, ssp_code):
         ("solar", "pv_out", "pv"),
         ("wind", "wind_out", "wind"),
     ]:
-        base = os.path.join(nc_output_dir, tech_dir, "NESM3")
+        base = os.path.join(nc_output_dir, tech_dir, model)
         if not os.path.isdir(base):
             print(f"  [零出力] 目录不存在，跳过 {tech}: {base}")
             continue
 
         for region in sorted(os.listdir(base)):
-            nc_path = os.path.join(
-                base,
-                region,
-                f"{prefix}_stations_out_{region}_NESM3_{ssp}_allmonths.nc",
-            )
-            if not os.path.isfile(nc_path):
+            pat = os.path.join(base, region, f"{prefix}_stations_out_{region}_*_{ssp}_allmonths.nc")
+            matches = sorted(_glob.glob(pat))
+            if not matches:
                 continue
+            nc_path = matches[0]
 
             try:
                 ds = nc_lib.Dataset(nc_path, "r")
@@ -578,13 +583,14 @@ def _plot_ne_borders(ax, ne_shapes, color="#0a5d0a", lw=1.2, zorder=5):
                 ax.plot(xi, yi, color=color, lw=lw, zorder=zorder, transform=PC)
 
 
-def plot_cf_zero_nan_ne_map(ssp, stations, domain, ne_shapes, out_path):
+def plot_cf_zero_nan_ne_map(ssp, stations, domain, ne_shapes, out_path, model=DEFAULT_MODEL):
     """图4：natural-earth 精确国界 + NAM-12 边界 + CF=0/nan 场站。
 
     上=光伏 / 下=风电。CF=0/nan 由 data/cfs 的 2050 年均判定（复用 S0E2 的 assign_regions/query_cf）。
     比例 = 精确国界内 CF=0/nan 场站数 / 精确国界内全部场站数。
     """
     P0.SSP = _ssp_code(ssp)  # 让 S0E2 的 CF 查值走当前 ssp
+    P0.MODEL = model         # 让 S0E2 的 CF 查值走当前模式
     fig, axes = plt.subplots(2, 1, figsize=(16, 16), subplot_kw={"projection": PC})
     for ax, typ, title in [
         (axes[0], "solar", f"{ssp} — 光伏：精确国界内 CF=0/nan 场站（data/cfs，2050 年均）"),
@@ -855,7 +861,7 @@ def report_region_stats(ssp, rows, out_path):
     print(f"\n  -> {out_path}")
 
 
-def compute_cf_zero_nan_by_country(ssp, stations, ne_shapes):
+def compute_cf_zero_nan_by_country(ssp, stations, ne_shapes, model=DEFAULT_MODEL):
     """逐国家（natural-earth 精确边界）统计 2050 年 CF=0/nan 场站。
 
     CF 判定复用 S0E2（data/cfs 2050 年均，isnan | ==0）。
@@ -863,6 +869,7 @@ def compute_cf_zero_nan_by_country(ssp, stations, ne_shapes):
     仅含场站数>0 的国家，并附一行 "outside(精确国界外)"。
     """
     P0.SSP = _ssp_code(ssp)
+    P0.MODEL = model
     rows = []
     for typ in ("solar", "wind"):
         lon, lat, _cap = stations[2050][typ]
@@ -931,6 +938,11 @@ def main():
         default=DEFAULT_NC_OUTPUT_DIR,
         help="场站出力 NC 文件根目录，用于生成零出力场站图" f"（默认：{DEFAULT_NC_OUTPUT_DIR}）",
     )
+    parser.add_argument(
+        "--model",
+        default=DEFAULT_MODEL,
+        help=f"零出力/CF 判定使用的 CMIP6 模式（默认 {DEFAULT_MODEL}）",
+    )
     args = parser.parse_args()
 
     ssp = derive_ssp(args.stations, args.ssp)
@@ -950,8 +962,8 @@ def main():
 
     # 零出力场站图
     if os.path.isdir(args.nc_output_dir):
-        print(f"\n  生成零出力场站图 (NC 目录: {args.nc_output_dir}) ...")
-        zero_stations = load_zero_cf_stations(args.nc_output_dir, ssp)
+        print(f"\n  生成零出力场站图 (NC 目录: {args.nc_output_dir}, model={args.model}) ...")
+        zero_stations = load_zero_cf_stations(args.nc_output_dir, ssp, model=args.model)
         n_zero = sum(len(zero_stations[y][t][0]) for y in YEARS for t in ("solar", "wind"))
         print(f"  找到 {n_zero} 个零出力场站（2050 年，各年份合计）")
         # 比例分母：2050 年各类型全部场站数（零出力基于 2050 年 CF 计算）
@@ -983,13 +995,15 @@ def main():
     if os.path.isfile(NE_SHP):
         print(f"\n  生成 natural-earth 精确国界 CF=0/nan 场站图 ...")
         P0.SSP = _ssp_code(ssp)
+        P0.MODEL = args.model
         P0.get_nam_tree()  # P0.assign_regions 需要 NAM-12 网格做区域归属
         ne_shapes = load_ne_country_shapes()
         plot_cf_zero_nan_ne_map(
             ssp, stations, domain, ne_shapes,
             os.path.join(OUTPUT_DIR, f"cf_zero_nan_ne_border_{ssp}.png"),
+            model=args.model,
         )
-        cz_rows = compute_cf_zero_nan_by_country(ssp, stations, ne_shapes)
+        cz_rows = compute_cf_zero_nan_by_country(ssp, stations, ne_shapes, model=args.model)
         report_cf_zero_nan_by_country(
             ssp, cz_rows,
             os.path.join(OUTPUT_DIR, f"stats_cf_zero_nan_by_country_{ssp}.csv"),
