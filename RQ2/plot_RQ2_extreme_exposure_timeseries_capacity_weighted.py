@@ -44,8 +44,14 @@ RESERVED_REGIONS = ["china", "NAM-12"]
 EXCLUDE_GRID_REGIONS = {"china", "NAM-12"}
 
 TECH_EVENTS = {
-    "wind": ["signal_high_temp", "signal_high_wind"],
-    "solar": ["signal_freezing_rain", "signal_rainstorm", "signal_cold_highwind"],
+    "wind": [
+        "signal_high_temp", "signal_high_wind",
+        "signal_icing", "signal_hot_humid", "signal_low_resource",
+    ],
+    "solar": [
+        "signal_freezing_rain", "signal_rainstorm", "signal_cold_highwind",
+        "signal_high_humidity", "signal_icing", "signal_low_resource",
+    ],
 }
 TECH_LABEL = {"wind": "风电", "solar": "光伏"}
 SSP_C = {"ssp126": "#1d3b6f", "ssp245": "#e7a13b", "ssp585": "#9e1b1b"}

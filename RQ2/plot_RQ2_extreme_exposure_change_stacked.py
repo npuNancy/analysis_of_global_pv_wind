@@ -47,8 +47,14 @@ RESERVED_REGIONS = ["china", "NAM-12"]
 EXCLUDE_GRID_REGIONS = {"china", "NAM-12"}
 
 TECH_EVENTS = {
-    "wind": ["signal_high_temp", "signal_high_wind"],
-    "solar": ["signal_freezing_rain", "signal_rainstorm", "signal_cold_highwind"],
+    "wind": [
+        "signal_high_temp", "signal_high_wind",
+        "signal_icing", "signal_hot_humid", "signal_low_resource",
+    ],
+    "solar": [
+        "signal_freezing_rain", "signal_rainstorm", "signal_cold_highwind",
+        "signal_high_humidity", "signal_icing", "signal_low_resource",
+    ],
 }
 EVENT_LABEL = {
     "signal_high_temp": "高温",
@@ -56,6 +62,10 @@ EVENT_LABEL = {
     "signal_freezing_rain": "冻雨",
     "signal_rainstorm": "暴雨",
     "signal_cold_highwind": "低温强风",
+    "signal_icing": "结冰",
+    "signal_hot_humid": "高温高湿",
+    "signal_high_humidity": "高湿度",
+    "signal_low_resource": "低资源",
 }
 EVENT_C = {
     "signal_high_temp": "#c0392b",
@@ -63,6 +73,10 @@ EVENT_C = {
     "signal_freezing_rain": "#9ecae9",
     "signal_rainstorm": "#54a24b",
     "signal_cold_highwind": "#6b5b95",
+    "signal_icing": "#7fcdbb",
+    "signal_hot_humid": "#e07b39",
+    "signal_high_humidity": "#8c6d31",
+    "signal_low_resource": "#b15928",
 }
 TECH_LABEL = {"wind": "风电", "solar": "光伏"}
 SSP_L = {"ssp126": "SSP1-2.6", "ssp245": "SSP2-4.5", "ssp585": "SSP5-8.5"}
