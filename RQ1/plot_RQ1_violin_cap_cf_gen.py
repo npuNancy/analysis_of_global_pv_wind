@@ -213,5 +213,15 @@ def figure_violin(tech):
 
 
 if __name__ == "__main__":
+    import argparse
+    ap = argparse.ArgumentParser(description="RQ1 装机/CF/发电量小提琴图")
+    ap.add_argument("--model", default=MODEL, help="气候模式名；数据/输出/标题走对应子目录")
+    args = ap.parse_args()
+    if args.model != MODEL:  # --model 覆盖模块级 MODEL，并按新 DATA 重读
+        MODEL = args.model
+        DATA = f"data/real/RQ1_generation/{MODEL}"
+        OUT = f"RQ1/outputs/real/{MODEL}"
+        os.makedirs(OUT, exist_ok=True)
+        st_ann = pd.read_csv(f"{DATA}/station_annual_generation.csv")
     for tech in ["solar", "wind"]:
         print("已保存:", figure_violin(tech))

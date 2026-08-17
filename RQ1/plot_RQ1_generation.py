@@ -333,11 +333,11 @@ def figure_gen(tech):
     axl.text(0.04, y_top - 3 * ch - 0.04, "色系区分情景，系内由深到浅对应时段", fontsize=5.8, color="0.4", va="top")
 
     tech_cn = {"solar": "光伏", "wind": "风电"}[tech]
-    fig.suptitle(f"未来气候对{tech_cn}发电量的影响（NESM3）", fontsize=11, fontweight="bold", y=0.975)
+    fig.suptitle(f"未来气候对{tech_cn}发电量的影响（{MODEL}）", fontsize=11, fontweight="bold", y=0.975)
     fig.text(
         0.5,
         0.012,
-        "自洽情景（部署=气候）；NESM3 模型；子图 b 基准为 SSP2-4.5 2030；"
+        f"自洽情景（部署=气候）；{MODEL} 模型；子图 b 基准为 SSP2-4.5 2030；"
         "子图 c/d 每国按 SSP 分三柱、按时段堆叠，d 为相对 SSP1-2.6 占比。",
         ha="center",
         fontsize=6.2,
@@ -351,5 +351,17 @@ def figure_gen(tech):
 
 
 if __name__ == "__main__":
+    import argparse
+    ap = argparse.ArgumentParser(description="RQ1 场站发电量图")
+    ap.add_argument("--model", default=MODEL, help="气候模式名；数据/输出/标题走对应子目录")
+    args = ap.parse_args()
+    if args.model != MODEL:  # --model 覆盖模块级 MODEL，并按新 DATA 重读
+        MODEL = args.model
+        DATA = f"data/real/RQ1_generation/{MODEL}"
+        OUT = f"RQ1/outputs/real/{MODEL}"
+        os.makedirs(OUT, exist_ok=True)
+        country = pd.read_csv(f"{DATA}/country_annual_generation.csv")
+        st_mon = pd.read_csv(f"{DATA}/station_monthly_generation.csv")
+        st_ann = pd.read_csv(f"{DATA}/station_annual_generation.csv")
     for tech in ["solar", "wind"]:
         print("已保存:", figure_gen(tech))

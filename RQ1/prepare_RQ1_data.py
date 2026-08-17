@@ -126,12 +126,24 @@ def parse_args() -> argparse.Namespace:
 # ---------------------------------------------------------------------------
 
 def nc_filepath(station_out: Path, model: str, tech_dir: str, ssp: str, region: str) -> Path:
-    """场站出力 NC 文件路径。"""
+    """场站出力 NC 文件路径。
+
+    优先精确拼接；文件名中的模式名大小写可能与目录名不一致
+    （如 CANESM5 目录下 china 文件名为 CanESM5），此时按目录内 glob 兜底。
+    """
     prefix = "pv" if tech_dir == "pv_out" else "wind"
-    return (
+    exact = (
         station_out / tech_dir / model / region
         / f"{prefix}_stations_out_{region}_{model}_{ssp}_allmonths.nc"
     )
+    if exact.exists():
+        return exact
+    matches = sorted(
+        (station_out / tech_dir / model / region).glob(
+            f"{prefix}_stations_out_{region}_*_{ssp}_allmonths.nc"
+        )
+    )
+    return matches[0] if matches else exact
 
 
 # ---------------------------------------------------------------------------

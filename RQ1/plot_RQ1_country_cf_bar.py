@@ -88,6 +88,15 @@ def load_nesm3():
     return pd.read_csv(f, skipinitialspace=True)
 
 
+def apply_model(model):
+    """--model 覆盖模块级 MODEL，联动 NESM3_DIR/OUT 路径。"""
+    global MODEL, NESM3_DIR, OUT
+    MODEL = model
+    NESM3_DIR = f"data/cfs/annual_mean_cf/{MODEL}"
+    OUT = f"RQ1/outputs/real/{MODEL}"
+    os.makedirs(OUT, exist_ok=True)
+
+
 def compute_means(df_era, df_nesm3, tech, year_range):
     """计算 ERA5Land 和各 SSP 的各国多年平均 CF（%）。
 
@@ -187,7 +196,7 @@ def main():
     )
 
     fig.suptitle(
-        "各国多年平均容量因子（NESM3 vs ERA5-Land）",
+        f"各国多年平均容量因子（{MODEL} vs ERA5-Land）",
         fontsize=11, fontweight="bold", y=1.00,
     )
 
@@ -198,4 +207,8 @@ def main():
 
 
 if __name__ == "__main__":
+    import argparse
+    ap = argparse.ArgumentParser(description="RQ1 各国多年平均 CF 柱状图")
+    ap.add_argument("--model", default=MODEL, help="气候模式名；数据/输出/标题走对应子目录")
+    apply_model(ap.parse_args().model)
     main()

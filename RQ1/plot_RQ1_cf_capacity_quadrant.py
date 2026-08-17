@@ -177,7 +177,7 @@ def figure_quadrant(tech):
 
     tech_cn = {"solar": "光伏", "wind": "风电"}[tech]
     fig.suptitle(
-        f"{tech_cn}：资源质量 vs 部署规模（NESM3，{YEAR} 年）", fontsize=10.5, fontweight="bold", x=0.48, y=0.975
+        f"{tech_cn}：资源质量 vs 部署规模（{MODEL}，{YEAR} 年）", fontsize=10.5, fontweight="bold", x=0.48, y=0.975
     )
     fig.text(
         0.48,
@@ -196,6 +196,16 @@ def figure_quadrant(tech):
 
 
 if __name__ == "__main__":
+    import argparse
+    ap = argparse.ArgumentParser(description="RQ1 CF vs 装机四象限图")
+    ap.add_argument("--model", default=MODEL, help="气候模式名；数据/输出/标题走对应子目录")
+    args = ap.parse_args()
+    if args.model != MODEL:  # --model 覆盖模块级 MODEL，并按新 DATA 重读
+        MODEL = args.model
+        DATA = f"data/real/RQ1_generation/{MODEL}"
+        OUT = f"RQ1/outputs/real/{MODEL}"
+        os.makedirs(OUT, exist_ok=True)
+        st = pd.read_csv(f"{DATA}/station_annual_generation.csv")
     for tech in ["solar", "wind"]:
         result = figure_quadrant(tech)
         if result:

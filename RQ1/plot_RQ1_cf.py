@@ -242,10 +242,10 @@ def figure_cf(tech, cf_ts, era5land_df=None):
     panel_tag(axb, "b")
 
     tech_cn = {"solar": "光伏", "wind": "风电"}[tech]
-    fig.suptitle(f"未来气候对{tech_cn}容量因子的影响（NESM3）", fontsize=11, fontweight="bold")
+    fig.suptitle(f"未来气候对{tech_cn}容量因子的影响（{MODEL}）", fontsize=11, fontweight="bold")
     fig.text(
         0.5, 0.01,
-        "自洽情景（部署=气候）；NESM3 模型；图 a：全球逐年平均 CF（2015–2060，含 china）；图 b：站点级 CF（排除零值站）。",
+        f"自洽情景（部署=气候）；{MODEL} 模型；图 a：全球逐年平均 CF（2015–2060，含 china）；图 b：站点级 CF（排除零值站）。",
         ha="center", fontsize=6.2, color="0.4",
     )
 
@@ -257,12 +257,12 @@ def figure_cf(tech, cf_ts, era5land_df=None):
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description="RQ1 图 a/b（图 a 读取全球逐年 CF 时间序列）")
+    ap.add_argument("--model", default=MODEL, help="气候模式名；数据/输出/标题走对应子目录")
     ap.add_argument(
         "--data-dir",
-        default=f"data/cfs/annual_mean_cf/{MODEL}",
-        help=f"全球逐年 CF 数据目录，默认 data/cfs/annual_mean_cf/{MODEL}",
+        default=None,
+        help=f"全球逐年 CF 数据目录，默认 data/cfs/annual_mean_cf/{{model}}",
     )
-    ap.add_argument("--model", default=MODEL, help="气象模式名（用于定位 CSV 文件名）")
     ap.add_argument(
         "--era5land-dir",
         default=None,
@@ -271,11 +271,22 @@ if __name__ == "__main__":
     )
     args = ap.parse_args()
 
+    if args.model != MODEL:  # --model 覆盖模块级 MODEL，并联动重读 DATA 下的 CSV
+        MODEL = args.model
+        DATA = f"data/real/RQ1_generation/{MODEL}"
+        OUT = f"RQ1/outputs/real/{MODEL}"
+        os.makedirs(OUT, exist_ok=True)
+        country = pd.read_csv(f"{DATA}/country_annual_generation.csv")
+        st_ann = pd.read_csv(f"{DATA}/station_annual_generation.csv")
+        grid_cf_path = f"{DATA}/country_grid_cf.csv"
+        grid_cf = pd.read_csv(grid_cf_path) if os.path.exists(grid_cf_path) else pd.DataFrame()
+    data_dir = args.data_dir or f"data/cfs/annual_mean_cf/{MODEL}"
+
     era5land_base = args.era5land_dir
     if not era5land_base or era5land_base.lower() == "none":
         era5land_base = None
 
-    cf_ts = load_global_cf_ts(args.data_dir, args.model)
+    cf_ts = load_global_cf_ts(data_dir, MODEL)
     for tech in ["solar", "wind"]:
         era5land_df = load_era5land_cf_ts(era5land_base, tech) if era5land_base else None
         print("已保存:", figure_cf(tech, cf_ts, era5land_df=era5land_df))
