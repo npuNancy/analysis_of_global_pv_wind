@@ -3,14 +3,17 @@
 """
 RQ3 图 1：极端天气造成的全球风光净出力损失演化（年代均值折线图）。
 
+除原有风电、光伏双面板图外，另输出风光总量、风电、光伏三面板图；
+风光总量在逐年层面将风电与光伏净损失相加后再按年代聚合。
+
 基于 generation_loss aggregate 的 region 级年度长表
 （event = all，即任一极端事件暴露期间的净损失），汇总为
 26 个 regional-BCSD 国家的全球年总账，再按年代聚合：
 
     净出力损失 = sum(net_generation_loss_mwh)，MWh -> TWh；
-    每个年代点 = center-k（K=2）窗口内各年的均值，
-        2030s -> mean(2033-2037)，2040s -> mean(2043-2047)，
-        2050s -> mean(2053-2057)；
+    每个年代点 = center-k（K=5）窗口内各年的均值，
+        2030s -> mean(2030-2039)，2040s -> mean(2040-2049)，
+        2050s -> mean(2050-2059)；
     误差条 = 窗口内年际最小-最大值。
 
 覆盖口径说明：部分国家在部分情景下无 SSP 场站（pipeline 以
@@ -38,7 +41,7 @@ from matplotlib.lines import Line2D
 ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_INPUT_CSV = (
     ROOT
-    / "ref_code/calculate_wind_solar_generation_loss/outputs/generation_loss"
+    / "data/generation_loss_outputs/generation_loss"
     / "{model}"
     / "aggregate/generation_loss_region.csv"
 )
@@ -47,17 +50,51 @@ FONT_PATH = ROOT / "data/SourceHanSansSC-Normal.otf"
 
 DEFAULT_MODEL = "CANESM5"
 DEFAULT_SSPS = ["ssp126", "ssp245", "ssp585"]
-TECH_LABEL = {"wind": "风电", "solar": "光伏"}
+ANALYSIS_K = 5
+# 临时修正：上游风电发电量及损失被错误放大 10 倍；上游数据修复后应删除此常量、字段列表及缩放函数。
+TEMP_WIND_ENERGY_SCALE_FACTOR = 0.1
+TEMP_WIND_ENERGY_COLUMNS = (
+    "generation_loss_mwh",
+    "net_generation_loss_mwh",
+    "normal_generation_mwh",
+    "normal_all_generation_mwh",
+    "actual_generation_mwh",
+    "generation_fluctuation_mwh",
+)
+COMBINED_TECH = "wind_solar"
+TECH_LABEL = {"wind": "风电", "solar": "光伏", COMBINED_TECH: "风光总量"}
 SSP_C = {"ssp126": "#1d3b6f", "ssp245": "#e7a13b", "ssp585": "#9e1b1b"}
 SSP_L = {"ssp126": "SSP1-2.6", "ssp245": "SSP2-4.5", "ssp585": "SSP5-8.5"}
 # 年代（快照年）标签；每个年代点为 center-k 窗口内各年的均值。
 DECADE_ORDER = [2030, 2040, 2050]
 DECADE_LABEL = {2030: "2030s", 2040: "2040s", 2050: "2050s"}
 DECADE_WINDOWS = {
-    2030: "2033-2037",
-    2040: "2043-2047",
-    2050: "2053-2057",
+    2030: "2030-2039",
+    2040: "2040-2049",
+    2050: "2050-2059",
 }
+
+
+def apply_temp_wind_energy_correction(
+    data: pd.DataFrame,
+    *,
+    context: str,
+) -> int:
+    """临时将风电发电量和损失能量项乘以 0.1；返回受影响的风电行数。"""
+    if "tech" not in data.columns:
+        raise KeyError("临时风电修正要求输入数据包含 tech 列。")
+    columns = [column for column in TEMP_WIND_ENERGY_COLUMNS if column in data.columns]
+    if not columns:
+        raise KeyError(f"临时风电修正未找到能量字段：{TEMP_WIND_ENERGY_COLUMNS}")
+    wind_mask = data["tech"].eq("wind")
+    data.loc[wind_mask, columns] *= TEMP_WIND_ENERGY_SCALE_FACTOR
+    affected = int(wind_mask.sum())
+    print(
+        f"[临时修正] {context}：已将风电 {', '.join(columns)} 乘以 "
+        f"{TEMP_WIND_ENERGY_SCALE_FACTOR:g}（影响 {affected} 行）；"
+        "上游数据修复后请移除此修正。"
+    )
+    return affected
 
 
 def configure_style() -> None:
@@ -119,7 +156,7 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help=(
             "generation_loss aggregate 的 region 级年度长表 CSV。"
-            "默认：ref_code/calculate_wind_solar_generation_loss/outputs/"
+            "默认：data/generation_loss_outputs/"
             "generation_loss/{model}/aggregate/generation_loss_region.csv。"
         ),
     )
@@ -140,6 +177,8 @@ def load_decade_summary(args: argparse.Namespace) -> pd.DataFrame:
     df = pd.read_csv(csv_path)
     d = df[
         (df["model"] == args.model)
+        & (df["analysis_scheme"] == "center-k")
+        & (df["analysis_k"] == ANALYSIS_K)
         & (df["event"] == args.event)
         & (df["scenario"].isin(args.ssps))
         & (df["tech"].isin(args.techs))
@@ -147,14 +186,34 @@ def load_decade_summary(args: argparse.Namespace) -> pd.DataFrame:
     if d.empty:
         raise SystemExit(f"输入 CSV 中没有匹配 model={args.model}、event={args.event} 的行。")
 
-    annual = (
+    # 临时修正：统一缩放风电发电量与损失能量项；上游数据修复后应删除此调用。
+    apply_temp_wind_energy_correction(d, context="全球净出力损失图")
+
+    annual_by_tech = (
         d.groupby(["scenario", "tech", "snapshot_year", "analysis_year"], as_index=False)
         .agg(
             net_generation_loss_twh=("net_generation_loss_mwh", "sum"),
             n_regions=("region", "nunique"),
         )
     )
-    annual["net_generation_loss_twh"] /= 1e6
+    annual_by_tech["net_generation_loss_twh"] /= 1e6
+
+    annual_parts = [annual_by_tech]
+    if {"wind", "solar"}.issubset(args.techs):
+        annual_total = (
+            d.groupby(["scenario", "snapshot_year", "analysis_year"], as_index=False)
+            .agg(
+                net_generation_loss_twh=("net_generation_loss_mwh", "sum"),
+                n_regions=("region", "nunique"),
+                n_techs=("tech", "nunique"),
+            )
+        )
+        annual_total = annual_total[annual_total["n_techs"] == 2].drop(columns="n_techs")
+        annual_total["net_generation_loss_twh"] /= 1e6
+        annual_total["tech"] = COMBINED_TECH
+        annual_parts.append(annual_total)
+
+    annual = pd.concat(annual_parts, ignore_index=True)
 
     decade = (
         annual.groupby(["scenario", "tech", "snapshot_year"], as_index=False)
@@ -174,16 +233,24 @@ def panel_tag(ax, tag: str, dx: float = -0.08, dy: float = 1.04) -> None:
     ax.text(dx, dy, tag, transform=ax.transAxes, fontsize=11, fontweight="bold", va="top", ha="right")
 
 
-def plot_summary(summary: pd.DataFrame, args: argparse.Namespace, out_dir: Path) -> Path:
+def _plot_summary_panels(
+    summary: pd.DataFrame,
+    args: argparse.Namespace,
+    out_dir: Path,
+    *,
+    techs: list[str],
+    figsize: tuple[float, float],
+    left: float,
+    out_stem: str,
+) -> Path:
     configure_style()
-    techs = [t for t in ["wind", "solar"] if t in args.techs]
-    fig, axes = plt.subplots(1, len(techs), figsize=(7.4, 3.2))
+    fig, axes = plt.subplots(1, len(techs), figsize=figsize)
     if len(techs) == 1:
         axes = [axes]
-    fig.subplots_adjust(left=0.09, right=0.98, top=0.82, bottom=0.2, wspace=0.28)
+    fig.subplots_adjust(left=left, right=0.98, top=0.82, bottom=0.2, wspace=0.28)
 
     x = np.arange(len(DECADE_ORDER))
-    for ax, tech, tag in zip(axes, techs, ["a", "b"]):
+    for index, (ax, tech) in enumerate(zip(axes, techs)):
         dtech = summary[summary["tech"] == tech]
         for ssp in args.ssps:
             sub = dtech[dtech["scenario"] == ssp].set_index("snapshot_year")
@@ -215,7 +282,7 @@ def plot_summary(summary: pd.DataFrame, args: argparse.Namespace, out_dir: Path)
         ax.set_xlabel("年代")
         ax.grid(axis="y", lw=0.4, alpha=0.45)
         ax.margins(x=0.12)
-        panel_tag(ax, tag)
+        panel_tag(ax, chr(ord("a") + index))
 
     axes[0].set_ylabel("净出力损失（TWh/年）")
     handles = [
@@ -230,7 +297,7 @@ def plot_summary(summary: pd.DataFrame, args: argparse.Namespace, out_dir: Path)
     n_solar = summary[summary["tech"] == "solar"]["n_regions_mean"]
     note_lines = [
         "净出力损失为极端事件（并集）暴露期间应发电量与实际出力之差；每个年代点为 "
-        f"center-k（K=2）窗口年均值（{windows}），误差条为窗口内年际最小-最大值。"
+        f"center-k（K={ANALYSIS_K}）窗口年均值（{windows}），误差条为窗口内年际最小-最大值。"
     ]
     if not n_wind.empty and not n_solar.empty:
         note_lines.append(
@@ -241,10 +308,35 @@ def plot_summary(summary: pd.DataFrame, args: argparse.Namespace, out_dir: Path)
     for i, line in enumerate(note_lines):
         fig.text(0.5, 0.055 - 0.045 * i, line, ha="center", fontsize=6.2, color="0.4")
 
-    out_base = out_dir / "fig_RQ3_generation_loss_global_evolution"
+    out_base = out_dir / out_stem
     fig.savefig(out_base.with_suffix(".png"), bbox_inches="tight")
     plt.close(fig)
     return out_base.with_suffix(".png")
+
+
+def plot_summary(summary: pd.DataFrame, args: argparse.Namespace, out_dir: Path) -> Path:
+    techs = [t for t in ["wind", "solar"] if t in args.techs]
+    return _plot_summary_panels(
+        summary,
+        args,
+        out_dir,
+        techs=techs,
+        figsize=(7.4, 3.2),
+        left=0.09,
+        out_stem="fig_RQ3_generation_loss_global_evolution",
+    )
+
+
+def plot_combined_summary(summary: pd.DataFrame, args: argparse.Namespace, out_dir: Path) -> Path:
+    return _plot_summary_panels(
+        summary,
+        args,
+        out_dir,
+        techs=[COMBINED_TECH, "wind", "solar"],
+        figsize=(10.8, 3.2),
+        left=0.06,
+        out_stem="fig_RQ3_generation_loss_global_evolution_combined",
+    )
 
 
 def main() -> None:
@@ -255,10 +347,16 @@ def main() -> None:
 
     summary = load_decade_summary(args)
     csv_path = out_dir / "csv/RQ3_generation_loss_global_evolution.csv"
-    summary.to_csv(csv_path, index=False)
+    summary[summary["tech"].isin(args.techs)].to_csv(csv_path, index=False)
 
     path = plot_summary(summary, args, out_dir)
     print(f"已保存：{path}")
+    if COMBINED_TECH in summary["tech"].values:
+        combined_csv_path = out_dir / "csv/RQ3_generation_loss_global_evolution_combined.csv"
+        summary.to_csv(combined_csv_path, index=False)
+        combined_path = plot_combined_summary(summary, args, out_dir)
+        print(f"已保存：{combined_path}")
+        print(f"已保存汇总表：{combined_csv_path}")
     print(f"已保存汇总表：{csv_path}")
 
 
