@@ -96,6 +96,12 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="输出目录。默认：RQ3/outputs/{MODEL}。",
     )
+    parser.add_argument(
+        "--error-bar",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="是否绘制表示窗口内年际最小-最大值的误差条。",
+    )
     return parser.parse_args()
 
 
@@ -197,7 +203,7 @@ def _plot_loss_per_capacity_panels(
             ax.errorbar(
                 x,
                 mean,
-                yerr=[mean - lo, hi - mean],
+                yerr=[mean - lo, hi - mean] if args.error_bar else None,
                 fmt="-o",
                 color=color,
                 lw=1.8,
@@ -241,7 +247,8 @@ def _plot_loss_per_capacity_panels(
     windows = "、".join(f"{DECADE_LABEL[d]}:{DECADE_WINDOWS[d]}" for d in DECADE_ORDER)
     note_lines = [
         "单位装机损失 = 全球净出力损失 / 全球装机容量（MWh/MW 与 TWh/TW 数值相同）；"
-        f"每个年代点为 center-k（K={ANALYSIS_K}）窗口年均值（{windows}），误差条为窗口内年际最小-最大值。",
+        f"每个年代点为 center-k（K={ANALYSIS_K}）窗口年均值（{windows}）"
+        + ("，误差条为窗口内年际最小-最大值。" if args.error_bar else "。"),
         "先在 region 级逐年累计净损失与装机容量后相除；装机容量为对应部署年份的累计存量快照。",
     ]
     for i, line in enumerate(note_lines):

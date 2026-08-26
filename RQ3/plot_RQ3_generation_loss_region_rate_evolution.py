@@ -79,6 +79,12 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="国家子目录的统一根目录。默认：RQ3/outputs/{MODEL}/region_generation_loss。",
     )
+    parser.add_argument(
+        "--error-bar",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="是否绘制表示窗口内年际最小-最大值的误差条。",
+    )
     return parser.parse_args()
 
 
@@ -185,7 +191,7 @@ def plot_region(
             ax.errorbar(
                 x,
                 mean,
-                yerr=[mean - lo, hi - mean],
+                yerr=[mean - lo, hi - mean] if args.error_bar else None,
                 fmt="-o",
                 color=color,
                 lw=1.8,
@@ -225,7 +231,8 @@ def plot_region(
     windows = "、".join(f"{DECADE_LABEL[d]}:{DECADE_WINDOWS[d]}" for d in DECADE_ORDER)
     note_lines = [
         "损失率 = 国家净出力损失 / 国家全年应发电量（逐年累计分子分母后相除）；"
-        f"每个年代点为 center-k（K={ANALYSIS_K}）窗口年均值（{windows}），误差条为窗口内年际最小-最大值。",
+        f"每个年代点为 center-k（K={ANALYSIS_K}）窗口年均值（{windows}）"
+        + ("，误差条为窗口内年际最小-最大值。" if args.error_bar else "。"),
         "风光总损失率使用风光总损失除以风光总应发电量，不直接平均两个技术的损失率。",
     ]
     for i, line in enumerate(note_lines):

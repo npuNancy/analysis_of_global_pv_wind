@@ -98,6 +98,12 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="输出目录。默认：RQ3/outputs/{MODEL}。",
     )
+    parser.add_argument(
+        "--error-bar",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="是否绘制表示窗口内年际最小-最大值的误差条。",
+    )
     return parser.parse_args()
 
 
@@ -196,7 +202,7 @@ def _plot_loss_rate_panels(
             ax.errorbar(
                 x,
                 mean,
-                yerr=[mean - lo, hi - mean],
+                yerr=[mean - lo, hi - mean] if args.error_bar else None,
                 fmt="-o",
                 color=color,
                 lw=1.8,
@@ -227,7 +233,8 @@ def _plot_loss_rate_panels(
     windows = "、".join(f"{DECADE_LABEL[d]}:{DECADE_WINDOWS[d]}" for d in DECADE_ORDER)
     note_lines = [
         "损失率 = 净出力损失 / 全年应发电量（region 级逐年累计分子分母后相除）；"
-        f"每个年代点为 center-k（K={ANALYSIS_K}）窗口年均值（{windows}），误差条为窗口内年际最小-最大值。",
+        f"每个年代点为 center-k（K={ANALYSIS_K}）窗口年均值（{windows}）"
+        + ("，误差条为窗口内年际最小-最大值。" if args.error_bar else "。"),
         "该指标消除总体规模量纲，但仍受技术结构、国家/场站构成及覆盖变化影响；比例不可跨 region 直接平均。",
     ]
     for i, line in enumerate(note_lines):

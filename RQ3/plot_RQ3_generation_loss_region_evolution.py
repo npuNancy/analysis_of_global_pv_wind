@@ -82,6 +82,12 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="国家子目录的统一根目录。默认：RQ3/outputs/{MODEL}/region_generation_loss。",
     )
+    parser.add_argument(
+        "--error-bar",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="是否绘制表示窗口内年际最小-最大值的误差条。",
+    )
     return parser.parse_args()
 
 
@@ -209,7 +215,7 @@ def plot_region(
             ax.errorbar(
                 x,
                 mean,
-                yerr=[mean - lo, hi - mean],
+                yerr=[mean - lo, hi - mean] if args.error_bar else None,
                 fmt="-o",
                 color=color,
                 lw=1.8,
@@ -251,7 +257,8 @@ def plot_region(
         0.5,
         0.045,
         "净出力损失为极端事件暴露期间应发电量与实际出力之差；每个年代点为 "
-        f"center-k（K={ANALYSIS_K}）窗口年均值（{windows}），误差条为窗口内年际最小-最大值。",
+        f"center-k（K={ANALYSIS_K}）窗口年均值（{windows}）"
+        + ("，误差条为窗口内年际最小-最大值。" if args.error_bar else "。"),
         ha="center",
         fontsize=6.2,
         color="0.4",
