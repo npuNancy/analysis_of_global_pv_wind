@@ -35,8 +35,8 @@ def main() -> None:
     write_source(data, out, "fig03_event_mechanism.csv")
 
     fig, axes = plt.subplots(2, 3, figsize=(7.4, 5.1), sharex=True, sharey="row")
-    fig.subplots_adjust(left=0.09, right=0.98, bottom=0.16, top=0.86, hspace=0.4, wspace=0.16)
-    handles = {}
+    fig.subplots_adjust(left=0.09, right=0.98, bottom=0.18, top=0.86, hspace=0.4, wspace=0.16)
+    handles_by_tech = {}
     for row, tech in enumerate(TECHS):
         events = data[data["tech"] == tech]["event"].drop_duplicates().tolist()
         events = sorted(events, key=lambda event: (event != "all", event != "low_resource", event))
@@ -54,18 +54,29 @@ def main() -> None:
                     ms=3.2, alpha=1.0 if event in {"all", "low_resource"} else 0.8,
                     label=EVENT_LABEL.get(event, event),
                 )
-                handles[event] = line
+                handles_by_tech.setdefault(tech, {})[event] = line
             ax.set_title(f"{TECH_LABEL[tech]} · {SSP_LABEL[scenario]}")
             ax.set_xticks([2030, 2040, 2050], ["2030s", "2040s", "2050s"])
             ax.grid(axis="y", lw=0.35, alpha=0.4)
             if col == 0:
                 ax.set_ylabel("事件净损失率（%）")
             panel_tag(ax, chr(ord("a") + row * 3 + col))
-    ordered = [event for event in ["all", "low_resource", "high_temp", "high_wind", "hot_humid", "icing", "rainstorm", "cold_highwind", "freezing_rain", "high_humidity"] if event in handles]
-    fig.legend(
-        [handles[event] for event in ordered], [EVENT_LABEL[event] for event in ordered],
-        loc="lower center", ncol=5, bbox_to_anchor=(0.5, 0.025),
-    )
+    event_order = [
+        "all", "low_resource", "high_temp", "high_wind", "hot_humid",
+        "icing", "rainstorm", "cold_highwind", "freezing_rain", "high_humidity",
+    ]
+    legend_y = {"wind": 0.52, "solar": 0.055}
+    for tech in TECHS:
+        tech_handles = handles_by_tech[tech]
+        ordered = [event for event in event_order if event in tech_handles]
+        fig.legend(
+            [tech_handles[event] for event in ordered],
+            [EVENT_LABEL[event] for event in ordered],
+            title=f"{TECH_LABEL[tech]}事件",
+            loc="center",
+            ncol=len(ordered),
+            bbox_to_anchor=(0.5, legend_y[tech]),
+        )
     fig.suptitle(f"极端事件类型与净出力损失率演化（{args.model}）", fontsize=10.5, fontweight="bold")
     fig.text(
         0.5, 0.005,
