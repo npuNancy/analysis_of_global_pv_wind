@@ -55,8 +55,8 @@ DEFAULT_EVENT_CSV = (
     / "{model}"
     / "csv/RQ3_extreme_event_frequency_intensity_global_evolution.csv"
 )
-TWO_FACTOR_OUT_STEM = "fig_RQ3_relative_loss_rate_two_factor_decomposition_global_evolution"
-THREE_FACTOR_OUT_STEM = "fig_RQ3_relative_loss_rate_three_factor_decomposition_global_evolution"
+TWO_FACTOR_OUT_STEM = "fig_RQ3_tradeoff_relative_loss_rate_two_factor_decomposition_global_evolution"
+THREE_FACTOR_OUT_STEM = "fig_RQ3_tradeoff_relative_loss_rate_three_factor_decomposition_global_evolution"
 CSV_NAME = "RQ3_relative_loss_rate_decomposition_global_evolution.csv"
 TWO_FACTOR_METRICS = [
     ("event_frequency_per_generation_mwh", "单位发电量事件频次", "次/MWh"),
