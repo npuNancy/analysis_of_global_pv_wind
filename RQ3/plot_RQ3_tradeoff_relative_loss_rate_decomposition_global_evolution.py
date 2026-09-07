@@ -12,6 +12,8 @@
     = episode 数 / (装机容量 × 年数)
     × 净出力损失 / episode 数
     ÷ 总发电量 / (装机容量 × 年数)
+
+两种分解均输出年代版本和可选线性趋势的逐年采样版本。
 """
 
 from __future__ import annotations
@@ -46,6 +48,10 @@ from plot_RQ3_generation_loss_global_rate_evolution import (
     SSP_C,
     SSP_L,
 )
+from plot_RQ3_tradeoff_station_level_metrics_global_evolution import (
+    load_annual_components,
+    plot_annual_metric,
+)
 
 
 TECHS = ["wind", "solar"]
@@ -58,6 +64,7 @@ DEFAULT_EVENT_CSV = (
 TWO_FACTOR_OUT_STEM = "fig_RQ3_tradeoff_relative_loss_rate_two_factor_decomposition_global_evolution"
 THREE_FACTOR_OUT_STEM = "fig_RQ3_tradeoff_relative_loss_rate_three_factor_decomposition_global_evolution"
 CSV_NAME = "RQ3_relative_loss_rate_decomposition_global_evolution.csv"
+ANNUAL_CSV_NAME = "RQ3_tradeoff_relative_loss_rate_decomposition_global_annual_evolution.csv"
 TWO_FACTOR_METRICS = [
     ("event_frequency_per_generation_mwh", "单位发电量事件频次", "次/MWh"),
     ("loss_per_episode_mwh", "单次事件净损失", "MWh/episode"),
@@ -94,7 +101,19 @@ def parse_args() -> argparse.Namespace:
         "--output-dir",
         type=Path,
         default=None,
-        help="输出目录。默认：RQ3/outputs/{MODEL}。",
+        help="输出根目录；图像保存到其 tradeoff/ 子目录。默认：RQ3/outputs/{MODEL}。",
+    )
+    parser.add_argument(
+        "--k",
+        type=int,
+        default=2,
+        help="逐年图相邻采样点之间跳过的年份数；0 表示每年、1 表示每两年。",
+    )
+    parser.add_argument(
+        "--trend-line",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help="是否在逐年图中绘制各 SSP 的线性趋势虚线。",
     )
     return parser.parse_args()
 
@@ -211,6 +230,94 @@ def load_summary(args: argparse.Namespace) -> pd.DataFrame:
     return data
 
 
+def build_annual_summary(args: argparse.Namespace) -> pd.DataFrame:
+    annual = load_annual_components(args)
+    loss_csv = args.generation_loss_csv or Path(
+        str(DEFAULT_INPUT_CSV).format(model=args.model)
+    )
+    loss = pd.read_csv(loss_csv)
+    loss = loss[
+        (loss["model"] == args.model)
+        & (loss["analysis_scheme"] == "center-k")
+        & (loss["analysis_k"] == ANALYSIS_K)
+        & (loss["event"] == "all")
+        & loss["scenario"].isin(args.ssps)
+        & loss["tech"].isin(TECHS)
+    ].copy()
+    if loss.empty:
+        raise SystemExit("发电损失表中没有匹配当前模式、SSP 和技术的逐年数据。")
+    apply_temp_wind_energy_correction(loss, context="相对损失率逐年分解图")
+    generation = (
+        loss.groupby(
+            ["scenario", "tech", "snapshot_year", "analysis_year"],
+            as_index=False,
+        )
+        .agg(
+            generation_mwh=("normal_all_generation_mwh", "sum"),
+            raw_net_loss_mwh=("net_generation_loss_mwh", "sum"),
+        )
+    )
+    data = annual.merge(
+        generation,
+        on=["scenario", "tech", "snapshot_year", "analysis_year"],
+        how="inner",
+        validate="one_to_one",
+    )
+    if len(data) != len(annual):
+        raise ValueError("逐年事件数据与发电量数据未能逐项匹配。")
+    if not np.allclose(data["net_loss_mwh"], data["raw_net_loss_mwh"], rtol=1e-10):
+        raise ValueError("逐年事件缓存与发电损失表的净损失量不一致。")
+
+    valid = (
+        (data["episode_count"] > 0)
+        & (data["capacity_mw"] > 0)
+        & (data["generation_mwh"] > 0)
+    )
+    data["event_frequency_per_generation_mwh"] = np.where(
+        valid,
+        data["episode_count"] / data["generation_mwh"],
+        np.nan,
+    )
+    data["loss_per_episode_mwh"] = np.where(
+        valid,
+        data["net_loss_mwh"] / data["episode_count"],
+        np.nan,
+    )
+    data["event_frequency_per_mw_year"] = np.where(
+        valid,
+        data["episode_count"] / data["capacity_mw"],
+        np.nan,
+    )
+    data["generation_per_mw_year_mwh"] = np.where(
+        valid,
+        data["generation_mwh"] / data["capacity_mw"],
+        np.nan,
+    )
+    data["relative_loss_rate_pct"] = np.where(
+        valid,
+        data["net_loss_mwh"] / data["generation_mwh"] * 100.0,
+        np.nan,
+    )
+    data["two_factor_rate_pct"] = (
+        data["event_frequency_per_generation_mwh"]
+        * data["loss_per_episode_mwh"]
+        * 100.0
+    )
+    data["three_factor_rate_pct"] = (
+        data["event_frequency_per_mw_year"]
+        * data["loss_per_episode_mwh"]
+        / data["generation_per_mw_year_mwh"]
+        * 100.0
+    )
+    data["two_factor_abs_error_pct_point"] = (
+        data["relative_loss_rate_pct"] - data["two_factor_rate_pct"]
+    ).abs()
+    data["three_factor_abs_error_pct_point"] = (
+        data["relative_loss_rate_pct"] - data["three_factor_rate_pct"]
+    ).abs()
+    return data.sort_values(["tech", "scenario", "analysis_year"]).reset_index(drop=True)
+
+
 def plot_metric(ax, data: pd.DataFrame, args: argparse.Namespace, value_column: str) -> None:
     x = np.arange(len(DECADE_ORDER))
     for ssp in args.ssps:
@@ -241,6 +348,8 @@ def plot_decomposition(
     out_stem: str,
     title: str,
     note: str,
+    *,
+    annual: bool = False,
 ) -> Path:
     configure_style()
     n_columns = len(metrics)
@@ -259,12 +368,16 @@ def plot_decomposition(
         tech_data = summary[summary["tech"] == tech]
         for column, (value_column, column_title, unit) in enumerate(metrics):
             ax = axes[row, column]
-            plot_metric(ax, tech_data, args, value_column)
+            if annual:
+                plot_annual_metric(ax, tech_data, args, value_column)
+            else:
+                plot_metric(ax, tech_data, args, value_column)
             ax.set_ylabel(unit)
             if row == 0:
                 ax.set_title(column_title, fontsize=9, fontweight="bold")
             else:
-                ax.set_xlabel("年代")
+                ax.set_xlabel("年份" if annual else "年代")
+            ax.tick_params(axis="x", which="both", labelbottom=True)
             panel_tag(ax, chr(ord("a") + row * n_columns + column), dx=-0.13, dy=1.08)
 
     fig.text(0.015, 0.62, TECH_LABEL["wind"], rotation=90, ha="center", va="center", fontsize=10, fontweight="bold")
@@ -292,10 +405,27 @@ def plot_decomposition(
         handletextpad=0.6,
         columnspacing=1.6,
     )
-    fig.suptitle(f"{title}（{args.model}）", fontsize=11, fontweight="bold", y=0.995)
-    fig.text(0.5, 0.045, note, ha="center", fontsize=6.2, color="0.4")
+    fig.suptitle(
+        f"{title}（{'逐年采样，' if annual else ''}{args.model}）",
+        fontsize=11,
+        fontweight="bold",
+        y=0.995,
+    )
+    figure_note = (
+        f"采样点间隔为 {args.k + 1} 年（k={args.k}）；"
+        + (
+            "同色虚线为各 SSP 全部有效年份的一阶线性拟合。"
+            if args.trend_line
+            else ""
+        )
+        + note
+        if annual
+        else note
+    )
+    fig.text(0.5, 0.045, figure_note, ha="center", fontsize=6.2, color="0.4")
 
-    out_path = out_dir / f"{out_stem}.png"
+    suffix = f"_annual_k{args.k}" if annual else ""
+    out_path = out_dir / f"{out_stem}{suffix}.png"
     fig.savefig(out_path, bbox_inches="tight")
     plt.close(fig)
     return out_path
@@ -303,18 +433,24 @@ def plot_decomposition(
 
 def main() -> None:
     args = parse_args()
+    if args.k < 0:
+        raise SystemExit("k 必须大于或等于 0。")
     out_dir = args.output_dir or (DEFAULT_OUTPUT_DIR / args.model)
+    figure_dir = out_dir / "tradeoff"
     csv_dir = out_dir / "csv"
-    out_dir.mkdir(parents=True, exist_ok=True)
+    figure_dir.mkdir(parents=True, exist_ok=True)
     csv_dir.mkdir(parents=True, exist_ok=True)
 
     summary = load_summary(args)
+    annual = build_annual_summary(args)
     csv_path = csv_dir / CSV_NAME
+    annual_csv_path = csv_dir / ANNUAL_CSV_NAME
     summary.to_csv(csv_path, index=False)
+    annual.to_csv(annual_csv_path, index=False)
     two_factor_path = plot_decomposition(
         summary,
         args,
-        out_dir,
+        figure_dir,
         TWO_FACTOR_METRICS,
         TWO_FACTOR_OUT_STEM,
         "全球风光相对损失率两因素分解",
@@ -323,15 +459,38 @@ def main() -> None:
     three_factor_path = plot_decomposition(
         summary,
         args,
-        out_dir,
+        figure_dir,
         THREE_FACTOR_METRICS,
         THREE_FACTOR_OUT_STEM,
         "全球风光相对损失率三因素分解",
         "相对损失率 = 单位装机事件频次 × 单次事件净损失 ÷ 单位装机平均发电量。",
     )
+    two_factor_annual_path = plot_decomposition(
+        annual,
+        args,
+        figure_dir,
+        TWO_FACTOR_METRICS,
+        TWO_FACTOR_OUT_STEM,
+        "全球风光相对损失率两因素分解",
+        "相对损失率 = 单位发电量事件频次 × 单次事件净损失。",
+        annual=True,
+    )
+    three_factor_annual_path = plot_decomposition(
+        annual,
+        args,
+        figure_dir,
+        THREE_FACTOR_METRICS,
+        THREE_FACTOR_OUT_STEM,
+        "全球风光相对损失率三因素分解",
+        "相对损失率 = 单位装机事件频次 × 单次事件净损失 ÷ 单位装机平均发电量。",
+        annual=True,
+    )
     print(f"已保存：{two_factor_path}")
     print(f"已保存：{three_factor_path}")
+    print(f"已保存：{two_factor_annual_path}")
+    print(f"已保存：{three_factor_annual_path}")
     print(f"已保存汇总表：{csv_path}")
+    print(f"已保存逐年汇总表：{annual_csv_path}")
     print(
         "两因素分解最大绝对误差："
         f"{summary['two_factor_abs_error_pct_point'].max():.3e} 个百分点"
