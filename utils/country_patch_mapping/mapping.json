@@ -1,0 +1,7107 @@
+{
+  "china_rule": "canonical China = Natural Earth China + Taiwan; Taiwan station rows retain natural_earth_name=Taiwan",
+  "coordinate_convention": {
+    "country_assignment": "Natural Earth admin-0 点覆盖（covered_by）；多边形外坐标在阈值内使用最近边界回退，超出阈值才标记为 UNMAPPED",
+    "natural_earth_longitude": "[-180, 180]",
+    "nearest_fallback": "多边形外坐标在 2.5° 内归入最近 Natural Earth 边界，并标记 country_match_method=nearest_boundary",
+    "patch_boundary": "30°×30° 核心区，纬度下边界包含、上边界不包含；经度左闭右开",
+    "station_input_longitude": "[0, 360)",
+    "station_lon_180": "((lon + 180) % 360) - 180"
+  },
+  "countries": {
+    "Afghanistan": {
+      "country": "Afghanistan",
+      "country_en": "Afghanistan",
+      "country_iso3": "AFG",
+      "country_zh": "阿富汗",
+      "country_zht": "阿富汗",
+      "geometry_patches": [
+        "R02C09",
+        "R03C09"
+      ],
+      "natural_earth_iso3": [
+        "AFG"
+      ],
+      "natural_earth_names": [
+        "Afghanistan"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C09",
+          "R03C09"
+        ],
+        "ssp245": [
+          "R02C09",
+          "R03C09"
+        ],
+        "ssp585": [
+          "R02C09",
+          "R03C09"
+        ]
+      }
+    },
+    "Albania": {
+      "country": "Albania",
+      "country_en": "Albania",
+      "country_iso3": "ALB",
+      "country_zh": "阿尔巴尼亚",
+      "country_zht": "阿爾巴尼亞",
+      "geometry_patches": [
+        "R02C07"
+      ],
+      "natural_earth_iso3": [
+        "ALB"
+      ],
+      "natural_earth_names": [
+        "Albania"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C07"
+        ],
+        "ssp245": [
+          "R02C07"
+        ],
+        "ssp585": [
+          "R02C07"
+        ]
+      }
+    },
+    "Algeria": {
+      "country": "Algeria",
+      "country_en": "Algeria",
+      "country_iso3": "DZA",
+      "country_zh": "阿尔及利亚",
+      "country_zht": "阿爾及利亞",
+      "geometry_patches": [
+        "R02C06",
+        "R02C07",
+        "R03C06",
+        "R03C07"
+      ],
+      "natural_earth_iso3": [
+        "DZA"
+      ],
+      "natural_earth_names": [
+        "Algeria"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C06",
+          "R02C07",
+          "R03C06",
+          "R03C07"
+        ],
+        "ssp245": [
+          "R02C06",
+          "R02C07",
+          "R03C06",
+          "R03C07"
+        ],
+        "ssp585": [
+          "R02C06",
+          "R02C07",
+          "R03C06",
+          "R03C07"
+        ]
+      }
+    },
+    "Angola": {
+      "country": "Angola",
+      "country_en": "Angola",
+      "country_iso3": "AGO",
+      "country_zh": "安哥拉",
+      "country_zht": "安哥拉",
+      "geometry_patches": [
+        "R04C07"
+      ],
+      "natural_earth_iso3": [
+        "AGO"
+      ],
+      "natural_earth_names": [
+        "Angola"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R04C07"
+        ],
+        "ssp245": [
+          "R04C07"
+        ],
+        "ssp585": [
+          "R04C07"
+        ]
+      }
+    },
+    "Antarctica": {
+      "country": "Antarctica",
+      "country_en": "Antarctica",
+      "country_iso3": "ATA",
+      "country_zh": "南极洲",
+      "country_zht": "南極洲",
+      "geometry_patches": [],
+      "natural_earth_iso3": [
+        "ATA"
+      ],
+      "natural_earth_names": [
+        "Antarctica"
+      ],
+      "station_patches": {
+        "ssp126": [],
+        "ssp245": [],
+        "ssp585": []
+      }
+    },
+    "Argentina": {
+      "country": "Argentina",
+      "country_en": "Argentina",
+      "country_iso3": "ARG",
+      "country_zh": "阿根廷",
+      "country_zht": "阿根廷",
+      "geometry_patches": [
+        "R04C04",
+        "R04C05",
+        "R05C04",
+        "R05C05"
+      ],
+      "natural_earth_iso3": [
+        "ARG"
+      ],
+      "natural_earth_names": [
+        "Argentina"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R04C04",
+          "R04C05",
+          "R05C04",
+          "R05C05"
+        ],
+        "ssp245": [
+          "R04C04",
+          "R04C05",
+          "R05C04",
+          "R05C05"
+        ],
+        "ssp585": [
+          "R04C04",
+          "R04C05",
+          "R05C04",
+          "R05C05"
+        ]
+      }
+    },
+    "Armenia": {
+      "country": "Armenia",
+      "country_en": "Armenia",
+      "country_iso3": "ARM",
+      "country_zh": "亚美尼亚",
+      "country_zht": "亞美尼亞",
+      "geometry_patches": [
+        "R02C08"
+      ],
+      "natural_earth_iso3": [
+        "ARM"
+      ],
+      "natural_earth_names": [
+        "Armenia"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C08"
+        ],
+        "ssp245": [
+          "R02C08"
+        ],
+        "ssp585": [
+          "R02C08"
+        ]
+      }
+    },
+    "Australia": {
+      "country": "Australia",
+      "country_en": "Australia",
+      "country_iso3": "AUS",
+      "country_zh": "澳大利亚",
+      "country_zht": "澳大利亞",
+      "geometry_patches": [
+        "R04C10",
+        "R04C11",
+        "R04C12",
+        "R05C10",
+        "R05C11",
+        "R05C12"
+      ],
+      "natural_earth_iso3": [
+        "AUS"
+      ],
+      "natural_earth_names": [
+        "Australia"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R04C10",
+          "R04C11",
+          "R04C12",
+          "R05C10",
+          "R05C11",
+          "R05C12"
+        ],
+        "ssp245": [
+          "R04C10",
+          "R04C11",
+          "R04C12",
+          "R05C10",
+          "R05C11",
+          "R05C12"
+        ],
+        "ssp585": [
+          "R04C10",
+          "R04C11",
+          "R04C12",
+          "R05C10",
+          "R05C11",
+          "R05C12"
+        ]
+      }
+    },
+    "Austria": {
+      "country": "Austria",
+      "country_en": "Austria",
+      "country_iso3": "AUT",
+      "country_zh": "奥地利",
+      "country_zht": "奧地利",
+      "geometry_patches": [
+        "R02C07"
+      ],
+      "natural_earth_iso3": [
+        "AUT"
+      ],
+      "natural_earth_names": [
+        "Austria"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C07"
+        ],
+        "ssp245": [
+          "R02C07"
+        ],
+        "ssp585": [
+          "R02C07"
+        ]
+      }
+    },
+    "Azerbaijan": {
+      "country": "Azerbaijan",
+      "country_en": "Azerbaijan",
+      "country_iso3": "AZE",
+      "country_zh": "阿塞拜疆",
+      "country_zht": "亞塞拜然",
+      "geometry_patches": [
+        "R02C08"
+      ],
+      "natural_earth_iso3": [
+        "AZE"
+      ],
+      "natural_earth_names": [
+        "Azerbaijan"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C08"
+        ],
+        "ssp245": [
+          "R02C08"
+        ],
+        "ssp585": [
+          "R02C08"
+        ]
+      }
+    },
+    "Bahamas": {
+      "country": "Bahamas",
+      "country_en": "The Bahamas",
+      "country_iso3": "BHS",
+      "country_zh": "巴哈马",
+      "country_zht": "巴哈馬",
+      "geometry_patches": [
+        "R03C04"
+      ],
+      "natural_earth_iso3": [
+        "BHS"
+      ],
+      "natural_earth_names": [
+        "Bahamas"
+      ],
+      "station_patches": {
+        "ssp126": [],
+        "ssp245": [],
+        "ssp585": []
+      }
+    },
+    "Bangladesh": {
+      "country": "Bangladesh",
+      "country_en": "Bangladesh",
+      "country_iso3": "BGD",
+      "country_zh": "孟加拉国",
+      "country_zht": "孟加拉",
+      "geometry_patches": [
+        "R03C09",
+        "R03C10"
+      ],
+      "natural_earth_iso3": [
+        "BGD"
+      ],
+      "natural_earth_names": [
+        "Bangladesh"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C09",
+          "R03C10"
+        ],
+        "ssp245": [
+          "R03C09",
+          "R03C10"
+        ],
+        "ssp585": [
+          "R03C09",
+          "R03C10"
+        ]
+      }
+    },
+    "Belarus": {
+      "country": "Belarus",
+      "country_en": "Belarus",
+      "country_iso3": "BLR",
+      "country_zh": "白俄罗斯",
+      "country_zht": "白俄羅斯",
+      "geometry_patches": [
+        "R02C07",
+        "R02C08"
+      ],
+      "natural_earth_iso3": [
+        "BLR"
+      ],
+      "natural_earth_names": [
+        "Belarus"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C07",
+          "R02C08"
+        ],
+        "ssp245": [
+          "R02C07",
+          "R02C08"
+        ],
+        "ssp585": [
+          "R02C07",
+          "R02C08"
+        ]
+      }
+    },
+    "Belgium": {
+      "country": "Belgium",
+      "country_en": "Belgium",
+      "country_iso3": "BEL",
+      "country_zh": "比利时",
+      "country_zht": "比利時",
+      "geometry_patches": [
+        "R02C07"
+      ],
+      "natural_earth_iso3": [
+        "BEL"
+      ],
+      "natural_earth_names": [
+        "Belgium"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C07"
+        ],
+        "ssp245": [
+          "R02C07"
+        ],
+        "ssp585": [
+          "R02C07"
+        ]
+      }
+    },
+    "Belize": {
+      "country": "Belize",
+      "country_en": "Belize",
+      "country_iso3": "BLZ",
+      "country_zh": "伯利兹",
+      "country_zht": "貝里斯",
+      "geometry_patches": [
+        "R03C04"
+      ],
+      "natural_earth_iso3": [
+        "BLZ"
+      ],
+      "natural_earth_names": [
+        "Belize"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C04"
+        ],
+        "ssp245": [
+          "R03C04"
+        ],
+        "ssp585": [
+          "R03C04"
+        ]
+      }
+    },
+    "Benin": {
+      "country": "Benin",
+      "country_en": "Benin",
+      "country_iso3": "BEN",
+      "country_zh": "贝宁",
+      "country_zht": "貝南",
+      "geometry_patches": [
+        "R03C07"
+      ],
+      "natural_earth_iso3": [
+        "BEN"
+      ],
+      "natural_earth_names": [
+        "Benin"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C07"
+        ],
+        "ssp245": [
+          "R03C07"
+        ],
+        "ssp585": [
+          "R03C07"
+        ]
+      }
+    },
+    "Bhutan": {
+      "country": "Bhutan",
+      "country_en": "Bhutan",
+      "country_iso3": "BTN",
+      "country_zh": "不丹",
+      "country_zht": "不丹",
+      "geometry_patches": [
+        "R03C09",
+        "R03C10"
+      ],
+      "natural_earth_iso3": [
+        "BTN"
+      ],
+      "natural_earth_names": [
+        "Bhutan"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C09",
+          "R03C10"
+        ],
+        "ssp245": [
+          "R03C09",
+          "R03C10"
+        ],
+        "ssp585": [
+          "R03C10"
+        ]
+      }
+    },
+    "Bolivia": {
+      "country": "Bolivia",
+      "country_en": "Bolivia",
+      "country_iso3": "BOL",
+      "country_zh": "玻利维亚",
+      "country_zht": "玻利維亞",
+      "geometry_patches": [
+        "R04C04",
+        "R04C05"
+      ],
+      "natural_earth_iso3": [
+        "BOL"
+      ],
+      "natural_earth_names": [
+        "Bolivia"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R04C04",
+          "R04C05"
+        ],
+        "ssp245": [
+          "R04C04",
+          "R04C05"
+        ],
+        "ssp585": [
+          "R04C04",
+          "R04C05"
+        ]
+      }
+    },
+    "Bosnia and Herz.": {
+      "country": "Bosnia and Herz.",
+      "country_en": "Bosnia and Herzegovina",
+      "country_iso3": "BIH",
+      "country_zh": "波斯尼亚和黑塞哥维那",
+      "country_zht": "波士尼亞與赫塞哥維納",
+      "geometry_patches": [
+        "R02C07"
+      ],
+      "natural_earth_iso3": [
+        "BIH"
+      ],
+      "natural_earth_names": [
+        "Bosnia and Herz."
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C07"
+        ],
+        "ssp245": [
+          "R02C07"
+        ],
+        "ssp585": [
+          "R02C07"
+        ]
+      }
+    },
+    "Botswana": {
+      "country": "Botswana",
+      "country_en": "Botswana",
+      "country_iso3": "BWA",
+      "country_zh": "博茨瓦纳",
+      "country_zht": "波札那",
+      "geometry_patches": [
+        "R04C07"
+      ],
+      "natural_earth_iso3": [
+        "BWA"
+      ],
+      "natural_earth_names": [
+        "Botswana"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R04C07"
+        ],
+        "ssp245": [
+          "R04C07"
+        ],
+        "ssp585": [
+          "R04C07"
+        ]
+      }
+    },
+    "Brazil": {
+      "country": "Brazil",
+      "country_en": "Brazil",
+      "country_iso3": "BRA",
+      "country_zh": "巴西",
+      "country_zht": "巴西",
+      "geometry_patches": [
+        "R03C04",
+        "R03C05",
+        "R04C04",
+        "R04C05",
+        "R05C05"
+      ],
+      "natural_earth_iso3": [
+        "BRA"
+      ],
+      "natural_earth_names": [
+        "Brazil"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C04",
+          "R03C05",
+          "R04C04",
+          "R04C05",
+          "R05C05"
+        ],
+        "ssp245": [
+          "R03C04",
+          "R03C05",
+          "R04C04",
+          "R04C05",
+          "R05C05"
+        ],
+        "ssp585": [
+          "R03C04",
+          "R03C05",
+          "R04C04",
+          "R04C05",
+          "R05C05"
+        ]
+      }
+    },
+    "Brunei": {
+      "country": "Brunei",
+      "country_en": "Brunei",
+      "country_iso3": "BRN",
+      "country_zh": "文莱",
+      "country_zht": "汶萊",
+      "geometry_patches": [
+        "R03C10"
+      ],
+      "natural_earth_iso3": [
+        "BRN"
+      ],
+      "natural_earth_names": [
+        "Brunei"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C10"
+        ],
+        "ssp245": [],
+        "ssp585": [
+          "R03C10"
+        ]
+      }
+    },
+    "Bulgaria": {
+      "country": "Bulgaria",
+      "country_en": "Bulgaria",
+      "country_iso3": "BGR",
+      "country_zh": "保加利亚",
+      "country_zht": "保加利亞",
+      "geometry_patches": [
+        "R02C07"
+      ],
+      "natural_earth_iso3": [
+        "BGR"
+      ],
+      "natural_earth_names": [
+        "Bulgaria"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C07"
+        ],
+        "ssp245": [
+          "R02C07"
+        ],
+        "ssp585": [
+          "R02C07"
+        ]
+      }
+    },
+    "Burkina Faso": {
+      "country": "Burkina Faso",
+      "country_en": "Burkina Faso",
+      "country_iso3": "BFA",
+      "country_zh": "布基纳法索",
+      "country_zht": "布基納法索",
+      "geometry_patches": [
+        "R03C06",
+        "R03C07"
+      ],
+      "natural_earth_iso3": [
+        "BFA"
+      ],
+      "natural_earth_names": [
+        "Burkina Faso"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C06",
+          "R03C07"
+        ],
+        "ssp245": [
+          "R03C06",
+          "R03C07"
+        ],
+        "ssp585": [
+          "R03C06",
+          "R03C07"
+        ]
+      }
+    },
+    "Burundi": {
+      "country": "Burundi",
+      "country_en": "Burundi",
+      "country_iso3": "BDI",
+      "country_zh": "布隆迪",
+      "country_zht": "蒲隆地",
+      "geometry_patches": [
+        "R04C07",
+        "R04C08"
+      ],
+      "natural_earth_iso3": [
+        "BDI"
+      ],
+      "natural_earth_names": [
+        "Burundi"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R04C07",
+          "R04C08"
+        ],
+        "ssp245": [
+          "R04C07",
+          "R04C08"
+        ],
+        "ssp585": [
+          "R04C08"
+        ]
+      }
+    },
+    "Cambodia": {
+      "country": "Cambodia",
+      "country_en": "Cambodia",
+      "country_iso3": "KHM",
+      "country_zh": "柬埔寨",
+      "country_zht": "柬埔寨",
+      "geometry_patches": [
+        "R03C10"
+      ],
+      "natural_earth_iso3": [
+        "KHM"
+      ],
+      "natural_earth_names": [
+        "Cambodia"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C10"
+        ],
+        "ssp245": [
+          "R03C10"
+        ],
+        "ssp585": [
+          "R03C10"
+        ]
+      }
+    },
+    "Cameroon": {
+      "country": "Cameroon",
+      "country_en": "Cameroon",
+      "country_iso3": "CMR",
+      "country_zh": "喀麦隆",
+      "country_zht": "喀麥隆",
+      "geometry_patches": [
+        "R03C07"
+      ],
+      "natural_earth_iso3": [
+        "CMR"
+      ],
+      "natural_earth_names": [
+        "Cameroon"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C07"
+        ],
+        "ssp245": [
+          "R03C07"
+        ],
+        "ssp585": [
+          "R03C07"
+        ]
+      }
+    },
+    "Canada": {
+      "country": "Canada",
+      "country_en": "Canada",
+      "country_iso3": "CAN",
+      "country_zh": "加拿大",
+      "country_zht": "加拿大",
+      "geometry_patches": [
+        "R01C02",
+        "R01C03",
+        "R01C04",
+        "R02C02",
+        "R02C03",
+        "R02C04",
+        "R02C05"
+      ],
+      "natural_earth_iso3": [
+        "CAN"
+      ],
+      "natural_earth_names": [
+        "Canada"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R01C02",
+          "R02C02",
+          "R02C03",
+          "R02C04",
+          "R02C05"
+        ],
+        "ssp245": [
+          "R02C02",
+          "R02C03",
+          "R02C04",
+          "R02C05"
+        ],
+        "ssp585": [
+          "R02C02",
+          "R02C03",
+          "R02C04",
+          "R02C05"
+        ]
+      }
+    },
+    "Central African Rep.": {
+      "country": "Central African Rep.",
+      "country_en": "Central African Republic",
+      "country_iso3": "CAF",
+      "country_zh": "中非共和国",
+      "country_zht": "中非共和國",
+      "geometry_patches": [
+        "R03C07"
+      ],
+      "natural_earth_iso3": [
+        "CAF"
+      ],
+      "natural_earth_names": [
+        "Central African Rep."
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C07"
+        ],
+        "ssp245": [
+          "R03C07"
+        ],
+        "ssp585": [
+          "R03C07"
+        ]
+      }
+    },
+    "Chad": {
+      "country": "Chad",
+      "country_en": "Chad",
+      "country_iso3": "TCD",
+      "country_zh": "乍得",
+      "country_zht": "查德",
+      "geometry_patches": [
+        "R03C07"
+      ],
+      "natural_earth_iso3": [
+        "TCD"
+      ],
+      "natural_earth_names": [
+        "Chad"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C07"
+        ],
+        "ssp245": [
+          "R03C07"
+        ],
+        "ssp585": [
+          "R03C07"
+        ]
+      }
+    },
+    "Chile": {
+      "country": "Chile",
+      "country_en": "Chile",
+      "country_iso3": "CHL",
+      "country_zh": "智利",
+      "country_zht": "智利",
+      "geometry_patches": [
+        "R04C04",
+        "R05C04"
+      ],
+      "natural_earth_iso3": [
+        "CHL"
+      ],
+      "natural_earth_names": [
+        "Chile"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R04C04",
+          "R05C04"
+        ],
+        "ssp245": [
+          "R04C04",
+          "R05C04"
+        ],
+        "ssp585": [
+          "R04C04",
+          "R05C04"
+        ]
+      }
+    },
+    "China": {
+      "country": "China",
+      "country_en": "People's Republic of China",
+      "country_iso3": "CHN",
+      "country_zh": "中华人民共和国",
+      "country_zht": "中華人民共和國",
+      "geometry_patches": [
+        "R02C09",
+        "R02C10",
+        "R02C11",
+        "R03C09",
+        "R03C10",
+        "R03C11"
+      ],
+      "natural_earth_iso3": [
+        "CHN",
+        "TWN"
+      ],
+      "natural_earth_names": [
+        "China",
+        "Taiwan"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C09",
+          "R02C10",
+          "R02C11",
+          "R03C09",
+          "R03C10",
+          "R03C11"
+        ],
+        "ssp245": [
+          "R02C09",
+          "R02C10",
+          "R02C11",
+          "R03C10",
+          "R03C11"
+        ],
+        "ssp585": [
+          "R02C09",
+          "R02C10",
+          "R02C11",
+          "R03C09",
+          "R03C10",
+          "R03C11"
+        ]
+      }
+    },
+    "Colombia": {
+      "country": "Colombia",
+      "country_en": "Colombia",
+      "country_iso3": "COL",
+      "country_zh": "哥伦比亚",
+      "country_zht": "哥倫比亞",
+      "geometry_patches": [
+        "R03C04",
+        "R04C04"
+      ],
+      "natural_earth_iso3": [
+        "COL"
+      ],
+      "natural_earth_names": [
+        "Colombia"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C04"
+        ],
+        "ssp245": [
+          "R03C04"
+        ],
+        "ssp585": [
+          "R03C04"
+        ]
+      }
+    },
+    "Congo": {
+      "country": "Congo",
+      "country_en": "Republic of the Congo",
+      "country_iso3": "COG",
+      "country_zh": "刚果共和国",
+      "country_zht": "剛果共和國",
+      "geometry_patches": [
+        "R03C07",
+        "R04C07"
+      ],
+      "natural_earth_iso3": [
+        "COG"
+      ],
+      "natural_earth_names": [
+        "Congo"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C07",
+          "R04C07"
+        ],
+        "ssp245": [
+          "R03C07",
+          "R04C07"
+        ],
+        "ssp585": [
+          "R03C07",
+          "R04C07"
+        ]
+      }
+    },
+    "Costa Rica": {
+      "country": "Costa Rica",
+      "country_en": "Costa Rica",
+      "country_iso3": "CRI",
+      "country_zh": "哥斯达黎加",
+      "country_zht": "哥斯大黎加",
+      "geometry_patches": [
+        "R03C04"
+      ],
+      "natural_earth_iso3": [
+        "CRI"
+      ],
+      "natural_earth_names": [
+        "Costa Rica"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C04"
+        ],
+        "ssp245": [
+          "R03C04"
+        ],
+        "ssp585": []
+      }
+    },
+    "Croatia": {
+      "country": "Croatia",
+      "country_en": "Croatia",
+      "country_iso3": "HRV",
+      "country_zh": "克罗地亚",
+      "country_zht": "克羅地亞",
+      "geometry_patches": [
+        "R02C07"
+      ],
+      "natural_earth_iso3": [
+        "HRV"
+      ],
+      "natural_earth_names": [
+        "Croatia"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C07"
+        ],
+        "ssp245": [
+          "R02C07"
+        ],
+        "ssp585": [
+          "R02C07"
+        ]
+      }
+    },
+    "Cuba": {
+      "country": "Cuba",
+      "country_en": "Cuba",
+      "country_iso3": "CUB",
+      "country_zh": "古巴",
+      "country_zht": "古巴",
+      "geometry_patches": [
+        "R03C04"
+      ],
+      "natural_earth_iso3": [
+        "CUB"
+      ],
+      "natural_earth_names": [
+        "Cuba"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C04"
+        ],
+        "ssp245": [
+          "R03C04"
+        ],
+        "ssp585": [
+          "R03C04"
+        ]
+      }
+    },
+    "Cyprus": {
+      "country": "Cyprus",
+      "country_en": "Cyprus",
+      "country_iso3": "CYP",
+      "country_zh": "塞浦路斯",
+      "country_zht": "賽普勒斯",
+      "geometry_patches": [
+        "R02C08"
+      ],
+      "natural_earth_iso3": [
+        "CYP"
+      ],
+      "natural_earth_names": [
+        "Cyprus"
+      ],
+      "station_patches": {
+        "ssp126": [],
+        "ssp245": [
+          "R02C08"
+        ],
+        "ssp585": [
+          "R02C08"
+        ]
+      }
+    },
+    "Czechia": {
+      "country": "Czechia",
+      "country_en": "Czech Republic",
+      "country_iso3": "CZE",
+      "country_zh": "捷克",
+      "country_zht": "捷克共和國",
+      "geometry_patches": [
+        "R02C07"
+      ],
+      "natural_earth_iso3": [
+        "CZE"
+      ],
+      "natural_earth_names": [
+        "Czechia"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C07"
+        ],
+        "ssp245": [
+          "R02C07"
+        ],
+        "ssp585": [
+          "R02C07"
+        ]
+      }
+    },
+    "Côte d'Ivoire": {
+      "country": "Côte d'Ivoire",
+      "country_en": "Ivory Coast",
+      "country_iso3": "CIV",
+      "country_zh": "科特迪瓦",
+      "country_zht": "象牙海岸",
+      "geometry_patches": [
+        "R03C06"
+      ],
+      "natural_earth_iso3": [
+        "CIV"
+      ],
+      "natural_earth_names": [
+        "Côte d'Ivoire"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C06"
+        ],
+        "ssp245": [
+          "R03C06"
+        ],
+        "ssp585": [
+          "R03C06"
+        ]
+      }
+    },
+    "Dem. Rep. Congo": {
+      "country": "Dem. Rep. Congo",
+      "country_en": "Democratic Republic of the Congo",
+      "country_iso3": "COD",
+      "country_zh": "刚果民主共和国",
+      "country_zht": "剛果民主共和國",
+      "geometry_patches": [
+        "R03C07",
+        "R03C08",
+        "R04C07",
+        "R04C08"
+      ],
+      "natural_earth_iso3": [
+        "COD"
+      ],
+      "natural_earth_names": [
+        "Dem. Rep. Congo"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C07",
+          "R03C08",
+          "R04C07",
+          "R04C08"
+        ],
+        "ssp245": [
+          "R03C07",
+          "R03C08",
+          "R04C07",
+          "R04C08"
+        ],
+        "ssp585": [
+          "R03C07",
+          "R03C08",
+          "R04C07",
+          "R04C08"
+        ]
+      }
+    },
+    "Denmark": {
+      "country": "Denmark",
+      "country_en": "Denmark",
+      "country_iso3": "DNK",
+      "country_zh": "丹麦",
+      "country_zht": "丹麥",
+      "geometry_patches": [
+        "R02C07"
+      ],
+      "natural_earth_iso3": [
+        "DNK"
+      ],
+      "natural_earth_names": [
+        "Denmark"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C07"
+        ],
+        "ssp245": [
+          "R02C07"
+        ],
+        "ssp585": [
+          "R02C07"
+        ]
+      }
+    },
+    "Djibouti": {
+      "country": "Djibouti",
+      "country_en": "Djibouti",
+      "country_iso3": "DJI",
+      "country_zh": "吉布提",
+      "country_zht": "吉布地",
+      "geometry_patches": [
+        "R03C08"
+      ],
+      "natural_earth_iso3": [
+        "DJI"
+      ],
+      "natural_earth_names": [
+        "Djibouti"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C08"
+        ],
+        "ssp245": [
+          "R03C08"
+        ],
+        "ssp585": [
+          "R03C08"
+        ]
+      }
+    },
+    "Dominican Rep.": {
+      "country": "Dominican Rep.",
+      "country_en": "Dominican Republic",
+      "country_iso3": "DOM",
+      "country_zh": "多米尼加",
+      "country_zht": "多明尼加",
+      "geometry_patches": [
+        "R03C04"
+      ],
+      "natural_earth_iso3": [
+        "DOM"
+      ],
+      "natural_earth_names": [
+        "Dominican Rep."
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C04"
+        ],
+        "ssp245": [
+          "R03C04"
+        ],
+        "ssp585": [
+          "R03C04"
+        ]
+      }
+    },
+    "Ecuador": {
+      "country": "Ecuador",
+      "country_en": "Ecuador",
+      "country_iso3": "ECU",
+      "country_zh": "厄瓜多尔",
+      "country_zht": "厄瓜多爾",
+      "geometry_patches": [
+        "R03C04",
+        "R04C04"
+      ],
+      "natural_earth_iso3": [
+        "ECU"
+      ],
+      "natural_earth_names": [
+        "Ecuador"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C04",
+          "R04C04"
+        ],
+        "ssp245": [
+          "R03C04",
+          "R04C04"
+        ],
+        "ssp585": [
+          "R03C04",
+          "R04C04"
+        ]
+      }
+    },
+    "Egypt": {
+      "country": "Egypt",
+      "country_en": "Egypt",
+      "country_iso3": "EGY",
+      "country_zh": "埃及",
+      "country_zht": "埃及",
+      "geometry_patches": [
+        "R02C07",
+        "R02C08",
+        "R03C07",
+        "R03C08"
+      ],
+      "natural_earth_iso3": [
+        "EGY"
+      ],
+      "natural_earth_names": [
+        "Egypt"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C07",
+          "R02C08",
+          "R03C07",
+          "R03C08"
+        ],
+        "ssp245": [
+          "R02C07",
+          "R02C08",
+          "R03C07",
+          "R03C08"
+        ],
+        "ssp585": [
+          "R02C07",
+          "R02C08",
+          "R03C07",
+          "R03C08"
+        ]
+      }
+    },
+    "El Salvador": {
+      "country": "El Salvador",
+      "country_en": "El Salvador",
+      "country_iso3": "SLV",
+      "country_zh": "萨尔瓦多",
+      "country_zht": "薩爾瓦多",
+      "geometry_patches": [
+        "R03C03",
+        "R03C04"
+      ],
+      "natural_earth_iso3": [
+        "SLV"
+      ],
+      "natural_earth_names": [
+        "El Salvador"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C04"
+        ],
+        "ssp245": [
+          "R03C04"
+        ],
+        "ssp585": [
+          "R03C04"
+        ]
+      }
+    },
+    "Eq. Guinea": {
+      "country": "Eq. Guinea",
+      "country_en": "Equatorial Guinea",
+      "country_iso3": "GNQ",
+      "country_zh": "赤道几内亚",
+      "country_zht": "赤道幾內亞",
+      "geometry_patches": [
+        "R03C07"
+      ],
+      "natural_earth_iso3": [
+        "GNQ"
+      ],
+      "natural_earth_names": [
+        "Eq. Guinea"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C07"
+        ],
+        "ssp245": [
+          "R03C07"
+        ],
+        "ssp585": [
+          "R03C07"
+        ]
+      }
+    },
+    "Eritrea": {
+      "country": "Eritrea",
+      "country_en": "Eritrea",
+      "country_iso3": "ERI",
+      "country_zh": "厄立特里亚",
+      "country_zht": "厄利垂亞",
+      "geometry_patches": [
+        "R03C08"
+      ],
+      "natural_earth_iso3": [
+        "ERI"
+      ],
+      "natural_earth_names": [
+        "Eritrea"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C08"
+        ],
+        "ssp245": [
+          "R03C08"
+        ],
+        "ssp585": [
+          "R03C08"
+        ]
+      }
+    },
+    "Estonia": {
+      "country": "Estonia",
+      "country_en": "Estonia",
+      "country_iso3": "EST",
+      "country_zh": "爱沙尼亚",
+      "country_zht": "愛沙尼亞",
+      "geometry_patches": [
+        "R02C07"
+      ],
+      "natural_earth_iso3": [
+        "EST"
+      ],
+      "natural_earth_names": [
+        "Estonia"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C07"
+        ],
+        "ssp245": [
+          "R02C07"
+        ],
+        "ssp585": [
+          "R02C07"
+        ]
+      }
+    },
+    "Ethiopia": {
+      "country": "Ethiopia",
+      "country_en": "Ethiopia",
+      "country_iso3": "ETH",
+      "country_zh": "埃塞俄比亚",
+      "country_zht": "衣索比亞",
+      "geometry_patches": [
+        "R03C08"
+      ],
+      "natural_earth_iso3": [
+        "ETH"
+      ],
+      "natural_earth_names": [
+        "Ethiopia"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C08"
+        ],
+        "ssp245": [
+          "R03C08"
+        ],
+        "ssp585": [
+          "R03C08"
+        ]
+      }
+    },
+    "Falkland Is.": {
+      "country": "Falkland Is.",
+      "country_en": "Falkland Islands",
+      "country_iso3": "FLK",
+      "country_zh": "福克兰群岛",
+      "country_zht": "福克蘭群島",
+      "geometry_patches": [
+        "R05C04",
+        "R05C05"
+      ],
+      "natural_earth_iso3": [
+        "FLK"
+      ],
+      "natural_earth_names": [
+        "Falkland Is."
+      ],
+      "station_patches": {
+        "ssp126": [],
+        "ssp245": [],
+        "ssp585": []
+      }
+    },
+    "Fiji": {
+      "country": "Fiji",
+      "country_en": "Fiji",
+      "country_iso3": "FJI",
+      "country_zh": "斐济",
+      "country_zht": "斐濟",
+      "geometry_patches": [
+        "R04C12"
+      ],
+      "natural_earth_iso3": [
+        "FJI"
+      ],
+      "natural_earth_names": [
+        "Fiji"
+      ],
+      "station_patches": {
+        "ssp126": [],
+        "ssp245": [],
+        "ssp585": []
+      }
+    },
+    "Finland": {
+      "country": "Finland",
+      "country_en": "Finland",
+      "country_iso3": "FIN",
+      "country_zh": "芬兰",
+      "country_zht": "芬蘭",
+      "geometry_patches": [
+        "R01C07",
+        "R01C08",
+        "R02C07"
+      ],
+      "natural_earth_iso3": [
+        "FIN"
+      ],
+      "natural_earth_names": [
+        "Finland"
+      ],
+      "station_patches": {
+        "ssp126": [],
+        "ssp245": [
+          "R01C07"
+        ],
+        "ssp585": []
+      }
+    },
+    "Fr. S. Antarctic Lands": {
+      "country": "Fr. S. Antarctic Lands",
+      "country_en": "French Southern and Antarctic Lands",
+      "country_iso3": "ATF",
+      "country_zh": "法属南部和南极领地",
+      "country_zht": "法屬南部和南極領地",
+      "geometry_patches": [],
+      "natural_earth_iso3": [
+        "ATF"
+      ],
+      "natural_earth_names": [
+        "Fr. S. Antarctic Lands"
+      ],
+      "station_patches": {
+        "ssp126": [],
+        "ssp245": [],
+        "ssp585": []
+      }
+    },
+    "France": {
+      "country": "France",
+      "country_en": "France",
+      "country_iso3": "-99",
+      "country_zh": "法国",
+      "country_zht": "法國",
+      "geometry_patches": [
+        "R02C06",
+        "R02C07",
+        "R03C05"
+      ],
+      "natural_earth_iso3": [
+        "-99"
+      ],
+      "natural_earth_names": [
+        "France"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C06",
+          "R02C07",
+          "R03C05"
+        ],
+        "ssp245": [
+          "R02C06",
+          "R02C07",
+          "R03C05"
+        ],
+        "ssp585": [
+          "R02C06",
+          "R02C07",
+          "R03C05"
+        ]
+      }
+    },
+    "Gabon": {
+      "country": "Gabon",
+      "country_en": "Gabon",
+      "country_iso3": "GAB",
+      "country_zh": "加蓬",
+      "country_zht": "加彭",
+      "geometry_patches": [
+        "R03C07",
+        "R04C07"
+      ],
+      "natural_earth_iso3": [
+        "GAB"
+      ],
+      "natural_earth_names": [
+        "Gabon"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C07",
+          "R04C07"
+        ],
+        "ssp245": [
+          "R03C07",
+          "R04C07"
+        ],
+        "ssp585": [
+          "R03C07",
+          "R04C07"
+        ]
+      }
+    },
+    "Gambia": {
+      "country": "Gambia",
+      "country_en": "The Gambia",
+      "country_iso3": "GMB",
+      "country_zh": "冈比亚",
+      "country_zht": "甘比亞",
+      "geometry_patches": [
+        "R03C06"
+      ],
+      "natural_earth_iso3": [
+        "GMB"
+      ],
+      "natural_earth_names": [
+        "Gambia"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C06"
+        ],
+        "ssp245": [
+          "R03C06"
+        ],
+        "ssp585": [
+          "R03C06"
+        ]
+      }
+    },
+    "Georgia": {
+      "country": "Georgia",
+      "country_en": "Georgia",
+      "country_iso3": "GEO",
+      "country_zh": "格鲁吉亚",
+      "country_zht": "喬治亞",
+      "geometry_patches": [
+        "R02C08"
+      ],
+      "natural_earth_iso3": [
+        "GEO"
+      ],
+      "natural_earth_names": [
+        "Georgia"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C08"
+        ],
+        "ssp245": [
+          "R02C08"
+        ],
+        "ssp585": [
+          "R02C08"
+        ]
+      }
+    },
+    "Germany": {
+      "country": "Germany",
+      "country_en": "Germany",
+      "country_iso3": "DEU",
+      "country_zh": "德国",
+      "country_zht": "德國",
+      "geometry_patches": [
+        "R02C07"
+      ],
+      "natural_earth_iso3": [
+        "DEU"
+      ],
+      "natural_earth_names": [
+        "Germany"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C07"
+        ],
+        "ssp245": [
+          "R02C07"
+        ],
+        "ssp585": [
+          "R02C07"
+        ]
+      }
+    },
+    "Ghana": {
+      "country": "Ghana",
+      "country_en": "Ghana",
+      "country_iso3": "GHA",
+      "country_zh": "加纳",
+      "country_zht": "迦納",
+      "geometry_patches": [
+        "R03C06",
+        "R03C07"
+      ],
+      "natural_earth_iso3": [
+        "GHA"
+      ],
+      "natural_earth_names": [
+        "Ghana"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C06",
+          "R03C07"
+        ],
+        "ssp245": [
+          "R03C06",
+          "R03C07"
+        ],
+        "ssp585": [
+          "R03C06",
+          "R03C07"
+        ]
+      }
+    },
+    "Greece": {
+      "country": "Greece",
+      "country_en": "Greece",
+      "country_iso3": "GRC",
+      "country_zh": "希腊",
+      "country_zht": "希臘",
+      "geometry_patches": [
+        "R02C07"
+      ],
+      "natural_earth_iso3": [
+        "GRC"
+      ],
+      "natural_earth_names": [
+        "Greece"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C07"
+        ],
+        "ssp245": [
+          "R02C07"
+        ],
+        "ssp585": [
+          "R02C07"
+        ]
+      }
+    },
+    "Greenland": {
+      "country": "Greenland",
+      "country_en": "Greenland",
+      "country_iso3": "GRL",
+      "country_zh": "格陵兰",
+      "country_zht": "格陵蘭",
+      "geometry_patches": [
+        "R01C04",
+        "R01C05",
+        "R01C06"
+      ],
+      "natural_earth_iso3": [
+        "GRL"
+      ],
+      "natural_earth_names": [
+        "Greenland"
+      ],
+      "station_patches": {
+        "ssp126": [],
+        "ssp245": [],
+        "ssp585": []
+      }
+    },
+    "Guatemala": {
+      "country": "Guatemala",
+      "country_en": "Guatemala",
+      "country_iso3": "GTM",
+      "country_zh": "危地马拉",
+      "country_zht": "瓜地馬拉",
+      "geometry_patches": [
+        "R03C03",
+        "R03C04"
+      ],
+      "natural_earth_iso3": [
+        "GTM"
+      ],
+      "natural_earth_names": [
+        "Guatemala"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C03",
+          "R03C04"
+        ],
+        "ssp245": [
+          "R03C03",
+          "R03C04"
+        ],
+        "ssp585": [
+          "R03C03",
+          "R03C04"
+        ]
+      }
+    },
+    "Guinea": {
+      "country": "Guinea",
+      "country_en": "Guinea",
+      "country_iso3": "GIN",
+      "country_zh": "几内亚",
+      "country_zht": "幾內亞",
+      "geometry_patches": [
+        "R03C06"
+      ],
+      "natural_earth_iso3": [
+        "GIN"
+      ],
+      "natural_earth_names": [
+        "Guinea"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C06"
+        ],
+        "ssp245": [
+          "R03C06"
+        ],
+        "ssp585": [
+          "R03C06"
+        ]
+      }
+    },
+    "Guinea-Bissau": {
+      "country": "Guinea-Bissau",
+      "country_en": "Guinea-Bissau",
+      "country_iso3": "GNB",
+      "country_zh": "几内亚比绍",
+      "country_zht": "幾內亞比索",
+      "geometry_patches": [
+        "R03C06"
+      ],
+      "natural_earth_iso3": [
+        "GNB"
+      ],
+      "natural_earth_names": [
+        "Guinea-Bissau"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C06"
+        ],
+        "ssp245": [
+          "R03C06"
+        ],
+        "ssp585": [
+          "R03C06"
+        ]
+      }
+    },
+    "Guyana": {
+      "country": "Guyana",
+      "country_en": "Guyana",
+      "country_iso3": "GUY",
+      "country_zh": "圭亚那",
+      "country_zht": "圭亞那",
+      "geometry_patches": [
+        "R03C04",
+        "R03C05"
+      ],
+      "natural_earth_iso3": [
+        "GUY"
+      ],
+      "natural_earth_names": [
+        "Guyana"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C04",
+          "R03C05"
+        ],
+        "ssp245": [
+          "R03C04",
+          "R03C05"
+        ],
+        "ssp585": [
+          "R03C04",
+          "R03C05"
+        ]
+      }
+    },
+    "Haiti": {
+      "country": "Haiti",
+      "country_en": "Haiti",
+      "country_iso3": "HTI",
+      "country_zh": "海地",
+      "country_zht": "海地",
+      "geometry_patches": [
+        "R03C04"
+      ],
+      "natural_earth_iso3": [
+        "HTI"
+      ],
+      "natural_earth_names": [
+        "Haiti"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C04"
+        ],
+        "ssp245": [
+          "R03C04"
+        ],
+        "ssp585": [
+          "R03C04"
+        ]
+      }
+    },
+    "Honduras": {
+      "country": "Honduras",
+      "country_en": "Honduras",
+      "country_iso3": "HND",
+      "country_zh": "洪都拉斯",
+      "country_zht": "宏都拉斯",
+      "geometry_patches": [
+        "R03C04"
+      ],
+      "natural_earth_iso3": [
+        "HND"
+      ],
+      "natural_earth_names": [
+        "Honduras"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C04"
+        ],
+        "ssp245": [
+          "R03C04"
+        ],
+        "ssp585": [
+          "R03C04"
+        ]
+      }
+    },
+    "Hungary": {
+      "country": "Hungary",
+      "country_en": "Hungary",
+      "country_iso3": "HUN",
+      "country_zh": "匈牙利",
+      "country_zht": "匈牙利",
+      "geometry_patches": [
+        "R02C07"
+      ],
+      "natural_earth_iso3": [
+        "HUN"
+      ],
+      "natural_earth_names": [
+        "Hungary"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C07"
+        ],
+        "ssp245": [
+          "R02C07"
+        ],
+        "ssp585": [
+          "R02C07"
+        ]
+      }
+    },
+    "Iceland": {
+      "country": "Iceland",
+      "country_en": "Iceland",
+      "country_iso3": "ISL",
+      "country_zh": "冰岛",
+      "country_zht": "冰島",
+      "geometry_patches": [
+        "R01C06"
+      ],
+      "natural_earth_iso3": [
+        "ISL"
+      ],
+      "natural_earth_names": [
+        "Iceland"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R01C06"
+        ],
+        "ssp245": [],
+        "ssp585": [
+          "R01C06"
+        ]
+      }
+    },
+    "India": {
+      "country": "India",
+      "country_en": "India",
+      "country_iso3": "IND",
+      "country_zh": "印度",
+      "country_zht": "印度",
+      "geometry_patches": [
+        "R02C09",
+        "R03C09",
+        "R03C10"
+      ],
+      "natural_earth_iso3": [
+        "IND"
+      ],
+      "natural_earth_names": [
+        "India"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C09",
+          "R03C09",
+          "R03C10"
+        ],
+        "ssp245": [
+          "R02C09",
+          "R03C09",
+          "R03C10"
+        ],
+        "ssp585": [
+          "R02C09",
+          "R03C09",
+          "R03C10"
+        ]
+      }
+    },
+    "Indonesia": {
+      "country": "Indonesia",
+      "country_en": "Indonesia",
+      "country_iso3": "IDN",
+      "country_zh": "印度尼西亚",
+      "country_zht": "印度尼西亞",
+      "geometry_patches": [
+        "R03C10",
+        "R03C11",
+        "R04C10",
+        "R04C11"
+      ],
+      "natural_earth_iso3": [
+        "IDN"
+      ],
+      "natural_earth_names": [
+        "Indonesia"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C10",
+          "R03C11",
+          "R04C10",
+          "R04C11"
+        ],
+        "ssp245": [
+          "R03C10",
+          "R03C11",
+          "R04C10",
+          "R04C11"
+        ],
+        "ssp585": [
+          "R03C10",
+          "R03C11",
+          "R04C10",
+          "R04C11"
+        ]
+      }
+    },
+    "Iran": {
+      "country": "Iran",
+      "country_en": "Iran",
+      "country_iso3": "IRN",
+      "country_zh": "伊朗",
+      "country_zht": "伊朗",
+      "geometry_patches": [
+        "R02C08",
+        "R02C09",
+        "R03C08",
+        "R03C09"
+      ],
+      "natural_earth_iso3": [
+        "IRN"
+      ],
+      "natural_earth_names": [
+        "Iran"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C08",
+          "R02C09",
+          "R03C08",
+          "R03C09"
+        ],
+        "ssp245": [
+          "R02C08",
+          "R02C09",
+          "R03C08",
+          "R03C09"
+        ],
+        "ssp585": [
+          "R02C08",
+          "R02C09",
+          "R03C08",
+          "R03C09"
+        ]
+      }
+    },
+    "Iraq": {
+      "country": "Iraq",
+      "country_en": "Iraq",
+      "country_iso3": "IRQ",
+      "country_zh": "伊拉克",
+      "country_zht": "伊拉克",
+      "geometry_patches": [
+        "R02C08",
+        "R03C08"
+      ],
+      "natural_earth_iso3": [
+        "IRQ"
+      ],
+      "natural_earth_names": [
+        "Iraq"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C08",
+          "R03C08"
+        ],
+        "ssp245": [
+          "R02C08",
+          "R03C08"
+        ],
+        "ssp585": [
+          "R02C08",
+          "R03C08"
+        ]
+      }
+    },
+    "Ireland": {
+      "country": "Ireland",
+      "country_en": "Ireland",
+      "country_iso3": "IRL",
+      "country_zh": "爱尔兰",
+      "country_zht": "愛爾蘭",
+      "geometry_patches": [
+        "R02C06"
+      ],
+      "natural_earth_iso3": [
+        "IRL"
+      ],
+      "natural_earth_names": [
+        "Ireland"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C06"
+        ],
+        "ssp245": [
+          "R02C06"
+        ],
+        "ssp585": [
+          "R02C06"
+        ]
+      }
+    },
+    "Israel": {
+      "country": "Israel",
+      "country_en": "Israel",
+      "country_iso3": "ISR",
+      "country_zh": "以色列",
+      "country_zht": "以色列",
+      "geometry_patches": [
+        "R02C08",
+        "R03C08"
+      ],
+      "natural_earth_iso3": [
+        "ISR"
+      ],
+      "natural_earth_names": [
+        "Israel"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C08",
+          "R03C08"
+        ],
+        "ssp245": [
+          "R02C08",
+          "R03C08"
+        ],
+        "ssp585": [
+          "R02C08"
+        ]
+      }
+    },
+    "Italy": {
+      "country": "Italy",
+      "country_en": "Italy",
+      "country_iso3": "ITA",
+      "country_zh": "意大利",
+      "country_zht": "義大利",
+      "geometry_patches": [
+        "R02C07"
+      ],
+      "natural_earth_iso3": [
+        "ITA"
+      ],
+      "natural_earth_names": [
+        "Italy"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C07"
+        ],
+        "ssp245": [
+          "R02C07"
+        ],
+        "ssp585": [
+          "R02C07"
+        ]
+      }
+    },
+    "Jamaica": {
+      "country": "Jamaica",
+      "country_en": "Jamaica",
+      "country_iso3": "JAM",
+      "country_zh": "牙买加",
+      "country_zht": "牙買加",
+      "geometry_patches": [
+        "R03C04"
+      ],
+      "natural_earth_iso3": [
+        "JAM"
+      ],
+      "natural_earth_names": [
+        "Jamaica"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C04"
+        ],
+        "ssp245": [
+          "R03C04"
+        ],
+        "ssp585": [
+          "R03C04"
+        ]
+      }
+    },
+    "Japan": {
+      "country": "Japan",
+      "country_en": "Japan",
+      "country_iso3": "JPN",
+      "country_zh": "日本",
+      "country_zht": "日本",
+      "geometry_patches": [
+        "R02C11"
+      ],
+      "natural_earth_iso3": [
+        "JPN"
+      ],
+      "natural_earth_names": [
+        "Japan"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C11"
+        ],
+        "ssp245": [
+          "R02C11"
+        ],
+        "ssp585": [
+          "R02C11"
+        ]
+      }
+    },
+    "Jordan": {
+      "country": "Jordan",
+      "country_en": "Jordan",
+      "country_iso3": "JOR",
+      "country_zh": "约旦",
+      "country_zht": "約旦",
+      "geometry_patches": [
+        "R02C08",
+        "R03C08"
+      ],
+      "natural_earth_iso3": [
+        "JOR"
+      ],
+      "natural_earth_names": [
+        "Jordan"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C08",
+          "R03C08"
+        ],
+        "ssp245": [
+          "R02C08",
+          "R03C08"
+        ],
+        "ssp585": [
+          "R02C08"
+        ]
+      }
+    },
+    "Kazakhstan": {
+      "country": "Kazakhstan",
+      "country_en": "Kazakhstan",
+      "country_iso3": "KAZ",
+      "country_zh": "哈萨克斯坦",
+      "country_zht": "哈薩克",
+      "geometry_patches": [
+        "R02C08",
+        "R02C09"
+      ],
+      "natural_earth_iso3": [
+        "KAZ"
+      ],
+      "natural_earth_names": [
+        "Kazakhstan"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C08",
+          "R02C09"
+        ],
+        "ssp245": [
+          "R02C08",
+          "R02C09"
+        ],
+        "ssp585": [
+          "R02C08",
+          "R02C09"
+        ]
+      }
+    },
+    "Kenya": {
+      "country": "Kenya",
+      "country_en": "Kenya",
+      "country_iso3": "KEN",
+      "country_zh": "肯尼亚",
+      "country_zht": "肯亞",
+      "geometry_patches": [
+        "R03C08",
+        "R04C08"
+      ],
+      "natural_earth_iso3": [
+        "KEN"
+      ],
+      "natural_earth_names": [
+        "Kenya"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C08",
+          "R04C08"
+        ],
+        "ssp245": [
+          "R03C08",
+          "R04C08"
+        ],
+        "ssp585": [
+          "R03C08",
+          "R04C08"
+        ]
+      }
+    },
+    "Kosovo": {
+      "country": "Kosovo",
+      "country_en": "Kosovo",
+      "country_iso3": "-99",
+      "country_zh": "科索沃",
+      "country_zht": "科索沃",
+      "geometry_patches": [
+        "R02C07"
+      ],
+      "natural_earth_iso3": [
+        "-99"
+      ],
+      "natural_earth_names": [
+        "Kosovo"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C07"
+        ],
+        "ssp245": [
+          "R02C07"
+        ],
+        "ssp585": [
+          "R02C07"
+        ]
+      }
+    },
+    "Kuwait": {
+      "country": "Kuwait",
+      "country_en": "Kuwait",
+      "country_iso3": "KWT",
+      "country_zh": "科威特",
+      "country_zht": "科威特",
+      "geometry_patches": [
+        "R02C08",
+        "R03C08"
+      ],
+      "natural_earth_iso3": [
+        "KWT"
+      ],
+      "natural_earth_names": [
+        "Kuwait"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C08",
+          "R03C08"
+        ],
+        "ssp245": [
+          "R02C08",
+          "R03C08"
+        ],
+        "ssp585": [
+          "R03C08"
+        ]
+      }
+    },
+    "Kyrgyzstan": {
+      "country": "Kyrgyzstan",
+      "country_en": "Kyrgyzstan",
+      "country_iso3": "KGZ",
+      "country_zh": "吉尔吉斯斯坦",
+      "country_zht": "吉爾吉斯",
+      "geometry_patches": [
+        "R02C09"
+      ],
+      "natural_earth_iso3": [
+        "KGZ"
+      ],
+      "natural_earth_names": [
+        "Kyrgyzstan"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C09"
+        ],
+        "ssp245": [
+          "R02C09"
+        ],
+        "ssp585": [
+          "R02C09"
+        ]
+      }
+    },
+    "Laos": {
+      "country": "Laos",
+      "country_en": "Laos",
+      "country_iso3": "LAO",
+      "country_zh": "老挝",
+      "country_zht": "寮國",
+      "geometry_patches": [
+        "R03C10"
+      ],
+      "natural_earth_iso3": [
+        "LAO"
+      ],
+      "natural_earth_names": [
+        "Laos"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C10"
+        ],
+        "ssp245": [
+          "R03C10"
+        ],
+        "ssp585": [
+          "R03C10"
+        ]
+      }
+    },
+    "Latvia": {
+      "country": "Latvia",
+      "country_en": "Latvia",
+      "country_iso3": "LVA",
+      "country_zh": "拉脱维亚",
+      "country_zht": "拉脫維亞",
+      "geometry_patches": [
+        "R02C07"
+      ],
+      "natural_earth_iso3": [
+        "LVA"
+      ],
+      "natural_earth_names": [
+        "Latvia"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C07"
+        ],
+        "ssp245": [
+          "R02C07"
+        ],
+        "ssp585": [
+          "R02C07"
+        ]
+      }
+    },
+    "Lebanon": {
+      "country": "Lebanon",
+      "country_en": "Lebanon",
+      "country_iso3": "LBN",
+      "country_zh": "黎巴嫩",
+      "country_zht": "黎巴嫩",
+      "geometry_patches": [
+        "R02C08"
+      ],
+      "natural_earth_iso3": [
+        "LBN"
+      ],
+      "natural_earth_names": [
+        "Lebanon"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C08"
+        ],
+        "ssp245": [
+          "R02C08"
+        ],
+        "ssp585": [
+          "R02C08"
+        ]
+      }
+    },
+    "Lesotho": {
+      "country": "Lesotho",
+      "country_en": "Lesotho",
+      "country_iso3": "LSO",
+      "country_zh": "莱索托",
+      "country_zht": "賴索托",
+      "geometry_patches": [
+        "R04C07",
+        "R05C07"
+      ],
+      "natural_earth_iso3": [
+        "LSO"
+      ],
+      "natural_earth_names": [
+        "Lesotho"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R04C07",
+          "R05C07"
+        ],
+        "ssp245": [
+          "R04C07",
+          "R05C07"
+        ],
+        "ssp585": [
+          "R04C07",
+          "R05C07"
+        ]
+      }
+    },
+    "Liberia": {
+      "country": "Liberia",
+      "country_en": "Liberia",
+      "country_iso3": "LBR",
+      "country_zh": "利比里亚",
+      "country_zht": "賴比瑞亞",
+      "geometry_patches": [
+        "R03C06"
+      ],
+      "natural_earth_iso3": [
+        "LBR"
+      ],
+      "natural_earth_names": [
+        "Liberia"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C06"
+        ],
+        "ssp245": [
+          "R03C06"
+        ],
+        "ssp585": [
+          "R03C06"
+        ]
+      }
+    },
+    "Libya": {
+      "country": "Libya",
+      "country_en": "Libya",
+      "country_iso3": "LBY",
+      "country_zh": "利比亚",
+      "country_zht": "利比亞",
+      "geometry_patches": [
+        "R02C07",
+        "R03C07"
+      ],
+      "natural_earth_iso3": [
+        "LBY"
+      ],
+      "natural_earth_names": [
+        "Libya"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C07",
+          "R03C07"
+        ],
+        "ssp245": [
+          "R02C07",
+          "R03C07"
+        ],
+        "ssp585": [
+          "R02C07",
+          "R03C07"
+        ]
+      }
+    },
+    "Lithuania": {
+      "country": "Lithuania",
+      "country_en": "Lithuania",
+      "country_iso3": "LTU",
+      "country_zh": "立陶宛",
+      "country_zht": "立陶宛",
+      "geometry_patches": [
+        "R02C07"
+      ],
+      "natural_earth_iso3": [
+        "LTU"
+      ],
+      "natural_earth_names": [
+        "Lithuania"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C07"
+        ],
+        "ssp245": [
+          "R02C07"
+        ],
+        "ssp585": [
+          "R02C07"
+        ]
+      }
+    },
+    "Luxembourg": {
+      "country": "Luxembourg",
+      "country_en": "Luxembourg",
+      "country_iso3": "LUX",
+      "country_zh": "卢森堡",
+      "country_zht": "盧森堡",
+      "geometry_patches": [
+        "R02C07"
+      ],
+      "natural_earth_iso3": [
+        "LUX"
+      ],
+      "natural_earth_names": [
+        "Luxembourg"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C07"
+        ],
+        "ssp245": [
+          "R02C07"
+        ],
+        "ssp585": [
+          "R02C07"
+        ]
+      }
+    },
+    "Madagascar": {
+      "country": "Madagascar",
+      "country_en": "Madagascar",
+      "country_iso3": "MDG",
+      "country_zh": "马达加斯加",
+      "country_zht": "馬達加斯加",
+      "geometry_patches": [
+        "R04C08"
+      ],
+      "natural_earth_iso3": [
+        "MDG"
+      ],
+      "natural_earth_names": [
+        "Madagascar"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R04C08"
+        ],
+        "ssp245": [
+          "R04C08"
+        ],
+        "ssp585": [
+          "R04C08"
+        ]
+      }
+    },
+    "Malawi": {
+      "country": "Malawi",
+      "country_en": "Malawi",
+      "country_iso3": "MWI",
+      "country_zh": "马拉维",
+      "country_zht": "馬拉威",
+      "geometry_patches": [
+        "R04C08"
+      ],
+      "natural_earth_iso3": [
+        "MWI"
+      ],
+      "natural_earth_names": [
+        "Malawi"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R04C08"
+        ],
+        "ssp245": [
+          "R04C08"
+        ],
+        "ssp585": [
+          "R04C08"
+        ]
+      }
+    },
+    "Malaysia": {
+      "country": "Malaysia",
+      "country_en": "Malaysia",
+      "country_iso3": "MYS",
+      "country_zh": "马来西亚",
+      "country_zht": "馬來西亞",
+      "geometry_patches": [
+        "R03C10"
+      ],
+      "natural_earth_iso3": [
+        "MYS"
+      ],
+      "natural_earth_names": [
+        "Malaysia"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C10"
+        ],
+        "ssp245": [
+          "R03C10"
+        ],
+        "ssp585": [
+          "R03C10"
+        ]
+      }
+    },
+    "Mali": {
+      "country": "Mali",
+      "country_en": "Mali",
+      "country_iso3": "MLI",
+      "country_zh": "马里",
+      "country_zht": "馬利共和國",
+      "geometry_patches": [
+        "R03C06",
+        "R03C07"
+      ],
+      "natural_earth_iso3": [
+        "MLI"
+      ],
+      "natural_earth_names": [
+        "Mali"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C06",
+          "R03C07"
+        ],
+        "ssp245": [
+          "R03C06",
+          "R03C07"
+        ],
+        "ssp585": [
+          "R03C06"
+        ]
+      }
+    },
+    "Mauritania": {
+      "country": "Mauritania",
+      "country_en": "Mauritania",
+      "country_iso3": "MRT",
+      "country_zh": "毛里塔尼亚",
+      "country_zht": "茅利塔尼亞",
+      "geometry_patches": [
+        "R03C06"
+      ],
+      "natural_earth_iso3": [
+        "MRT"
+      ],
+      "natural_earth_names": [
+        "Mauritania"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C06"
+        ],
+        "ssp245": [
+          "R03C06"
+        ],
+        "ssp585": [
+          "R03C06"
+        ]
+      }
+    },
+    "Mexico": {
+      "country": "Mexico",
+      "country_en": "Mexico",
+      "country_iso3": "MEX",
+      "country_zh": "墨西哥",
+      "country_zht": "墨西哥",
+      "geometry_patches": [
+        "R02C03",
+        "R03C03",
+        "R03C04"
+      ],
+      "natural_earth_iso3": [
+        "MEX"
+      ],
+      "natural_earth_names": [
+        "Mexico"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C03",
+          "R03C03",
+          "R03C04"
+        ],
+        "ssp245": [
+          "R02C03",
+          "R03C03",
+          "R03C04"
+        ],
+        "ssp585": [
+          "R02C03",
+          "R03C03",
+          "R03C04"
+        ]
+      }
+    },
+    "Moldova": {
+      "country": "Moldova",
+      "country_en": "Moldova",
+      "country_iso3": "MDA",
+      "country_zh": "摩尔多瓦",
+      "country_zht": "摩爾多瓦",
+      "geometry_patches": [
+        "R02C07",
+        "R02C08"
+      ],
+      "natural_earth_iso3": [
+        "MDA"
+      ],
+      "natural_earth_names": [
+        "Moldova"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C07"
+        ],
+        "ssp245": [
+          "R02C07"
+        ],
+        "ssp585": [
+          "R02C07"
+        ]
+      }
+    },
+    "Mongolia": {
+      "country": "Mongolia",
+      "country_en": "Mongolia",
+      "country_iso3": "MNG",
+      "country_zh": "蒙古国",
+      "country_zht": "蒙古國",
+      "geometry_patches": [
+        "R02C09",
+        "R02C10"
+      ],
+      "natural_earth_iso3": [
+        "MNG"
+      ],
+      "natural_earth_names": [
+        "Mongolia"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C10"
+        ],
+        "ssp245": [
+          "R02C09",
+          "R02C10"
+        ],
+        "ssp585": [
+          "R02C10"
+        ]
+      }
+    },
+    "Montenegro": {
+      "country": "Montenegro",
+      "country_en": "Montenegro",
+      "country_iso3": "MNE",
+      "country_zh": "黑山",
+      "country_zht": "蒙特內哥羅",
+      "geometry_patches": [
+        "R02C07"
+      ],
+      "natural_earth_iso3": [
+        "MNE"
+      ],
+      "natural_earth_names": [
+        "Montenegro"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C07"
+        ],
+        "ssp245": [
+          "R02C07"
+        ],
+        "ssp585": [
+          "R02C07"
+        ]
+      }
+    },
+    "Morocco": {
+      "country": "Morocco",
+      "country_en": "Morocco",
+      "country_iso3": "MAR",
+      "country_zh": "摩洛哥",
+      "country_zht": "摩洛哥",
+      "geometry_patches": [
+        "R02C06",
+        "R03C06"
+      ],
+      "natural_earth_iso3": [
+        "MAR"
+      ],
+      "natural_earth_names": [
+        "Morocco"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C06",
+          "R03C06"
+        ],
+        "ssp245": [
+          "R02C06",
+          "R03C06"
+        ],
+        "ssp585": [
+          "R02C06",
+          "R03C06"
+        ]
+      }
+    },
+    "Mozambique": {
+      "country": "Mozambique",
+      "country_en": "Mozambique",
+      "country_iso3": "MOZ",
+      "country_zh": "莫桑比克",
+      "country_zht": "莫三比克",
+      "geometry_patches": [
+        "R04C08"
+      ],
+      "natural_earth_iso3": [
+        "MOZ"
+      ],
+      "natural_earth_names": [
+        "Mozambique"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R04C08"
+        ],
+        "ssp245": [
+          "R04C08"
+        ],
+        "ssp585": [
+          "R04C08"
+        ]
+      }
+    },
+    "Myanmar": {
+      "country": "Myanmar",
+      "country_en": "Myanmar",
+      "country_iso3": "MMR",
+      "country_zh": "缅甸",
+      "country_zht": "緬甸",
+      "geometry_patches": [
+        "R03C10"
+      ],
+      "natural_earth_iso3": [
+        "MMR"
+      ],
+      "natural_earth_names": [
+        "Myanmar"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C10"
+        ],
+        "ssp245": [
+          "R03C10"
+        ],
+        "ssp585": [
+          "R03C10"
+        ]
+      }
+    },
+    "N. Cyprus": {
+      "country": "N. Cyprus",
+      "country_en": "Turkish Republic of Northern Cyprus",
+      "country_iso3": "-99",
+      "country_zh": "北塞浦路斯土耳其共和国",
+      "country_zht": "北賽普勒斯土耳其共和國",
+      "geometry_patches": [
+        "R02C08"
+      ],
+      "natural_earth_iso3": [
+        "-99"
+      ],
+      "natural_earth_names": [
+        "N. Cyprus"
+      ],
+      "station_patches": {
+        "ssp126": [],
+        "ssp245": [
+          "R02C08"
+        ],
+        "ssp585": [
+          "R02C08"
+        ]
+      }
+    },
+    "Namibia": {
+      "country": "Namibia",
+      "country_en": "Namibia",
+      "country_iso3": "NAM",
+      "country_zh": "纳米比亚",
+      "country_zht": "納米比亞",
+      "geometry_patches": [
+        "R04C07"
+      ],
+      "natural_earth_iso3": [
+        "NAM"
+      ],
+      "natural_earth_names": [
+        "Namibia"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R04C07"
+        ],
+        "ssp245": [
+          "R04C07"
+        ],
+        "ssp585": [
+          "R04C07"
+        ]
+      }
+    },
+    "Nepal": {
+      "country": "Nepal",
+      "country_en": "Nepal",
+      "country_iso3": "NPL",
+      "country_zh": "尼泊尔",
+      "country_zht": "尼泊爾",
+      "geometry_patches": [
+        "R02C09",
+        "R03C09"
+      ],
+      "natural_earth_iso3": [
+        "NPL"
+      ],
+      "natural_earth_names": [
+        "Nepal"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C09"
+        ],
+        "ssp245": [
+          "R03C09"
+        ],
+        "ssp585": [
+          "R03C09"
+        ]
+      }
+    },
+    "Netherlands": {
+      "country": "Netherlands",
+      "country_en": "Netherlands",
+      "country_iso3": "NLD",
+      "country_zh": "荷兰",
+      "country_zht": "荷蘭",
+      "geometry_patches": [
+        "R02C07"
+      ],
+      "natural_earth_iso3": [
+        "NLD"
+      ],
+      "natural_earth_names": [
+        "Netherlands"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C07"
+        ],
+        "ssp245": [
+          "R02C07"
+        ],
+        "ssp585": [
+          "R02C07"
+        ]
+      }
+    },
+    "New Caledonia": {
+      "country": "New Caledonia",
+      "country_en": "New Caledonia",
+      "country_iso3": "NCL",
+      "country_zh": "新喀里多尼亚",
+      "country_zht": "新喀里多尼亞",
+      "geometry_patches": [
+        "R04C12"
+      ],
+      "natural_earth_iso3": [
+        "NCL"
+      ],
+      "natural_earth_names": [
+        "New Caledonia"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R04C12"
+        ],
+        "ssp245": [
+          "R04C12"
+        ],
+        "ssp585": [
+          "R04C12"
+        ]
+      }
+    },
+    "New Zealand": {
+      "country": "New Zealand",
+      "country_en": "New Zealand",
+      "country_iso3": "NZL",
+      "country_zh": "新西兰",
+      "country_zht": "新西蘭",
+      "geometry_patches": [
+        "R05C12"
+      ],
+      "natural_earth_iso3": [
+        "NZL"
+      ],
+      "natural_earth_names": [
+        "New Zealand"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R05C12"
+        ],
+        "ssp245": [
+          "R05C12"
+        ],
+        "ssp585": [
+          "R05C12"
+        ]
+      }
+    },
+    "Nicaragua": {
+      "country": "Nicaragua",
+      "country_en": "Nicaragua",
+      "country_iso3": "NIC",
+      "country_zh": "尼加拉瓜",
+      "country_zht": "尼加拉瓜",
+      "geometry_patches": [
+        "R03C04"
+      ],
+      "natural_earth_iso3": [
+        "NIC"
+      ],
+      "natural_earth_names": [
+        "Nicaragua"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C04"
+        ],
+        "ssp245": [
+          "R03C04"
+        ],
+        "ssp585": [
+          "R03C04"
+        ]
+      }
+    },
+    "Niger": {
+      "country": "Niger",
+      "country_en": "Niger",
+      "country_iso3": "NER",
+      "country_zh": "尼日尔",
+      "country_zht": "尼日",
+      "geometry_patches": [
+        "R03C07"
+      ],
+      "natural_earth_iso3": [
+        "NER"
+      ],
+      "natural_earth_names": [
+        "Niger"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C07"
+        ],
+        "ssp245": [
+          "R03C07"
+        ],
+        "ssp585": [
+          "R03C07"
+        ]
+      }
+    },
+    "Nigeria": {
+      "country": "Nigeria",
+      "country_en": "Nigeria",
+      "country_iso3": "NGA",
+      "country_zh": "尼日利亚",
+      "country_zht": "奈及利亞",
+      "geometry_patches": [
+        "R03C07"
+      ],
+      "natural_earth_iso3": [
+        "NGA"
+      ],
+      "natural_earth_names": [
+        "Nigeria"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C07"
+        ],
+        "ssp245": [
+          "R03C07"
+        ],
+        "ssp585": [
+          "R03C07"
+        ]
+      }
+    },
+    "North Korea": {
+      "country": "North Korea",
+      "country_en": "North Korea",
+      "country_iso3": "PRK",
+      "country_zh": "朝鲜民主主义人民共和国",
+      "country_zht": "朝鮮民主主義人民共和國",
+      "geometry_patches": [
+        "R02C11"
+      ],
+      "natural_earth_iso3": [
+        "PRK"
+      ],
+      "natural_earth_names": [
+        "North Korea"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C11"
+        ],
+        "ssp245": [
+          "R02C11"
+        ],
+        "ssp585": [
+          "R02C11"
+        ]
+      }
+    },
+    "North Macedonia": {
+      "country": "North Macedonia",
+      "country_en": "North Macedonia",
+      "country_iso3": "MKD",
+      "country_zh": "北马其顿",
+      "country_zht": "北馬其頓",
+      "geometry_patches": [
+        "R02C07"
+      ],
+      "natural_earth_iso3": [
+        "MKD"
+      ],
+      "natural_earth_names": [
+        "North Macedonia"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C07"
+        ],
+        "ssp245": [
+          "R02C07"
+        ],
+        "ssp585": [
+          "R02C07"
+        ]
+      }
+    },
+    "Norway": {
+      "country": "Norway",
+      "country_en": "Norway",
+      "country_iso3": "-99",
+      "country_zh": "挪威",
+      "country_zht": "挪威",
+      "geometry_patches": [
+        "R01C07",
+        "R01C08",
+        "R02C07"
+      ],
+      "natural_earth_iso3": [
+        "-99"
+      ],
+      "natural_earth_names": [
+        "Norway"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R01C07",
+          "R02C07"
+        ],
+        "ssp245": [
+          "R01C07",
+          "R02C07"
+        ],
+        "ssp585": [
+          "R01C07",
+          "R02C07"
+        ]
+      }
+    },
+    "Oman": {
+      "country": "Oman",
+      "country_en": "Oman",
+      "country_iso3": "OMN",
+      "country_zh": "阿曼",
+      "country_zht": "阿曼",
+      "geometry_patches": [
+        "R03C08"
+      ],
+      "natural_earth_iso3": [
+        "OMN"
+      ],
+      "natural_earth_names": [
+        "Oman"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C08"
+        ],
+        "ssp245": [
+          "R03C08"
+        ],
+        "ssp585": [
+          "R03C08"
+        ]
+      }
+    },
+    "Pakistan": {
+      "country": "Pakistan",
+      "country_en": "Pakistan",
+      "country_iso3": "PAK",
+      "country_zh": "巴基斯坦",
+      "country_zht": "巴基斯坦",
+      "geometry_patches": [
+        "R02C09",
+        "R03C09"
+      ],
+      "natural_earth_iso3": [
+        "PAK"
+      ],
+      "natural_earth_names": [
+        "Pakistan"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C09",
+          "R03C09"
+        ],
+        "ssp245": [
+          "R02C09",
+          "R03C09"
+        ],
+        "ssp585": [
+          "R02C09",
+          "R03C09"
+        ]
+      }
+    },
+    "Palestine": {
+      "country": "Palestine",
+      "country_en": "Palestine",
+      "country_iso3": "PSE",
+      "country_zh": "巴勒斯坦",
+      "country_zht": "巴勒斯坦地區",
+      "geometry_patches": [
+        "R02C08"
+      ],
+      "natural_earth_iso3": [
+        "PSE"
+      ],
+      "natural_earth_names": [
+        "Palestine"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C08"
+        ],
+        "ssp245": [
+          "R02C08"
+        ],
+        "ssp585": [
+          "R02C08"
+        ]
+      }
+    },
+    "Panama": {
+      "country": "Panama",
+      "country_en": "Panama",
+      "country_iso3": "PAN",
+      "country_zh": "巴拿马",
+      "country_zht": "巴拿馬",
+      "geometry_patches": [
+        "R03C04"
+      ],
+      "natural_earth_iso3": [
+        "PAN"
+      ],
+      "natural_earth_names": [
+        "Panama"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C04"
+        ],
+        "ssp245": [
+          "R03C04"
+        ],
+        "ssp585": [
+          "R03C04"
+        ]
+      }
+    },
+    "Papua New Guinea": {
+      "country": "Papua New Guinea",
+      "country_en": "Papua New Guinea",
+      "country_iso3": "PNG",
+      "country_zh": "巴布亚新几内亚",
+      "country_zht": "巴布亞紐幾內亞",
+      "geometry_patches": [
+        "R04C11",
+        "R04C12"
+      ],
+      "natural_earth_iso3": [
+        "PNG"
+      ],
+      "natural_earth_names": [
+        "Papua New Guinea"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R04C11"
+        ],
+        "ssp245": [
+          "R04C11"
+        ],
+        "ssp585": [
+          "R04C11"
+        ]
+      }
+    },
+    "Paraguay": {
+      "country": "Paraguay",
+      "country_en": "Paraguay",
+      "country_iso3": "PRY",
+      "country_zh": "巴拉圭",
+      "country_zht": "巴拉圭",
+      "geometry_patches": [
+        "R04C04",
+        "R04C05"
+      ],
+      "natural_earth_iso3": [
+        "PRY"
+      ],
+      "natural_earth_names": [
+        "Paraguay"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R04C04",
+          "R04C05"
+        ],
+        "ssp245": [
+          "R04C04",
+          "R04C05"
+        ],
+        "ssp585": [
+          "R04C04",
+          "R04C05"
+        ]
+      }
+    },
+    "Peru": {
+      "country": "Peru",
+      "country_en": "Peru",
+      "country_iso3": "PER",
+      "country_zh": "秘鲁",
+      "country_zht": "秘魯",
+      "geometry_patches": [
+        "R04C04"
+      ],
+      "natural_earth_iso3": [
+        "PER"
+      ],
+      "natural_earth_names": [
+        "Peru"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R04C04"
+        ],
+        "ssp245": [
+          "R04C04"
+        ],
+        "ssp585": [
+          "R04C04"
+        ]
+      }
+    },
+    "Philippines": {
+      "country": "Philippines",
+      "country_en": "Philippines",
+      "country_iso3": "PHL",
+      "country_zh": "菲律宾",
+      "country_zht": "菲律賓",
+      "geometry_patches": [
+        "R03C10",
+        "R03C11"
+      ],
+      "natural_earth_iso3": [
+        "PHL"
+      ],
+      "natural_earth_names": [
+        "Philippines"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C10",
+          "R03C11"
+        ],
+        "ssp245": [
+          "R03C10",
+          "R03C11"
+        ],
+        "ssp585": [
+          "R03C10",
+          "R03C11"
+        ]
+      }
+    },
+    "Poland": {
+      "country": "Poland",
+      "country_en": "Poland",
+      "country_iso3": "POL",
+      "country_zh": "波兰",
+      "country_zht": "波蘭",
+      "geometry_patches": [
+        "R02C07"
+      ],
+      "natural_earth_iso3": [
+        "POL"
+      ],
+      "natural_earth_names": [
+        "Poland"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C07"
+        ],
+        "ssp245": [
+          "R02C07"
+        ],
+        "ssp585": [
+          "R02C07"
+        ]
+      }
+    },
+    "Portugal": {
+      "country": "Portugal",
+      "country_en": "Portugal",
+      "country_iso3": "PRT",
+      "country_zh": "葡萄牙",
+      "country_zht": "葡萄牙",
+      "geometry_patches": [
+        "R02C06"
+      ],
+      "natural_earth_iso3": [
+        "PRT"
+      ],
+      "natural_earth_names": [
+        "Portugal"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C06"
+        ],
+        "ssp245": [
+          "R02C06"
+        ],
+        "ssp585": [
+          "R02C06"
+        ]
+      }
+    },
+    "Puerto Rico": {
+      "country": "Puerto Rico",
+      "country_en": "Puerto Rico",
+      "country_iso3": "PRI",
+      "country_zh": "波多黎各",
+      "country_zht": "波多黎各",
+      "geometry_patches": [
+        "R03C04"
+      ],
+      "natural_earth_iso3": [
+        "PRI"
+      ],
+      "natural_earth_names": [
+        "Puerto Rico"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C04"
+        ],
+        "ssp245": [
+          "R03C04"
+        ],
+        "ssp585": [
+          "R03C04"
+        ]
+      }
+    },
+    "Qatar": {
+      "country": "Qatar",
+      "country_en": "Qatar",
+      "country_iso3": "QAT",
+      "country_zh": "卡塔尔",
+      "country_zht": "卡達",
+      "geometry_patches": [
+        "R03C08"
+      ],
+      "natural_earth_iso3": [
+        "QAT"
+      ],
+      "natural_earth_names": [
+        "Qatar"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C08"
+        ],
+        "ssp245": [
+          "R03C08"
+        ],
+        "ssp585": [
+          "R03C08"
+        ]
+      }
+    },
+    "Romania": {
+      "country": "Romania",
+      "country_en": "Romania",
+      "country_iso3": "ROU",
+      "country_zh": "罗马尼亚",
+      "country_zht": "羅馬尼亞",
+      "geometry_patches": [
+        "R02C07"
+      ],
+      "natural_earth_iso3": [
+        "ROU"
+      ],
+      "natural_earth_names": [
+        "Romania"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C07"
+        ],
+        "ssp245": [
+          "R02C07"
+        ],
+        "ssp585": [
+          "R02C07"
+        ]
+      }
+    },
+    "Russia": {
+      "country": "Russia",
+      "country_en": "Russia",
+      "country_iso3": "RUS",
+      "country_zh": "俄罗斯",
+      "country_zht": "俄羅斯",
+      "geometry_patches": [
+        "R01C01",
+        "R01C07",
+        "R01C08",
+        "R01C09",
+        "R01C10",
+        "R01C11",
+        "R01C12",
+        "R02C07",
+        "R02C08",
+        "R02C09",
+        "R02C10",
+        "R02C11",
+        "R02C12"
+      ],
+      "natural_earth_iso3": [
+        "RUS"
+      ],
+      "natural_earth_names": [
+        "Russia"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R01C08",
+          "R01C09",
+          "R01C12",
+          "R02C07",
+          "R02C08",
+          "R02C09",
+          "R02C10",
+          "R02C11",
+          "R02C12"
+        ],
+        "ssp245": [
+          "R01C08",
+          "R01C09",
+          "R02C07",
+          "R02C08",
+          "R02C09",
+          "R02C10",
+          "R02C11"
+        ],
+        "ssp585": [
+          "R01C08",
+          "R02C07",
+          "R02C08",
+          "R02C09",
+          "R02C10",
+          "R02C11"
+        ]
+      }
+    },
+    "Rwanda": {
+      "country": "Rwanda",
+      "country_en": "Rwanda",
+      "country_iso3": "RWA",
+      "country_zh": "卢旺达",
+      "country_zht": "盧旺達",
+      "geometry_patches": [
+        "R04C07",
+        "R04C08"
+      ],
+      "natural_earth_iso3": [
+        "RWA"
+      ],
+      "natural_earth_names": [
+        "Rwanda"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R04C07",
+          "R04C08"
+        ],
+        "ssp245": [
+          "R04C07",
+          "R04C08"
+        ],
+        "ssp585": [
+          "R04C08"
+        ]
+      }
+    },
+    "S. Sudan": {
+      "country": "S. Sudan",
+      "country_en": "South Sudan",
+      "country_iso3": "SSD",
+      "country_zh": "南苏丹",
+      "country_zht": "南蘇丹",
+      "geometry_patches": [
+        "R03C07",
+        "R03C08"
+      ],
+      "natural_earth_iso3": [
+        "SSD"
+      ],
+      "natural_earth_names": [
+        "S. Sudan"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C07",
+          "R03C08"
+        ],
+        "ssp245": [
+          "R03C07",
+          "R03C08"
+        ],
+        "ssp585": [
+          "R03C07",
+          "R03C08"
+        ]
+      }
+    },
+    "Saudi Arabia": {
+      "country": "Saudi Arabia",
+      "country_en": "Saudi Arabia",
+      "country_iso3": "SAU",
+      "country_zh": "沙特阿拉伯",
+      "country_zht": "沙烏地阿拉伯",
+      "geometry_patches": [
+        "R02C08",
+        "R03C08"
+      ],
+      "natural_earth_iso3": [
+        "SAU"
+      ],
+      "natural_earth_names": [
+        "Saudi Arabia"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C08",
+          "R03C08"
+        ],
+        "ssp245": [
+          "R02C08",
+          "R03C08"
+        ],
+        "ssp585": [
+          "R02C08",
+          "R03C08"
+        ]
+      }
+    },
+    "Senegal": {
+      "country": "Senegal",
+      "country_en": "Senegal",
+      "country_iso3": "SEN",
+      "country_zh": "塞内加尔",
+      "country_zht": "塞內加爾",
+      "geometry_patches": [
+        "R03C06"
+      ],
+      "natural_earth_iso3": [
+        "SEN"
+      ],
+      "natural_earth_names": [
+        "Senegal"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C06"
+        ],
+        "ssp245": [
+          "R03C06"
+        ],
+        "ssp585": [
+          "R03C06"
+        ]
+      }
+    },
+    "Serbia": {
+      "country": "Serbia",
+      "country_en": "Serbia",
+      "country_iso3": "SRB",
+      "country_zh": "塞尔维亚",
+      "country_zht": "塞爾維亞",
+      "geometry_patches": [
+        "R02C07"
+      ],
+      "natural_earth_iso3": [
+        "SRB"
+      ],
+      "natural_earth_names": [
+        "Serbia"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C07"
+        ],
+        "ssp245": [
+          "R02C07"
+        ],
+        "ssp585": [
+          "R02C07"
+        ]
+      }
+    },
+    "Sierra Leone": {
+      "country": "Sierra Leone",
+      "country_en": "Sierra Leone",
+      "country_iso3": "SLE",
+      "country_zh": "塞拉利昂",
+      "country_zht": "獅子山",
+      "geometry_patches": [
+        "R03C06"
+      ],
+      "natural_earth_iso3": [
+        "SLE"
+      ],
+      "natural_earth_names": [
+        "Sierra Leone"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C06"
+        ],
+        "ssp245": [
+          "R03C06"
+        ],
+        "ssp585": [
+          "R03C06"
+        ]
+      }
+    },
+    "Slovakia": {
+      "country": "Slovakia",
+      "country_en": "Slovakia",
+      "country_iso3": "SVK",
+      "country_zh": "斯洛伐克",
+      "country_zht": "斯洛伐克",
+      "geometry_patches": [
+        "R02C07"
+      ],
+      "natural_earth_iso3": [
+        "SVK"
+      ],
+      "natural_earth_names": [
+        "Slovakia"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C07"
+        ],
+        "ssp245": [
+          "R02C07"
+        ],
+        "ssp585": [
+          "R02C07"
+        ]
+      }
+    },
+    "Slovenia": {
+      "country": "Slovenia",
+      "country_en": "Slovenia",
+      "country_iso3": "SVN",
+      "country_zh": "斯洛文尼亚",
+      "country_zht": "斯洛維尼亞",
+      "geometry_patches": [
+        "R02C07"
+      ],
+      "natural_earth_iso3": [
+        "SVN"
+      ],
+      "natural_earth_names": [
+        "Slovenia"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C07"
+        ],
+        "ssp245": [
+          "R02C07"
+        ],
+        "ssp585": [
+          "R02C07"
+        ]
+      }
+    },
+    "Solomon Is.": {
+      "country": "Solomon Is.",
+      "country_en": "Solomon Islands",
+      "country_iso3": "SLB",
+      "country_zh": "所罗门群岛",
+      "country_zht": "索羅門群島",
+      "geometry_patches": [
+        "R04C12"
+      ],
+      "natural_earth_iso3": [
+        "SLB"
+      ],
+      "natural_earth_names": [
+        "Solomon Is."
+      ],
+      "station_patches": {
+        "ssp126": [],
+        "ssp245": [],
+        "ssp585": []
+      }
+    },
+    "Somalia": {
+      "country": "Somalia",
+      "country_en": "Somalia",
+      "country_iso3": "SOM",
+      "country_zh": "索马里",
+      "country_zht": "索馬利亞",
+      "geometry_patches": [
+        "R03C08",
+        "R04C08"
+      ],
+      "natural_earth_iso3": [
+        "SOM"
+      ],
+      "natural_earth_names": [
+        "Somalia"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R04C08"
+        ],
+        "ssp245": [],
+        "ssp585": []
+      }
+    },
+    "Somaliland": {
+      "country": "Somaliland",
+      "country_en": "Somaliland",
+      "country_iso3": "-99",
+      "country_zh": "索马里兰",
+      "country_zht": "索馬利蘭",
+      "geometry_patches": [
+        "R03C08"
+      ],
+      "natural_earth_iso3": [
+        "-99"
+      ],
+      "natural_earth_names": [
+        "Somaliland"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C08"
+        ],
+        "ssp245": [
+          "R03C08"
+        ],
+        "ssp585": [
+          "R03C08"
+        ]
+      }
+    },
+    "South Africa": {
+      "country": "South Africa",
+      "country_en": "South Africa",
+      "country_iso3": "ZAF",
+      "country_zh": "南非",
+      "country_zht": "南非",
+      "geometry_patches": [
+        "R04C07",
+        "R04C08",
+        "R05C07",
+        "R05C08"
+      ],
+      "natural_earth_iso3": [
+        "ZAF"
+      ],
+      "natural_earth_names": [
+        "South Africa"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R04C07",
+          "R04C08",
+          "R05C07"
+        ],
+        "ssp245": [
+          "R04C07",
+          "R04C08",
+          "R05C07",
+          "R05C08"
+        ],
+        "ssp585": [
+          "R04C07",
+          "R04C08",
+          "R05C07"
+        ]
+      }
+    },
+    "South Korea": {
+      "country": "South Korea",
+      "country_en": "South Korea",
+      "country_iso3": "KOR",
+      "country_zh": "大韩民国",
+      "country_zht": "大韓民國",
+      "geometry_patches": [
+        "R02C11"
+      ],
+      "natural_earth_iso3": [
+        "KOR"
+      ],
+      "natural_earth_names": [
+        "South Korea"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C11"
+        ],
+        "ssp245": [
+          "R02C11"
+        ],
+        "ssp585": [
+          "R02C11"
+        ]
+      }
+    },
+    "Spain": {
+      "country": "Spain",
+      "country_en": "Spain",
+      "country_iso3": "ESP",
+      "country_zh": "西班牙",
+      "country_zht": "西班牙",
+      "geometry_patches": [
+        "R02C06",
+        "R02C07"
+      ],
+      "natural_earth_iso3": [
+        "ESP"
+      ],
+      "natural_earth_names": [
+        "Spain"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C06",
+          "R02C07"
+        ],
+        "ssp245": [
+          "R02C06",
+          "R02C07"
+        ],
+        "ssp585": [
+          "R02C06",
+          "R02C07"
+        ]
+      }
+    },
+    "Sri Lanka": {
+      "country": "Sri Lanka",
+      "country_en": "Sri Lanka",
+      "country_iso3": "LKA",
+      "country_zh": "斯里兰卡",
+      "country_zht": "斯里蘭卡",
+      "geometry_patches": [
+        "R03C09"
+      ],
+      "natural_earth_iso3": [
+        "LKA"
+      ],
+      "natural_earth_names": [
+        "Sri Lanka"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C09"
+        ],
+        "ssp245": [
+          "R03C09"
+        ],
+        "ssp585": [
+          "R03C09"
+        ]
+      }
+    },
+    "Sudan": {
+      "country": "Sudan",
+      "country_en": "Sudan",
+      "country_iso3": "SDN",
+      "country_zh": "苏丹",
+      "country_zht": "蘇丹",
+      "geometry_patches": [
+        "R03C07",
+        "R03C08"
+      ],
+      "natural_earth_iso3": [
+        "SDN"
+      ],
+      "natural_earth_names": [
+        "Sudan"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C07",
+          "R03C08"
+        ],
+        "ssp245": [
+          "R03C07",
+          "R03C08"
+        ],
+        "ssp585": [
+          "R03C07",
+          "R03C08"
+        ]
+      }
+    },
+    "Suriname": {
+      "country": "Suriname",
+      "country_en": "Suriname",
+      "country_iso3": "SUR",
+      "country_zh": "苏里南",
+      "country_zht": "蘇利南",
+      "geometry_patches": [
+        "R03C05"
+      ],
+      "natural_earth_iso3": [
+        "SUR"
+      ],
+      "natural_earth_names": [
+        "Suriname"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C05"
+        ],
+        "ssp245": [
+          "R03C05"
+        ],
+        "ssp585": [
+          "R03C05"
+        ]
+      }
+    },
+    "Sweden": {
+      "country": "Sweden",
+      "country_en": "Sweden",
+      "country_iso3": "SWE",
+      "country_zh": "瑞典",
+      "country_zht": "瑞典",
+      "geometry_patches": [
+        "R01C07",
+        "R02C07"
+      ],
+      "natural_earth_iso3": [
+        "SWE"
+      ],
+      "natural_earth_names": [
+        "Sweden"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R01C07",
+          "R02C07"
+        ],
+        "ssp245": [
+          "R01C07",
+          "R02C07"
+        ],
+        "ssp585": [
+          "R01C07",
+          "R02C07"
+        ]
+      }
+    },
+    "Switzerland": {
+      "country": "Switzerland",
+      "country_en": "Switzerland",
+      "country_iso3": "CHE",
+      "country_zh": "瑞士",
+      "country_zht": "瑞士",
+      "geometry_patches": [
+        "R02C07"
+      ],
+      "natural_earth_iso3": [
+        "CHE"
+      ],
+      "natural_earth_names": [
+        "Switzerland"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C07"
+        ],
+        "ssp245": [
+          "R02C07"
+        ],
+        "ssp585": [
+          "R02C07"
+        ]
+      }
+    },
+    "Syria": {
+      "country": "Syria",
+      "country_en": "Syria",
+      "country_iso3": "SYR",
+      "country_zh": "叙利亚",
+      "country_zht": "敘利亞",
+      "geometry_patches": [
+        "R02C08"
+      ],
+      "natural_earth_iso3": [
+        "SYR"
+      ],
+      "natural_earth_names": [
+        "Syria"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C08"
+        ],
+        "ssp245": [
+          "R02C08"
+        ],
+        "ssp585": [
+          "R02C08"
+        ]
+      }
+    },
+    "Tajikistan": {
+      "country": "Tajikistan",
+      "country_en": "Tajikistan",
+      "country_iso3": "TJK",
+      "country_zh": "塔吉克斯坦",
+      "country_zht": "塔吉克",
+      "geometry_patches": [
+        "R02C09"
+      ],
+      "natural_earth_iso3": [
+        "TJK"
+      ],
+      "natural_earth_names": [
+        "Tajikistan"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C09"
+        ],
+        "ssp245": [
+          "R02C09"
+        ],
+        "ssp585": [
+          "R02C09"
+        ]
+      }
+    },
+    "Tanzania": {
+      "country": "Tanzania",
+      "country_en": "Tanzania",
+      "country_iso3": "TZA",
+      "country_zh": "坦桑尼亚",
+      "country_zht": "坦尚尼亞",
+      "geometry_patches": [
+        "R04C07",
+        "R04C08"
+      ],
+      "natural_earth_iso3": [
+        "TZA"
+      ],
+      "natural_earth_names": [
+        "Tanzania"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R04C07",
+          "R04C08"
+        ],
+        "ssp245": [
+          "R04C07",
+          "R04C08"
+        ],
+        "ssp585": [
+          "R04C08"
+        ]
+      }
+    },
+    "Thailand": {
+      "country": "Thailand",
+      "country_en": "Thailand",
+      "country_iso3": "THA",
+      "country_zh": "泰国",
+      "country_zht": "泰國",
+      "geometry_patches": [
+        "R03C10"
+      ],
+      "natural_earth_iso3": [
+        "THA"
+      ],
+      "natural_earth_names": [
+        "Thailand"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C10"
+        ],
+        "ssp245": [
+          "R03C10"
+        ],
+        "ssp585": [
+          "R03C10"
+        ]
+      }
+    },
+    "Timor-Leste": {
+      "country": "Timor-Leste",
+      "country_en": "East Timor",
+      "country_iso3": "TLS",
+      "country_zh": "东帝汶",
+      "country_zht": "東帝汶",
+      "geometry_patches": [
+        "R04C11"
+      ],
+      "natural_earth_iso3": [
+        "TLS"
+      ],
+      "natural_earth_names": [
+        "Timor-Leste"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R04C11"
+        ],
+        "ssp245": [],
+        "ssp585": [
+          "R04C11"
+        ]
+      }
+    },
+    "Togo": {
+      "country": "Togo",
+      "country_en": "Togo",
+      "country_iso3": "TGO",
+      "country_zh": "多哥",
+      "country_zht": "多哥",
+      "geometry_patches": [
+        "R03C06",
+        "R03C07"
+      ],
+      "natural_earth_iso3": [
+        "TGO"
+      ],
+      "natural_earth_names": [
+        "Togo"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C07"
+        ],
+        "ssp245": [
+          "R03C07"
+        ],
+        "ssp585": [
+          "R03C07"
+        ]
+      }
+    },
+    "Trinidad and Tobago": {
+      "country": "Trinidad and Tobago",
+      "country_en": "Trinidad and Tobago",
+      "country_iso3": "TTO",
+      "country_zh": "特立尼达和多巴哥",
+      "country_zht": "千里達及托巴哥",
+      "geometry_patches": [
+        "R03C04"
+      ],
+      "natural_earth_iso3": [
+        "TTO"
+      ],
+      "natural_earth_names": [
+        "Trinidad and Tobago"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C04"
+        ],
+        "ssp245": [],
+        "ssp585": []
+      }
+    },
+    "Tunisia": {
+      "country": "Tunisia",
+      "country_en": "Tunisia",
+      "country_iso3": "TUN",
+      "country_zh": "突尼斯",
+      "country_zht": "突尼西亞",
+      "geometry_patches": [
+        "R02C07"
+      ],
+      "natural_earth_iso3": [
+        "TUN"
+      ],
+      "natural_earth_names": [
+        "Tunisia"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C07"
+        ],
+        "ssp245": [
+          "R02C07"
+        ],
+        "ssp585": [
+          "R02C07"
+        ]
+      }
+    },
+    "Turkey": {
+      "country": "Turkey",
+      "country_en": "Turkey",
+      "country_iso3": "TUR",
+      "country_zh": "土耳其",
+      "country_zht": "土耳其",
+      "geometry_patches": [
+        "R02C07",
+        "R02C08"
+      ],
+      "natural_earth_iso3": [
+        "TUR"
+      ],
+      "natural_earth_names": [
+        "Turkey"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C07",
+          "R02C08"
+        ],
+        "ssp245": [
+          "R02C07",
+          "R02C08"
+        ],
+        "ssp585": [
+          "R02C07",
+          "R02C08"
+        ]
+      }
+    },
+    "Turkmenistan": {
+      "country": "Turkmenistan",
+      "country_en": "Turkmenistan",
+      "country_iso3": "TKM",
+      "country_zh": "土库曼斯坦",
+      "country_zht": "土庫曼",
+      "geometry_patches": [
+        "R02C08",
+        "R02C09"
+      ],
+      "natural_earth_iso3": [
+        "TKM"
+      ],
+      "natural_earth_names": [
+        "Turkmenistan"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C08",
+          "R02C09"
+        ],
+        "ssp245": [
+          "R02C08",
+          "R02C09"
+        ],
+        "ssp585": [
+          "R02C08",
+          "R02C09"
+        ]
+      }
+    },
+    "Uganda": {
+      "country": "Uganda",
+      "country_en": "Uganda",
+      "country_iso3": "UGA",
+      "country_zh": "乌干达",
+      "country_zht": "烏干達",
+      "geometry_patches": [
+        "R03C07",
+        "R03C08",
+        "R04C07",
+        "R04C08"
+      ],
+      "natural_earth_iso3": [
+        "UGA"
+      ],
+      "natural_earth_names": [
+        "Uganda"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C07",
+          "R03C08",
+          "R04C07",
+          "R04C08"
+        ],
+        "ssp245": [
+          "R03C07",
+          "R03C08",
+          "R04C07",
+          "R04C08"
+        ],
+        "ssp585": [
+          "R03C08",
+          "R04C08"
+        ]
+      }
+    },
+    "Ukraine": {
+      "country": "Ukraine",
+      "country_en": "Ukraine",
+      "country_iso3": "UKR",
+      "country_zh": "乌克兰",
+      "country_zht": "烏克蘭",
+      "geometry_patches": [
+        "R02C07",
+        "R02C08"
+      ],
+      "natural_earth_iso3": [
+        "UKR"
+      ],
+      "natural_earth_names": [
+        "Ukraine"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C07",
+          "R02C08"
+        ],
+        "ssp245": [
+          "R02C07",
+          "R02C08"
+        ],
+        "ssp585": [
+          "R02C07",
+          "R02C08"
+        ]
+      }
+    },
+    "United Arab Emirates": {
+      "country": "United Arab Emirates",
+      "country_en": "United Arab Emirates",
+      "country_iso3": "ARE",
+      "country_zh": "阿拉伯联合酋长国",
+      "country_zht": "阿拉伯聯合大公國",
+      "geometry_patches": [
+        "R03C08"
+      ],
+      "natural_earth_iso3": [
+        "ARE"
+      ],
+      "natural_earth_names": [
+        "United Arab Emirates"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C08"
+        ],
+        "ssp245": [
+          "R03C08"
+        ],
+        "ssp585": [
+          "R03C08"
+        ]
+      }
+    },
+    "United Kingdom": {
+      "country": "United Kingdom",
+      "country_en": "United Kingdom",
+      "country_iso3": "GBR",
+      "country_zh": "英国",
+      "country_zht": "英國",
+      "geometry_patches": [
+        "R02C06",
+        "R02C07"
+      ],
+      "natural_earth_iso3": [
+        "GBR"
+      ],
+      "natural_earth_names": [
+        "United Kingdom"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C06",
+          "R02C07"
+        ],
+        "ssp245": [
+          "R02C06",
+          "R02C07"
+        ],
+        "ssp585": [
+          "R02C06",
+          "R02C07"
+        ]
+      }
+    },
+    "United States of America": {
+      "country": "United States of America",
+      "country_en": "United States of America",
+      "country_iso3": "USA",
+      "country_zh": "美国",
+      "country_zht": "美國",
+      "geometry_patches": [
+        "R01C01",
+        "R01C02",
+        "R02C01",
+        "R02C02",
+        "R02C03",
+        "R02C04",
+        "R03C03",
+        "R03C04"
+      ],
+      "natural_earth_iso3": [
+        "USA"
+      ],
+      "natural_earth_names": [
+        "United States of America"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R01C01",
+          "R01C02",
+          "R02C02",
+          "R02C03",
+          "R02C04",
+          "R03C03",
+          "R03C04"
+        ],
+        "ssp245": [
+          "R01C01",
+          "R01C02",
+          "R02C02",
+          "R02C03",
+          "R02C04",
+          "R03C03",
+          "R03C04"
+        ],
+        "ssp585": [
+          "R02C02",
+          "R02C03",
+          "R02C04",
+          "R03C03",
+          "R03C04"
+        ]
+      }
+    },
+    "Uruguay": {
+      "country": "Uruguay",
+      "country_en": "Uruguay",
+      "country_iso3": "URY",
+      "country_zh": "乌拉圭",
+      "country_zht": "烏拉圭",
+      "geometry_patches": [
+        "R05C05"
+      ],
+      "natural_earth_iso3": [
+        "URY"
+      ],
+      "natural_earth_names": [
+        "Uruguay"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R05C05"
+        ],
+        "ssp245": [
+          "R05C05"
+        ],
+        "ssp585": [
+          "R05C05"
+        ]
+      }
+    },
+    "Uzbekistan": {
+      "country": "Uzbekistan",
+      "country_en": "Uzbekistan",
+      "country_iso3": "UZB",
+      "country_zh": "乌兹别克斯坦",
+      "country_zht": "烏茲別克",
+      "geometry_patches": [
+        "R02C08",
+        "R02C09"
+      ],
+      "natural_earth_iso3": [
+        "UZB"
+      ],
+      "natural_earth_names": [
+        "Uzbekistan"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R02C08",
+          "R02C09"
+        ],
+        "ssp245": [
+          "R02C08",
+          "R02C09"
+        ],
+        "ssp585": [
+          "R02C08",
+          "R02C09"
+        ]
+      }
+    },
+    "Vanuatu": {
+      "country": "Vanuatu",
+      "country_en": "Vanuatu",
+      "country_iso3": "VUT",
+      "country_zh": "瓦努阿图",
+      "country_zht": "萬那杜",
+      "geometry_patches": [
+        "R04C12"
+      ],
+      "natural_earth_iso3": [
+        "VUT"
+      ],
+      "natural_earth_names": [
+        "Vanuatu"
+      ],
+      "station_patches": {
+        "ssp126": [],
+        "ssp245": [],
+        "ssp585": []
+      }
+    },
+    "Venezuela": {
+      "country": "Venezuela",
+      "country_en": "Venezuela",
+      "country_iso3": "VEN",
+      "country_zh": "委内瑞拉",
+      "country_zht": "委內瑞拉",
+      "geometry_patches": [
+        "R03C04",
+        "R03C05"
+      ],
+      "natural_earth_iso3": [
+        "VEN"
+      ],
+      "natural_earth_names": [
+        "Venezuela"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C04"
+        ],
+        "ssp245": [
+          "R03C04"
+        ],
+        "ssp585": [
+          "R03C04"
+        ]
+      }
+    },
+    "Vietnam": {
+      "country": "Vietnam",
+      "country_en": "Vietnam",
+      "country_iso3": "VNM",
+      "country_zh": "越南",
+      "country_zht": "越南",
+      "geometry_patches": [
+        "R03C10"
+      ],
+      "natural_earth_iso3": [
+        "VNM"
+      ],
+      "natural_earth_names": [
+        "Vietnam"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C10"
+        ],
+        "ssp245": [
+          "R03C10"
+        ],
+        "ssp585": [
+          "R03C10"
+        ]
+      }
+    },
+    "W. Sahara": {
+      "country": "W. Sahara",
+      "country_en": "Western Sahara",
+      "country_iso3": "ESH",
+      "country_zh": "西撒哈拉",
+      "country_zht": "西撒哈拉",
+      "geometry_patches": [
+        "R03C06"
+      ],
+      "natural_earth_iso3": [
+        "ESH"
+      ],
+      "natural_earth_names": [
+        "W. Sahara"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C06"
+        ],
+        "ssp245": [
+          "R03C06"
+        ],
+        "ssp585": [
+          "R03C06"
+        ]
+      }
+    },
+    "Yemen": {
+      "country": "Yemen",
+      "country_en": "Yemen",
+      "country_iso3": "YEM",
+      "country_zh": "也门",
+      "country_zht": "葉門",
+      "geometry_patches": [
+        "R03C08"
+      ],
+      "natural_earth_iso3": [
+        "YEM"
+      ],
+      "natural_earth_names": [
+        "Yemen"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R03C08"
+        ],
+        "ssp245": [
+          "R03C08"
+        ],
+        "ssp585": [
+          "R03C08"
+        ]
+      }
+    },
+    "Zambia": {
+      "country": "Zambia",
+      "country_en": "Zambia",
+      "country_iso3": "ZMB",
+      "country_zh": "赞比亚",
+      "country_zht": "尚比亞",
+      "geometry_patches": [
+        "R04C07",
+        "R04C08"
+      ],
+      "natural_earth_iso3": [
+        "ZMB"
+      ],
+      "natural_earth_names": [
+        "Zambia"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R04C07",
+          "R04C08"
+        ],
+        "ssp245": [
+          "R04C07",
+          "R04C08"
+        ],
+        "ssp585": [
+          "R04C07",
+          "R04C08"
+        ]
+      }
+    },
+    "Zimbabwe": {
+      "country": "Zimbabwe",
+      "country_en": "Zimbabwe",
+      "country_iso3": "ZWE",
+      "country_zh": "津巴布韦",
+      "country_zht": "辛巴威",
+      "geometry_patches": [
+        "R04C07",
+        "R04C08"
+      ],
+      "natural_earth_iso3": [
+        "ZWE"
+      ],
+      "natural_earth_names": [
+        "Zimbabwe"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R04C07",
+          "R04C08"
+        ],
+        "ssp245": [
+          "R04C07",
+          "R04C08"
+        ],
+        "ssp585": [
+          "R04C07",
+          "R04C08"
+        ]
+      }
+    },
+    "eSwatini": {
+      "country": "eSwatini",
+      "country_en": "Eswatini",
+      "country_iso3": "SWZ",
+      "country_zh": "斯威士兰",
+      "country_zht": "史瓦帝尼",
+      "geometry_patches": [
+        "R04C08"
+      ],
+      "natural_earth_iso3": [
+        "SWZ"
+      ],
+      "natural_earth_names": [
+        "eSwatini"
+      ],
+      "station_patches": {
+        "ssp126": [
+          "R04C08"
+        ],
+        "ssp245": [
+          "R04C08"
+        ],
+        "ssp585": [
+          "R04C08"
+        ]
+      }
+    }
+  },
+  "country_aliases": {
+    "ae": "United Arab Emirates",
+    "af": "Afghanistan",
+    "afg": "Afghanistan",
+    "afghanistan": "Afghanistan",
+    "ago": "Angola",
+    "al": "Albania",
+    "alb": "Albania",
+    "albania": "Albania",
+    "algeria": "Algeria",
+    "am": "Armenia",
+    "angola": "Angola",
+    "antarctica": "Antarctica",
+    "ao": "Angola",
+    "aq": "Antarctica",
+    "ar": "Argentina",
+    "are": "United Arab Emirates",
+    "arg": "Argentina",
+    "argentina": "Argentina",
+    "arm": "Armenia",
+    "armenia": "Armenia",
+    "at": "Austria",
+    "ata": "Antarctica",
+    "atf": "Fr. S. Antarctic Lands",
+    "au": "Australia",
+    "aus": "Australia",
+    "australia": "Australia",
+    "austria": "Austria",
+    "aut": "Austria",
+    "az": "Azerbaijan",
+    "aze": "Azerbaijan",
+    "azerbaijan": "Azerbaijan",
+    "ba": "Bosnia and Herz.",
+    "bahamas": "Bahamas",
+    "bangladesh": "Bangladesh",
+    "bd": "Bangladesh",
+    "bdi": "Burundi",
+    "be": "Belgium",
+    "bel": "Belgium",
+    "belarus": "Belarus",
+    "belgium": "Belgium",
+    "belize": "Belize",
+    "ben": "Benin",
+    "benin": "Benin",
+    "bf": "Burkina Faso",
+    "bfa": "Burkina Faso",
+    "bg": "Bulgaria",
+    "bgd": "Bangladesh",
+    "bgr": "Bulgaria",
+    "bhs": "Bahamas",
+    "bhutan": "Bhutan",
+    "bi": "Burundi",
+    "bih": "Bosnia and Herz.",
+    "bj": "Benin",
+    "blr": "Belarus",
+    "blz": "Belize",
+    "bn": "Brunei",
+    "bo": "Bolivia",
+    "bol": "Bolivia",
+    "bolivia": "Bolivia",
+    "bosniaandherz": "Bosnia and Herz.",
+    "bosniaandherzegovina": "Bosnia and Herz.",
+    "botswana": "Botswana",
+    "br": "Brazil",
+    "bra": "Brazil",
+    "brazil": "Brazil",
+    "britain": "United Kingdom",
+    "brn": "Brunei",
+    "brunei": "Brunei",
+    "bs": "Bahamas",
+    "bt": "Bhutan",
+    "btn": "Bhutan",
+    "bulgaria": "Bulgaria",
+    "burkinafaso": "Burkina Faso",
+    "burundi": "Burundi",
+    "bw": "Botswana",
+    "bwa": "Botswana",
+    "by": "Belarus",
+    "bz": "Belize",
+    "ca": "Canada",
+    "caf": "Central African Rep.",
+    "cambodia": "Cambodia",
+    "cameroon": "Cameroon",
+    "can": "Canada",
+    "canada": "Canada",
+    "cd": "Dem. Rep. Congo",
+    "centralafricanrep": "Central African Rep.",
+    "centralafricanrepublic": "Central African Rep.",
+    "cf": "Central African Rep.",
+    "cg": "Congo",
+    "ch": "Switzerland",
+    "chad": "Chad",
+    "che": "Switzerland",
+    "chile": "Chile",
+    "china": "China",
+    "chl": "Chile",
+    "chn": "China",
+    "ci": "Côte d'Ivoire",
+    "civ": "Côte d'Ivoire",
+    "cl": "Chile",
+    "cm": "Cameroon",
+    "cmr": "Cameroon",
+    "cn": "China",
+    "cntw": "China",
+    "co": "Colombia",
+    "cod": "Dem. Rep. Congo",
+    "cog": "Congo",
+    "col": "Colombia",
+    "colombia": "Colombia",
+    "congo": "Congo",
+    "costarica": "Costa Rica",
+    "cr": "Costa Rica",
+    "cri": "Costa Rica",
+    "croatia": "Croatia",
+    "cu": "Cuba",
+    "cub": "Cuba",
+    "cuba": "Cuba",
+    "cy": "Cyprus",
+    "cyp": "Cyprus",
+    "cyprus": "Cyprus",
+    "cz": "Czechia",
+    "cze": "Czechia",
+    "czechia": "Czechia",
+    "czechrepublic": "Czechia",
+    "côtedivoire": "Côte d'Ivoire",
+    "de": "Germany",
+    "democraticrepublicofthecongo": "Dem. Rep. Congo",
+    "demrepcongo": "Dem. Rep. Congo",
+    "denmark": "Denmark",
+    "deu": "Germany",
+    "dj": "Djibouti",
+    "dji": "Djibouti",
+    "djibouti": "Djibouti",
+    "dk": "Denmark",
+    "dnk": "Denmark",
+    "do": "Dominican Rep.",
+    "dom": "Dominican Rep.",
+    "dominicanrep": "Dominican Rep.",
+    "dominicanrepublic": "Dominican Rep.",
+    "dz": "Algeria",
+    "dza": "Algeria",
+    "easttimor": "Timor-Leste",
+    "ec": "Ecuador",
+    "ecu": "Ecuador",
+    "ecuador": "Ecuador",
+    "ee": "Estonia",
+    "eg": "Egypt",
+    "egy": "Egypt",
+    "egypt": "Egypt",
+    "eh": "W. Sahara",
+    "elsalvador": "El Salvador",
+    "eqguinea": "Eq. Guinea",
+    "equatorialguinea": "Eq. Guinea",
+    "er": "Eritrea",
+    "eri": "Eritrea",
+    "eritrea": "Eritrea",
+    "es": "Spain",
+    "esh": "W. Sahara",
+    "esp": "Spain",
+    "est": "Estonia",
+    "estonia": "Estonia",
+    "eswatini": "eSwatini",
+    "et": "Ethiopia",
+    "eth": "Ethiopia",
+    "ethiopia": "Ethiopia",
+    "falklandis": "Falkland Is.",
+    "falklandislands": "Falkland Is.",
+    "fi": "Finland",
+    "fiji": "Fiji",
+    "fin": "Finland",
+    "finland": "Finland",
+    "fj": "Fiji",
+    "fji": "Fiji",
+    "fk": "Falkland Is.",
+    "flk": "Falkland Is.",
+    "france": "France",
+    "frenchsouthernandantarcticlands": "Fr. S. Antarctic Lands",
+    "frsantarcticlands": "Fr. S. Antarctic Lands",
+    "ga": "Gabon",
+    "gab": "Gabon",
+    "gabon": "Gabon",
+    "gambia": "Gambia",
+    "gb": "United Kingdom",
+    "gbr": "United Kingdom",
+    "ge": "Georgia",
+    "geo": "Georgia",
+    "georgia": "Georgia",
+    "germany": "Germany",
+    "gh": "Ghana",
+    "gha": "Ghana",
+    "ghana": "Ghana",
+    "gin": "Guinea",
+    "gl": "Greenland",
+    "gm": "Gambia",
+    "gmb": "Gambia",
+    "gn": "Guinea",
+    "gnb": "Guinea-Bissau",
+    "gnq": "Eq. Guinea",
+    "gq": "Eq. Guinea",
+    "gr": "Greece",
+    "grc": "Greece",
+    "greece": "Greece",
+    "greenland": "Greenland",
+    "grl": "Greenland",
+    "gt": "Guatemala",
+    "gtm": "Guatemala",
+    "guatemala": "Guatemala",
+    "guinea": "Guinea",
+    "guineabissau": "Guinea-Bissau",
+    "guy": "Guyana",
+    "guyana": "Guyana",
+    "gw": "Guinea-Bissau",
+    "gy": "Guyana",
+    "haiti": "Haiti",
+    "hn": "Honduras",
+    "hnd": "Honduras",
+    "honduras": "Honduras",
+    "hr": "Croatia",
+    "hrv": "Croatia",
+    "ht": "Haiti",
+    "hti": "Haiti",
+    "hu": "Hungary",
+    "hun": "Hungary",
+    "hungary": "Hungary",
+    "iceland": "Iceland",
+    "id": "Indonesia",
+    "idn": "Indonesia",
+    "ie": "Ireland",
+    "il": "Israel",
+    "in": "India",
+    "ind": "India",
+    "india": "India",
+    "indonesia": "Indonesia",
+    "iq": "Iraq",
+    "ir": "Iran",
+    "iran": "Iran",
+    "iraq": "Iraq",
+    "ireland": "Ireland",
+    "irl": "Ireland",
+    "irn": "Iran",
+    "irq": "Iraq",
+    "is": "Iceland",
+    "isl": "Iceland",
+    "isr": "Israel",
+    "israel": "Israel",
+    "it": "Italy",
+    "ita": "Italy",
+    "italy": "Italy",
+    "ivorycoast": "Côte d'Ivoire",
+    "jam": "Jamaica",
+    "jamaica": "Jamaica",
+    "japan": "Japan",
+    "jm": "Jamaica",
+    "jo": "Jordan",
+    "jor": "Jordan",
+    "jordan": "Jordan",
+    "jp": "Japan",
+    "jpn": "Japan",
+    "kaz": "Kazakhstan",
+    "kazakhstan": "Kazakhstan",
+    "ke": "Kenya",
+    "ken": "Kenya",
+    "kenya": "Kenya",
+    "kg": "Kyrgyzstan",
+    "kgz": "Kyrgyzstan",
+    "kh": "Cambodia",
+    "khm": "Cambodia",
+    "kor": "South Korea",
+    "kosovo": "Kosovo",
+    "kp": "North Korea",
+    "kr": "South Korea",
+    "kuwait": "Kuwait",
+    "kw": "Kuwait",
+    "kwt": "Kuwait",
+    "kyrgyzstan": "Kyrgyzstan",
+    "kz": "Kazakhstan",
+    "la": "Laos",
+    "lao": "Laos",
+    "laos": "Laos",
+    "latvia": "Latvia",
+    "lb": "Lebanon",
+    "lbn": "Lebanon",
+    "lbr": "Liberia",
+    "lby": "Libya",
+    "lebanon": "Lebanon",
+    "lesotho": "Lesotho",
+    "liberia": "Liberia",
+    "libya": "Libya",
+    "lithuania": "Lithuania",
+    "lk": "Sri Lanka",
+    "lka": "Sri Lanka",
+    "lr": "Liberia",
+    "ls": "Lesotho",
+    "lso": "Lesotho",
+    "lt": "Lithuania",
+    "ltu": "Lithuania",
+    "lu": "Luxembourg",
+    "lux": "Luxembourg",
+    "luxembourg": "Luxembourg",
+    "lv": "Latvia",
+    "lva": "Latvia",
+    "ly": "Libya",
+    "ma": "Morocco",
+    "madagascar": "Madagascar",
+    "malawi": "Malawi",
+    "malaysia": "Malaysia",
+    "mali": "Mali",
+    "mar": "Morocco",
+    "mauritania": "Mauritania",
+    "md": "Moldova",
+    "mda": "Moldova",
+    "mdg": "Madagascar",
+    "me": "Montenegro",
+    "mex": "Mexico",
+    "mexico": "Mexico",
+    "mg": "Madagascar",
+    "mk": "North Macedonia",
+    "mkd": "North Macedonia",
+    "ml": "Mali",
+    "mli": "Mali",
+    "mm": "Myanmar",
+    "mmr": "Myanmar",
+    "mn": "Mongolia",
+    "mne": "Montenegro",
+    "mng": "Mongolia",
+    "moldova": "Moldova",
+    "mongolia": "Mongolia",
+    "montenegro": "Montenegro",
+    "morocco": "Morocco",
+    "moz": "Mozambique",
+    "mozambique": "Mozambique",
+    "mr": "Mauritania",
+    "mrt": "Mauritania",
+    "mw": "Malawi",
+    "mwi": "Malawi",
+    "mx": "Mexico",
+    "my": "Malaysia",
+    "myanmar": "Myanmar",
+    "mys": "Malaysia",
+    "mz": "Mozambique",
+    "na": "Namibia",
+    "nam": "Namibia",
+    "namibia": "Namibia",
+    "nc": "New Caledonia",
+    "ncl": "New Caledonia",
+    "ncyprus": "N. Cyprus",
+    "ne": "Niger",
+    "nepal": "Nepal",
+    "ner": "Niger",
+    "netherlands": "Netherlands",
+    "newcaledonia": "New Caledonia",
+    "newzealand": "New Zealand",
+    "ng": "Nigeria",
+    "nga": "Nigeria",
+    "ni": "Nicaragua",
+    "nic": "Nicaragua",
+    "nicaragua": "Nicaragua",
+    "niger": "Niger",
+    "nigeria": "Nigeria",
+    "nl": "Netherlands",
+    "nld": "Netherlands",
+    "northerncyprus": "N. Cyprus",
+    "northkorea": "North Korea",
+    "northmacedonia": "North Macedonia",
+    "norway": "Norway",
+    "np": "Nepal",
+    "npl": "Nepal",
+    "nz": "New Zealand",
+    "nzl": "New Zealand",
+    "om": "Oman",
+    "oman": "Oman",
+    "omn": "Oman",
+    "pa": "Panama",
+    "pak": "Pakistan",
+    "pakistan": "Pakistan",
+    "palestine": "Palestine",
+    "pan": "Panama",
+    "panama": "Panama",
+    "papuanewguinea": "Papua New Guinea",
+    "paraguay": "Paraguay",
+    "pe": "Peru",
+    "peoplesrepublicofchina": "China",
+    "per": "Peru",
+    "peru": "Peru",
+    "pg": "Papua New Guinea",
+    "ph": "Philippines",
+    "philippines": "Philippines",
+    "phl": "Philippines",
+    "pk": "Pakistan",
+    "pl": "Poland",
+    "png": "Papua New Guinea",
+    "pol": "Poland",
+    "poland": "Poland",
+    "portugal": "Portugal",
+    "pr": "Puerto Rico",
+    "prc": "China",
+    "pri": "Puerto Rico",
+    "prk": "North Korea",
+    "prt": "Portugal",
+    "pry": "Paraguay",
+    "ps": "Palestine",
+    "pse": "Palestine",
+    "pt": "Portugal",
+    "puertorico": "Puerto Rico",
+    "py": "Paraguay",
+    "qa": "Qatar",
+    "qat": "Qatar",
+    "qatar": "Qatar",
+    "republicofserbia": "Serbia",
+    "republicofthecongo": "Congo",
+    "ro": "Romania",
+    "romania": "Romania",
+    "rou": "Romania",
+    "rs": "Serbia",
+    "ru": "Russia",
+    "rus": "Russia",
+    "russia": "Russia",
+    "rw": "Rwanda",
+    "rwa": "Rwanda",
+    "rwanda": "Rwanda",
+    "sa": "Saudi Arabia",
+    "sau": "Saudi Arabia",
+    "saudiarabia": "Saudi Arabia",
+    "sb": "Solomon Is.",
+    "sd": "Sudan",
+    "sdn": "Sudan",
+    "se": "Sweden",
+    "sen": "Senegal",
+    "senegal": "Senegal",
+    "serbia": "Serbia",
+    "si": "Slovenia",
+    "sierraleone": "Sierra Leone",
+    "sk": "Slovakia",
+    "sl": "Sierra Leone",
+    "slb": "Solomon Is.",
+    "sle": "Sierra Leone",
+    "slovakia": "Slovakia",
+    "slovenia": "Slovenia",
+    "slv": "El Salvador",
+    "sn": "Senegal",
+    "so": "Somalia",
+    "solomonis": "Solomon Is.",
+    "solomonislands": "Solomon Is.",
+    "som": "Somalia",
+    "somalia": "Somalia",
+    "somaliland": "Somaliland",
+    "southafrica": "South Africa",
+    "southkorea": "South Korea",
+    "southsudan": "S. Sudan",
+    "spain": "Spain",
+    "sr": "Suriname",
+    "srb": "Serbia",
+    "srilanka": "Sri Lanka",
+    "ss": "S. Sudan",
+    "ssd": "S. Sudan",
+    "ssudan": "S. Sudan",
+    "sudan": "Sudan",
+    "sur": "Suriname",
+    "suriname": "Suriname",
+    "sv": "El Salvador",
+    "svk": "Slovakia",
+    "svn": "Slovenia",
+    "swe": "Sweden",
+    "sweden": "Sweden",
+    "switzerland": "Switzerland",
+    "swz": "eSwatini",
+    "sy": "Syria",
+    "syr": "Syria",
+    "syria": "Syria",
+    "sz": "eSwatini",
+    "taiwan": "China",
+    "tajikistan": "Tajikistan",
+    "tanzania": "Tanzania",
+    "tcd": "Chad",
+    "td": "Chad",
+    "tf": "Fr. S. Antarctic Lands",
+    "tg": "Togo",
+    "tgo": "Togo",
+    "th": "Thailand",
+    "tha": "Thailand",
+    "thailand": "Thailand",
+    "thebahamas": "Bahamas",
+    "thegambia": "Gambia",
+    "timorleste": "Timor-Leste",
+    "tj": "Tajikistan",
+    "tjk": "Tajikistan",
+    "tkm": "Turkmenistan",
+    "tl": "Timor-Leste",
+    "tls": "Timor-Leste",
+    "tm": "Turkmenistan",
+    "tn": "Tunisia",
+    "togo": "Togo",
+    "tr": "Turkey",
+    "trinidadandtobago": "Trinidad and Tobago",
+    "tt": "Trinidad and Tobago",
+    "tto": "Trinidad and Tobago",
+    "tun": "Tunisia",
+    "tunisia": "Tunisia",
+    "tur": "Turkey",
+    "turkey": "Turkey",
+    "turkishrepublicofnortherncyprus": "N. Cyprus",
+    "turkmenistan": "Turkmenistan",
+    "twn": "China",
+    "tz": "Tanzania",
+    "tza": "Tanzania",
+    "ua": "Ukraine",
+    "ug": "Uganda",
+    "uga": "Uganda",
+    "uganda": "Uganda",
+    "uk": "United Kingdom",
+    "ukr": "Ukraine",
+    "ukraine": "Ukraine",
+    "unitedarabemirates": "United Arab Emirates",
+    "unitedkingdom": "United Kingdom",
+    "unitedrepublicoftanzania": "Tanzania",
+    "unitedstates": "United States of America",
+    "unitedstatesofamerica": "United States of America",
+    "uruguay": "Uruguay",
+    "ury": "Uruguay",
+    "us": "United States of America",
+    "usa": "United States of America",
+    "uy": "Uruguay",
+    "uz": "Uzbekistan",
+    "uzb": "Uzbekistan",
+    "uzbekistan": "Uzbekistan",
+    "vanuatu": "Vanuatu",
+    "ve": "Venezuela",
+    "ven": "Venezuela",
+    "venezuela": "Venezuela",
+    "vietnam": "Vietnam",
+    "vn": "Vietnam",
+    "vnm": "Vietnam",
+    "vu": "Vanuatu",
+    "vut": "Vanuatu",
+    "westernsahara": "W. Sahara",
+    "wsahara": "W. Sahara",
+    "ye": "Yemen",
+    "yem": "Yemen",
+    "yemen": "Yemen",
+    "za": "South Africa",
+    "zaf": "South Africa",
+    "zambia": "Zambia",
+    "zimbabwe": "Zimbabwe",
+    "zm": "Zambia",
+    "zmb": "Zambia",
+    "zw": "Zimbabwe",
+    "zwe": "Zimbabwe",
+    "不丹": "Bhutan",
+    "东帝汶": "Timor-Leste",
+    "中华人民共和国": "China",
+    "中华民国": "China",
+    "中国": "China",
+    "中華人民共和國": "China",
+    "中華民國": "China",
+    "中非共和国": "Central African Rep.",
+    "中非共和國": "Central African Rep.",
+    "丹麥": "Denmark",
+    "丹麦": "Denmark",
+    "乌克兰": "Ukraine",
+    "乌兹别克斯坦": "Uzbekistan",
+    "乌干达": "Uganda",
+    "乌拉圭": "Uruguay",
+    "乍得": "Chad",
+    "也门": "Yemen",
+    "亚美尼亚": "Armenia",
+    "亞塞拜然": "Azerbaijan",
+    "亞美尼亞": "Armenia",
+    "以色列": "Israel",
+    "伊拉克": "Iraq",
+    "伊朗": "Iran",
+    "伯利兹": "Belize",
+    "俄罗斯": "Russia",
+    "俄羅斯": "Russia",
+    "保加利亚": "Bulgaria",
+    "保加利亞": "Bulgaria",
+    "克罗地亚": "Croatia",
+    "克羅地亞": "Croatia",
+    "冈比亚": "Gambia",
+    "冰岛": "Iceland",
+    "冰島": "Iceland",
+    "几内亚": "Guinea",
+    "几内亚比绍": "Guinea-Bissau",
+    "刚果共和国": "Congo",
+    "刚果民主共和国": "Dem. Rep. Congo",
+    "利比亚": "Libya",
+    "利比亞": "Libya",
+    "利比里亚": "Liberia",
+    "剛果共和國": "Congo",
+    "剛果民主共和國": "Dem. Rep. Congo",
+    "加彭": "Gabon",
+    "加拿大": "Canada",
+    "加纳": "Ghana",
+    "加蓬": "Gabon",
+    "匈牙利": "Hungary",
+    "北塞浦路斯土耳其共和国": "N. Cyprus",
+    "北賽普勒斯土耳其共和國": "N. Cyprus",
+    "北韩": "North Korea",
+    "北馬其頓": "North Macedonia",
+    "北马其顿": "North Macedonia",
+    "千里達及托巴哥": "Trinidad and Tobago",
+    "南极洲": "Antarctica",
+    "南極洲": "Antarctica",
+    "南苏丹": "S. Sudan",
+    "南蘇丹": "S. Sudan",
+    "南非": "South Africa",
+    "博茨瓦纳": "Botswana",
+    "卡塔尔": "Qatar",
+    "卡達": "Qatar",
+    "卢旺达": "Rwanda",
+    "卢森堡": "Luxembourg",
+    "印度": "India",
+    "印度尼西亚": "Indonesia",
+    "印度尼西亞": "Indonesia",
+    "危地马拉": "Guatemala",
+    "厄利垂亞": "Eritrea",
+    "厄瓜多尔": "Ecuador",
+    "厄瓜多爾": "Ecuador",
+    "厄立特里亚": "Eritrea",
+    "叙利亚": "Syria",
+    "古巴": "Cuba",
+    "台湾": "China",
+    "史瓦帝尼": "eSwatini",
+    "吉尔吉斯斯坦": "Kyrgyzstan",
+    "吉布地": "Djibouti",
+    "吉布提": "Djibouti",
+    "吉爾吉斯": "Kyrgyzstan",
+    "哈萨克斯坦": "Kazakhstan",
+    "哈薩克": "Kazakhstan",
+    "哥伦比亚": "Colombia",
+    "哥倫比亞": "Colombia",
+    "哥斯大黎加": "Costa Rica",
+    "哥斯达黎加": "Costa Rica",
+    "喀麥隆": "Cameroon",
+    "喀麦隆": "Cameroon",
+    "喬治亞": "Georgia",
+    "土库曼斯坦": "Turkmenistan",
+    "土庫曼": "Turkmenistan",
+    "土耳其": "Turkey",
+    "圭亚那": "Guyana",
+    "圭亞那": "Guyana",
+    "坦尚尼亞": "Tanzania",
+    "坦桑尼亚": "Tanzania",
+    "埃及": "Egypt",
+    "埃塞俄比亚": "Ethiopia",
+    "塔吉克": "Tajikistan",
+    "塔吉克斯坦": "Tajikistan",
+    "塞內加爾": "Senegal",
+    "塞内加尔": "Senegal",
+    "塞尔维亚": "Serbia",
+    "塞拉利昂": "Sierra Leone",
+    "塞浦路斯": "Cyprus",
+    "塞爾維亞": "Serbia",
+    "墨西哥": "Mexico",
+    "多哥": "Togo",
+    "多明尼加": "Dominican Rep.",
+    "多米尼加": "Dominican Rep.",
+    "大韓民國": "South Korea",
+    "大韩民国": "South Korea",
+    "奈及利亞": "Nigeria",
+    "奥地利": "Austria",
+    "奧地利": "Austria",
+    "委內瑞拉": "Venezuela",
+    "委内瑞拉": "Venezuela",
+    "孟加拉": "Bangladesh",
+    "孟加拉国": "Bangladesh",
+    "安哥拉": "Angola",
+    "宏都拉斯": "Honduras",
+    "寮國": "Laos",
+    "尚比亞": "Zambia",
+    "尼加拉瓜": "Nicaragua",
+    "尼日": "Niger",
+    "尼日利亚": "Nigeria",
+    "尼日尔": "Niger",
+    "尼泊尔": "Nepal",
+    "尼泊爾": "Nepal",
+    "巴勒斯坦": "Palestine",
+    "巴勒斯坦地區": "Palestine",
+    "巴哈馬": "Bahamas",
+    "巴哈马": "Bahamas",
+    "巴基斯坦": "Pakistan",
+    "巴布亚新几内亚": "Papua New Guinea",
+    "巴布亞紐幾內亞": "Papua New Guinea",
+    "巴拉圭": "Paraguay",
+    "巴拿馬": "Panama",
+    "巴拿马": "Panama",
+    "巴西": "Brazil",
+    "布基納法索": "Burkina Faso",
+    "布基纳法索": "Burkina Faso",
+    "布隆迪": "Burundi",
+    "希腊": "Greece",
+    "希臘": "Greece",
+    "幾內亞": "Guinea",
+    "幾內亞比索": "Guinea-Bissau",
+    "德国": "Germany",
+    "德國": "Germany",
+    "意大利": "Italy",
+    "愛沙尼亞": "Estonia",
+    "愛爾蘭": "Ireland",
+    "所罗门群岛": "Solomon Is.",
+    "拉脫維亞": "Latvia",
+    "拉脱维亚": "Latvia",
+    "挪威": "Norway",
+    "捷克": "Czechia",
+    "捷克共和國": "Czechia",
+    "摩尔多瓦": "Moldova",
+    "摩洛哥": "Morocco",
+    "摩爾多瓦": "Moldova",
+    "敘利亞": "Syria",
+    "文莱": "Brunei",
+    "斐济": "Fiji",
+    "斐濟": "Fiji",
+    "斯威士兰": "eSwatini",
+    "斯洛伐克": "Slovakia",
+    "斯洛文尼亚": "Slovenia",
+    "斯洛維尼亞": "Slovenia",
+    "斯里兰卡": "Sri Lanka",
+    "斯里蘭卡": "Sri Lanka",
+    "新喀里多尼亚": "New Caledonia",
+    "新喀里多尼亞": "New Caledonia",
+    "新西兰": "New Zealand",
+    "新西蘭": "New Zealand",
+    "日本": "Japan",
+    "智利": "Chile",
+    "朝鮮民主主義人民共和國": "North Korea",
+    "朝鲜": "North Korea",
+    "朝鲜民主主义人民共和国": "North Korea",
+    "東帝汶": "Timor-Leste",
+    "查德": "Chad",
+    "柬埔寨": "Cambodia",
+    "格陵兰": "Greenland",
+    "格陵蘭": "Greenland",
+    "格鲁吉亚": "Georgia",
+    "比利时": "Belgium",
+    "比利時": "Belgium",
+    "毛里塔尼亚": "Mauritania",
+    "汶萊": "Brunei",
+    "沙烏地阿拉伯": "Saudi Arabia",
+    "沙特阿拉伯": "Saudi Arabia",
+    "法国": "France",
+    "法國": "France",
+    "法属南部和南极领地": "Fr. S. Antarctic Lands",
+    "法屬南部和南極領地": "Fr. S. Antarctic Lands",
+    "波兰": "Poland",
+    "波士尼亞與赫塞哥維納": "Bosnia and Herz.",
+    "波多黎各": "Puerto Rico",
+    "波斯尼亚和黑塞哥维那": "Bosnia and Herz.",
+    "波札那": "Botswana",
+    "波蘭": "Poland",
+    "泰国": "Thailand",
+    "泰國": "Thailand",
+    "津巴布韦": "Zimbabwe",
+    "洪都拉斯": "Honduras",
+    "海地": "Haiti",
+    "澳大利亚": "Australia",
+    "澳大利亞": "Australia",
+    "烏克蘭": "Ukraine",
+    "烏干達": "Uganda",
+    "烏拉圭": "Uruguay",
+    "烏茲別克": "Uzbekistan",
+    "爱尔兰": "Ireland",
+    "爱沙尼亚": "Estonia",
+    "牙买加": "Jamaica",
+    "牙買加": "Jamaica",
+    "特立尼达和多巴哥": "Trinidad and Tobago",
+    "獅子山": "Sierra Leone",
+    "玻利維亞": "Bolivia",
+    "玻利维亚": "Bolivia",
+    "瑞典": "Sweden",
+    "瑞士": "Switzerland",
+    "瓜地馬拉": "Guatemala",
+    "瓦努阿图": "Vanuatu",
+    "甘比亞": "Gambia",
+    "白俄罗斯": "Belarus",
+    "白俄羅斯": "Belarus",
+    "盧旺達": "Rwanda",
+    "盧森堡": "Luxembourg",
+    "福克兰群岛": "Falkland Is.",
+    "福克蘭群島": "Falkland Is.",
+    "科威特": "Kuwait",
+    "科特迪瓦": "Côte d'Ivoire",
+    "科索沃": "Kosovo",
+    "秘魯": "Peru",
+    "秘鲁": "Peru",
+    "突尼斯": "Tunisia",
+    "突尼西亞": "Tunisia",
+    "立陶宛": "Lithuania",
+    "約旦": "Jordan",
+    "納米比亞": "Namibia",
+    "索羅門群島": "Solomon Is.",
+    "索馬利亞": "Somalia",
+    "索馬利蘭": "Somaliland",
+    "索马里": "Somalia",
+    "索马里兰": "Somaliland",
+    "緬甸": "Myanmar",
+    "约旦": "Jordan",
+    "纳米比亚": "Namibia",
+    "缅甸": "Myanmar",
+    "罗马尼亚": "Romania",
+    "羅馬尼亞": "Romania",
+    "美国": "United States of America",
+    "美國": "United States of America",
+    "義大利": "Italy",
+    "老挝": "Laos",
+    "肯亞": "Kenya",
+    "肯尼亚": "Kenya",
+    "芬兰": "Finland",
+    "芬蘭": "Finland",
+    "苏丹": "Sudan",
+    "苏里南": "Suriname",
+    "英国": "United Kingdom",
+    "英國": "United Kingdom",
+    "茅利塔尼亞": "Mauritania",
+    "荷兰": "Netherlands",
+    "荷蘭": "Netherlands",
+    "莫三比克": "Mozambique",
+    "莫桑比克": "Mozambique",
+    "莱索托": "Lesotho",
+    "菲律宾": "Philippines",
+    "菲律賓": "Philippines",
+    "萨尔瓦多": "El Salvador",
+    "萬那杜": "Vanuatu",
+    "葉門": "Yemen",
+    "葡萄牙": "Portugal",
+    "蒙古国": "Mongolia",
+    "蒙古國": "Mongolia",
+    "蒙特內哥羅": "Montenegro",
+    "蒲隆地": "Burundi",
+    "薩爾瓦多": "El Salvador",
+    "蘇丹": "Sudan",
+    "蘇利南": "Suriname",
+    "衣索比亞": "Ethiopia",
+    "西撒哈拉": "W. Sahara",
+    "西班牙": "Spain",
+    "象牙海岸": "Côte d'Ivoire",
+    "貝南": "Benin",
+    "貝里斯": "Belize",
+    "賴比瑞亞": "Liberia",
+    "賴索托": "Lesotho",
+    "賽普勒斯": "Cyprus",
+    "贝宁": "Benin",
+    "赞比亚": "Zambia",
+    "赤道几内亚": "Eq. Guinea",
+    "赤道幾內亞": "Eq. Guinea",
+    "越南": "Vietnam",
+    "辛巴威": "Zimbabwe",
+    "迦納": "Ghana",
+    "阿塞拜疆": "Azerbaijan",
+    "阿富汗": "Afghanistan",
+    "阿尔及利亚": "Algeria",
+    "阿尔巴尼亚": "Albania",
+    "阿拉伯联合酋长国": "United Arab Emirates",
+    "阿拉伯聯合大公國": "United Arab Emirates",
+    "阿曼": "Oman",
+    "阿根廷": "Argentina",
+    "阿爾及利亞": "Algeria",
+    "阿爾巴尼亞": "Albania",
+    "韩国": "South Korea",
+    "馬來西亞": "Malaysia",
+    "馬利共和國": "Mali",
+    "馬拉威": "Malawi",
+    "馬達加斯加": "Madagascar",
+    "马拉维": "Malawi",
+    "马来西亚": "Malaysia",
+    "马达加斯加": "Madagascar",
+    "马里": "Mali",
+    "黎巴嫩": "Lebanon",
+    "黑山": "Montenegro"
+  },
+  "generated_at_utc": "2026-09-13T15:28:05.175396+00:00",
+  "patches": {
+    "R01C01": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        90.0,
+        -180.0,
+        60.0,
+        -150.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        -180.0,
+        -150.0,
+        60.0,
+        90.0
+      ]
+    },
+    "R01C02": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        90.0,
+        -150.0,
+        60.0,
+        -120.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        -150.0,
+        -120.0,
+        60.0,
+        90.0
+      ]
+    },
+    "R01C03": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        90.0,
+        -120.0,
+        60.0,
+        -90.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        -120.0,
+        -90.0,
+        60.0,
+        90.0
+      ]
+    },
+    "R01C04": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        90.0,
+        -90.0,
+        60.0,
+        -60.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        -90.0,
+        -60.0,
+        60.0,
+        90.0
+      ]
+    },
+    "R01C05": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        90.0,
+        -60.0,
+        60.0,
+        -30.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        -60.0,
+        -30.0,
+        60.0,
+        90.0
+      ]
+    },
+    "R01C06": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        90.0,
+        -30.0,
+        60.0,
+        0.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        -30.0,
+        0.0,
+        60.0,
+        90.0
+      ]
+    },
+    "R01C07": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        90.0,
+        0.0,
+        60.0,
+        30.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        0.0,
+        30.0,
+        60.0,
+        90.0
+      ]
+    },
+    "R01C08": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        90.0,
+        30.0,
+        60.0,
+        60.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        30.0,
+        60.0,
+        60.0,
+        90.0
+      ]
+    },
+    "R01C09": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        90.0,
+        60.0,
+        60.0,
+        90.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        60.0,
+        90.0,
+        60.0,
+        90.0
+      ]
+    },
+    "R01C10": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        90.0,
+        90.0,
+        60.0,
+        120.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        90.0,
+        120.0,
+        60.0,
+        90.0
+      ]
+    },
+    "R01C11": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        90.0,
+        120.0,
+        60.0,
+        150.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        120.0,
+        150.0,
+        60.0,
+        90.0
+      ]
+    },
+    "R01C12": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        90.0,
+        150.0,
+        60.0,
+        180.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        150.0,
+        180.0,
+        60.0,
+        90.0
+      ]
+    },
+    "R02C01": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        60.0,
+        -180.0,
+        30.0,
+        -150.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        -180.0,
+        -150.0,
+        30.0,
+        60.0
+      ]
+    },
+    "R02C02": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        60.0,
+        -150.0,
+        30.0,
+        -120.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        -150.0,
+        -120.0,
+        30.0,
+        60.0
+      ]
+    },
+    "R02C03": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        60.0,
+        -120.0,
+        30.0,
+        -90.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        -120.0,
+        -90.0,
+        30.0,
+        60.0
+      ]
+    },
+    "R02C04": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        60.0,
+        -90.0,
+        30.0,
+        -60.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        -90.0,
+        -60.0,
+        30.0,
+        60.0
+      ]
+    },
+    "R02C05": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        60.0,
+        -60.0,
+        30.0,
+        -30.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        -60.0,
+        -30.0,
+        30.0,
+        60.0
+      ]
+    },
+    "R02C06": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        60.0,
+        -30.0,
+        30.0,
+        0.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        -30.0,
+        0.0,
+        30.0,
+        60.0
+      ]
+    },
+    "R02C07": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        60.0,
+        0.0,
+        30.0,
+        30.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        0.0,
+        30.0,
+        30.0,
+        60.0
+      ]
+    },
+    "R02C08": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        60.0,
+        30.0,
+        30.0,
+        60.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        30.0,
+        60.0,
+        30.0,
+        60.0
+      ]
+    },
+    "R02C09": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        60.0,
+        60.0,
+        30.0,
+        90.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        60.0,
+        90.0,
+        30.0,
+        60.0
+      ]
+    },
+    "R02C10": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        60.0,
+        90.0,
+        30.0,
+        120.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        90.0,
+        120.0,
+        30.0,
+        60.0
+      ]
+    },
+    "R02C11": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        60.0,
+        120.0,
+        30.0,
+        150.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        120.0,
+        150.0,
+        30.0,
+        60.0
+      ]
+    },
+    "R02C12": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        60.0,
+        150.0,
+        30.0,
+        180.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        150.0,
+        180.0,
+        30.0,
+        60.0
+      ]
+    },
+    "R03C01": {
+      "active": false,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        30.0,
+        -180.0,
+        0.0,
+        -150.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        -180.0,
+        -150.0,
+        0.0,
+        30.0
+      ]
+    },
+    "R03C02": {
+      "active": false,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        30.0,
+        -150.0,
+        0.0,
+        -120.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        -150.0,
+        -120.0,
+        0.0,
+        30.0
+      ]
+    },
+    "R03C03": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        30.0,
+        -120.0,
+        0.0,
+        -90.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        -120.0,
+        -90.0,
+        0.0,
+        30.0
+      ]
+    },
+    "R03C04": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        30.0,
+        -90.0,
+        0.0,
+        -60.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        -90.0,
+        -60.0,
+        0.0,
+        30.0
+      ]
+    },
+    "R03C05": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        30.0,
+        -60.0,
+        0.0,
+        -30.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        -60.0,
+        -30.0,
+        0.0,
+        30.0
+      ]
+    },
+    "R03C06": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        30.0,
+        -30.0,
+        0.0,
+        0.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        -30.0,
+        0.0,
+        0.0,
+        30.0
+      ]
+    },
+    "R03C07": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        30.0,
+        0.0,
+        0.0,
+        30.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        0.0,
+        30.0,
+        0.0,
+        30.0
+      ]
+    },
+    "R03C08": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        30.0,
+        30.0,
+        0.0,
+        60.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        30.0,
+        60.0,
+        0.0,
+        30.0
+      ]
+    },
+    "R03C09": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        30.0,
+        60.0,
+        0.0,
+        90.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        60.0,
+        90.0,
+        0.0,
+        30.0
+      ]
+    },
+    "R03C10": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        30.0,
+        90.0,
+        0.0,
+        120.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        90.0,
+        120.0,
+        0.0,
+        30.0
+      ]
+    },
+    "R03C11": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        30.0,
+        120.0,
+        0.0,
+        150.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        120.0,
+        150.0,
+        0.0,
+        30.0
+      ]
+    },
+    "R03C12": {
+      "active": false,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        30.0,
+        150.0,
+        0.0,
+        180.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        150.0,
+        180.0,
+        0.0,
+        30.0
+      ]
+    },
+    "R04C01": {
+      "active": false,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        0.0,
+        -180.0,
+        -30.0,
+        -150.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        -180.0,
+        -150.0,
+        -30.0,
+        0.0
+      ]
+    },
+    "R04C02": {
+      "active": false,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        0.0,
+        -150.0,
+        -30.0,
+        -120.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        -150.0,
+        -120.0,
+        -30.0,
+        0.0
+      ]
+    },
+    "R04C03": {
+      "active": false,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        0.0,
+        -120.0,
+        -30.0,
+        -90.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        -120.0,
+        -90.0,
+        -30.0,
+        0.0
+      ]
+    },
+    "R04C04": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        0.0,
+        -90.0,
+        -30.0,
+        -60.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        -90.0,
+        -60.0,
+        -30.0,
+        0.0
+      ]
+    },
+    "R04C05": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        0.0,
+        -60.0,
+        -30.0,
+        -30.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        -60.0,
+        -30.0,
+        -30.0,
+        0.0
+      ]
+    },
+    "R04C06": {
+      "active": false,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        0.0,
+        -30.0,
+        -30.0,
+        0.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        -30.0,
+        0.0,
+        -30.0,
+        0.0
+      ]
+    },
+    "R04C07": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        0.0,
+        0.0,
+        -30.0,
+        30.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        0.0,
+        30.0,
+        -30.0,
+        0.0
+      ]
+    },
+    "R04C08": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        0.0,
+        30.0,
+        -30.0,
+        60.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        30.0,
+        60.0,
+        -30.0,
+        0.0
+      ]
+    },
+    "R04C09": {
+      "active": false,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        0.0,
+        60.0,
+        -30.0,
+        90.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        60.0,
+        90.0,
+        -30.0,
+        0.0
+      ]
+    },
+    "R04C10": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        0.0,
+        90.0,
+        -30.0,
+        120.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        90.0,
+        120.0,
+        -30.0,
+        0.0
+      ]
+    },
+    "R04C11": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        0.0,
+        120.0,
+        -30.0,
+        150.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        120.0,
+        150.0,
+        -30.0,
+        0.0
+      ]
+    },
+    "R04C12": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        0.0,
+        150.0,
+        -30.0,
+        180.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        150.0,
+        180.0,
+        -30.0,
+        0.0
+      ]
+    },
+    "R05C01": {
+      "active": false,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        -30.0,
+        -180.0,
+        -60.0,
+        -150.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        -180.0,
+        -150.0,
+        -60.0,
+        -30.0
+      ]
+    },
+    "R05C02": {
+      "active": false,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        -30.0,
+        -150.0,
+        -60.0,
+        -120.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        -150.0,
+        -120.0,
+        -60.0,
+        -30.0
+      ]
+    },
+    "R05C03": {
+      "active": false,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        -30.0,
+        -120.0,
+        -60.0,
+        -90.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        -120.0,
+        -90.0,
+        -60.0,
+        -30.0
+      ]
+    },
+    "R05C04": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        -30.0,
+        -90.0,
+        -60.0,
+        -60.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        -90.0,
+        -60.0,
+        -60.0,
+        -30.0
+      ]
+    },
+    "R05C05": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        -30.0,
+        -60.0,
+        -60.0,
+        -30.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        -60.0,
+        -30.0,
+        -60.0,
+        -30.0
+      ]
+    },
+    "R05C06": {
+      "active": false,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        -30.0,
+        -30.0,
+        -60.0,
+        0.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        -30.0,
+        0.0,
+        -60.0,
+        -30.0
+      ]
+    },
+    "R05C07": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        -30.0,
+        0.0,
+        -60.0,
+        30.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        0.0,
+        30.0,
+        -60.0,
+        -30.0
+      ]
+    },
+    "R05C08": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        -30.0,
+        30.0,
+        -60.0,
+        60.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        30.0,
+        60.0,
+        -60.0,
+        -30.0
+      ]
+    },
+    "R05C09": {
+      "active": false,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        -30.0,
+        60.0,
+        -60.0,
+        90.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        60.0,
+        90.0,
+        -60.0,
+        -30.0
+      ]
+    },
+    "R05C10": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        -30.0,
+        90.0,
+        -60.0,
+        120.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        90.0,
+        120.0,
+        -60.0,
+        -30.0
+      ]
+    },
+    "R05C11": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        -30.0,
+        120.0,
+        -60.0,
+        150.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        120.0,
+        150.0,
+        -60.0,
+        -30.0
+      ]
+    },
+    "R05C12": {
+      "active": true,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        -30.0,
+        150.0,
+        -60.0,
+        180.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        150.0,
+        180.0,
+        -60.0,
+        -30.0
+      ]
+    },
+    "R06C01": {
+      "active": false,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        -60.0,
+        -180.0,
+        -90.0,
+        -150.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        -180.0,
+        -150.0,
+        -90.0,
+        -60.0
+      ]
+    },
+    "R06C02": {
+      "active": false,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        -60.0,
+        -150.0,
+        -90.0,
+        -120.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        -150.0,
+        -120.0,
+        -90.0,
+        -60.0
+      ]
+    },
+    "R06C03": {
+      "active": false,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        -60.0,
+        -120.0,
+        -90.0,
+        -90.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        -120.0,
+        -90.0,
+        -90.0,
+        -60.0
+      ]
+    },
+    "R06C04": {
+      "active": false,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        -60.0,
+        -90.0,
+        -90.0,
+        -60.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        -90.0,
+        -60.0,
+        -90.0,
+        -60.0
+      ]
+    },
+    "R06C05": {
+      "active": false,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        -60.0,
+        -60.0,
+        -90.0,
+        -30.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        -60.0,
+        -30.0,
+        -90.0,
+        -60.0
+      ]
+    },
+    "R06C06": {
+      "active": false,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        -60.0,
+        -30.0,
+        -90.0,
+        0.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        -30.0,
+        0.0,
+        -90.0,
+        -60.0
+      ]
+    },
+    "R06C07": {
+      "active": false,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        -60.0,
+        0.0,
+        -90.0,
+        30.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        0.0,
+        30.0,
+        -90.0,
+        -60.0
+      ]
+    },
+    "R06C08": {
+      "active": false,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        -60.0,
+        30.0,
+        -90.0,
+        60.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        30.0,
+        60.0,
+        -90.0,
+        -60.0
+      ]
+    },
+    "R06C09": {
+      "active": false,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        -60.0,
+        60.0,
+        -90.0,
+        90.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        60.0,
+        90.0,
+        -90.0,
+        -60.0
+      ]
+    },
+    "R06C10": {
+      "active": false,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        -60.0,
+        90.0,
+        -90.0,
+        120.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        90.0,
+        120.0,
+        -90.0,
+        -60.0
+      ]
+    },
+    "R06C11": {
+      "active": false,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        -60.0,
+        120.0,
+        -90.0,
+        150.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        120.0,
+        150.0,
+        -90.0,
+        -60.0
+      ]
+    },
+    "R06C12": {
+      "active": false,
+      "bbox_lat_n_lon_w_lat_s_lon_e": [
+        -60.0,
+        150.0,
+        -90.0,
+        180.0
+      ],
+      "bbox_lon_w_lon_e_lat_s_lat_n": [
+        150.0,
+        180.0,
+        -90.0,
+        -60.0
+      ]
+    }
+  },
+  "scenarios": {
+    "ssp126": {
+      "country_capacity_file": "country_capacity_summary_ssp126.csv",
+      "country_patch_capacity_file": "country_patch_capacity_ssp126.csv",
+      "inactive_patch_unique_coordinate_count": 0,
+      "mapping_file": "stations_ssp126.csv",
+      "row_count": 1877459,
+      "source_file": "data/stations/stations_SSP1-2.6.csv",
+      "source_sha256": "22778752a4c94bb3304ce94c786ea7a732f8cc7977a8412d354bce72626238c1",
+      "unique_coordinate_count": 494828,
+      "unmapped_unique_coordinate_count": 0
+    },
+    "ssp245": {
+      "country_capacity_file": "country_capacity_summary_ssp245.csv",
+      "country_patch_capacity_file": "country_patch_capacity_ssp245.csv",
+      "inactive_patch_unique_coordinate_count": 0,
+      "mapping_file": "stations_ssp245.csv",
+      "row_count": 1676947,
+      "source_file": "data/stations/stations_SSP2-4.5.csv",
+      "source_sha256": "7e86ffcc83997cf2adf84ebbd17a7aa8d5b9b1324b523cfc8718a92517cf63c4",
+      "unique_coordinate_count": 423162,
+      "unmapped_unique_coordinate_count": 0
+    },
+    "ssp585": {
+      "country_capacity_file": "country_capacity_summary_ssp585.csv",
+      "country_patch_capacity_file": "country_patch_capacity_ssp585.csv",
+      "inactive_patch_unique_coordinate_count": 0,
+      "mapping_file": "stations_ssp585.csv",
+      "row_count": 707570,
+      "source_file": "data/stations/stations_SSP5-6.0.csv",
+      "source_sha256": "5f486a3d069c98af4d55c1581d6df1f25a72b5c4433da070f694e39a9bfb9fb8",
+      "unique_coordinate_count": 244022,
+      "unmapped_unique_coordinate_count": 0
+    }
+  },
+  "schema_version": 1,
+  "sources": {
+    "natural_earth_sha256": "08e341606e8391e458c3f08deb312de664b56bfae376064c5aa0aee6681a5f55",
+    "natural_earth_shapefile": "data/maps/natural_earth/ne_110m_admin_0_countries.shp",
+    "patch_definition": "bcsd/global_bcsd/patches.py"
+  },
+  "validation": {
+    "active_patch_count": 47,
+    "canonical_country_count": 176,
+    "country_patch_row_count": 300,
+    "natural_earth_record_count": 177,
+    "removed_patch_count": 25
+  }
+}

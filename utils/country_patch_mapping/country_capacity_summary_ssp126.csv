@@ -1,0 +1,968 @@
+country,country_iso3,year,type,station_count,capacity_gw
+Afghanistan,AFG,2030,solar,1157,46.774628
+Afghanistan,AFG,2030,wind,1031,19.275934
+Afghanistan,AFG,2040,solar,1157,66.549116
+Afghanistan,AFG,2040,wind,1031,33.88959
+Afghanistan,AFG,2050,solar,1323,82.242494
+Afghanistan,AFG,2050,wind,1507,64.279834
+Albania,ALB,2030,wind,85,1.151188
+Albania,ALB,2040,solar,48,0.214569
+Albania,ALB,2040,wind,85,2.175258
+Albania,ALB,2050,solar,48,0.214569
+Albania,ALB,2050,wind,139,4.163484
+Algeria,DZA,2030,solar,2371,72.219259
+Algeria,DZA,2030,wind,1815,24.064512
+Algeria,DZA,2040,solar,2374,115.491791
+Algeria,DZA,2040,wind,1815,41.594267
+Algeria,DZA,2050,solar,2773,149.370056
+Algeria,DZA,2050,wind,3065,73.05253
+Angola,AGO,2030,solar,2409,53.266053
+Angola,AGO,2030,wind,1282,18.243937
+Angola,AGO,2040,solar,2410,76.963155
+Angola,AGO,2040,wind,1282,32.288728
+Angola,AGO,2050,solar,2956,111.692442
+Angola,AGO,2050,wind,1911,54.889089
+Argentina,ARG,2030,solar,10466,137.429956
+Argentina,ARG,2030,wind,8026,89.18918
+Argentina,ARG,2040,solar,10531,225.233137
+Argentina,ARG,2040,wind,8086,154.773801
+Argentina,ARG,2050,solar,11800,317.000645
+Argentina,ARG,2050,wind,11383,296.40112
+Armenia,ARM,2030,solar,83,1.031524
+Armenia,ARM,2030,wind,213,0.883554
+Armenia,ARM,2040,solar,83,1.0969
+Armenia,ARM,2040,wind,213,1.541874
+Armenia,ARM,2050,solar,109,1.110596
+Armenia,ARM,2050,wind,216,2.096086
+Australia,AUS,2030,solar,8404,160.719224
+Australia,AUS,2030,wind,6904,133.871482
+Australia,AUS,2040,solar,8421,262.160286
+Australia,AUS,2040,wind,6904,239.934913
+Australia,AUS,2050,solar,9932,370.410632
+Australia,AUS,2050,wind,10850,472.511096
+Austria,AUT,2030,solar,430,1.492896
+Austria,AUT,2030,wind,510,2.597285
+Austria,AUT,2040,solar,726,4.095783
+Austria,AUT,2040,wind,599,4.784652
+Austria,AUT,2050,solar,726,4.095834
+Austria,AUT,2050,wind,862,12.298775
+Azerbaijan,AZE,2030,solar,183,1.433263
+Azerbaijan,AZE,2030,wind,283,1.201739
+Azerbaijan,AZE,2040,solar,183,2.445371
+Azerbaijan,AZE,2040,wind,283,2.124974
+Azerbaijan,AZE,2050,solar,217,3.275292
+Azerbaijan,AZE,2050,wind,504,5.053919
+Bangladesh,BGD,2030,solar,111,0.848226
+Bangladesh,BGD,2030,wind,642,3.858131
+Bangladesh,BGD,2040,solar,113,1.348443
+Bangladesh,BGD,2040,wind,642,7.012096
+Bangladesh,BGD,2050,solar,334,3.720109
+Bangladesh,BGD,2050,wind,938,10.192128
+Belarus,BLR,2030,solar,986,2.618015
+Belarus,BLR,2030,wind,1496,13.153464
+Belarus,BLR,2040,solar,986,3.954719
+Belarus,BLR,2040,wind,1496,23.482081
+Belarus,BLR,2050,solar,1366,4.992526
+Belarus,BLR,2050,wind,2252,46.539112
+Belgium,BEL,2030,solar,283,1.684546
+Belgium,BEL,2030,wind,138,0.377016
+Belgium,BEL,2040,solar,378,7.243594
+Belgium,BEL,2040,wind,138,0.690163
+Belgium,BEL,2050,solar,378,7.243612
+Belgium,BEL,2050,wind,234,2.157381
+Belize,BLZ,2030,solar,122,0.852234
+Belize,BLZ,2030,wind,83,1.749016
+Belize,BLZ,2040,solar,122,1.129169
+Belize,BLZ,2040,wind,84,3.13611
+Belize,BLZ,2050,solar,123,2.74636
+Belize,BLZ,2050,wind,86,5.355937
+Benin,BEN,2030,solar,670,5.809114
+Benin,BEN,2030,wind,355,4.649927
+Benin,BEN,2040,solar,671,10.161609
+Benin,BEN,2040,wind,355,8.216745
+Benin,BEN,2050,solar,741,14.369374
+Benin,BEN,2050,wind,533,12.934784
+Bhutan,BTN,2030,solar,29,0.093473
+Bhutan,BTN,2030,wind,45,0.032042
+Bhutan,BTN,2040,solar,29,0.138814
+Bhutan,BTN,2040,wind,45,0.055059
+Bhutan,BTN,2050,solar,29,0.139941
+Bhutan,BTN,2050,wind,45,0.059434
+Bolivia,BOL,2030,solar,1760,26.10127
+Bolivia,BOL,2030,wind,543,8.19846
+Bolivia,BOL,2040,solar,1762,41.343595
+Bolivia,BOL,2040,wind,543,14.156206
+Bolivia,BOL,2050,solar,1962,63.459313
+Bolivia,BOL,2050,wind,842,18.898513
+Bosnia and Herz.,BIH,2030,solar,239,1.21175
+Bosnia and Herz.,BIH,2030,wind,188,2.677547
+Bosnia and Herz.,BIH,2040,solar,313,1.864783
+Bosnia and Herz.,BIH,2040,wind,188,4.953513
+Bosnia and Herz.,BIH,2050,solar,313,1.866415
+Bosnia and Herz.,BIH,2050,wind,353,8.40068
+Botswana,BWA,2030,solar,1340,25.156049
+Botswana,BWA,2030,wind,905,21.72642
+Botswana,BWA,2040,solar,1340,41.762452
+Botswana,BWA,2040,wind,905,37.476538
+Botswana,BWA,2050,solar,1691,61.615461
+Botswana,BWA,2050,wind,1386,63.966664
+Brazil,BRA,2030,solar,21915,269.03522
+Brazil,BRA,2030,wind,20963,305.408079
+Brazil,BRA,2040,solar,21944,443.782716
+Brazil,BRA,2040,wind,20963,535.239027
+Brazil,BRA,2050,solar,25086,626.267262
+Brazil,BRA,2050,wind,29839,882.709536
+Brunei,BRN,2030,solar,27,0.035232
+Brunei,BRN,2030,wind,26,0.112698
+Brunei,BRN,2040,solar,27,0.057989
+Brunei,BRN,2040,wind,26,0.209747
+Brunei,BRN,2050,solar,27,0.09758
+Brunei,BRN,2050,wind,26,0.408558
+Bulgaria,BGR,2030,solar,144,0.364912
+Bulgaria,BGR,2030,wind,454,7.959546
+Bulgaria,BGR,2040,solar,146,0.592163
+Bulgaria,BGR,2040,wind,454,14.244877
+Bulgaria,BGR,2050,solar,146,0.593047
+Bulgaria,BGR,2050,wind,742,20.307183
+Burkina Faso,BFA,2030,solar,1063,16.89817
+Burkina Faso,BFA,2030,wind,1005,5.604354
+Burkina Faso,BFA,2040,solar,1075,24.589575
+Burkina Faso,BFA,2040,wind,1005,9.866229
+Burkina Faso,BFA,2050,solar,1187,30.670985
+Burkina Faso,BFA,2050,wind,1333,22.999422
+Burundi,BDI,2030,solar,82,1.401247
+Burundi,BDI,2030,wind,164,0.763486
+Burundi,BDI,2040,solar,84,1.777268
+Burundi,BDI,2040,wind,164,1.333041
+Burundi,BDI,2050,solar,84,2.032665
+Burundi,BDI,2050,wind,187,2.165936
+Cambodia,KHM,2030,solar,564,10.474784
+Cambodia,KHM,2030,wind,997,13.104726
+Cambodia,KHM,2040,solar,566,13.690021
+Cambodia,KHM,2040,wind,997,22.831482
+Cambodia,KHM,2050,solar,804,14.776429
+Cambodia,KHM,2050,wind,1083,32.287482
+Cameroon,CMR,2030,solar,1015,9.51767
+Cameroon,CMR,2030,wind,740,6.680223
+Cameroon,CMR,2040,solar,1017,14.528388
+Cameroon,CMR,2040,wind,740,11.733087
+Cameroon,CMR,2050,solar,1119,17.040808
+Cameroon,CMR,2050,wind,983,17.440463
+Canada,CAN,2030,solar,4965,26.54289
+Canada,CAN,2030,wind,7791,69.17926
+Canada,CAN,2040,solar,4974,40.612227
+Canada,CAN,2040,wind,7853,123.232884
+Canada,CAN,2050,solar,6741,56.684043
+Canada,CAN,2050,wind,10091,225.106975
+Central African Rep.,CAF,2030,solar,118,0.470585
+Central African Rep.,CAF,2030,wind,158,1.841305
+Central African Rep.,CAF,2040,solar,118,0.870357
+Central African Rep.,CAF,2040,wind,158,3.362421
+Central African Rep.,CAF,2050,solar,118,1.284848
+Central African Rep.,CAF,2050,wind,250,6.302988
+Chad,TCD,2030,solar,613,5.407494
+Chad,TCD,2030,wind,421,9.401498
+Chad,TCD,2040,solar,616,9.229166
+Chad,TCD,2040,wind,421,16.297588
+Chad,TCD,2050,solar,684,17.14896
+Chad,TCD,2050,wind,862,23.684306
+Chile,CHL,2030,solar,1273,13.323129
+Chile,CHL,2030,wind,1155,10.767116
+Chile,CHL,2040,solar,1280,20.531138
+Chile,CHL,2040,wind,1155,19.240162
+Chile,CHL,2050,solar,1505,27.917909
+Chile,CHL,2050,wind,1729,53.936109
+China,CHN,2030,solar,19123,286.178211
+China,CHN,2030,wind,24986,358.012522
+China,CHN,2040,solar,19269,578.785562
+China,CHN,2040,wind,24990,637.575285
+China,CHN,2050,solar,23199,693.722394
+China,CHN,2050,wind,35659,1149.54576
+Colombia,COL,2030,solar,1801,27.838858
+Colombia,COL,2030,wind,1803,27.35266
+Colombia,COL,2040,solar,1805,45.881876
+Colombia,COL,2040,wind,1807,47.055917
+Colombia,COL,2050,solar,2461,61.295271
+Colombia,COL,2050,wind,2677,91.812736
+Congo,COG,2030,solar,577,4.348981
+Congo,COG,2030,wind,449,4.796731
+Congo,COG,2040,solar,577,7.30435
+Congo,COG,2040,wind,449,8.525971
+Congo,COG,2050,solar,680,8.984879
+Congo,COG,2050,wind,552,12.724608
+Costa Rica,CRI,2030,solar,204,1.38364
+Costa Rica,CRI,2030,wind,82,1.782859
+Costa Rica,CRI,2040,solar,204,2.305088
+Costa Rica,CRI,2040,wind,82,3.300753
+Costa Rica,CRI,2050,solar,205,2.828925
+Costa Rica,CRI,2050,wind,83,3.372408
+Croatia,HRV,2030,solar,317,1.259269
+Croatia,HRV,2030,wind,379,5.712284
+Croatia,HRV,2040,solar,413,2.42783
+Croatia,HRV,2040,wind,379,9.580363
+Croatia,HRV,2050,solar,417,2.469395
+Croatia,HRV,2050,wind,444,15.207822
+Cuba,CUB,2030,solar,515,9.463445
+Cuba,CUB,2030,wind,633,10.308148
+Cuba,CUB,2040,solar,516,13.891043
+Cuba,CUB,2040,wind,636,19.615125
+Cuba,CUB,2050,solar,516,14.27085
+Cuba,CUB,2050,wind,749,33.808335
+Czechia,CZE,2030,solar,506,2.218512
+Czechia,CZE,2030,wind,836,11.972862
+Czechia,CZE,2040,solar,592,3.51998
+Czechia,CZE,2040,wind,847,20.546852
+Czechia,CZE,2050,solar,592,3.57969
+Czechia,CZE,2050,wind,987,24.065804
+Côte d'Ivoire,CIV,2030,solar,1233,11.798423
+Côte d'Ivoire,CIV,2030,wind,1267,24.391717
+Côte d'Ivoire,CIV,2040,solar,1234,18.960378
+Côte d'Ivoire,CIV,2040,wind,1267,38.892099
+Côte d'Ivoire,CIV,2050,solar,1742,30.82939
+Côte d'Ivoire,CIV,2050,wind,1810,59.972642
+Dem. Rep. Congo,COD,2030,solar,2591,22.103846
+Dem. Rep. Congo,COD,2030,wind,1225,9.165707
+Dem. Rep. Congo,COD,2040,solar,2595,36.804831
+Dem. Rep. Congo,COD,2040,wind,1225,16.921182
+Dem. Rep. Congo,COD,2050,solar,3324,51.180342
+Dem. Rep. Congo,COD,2050,wind,2577,39.275879
+Denmark,DNK,2030,solar,174,0.41979
+Denmark,DNK,2030,wind,341,2.962437
+Denmark,DNK,2040,solar,189,0.751553
+Denmark,DNK,2040,wind,342,5.318571
+Denmark,DNK,2050,solar,189,0.885248
+Denmark,DNK,2050,wind,475,8.023647
+Djibouti,DJI,2030,solar,104,2.34304
+Djibouti,DJI,2030,wind,88,0.996322
+Djibouti,DJI,2040,solar,104,3.295223
+Djibouti,DJI,2040,wind,88,1.862909
+Djibouti,DJI,2050,solar,104,3.891171
+Djibouti,DJI,2050,wind,97,2.852631
+Dominican Rep.,DOM,2030,solar,208,2.820879
+Dominican Rep.,DOM,2030,wind,174,2.875686
+Dominican Rep.,DOM,2040,solar,209,4.57481
+Dominican Rep.,DOM,2040,wind,174,4.83982
+Dominican Rep.,DOM,2050,solar,227,5.327308
+Dominican Rep.,DOM,2050,wind,174,5.527678
+Ecuador,ECU,2030,solar,509,5.389017
+Ecuador,ECU,2030,wind,148,4.880352
+Ecuador,ECU,2040,solar,509,8.703645
+Ecuador,ECU,2040,wind,148,8.91402
+Ecuador,ECU,2050,solar,706,11.430208
+Ecuador,ECU,2050,wind,363,13.215163
+Egypt,EGY,2030,solar,1731,43.20331
+Egypt,EGY,2030,wind,972,10.611345
+Egypt,EGY,2040,solar,1732,69.997729
+Egypt,EGY,2040,wind,972,18.555548
+Egypt,EGY,2050,solar,1960,106.775896
+Egypt,EGY,2050,wind,1563,36.680379
+El Salvador,SLV,2030,solar,61,0.479322
+El Salvador,SLV,2030,wind,64,1.928139
+El Salvador,SLV,2040,solar,62,0.831729
+El Salvador,SLV,2040,wind,64,3.612034
+El Salvador,SLV,2050,solar,79,0.912172
+El Salvador,SLV,2050,wind,133,3.779992
+Eq. Guinea,GNQ,2030,solar,72,0.538437
+Eq. Guinea,GNQ,2030,wind,21,0.582604
+Eq. Guinea,GNQ,2040,solar,72,0.818534
+Eq. Guinea,GNQ,2040,wind,21,1.090926
+Eq. Guinea,GNQ,2050,solar,72,0.818539
+Eq. Guinea,GNQ,2050,wind,41,1.31573
+Eritrea,ERI,2030,solar,142,2.074611
+Eritrea,ERI,2030,wind,121,2.330307
+Eritrea,ERI,2040,solar,142,3.772081
+Eritrea,ERI,2040,wind,121,4.474372
+Eritrea,ERI,2050,solar,142,5.594376
+Eritrea,ERI,2050,wind,166,13.194497
+Estonia,EST,2030,solar,178,0.487515
+Estonia,EST,2030,wind,383,2.013652
+Estonia,EST,2040,solar,179,0.674521
+Estonia,EST,2040,wind,383,3.433224
+Estonia,EST,2050,solar,277,0.928415
+Estonia,EST,2050,wind,464,6.352646
+Ethiopia,ETH,2030,solar,2049,36.54205
+Ethiopia,ETH,2030,wind,2344,30.655256
+Ethiopia,ETH,2040,solar,2061,61.382806
+Ethiopia,ETH,2040,wind,2345,54.429276
+Ethiopia,ETH,2050,solar,2278,73.718195
+Ethiopia,ETH,2050,wind,3091,87.001035
+France,-99,2030,solar,2682,21.018822
+France,-99,2030,wind,2723,31.10741
+France,-99,2040,solar,5744,65.834605
+France,-99,2040,wind,2724,53.580322
+France,-99,2050,solar,5744,65.834931
+France,-99,2050,wind,4277,96.489389
+Gabon,GAB,2030,solar,231,1.934011
+Gabon,GAB,2030,wind,296,5.635282
+Gabon,GAB,2040,solar,232,3.098345
+Gabon,GAB,2040,wind,296,9.7867
+Gabon,GAB,2050,solar,282,4.32861
+Gabon,GAB,2050,wind,415,14.080786
+Gambia,GMB,2030,solar,34,0.989876
+Gambia,GMB,2030,wind,62,0.33371
+Gambia,GMB,2040,solar,34,1.409031
+Gambia,GMB,2040,wind,62,0.595655
+Gambia,GMB,2050,solar,34,1.630464
+Gambia,GMB,2050,wind,62,0.900299
+Georgia,GEO,2030,solar,50,0.253978
+Georgia,GEO,2030,wind,234,4.039187
+Georgia,GEO,2040,solar,50,0.37424
+Georgia,GEO,2040,wind,234,7.090388
+Georgia,GEO,2050,solar,50,0.37424
+Georgia,GEO,2050,wind,436,8.905945
+Germany,DEU,2030,solar,2378,14.585001
+Germany,DEU,2030,wind,2609,25.618601
+Germany,DEU,2040,solar,4271,50.777614
+Germany,DEU,2040,wind,2609,45.706557
+Germany,DEU,2050,solar,4414,53.481162
+Germany,DEU,2050,wind,3503,94.704887
+Ghana,GHA,2030,solar,1185,13.621319
+Ghana,GHA,2030,wind,954,10.609821
+Ghana,GHA,2040,solar,1186,21.57108
+Ghana,GHA,2040,wind,954,17.972698
+Ghana,GHA,2050,solar,1187,28.221294
+Ghana,GHA,2050,wind,1302,28.50626
+Greece,GRC,2030,solar,109,0.334062
+Greece,GRC,2030,wind,446,5.211054
+Greece,GRC,2040,solar,513,3.220022
+Greece,GRC,2040,wind,446,9.321015
+Greece,GRC,2050,solar,513,3.220022
+Greece,GRC,2050,wind,674,14.592405
+Guatemala,GTM,2030,solar,326,3.550911
+Guatemala,GTM,2030,wind,389,2.5635
+Guatemala,GTM,2040,solar,326,4.731372
+Guatemala,GTM,2040,wind,390,4.541112
+Guatemala,GTM,2050,solar,375,5.339696
+Guatemala,GTM,2050,wind,486,16.490551
+Guinea,GIN,2030,solar,863,5.899507
+Guinea,GIN,2030,wind,849,11.701416
+Guinea,GIN,2040,solar,863,9.216405
+Guinea,GIN,2040,wind,849,20.134267
+Guinea,GIN,2050,solar,994,19.145185
+Guinea,GIN,2050,wind,1113,30.039022
+Guinea-Bissau,GNB,2030,solar,20,0.219504
+Guinea-Bissau,GNB,2030,wind,42,0.200259
+Guinea-Bissau,GNB,2040,solar,20,0.252041
+Guinea-Bissau,GNB,2040,wind,42,0.341843
+Guinea-Bissau,GNB,2050,solar,20,0.252041
+Guinea-Bissau,GNB,2050,wind,42,0.498207
+Guyana,GUY,2030,solar,117,1.344337
+Guyana,GUY,2030,wind,40,0.189778
+Guyana,GUY,2040,solar,117,2.383294
+Guyana,GUY,2040,wind,40,0.354807
+Guyana,GUY,2050,solar,150,5.435021
+Guyana,GUY,2050,wind,40,0.718097
+Haiti,HTI,2030,solar,136,3.009205
+Haiti,HTI,2030,wind,52,0.164418
+Haiti,HTI,2040,solar,138,3.407864
+Haiti,HTI,2040,wind,52,0.298744
+Haiti,HTI,2050,solar,138,3.518473
+Haiti,HTI,2050,wind,136,0.620079
+Honduras,HND,2030,solar,252,0.888786
+Honduras,HND,2030,wind,199,2.389661
+Honduras,HND,2040,solar,257,1.354348
+Honduras,HND,2040,wind,199,4.423877
+Honduras,HND,2050,solar,428,2.199018
+Honduras,HND,2050,wind,402,5.621572
+Hungary,HUN,2030,solar,620,2.848979
+Hungary,HUN,2030,wind,692,11.926254
+Hungary,HUN,2040,solar,624,4.746674
+Hungary,HUN,2040,wind,692,22.153252
+Hungary,HUN,2050,solar,682,7.27484
+Hungary,HUN,2050,wind,1043,47.233107
+Iceland,ISL,2030,solar,123,0.567658
+Iceland,ISL,2040,solar,123,0.684364
+Iceland,ISL,2050,solar,143,0.802157
+India,IND,2030,solar,12377,149.001742
+India,IND,2030,wind,17614,301.244596
+India,IND,2040,solar,12451,216.17634
+India,IND,2040,wind,17614,525.365355
+India,IND,2050,solar,14682,258.688842
+India,IND,2050,wind,21565,748.545394
+Indonesia,IDN,2030,solar,3473,39.285618
+Indonesia,IDN,2030,wind,3490,41.512907
+Indonesia,IDN,2040,solar,3485,59.379361
+Indonesia,IDN,2040,wind,3493,73.803791
+Indonesia,IDN,2050,solar,4348,79.428489
+Indonesia,IDN,2050,wind,5749,164.696197
+Iran,IRN,2030,solar,8674,282.429101
+Iran,IRN,2030,wind,7898,136.239557
+Iran,IRN,2040,solar,8690,425.75823
+Iran,IRN,2040,wind,7899,239.237978
+Iran,IRN,2050,solar,9161,508.746893
+Iran,IRN,2050,wind,9694,423.708852
+Iraq,IRQ,2030,solar,1852,30.83107
+Iraq,IRQ,2030,wind,1242,14.178554
+Iraq,IRQ,2040,solar,1855,55.663977
+Iraq,IRQ,2040,wind,1242,25.961824
+Iraq,IRQ,2050,solar,2110,90.663683
+Iraq,IRQ,2050,wind,2116,81.65165
+Ireland,IRL,2030,solar,528,11.196084
+Ireland,IRL,2030,wind,482,2.384564
+Ireland,IRL,2040,solar,528,12.738224
+Ireland,IRL,2040,wind,482,4.193169
+Ireland,IRL,2050,solar,644,14.292459
+Ireland,IRL,2050,wind,548,5.44009
+Israel,ISR,2030,solar,178,2.141102
+Israel,ISR,2030,wind,132,1.720506
+Israel,ISR,2040,solar,178,3.469175
+Israel,ISR,2040,wind,132,3.075674
+Israel,ISR,2050,solar,208,7.610451
+Israel,ISR,2050,wind,203,5.617292
+Italy,ITA,2030,solar,754,5.484693
+Italy,ITA,2030,wind,988,12.532412
+Italy,ITA,2040,solar,1744,18.963435
+Italy,ITA,2040,wind,989,22.635471
+Italy,ITA,2050,solar,1744,18.971099
+Italy,ITA,2050,wind,1965,43.610394
+Jamaica,JAM,2030,wind,6,0.170911
+Jamaica,JAM,2040,wind,6,0.320119
+Jamaica,JAM,2050,wind,19,0.784555
+Japan,JPN,2030,solar,877,12.873931
+Japan,JPN,2030,wind,756,13.435661
+Japan,JPN,2040,solar,879,19.137308
+Japan,JPN,2040,wind,758,24.002277
+Japan,JPN,2050,solar,1017,23.803909
+Japan,JPN,2050,wind,1421,35.612614
+Jordan,JOR,2030,solar,448,9.852695
+Jordan,JOR,2030,wind,224,3.782481
+Jordan,JOR,2040,solar,449,18.329897
+Jordan,JOR,2040,wind,224,6.941097
+Jordan,JOR,2050,solar,517,28.559396
+Jordan,JOR,2050,wind,525,31.184272
+Kazakhstan,KAZ,2030,solar,8375,160.088486
+Kazakhstan,KAZ,2030,wind,8341,159.917414
+Kazakhstan,KAZ,2040,solar,8381,237.610135
+Kazakhstan,KAZ,2040,wind,8497,285.792177
+Kazakhstan,KAZ,2050,solar,10082,303.355315
+Kazakhstan,KAZ,2050,wind,11611,556.835647
+Kenya,KEN,2030,solar,1334,18.640841
+Kenya,KEN,2030,wind,1130,7.61105
+Kenya,KEN,2040,solar,1344,30.231624
+Kenya,KEN,2040,wind,1130,13.570852
+Kenya,KEN,2050,solar,1549,48.057313
+Kenya,KEN,2050,wind,1794,29.376758
+Kosovo,-99,2030,solar,30,0.036834
+Kosovo,-99,2030,wind,50,1.369233
+Kosovo,-99,2040,solar,80,0.227348
+Kosovo,-99,2040,wind,50,2.403241
+Kosovo,-99,2050,solar,80,0.227349
+Kosovo,-99,2050,wind,109,2.713276
+Kuwait,KWT,2030,solar,101,3.897101
+Kuwait,KWT,2030,wind,61,0.193221
+Kuwait,KWT,2040,solar,101,7.545873
+Kuwait,KWT,2040,wind,61,0.326741
+Kuwait,KWT,2050,solar,110,9.046444
+Kuwait,KWT,2050,wind,104,1.845978
+Kyrgyzstan,KGZ,2030,solar,201,1.793934
+Kyrgyzstan,KGZ,2030,wind,303,1.659655
+Kyrgyzstan,KGZ,2040,solar,201,2.548176
+Kyrgyzstan,KGZ,2040,wind,303,2.927007
+Kyrgyzstan,KGZ,2050,solar,208,2.611631
+Kyrgyzstan,KGZ,2050,wind,569,8.201253
+Laos,LAO,2030,solar,477,5.186455
+Laos,LAO,2030,wind,894,12.199213
+Laos,LAO,2040,solar,480,8.462036
+Laos,LAO,2040,wind,894,21.547881
+Laos,LAO,2050,solar,533,9.556258
+Laos,LAO,2050,wind,1062,29.462161
+Latvia,LVA,2030,solar,453,1.417665
+Latvia,LVA,2030,wind,532,1.319531
+Latvia,LVA,2040,solar,453,1.916952
+Latvia,LVA,2040,wind,532,2.325234
+Latvia,LVA,2050,solar,525,2.476148
+Latvia,LVA,2050,wind,644,4.908589
+Lebanon,LBN,2030,solar,29,0.031251
+Lebanon,LBN,2040,solar,30,0.057389
+Lebanon,LBN,2050,solar,30,0.079192
+Lebanon,LBN,2050,wind,8,0.014458
+Lesotho,LSO,2030,solar,57,0.615185
+Lesotho,LSO,2030,wind,16,0.018664
+Lesotho,LSO,2040,solar,57,1.103496
+Lesotho,LSO,2040,wind,16,0.029854
+Lesotho,LSO,2050,solar,95,1.30981
+Lesotho,LSO,2050,wind,63,0.254264
+Liberia,LBR,2030,solar,92,0.205034
+Liberia,LBR,2030,wind,212,4.115195
+Liberia,LBR,2040,solar,92,0.376805
+Liberia,LBR,2040,wind,212,7.446695
+Liberia,LBR,2050,solar,92,0.529835
+Liberia,LBR,2050,wind,289,10.580028
+Libya,LBY,2030,solar,2245,62.408261
+Libya,LBY,2030,wind,959,14.186844
+Libya,LBY,2040,solar,2305,98.177008
+Libya,LBY,2040,wind,959,26.685527
+Libya,LBY,2050,solar,2648,146.970289
+Libya,LBY,2050,wind,2328,86.155511
+Lithuania,LTU,2030,solar,197,0.443124
+Lithuania,LTU,2030,wind,523,5.11771
+Lithuania,LTU,2040,solar,197,0.648901
+Lithuania,LTU,2040,wind,523,9.368568
+Lithuania,LTU,2050,solar,227,0.710544
+Lithuania,LTU,2050,wind,826,15.424052
+Luxembourg,LUX,2030,solar,18,0.030866
+Luxembourg,LUX,2030,wind,14,0.06229
+Luxembourg,LUX,2040,solar,31,0.300544
+Luxembourg,LUX,2040,wind,14,0.112176
+Luxembourg,LUX,2050,solar,31,0.300545
+Luxembourg,LUX,2050,wind,15,0.246544
+Madagascar,MDG,2030,solar,22,0.240649
+Madagascar,MDG,2030,wind,290,5.300102
+Madagascar,MDG,2040,solar,23,0.478493
+Madagascar,MDG,2040,wind,291,10.293684
+Madagascar,MDG,2050,solar,58,0.87974
+Madagascar,MDG,2050,wind,472,15.421332
+Malawi,MWI,2030,solar,161,0.71602
+Malawi,MWI,2030,wind,532,4.523848
+Malawi,MWI,2040,solar,162,0.829716
+Malawi,MWI,2040,wind,532,7.983368
+Malawi,MWI,2050,solar,221,0.903677
+Malawi,MWI,2050,wind,706,14.677385
+Malaysia,MYS,2030,solar,688,7.89602
+Malaysia,MYS,2030,wind,765,9.209512
+Malaysia,MYS,2040,solar,690,11.886571
+Malaysia,MYS,2040,wind,766,15.309582
+Malaysia,MYS,2050,solar,878,15.153784
+Malaysia,MYS,2050,wind,953,28.256642
+Mali,MLI,2030,solar,1529,31.129832
+Mali,MLI,2030,wind,1126,24.059768
+Mali,MLI,2040,solar,1529,49.281278
+Mali,MLI,2040,wind,1126,43.317126
+Mali,MLI,2050,solar,1662,67.736634
+Mali,MLI,2050,wind,1468,64.678049
+Mauritania,MRT,2030,solar,380,11.274225
+Mauritania,MRT,2030,wind,156,1.45182
+Mauritania,MRT,2040,solar,380,18.659495
+Mauritania,MRT,2040,wind,156,2.539591
+Mauritania,MRT,2050,solar,452,23.09918
+Mauritania,MRT,2050,wind,332,19.696629
+Mexico,MEX,2030,solar,6668,120.56469
+Mexico,MEX,2030,wind,6672,80.508743
+Mexico,MEX,2040,solar,6689,189.214052
+Mexico,MEX,2040,wind,6674,143.589476
+Mexico,MEX,2050,solar,8114,256.390774
+Mexico,MEX,2050,wind,9680,253.707829
+Moldova,MDA,2030,solar,249,0.831176
+Moldova,MDA,2030,wind,295,3.525221
+Moldova,MDA,2040,solar,252,1.037528
+Moldova,MDA,2040,wind,295,6.470401
+Moldova,MDA,2050,solar,273,1.060854
+Moldova,MDA,2050,wind,384,11.581056
+Mongolia,MNG,2030,solar,2482,72.171629
+Mongolia,MNG,2030,wind,2360,49.819184
+Mongolia,MNG,2040,solar,2482,138.409578
+Mongolia,MNG,2040,wind,2360,89.999939
+Mongolia,MNG,2050,solar,2852,155.151212
+Mongolia,MNG,2050,wind,3532,170.245712
+Montenegro,MNE,2030,solar,18,0.010502
+Montenegro,MNE,2040,solar,84,0.305306
+Montenegro,MNE,2050,solar,84,0.305306
+Montenegro,MNE,2050,wind,108,0.178616
+Morocco,MAR,2030,solar,1433,41.296691
+Morocco,MAR,2030,wind,1839,22.198216
+Morocco,MAR,2040,solar,1435,62.572942
+Morocco,MAR,2040,wind,1839,40.053457
+Morocco,MAR,2050,solar,2007,87.339746
+Morocco,MAR,2050,wind,2352,72.837475
+Mozambique,MOZ,2030,solar,1620,25.029625
+Mozambique,MOZ,2030,wind,1315,14.650683
+Mozambique,MOZ,2040,solar,1621,39.753379
+Mozambique,MOZ,2040,wind,1315,25.920198
+Mozambique,MOZ,2050,solar,2204,63.993255
+Mozambique,MOZ,2050,wind,2222,50.641404
+Myanmar,MMR,2030,solar,1093,7.727642
+Myanmar,MMR,2030,wind,1796,30.477199
+Myanmar,MMR,2040,solar,1097,10.450612
+Myanmar,MMR,2040,wind,1800,52.939858
+Myanmar,MMR,2050,solar,1284,12.258184
+Myanmar,MMR,2050,wind,2843,90.815761
+Namibia,NAM,2030,solar,2222,42.86902
+Namibia,NAM,2030,wind,1318,18.191287
+Namibia,NAM,2040,solar,2222,71.759928
+Namibia,NAM,2040,wind,1318,32.491421
+Namibia,NAM,2050,solar,2550,106.148187
+Namibia,NAM,2050,wind,2139,74.694973
+Nepal,NPL,2030,solar,298,1.722104
+Nepal,NPL,2030,wind,385,7.983295
+Nepal,NPL,2040,solar,298,2.451009
+Nepal,NPL,2040,wind,385,13.939566
+Nepal,NPL,2050,solar,341,2.719689
+Nepal,NPL,2050,wind,417,20.042862
+Netherlands,NLD,2030,solar,210,3.991523
+Netherlands,NLD,2030,wind,49,0.831328
+Netherlands,NLD,2040,solar,422,15.347381
+Netherlands,NLD,2040,wind,49,1.576425
+Netherlands,NLD,2050,solar,422,15.347381
+Netherlands,NLD,2050,wind,159,6.333815
+New Caledonia,NCL,2030,wind,19,0.761202
+New Caledonia,NCL,2040,wind,19,1.424576
+New Caledonia,NCL,2050,wind,24,2.472287
+New Zealand,NZL,2030,solar,732,8.404744
+New Zealand,NZL,2030,wind,594,9.81257
+New Zealand,NZL,2040,solar,733,13.035078
+New Zealand,NZL,2040,wind,595,18.183799
+New Zealand,NZL,2050,solar,978,20.047791
+New Zealand,NZL,2050,wind,926,34.690477
+Nicaragua,NIC,2030,solar,411,2.271422
+Nicaragua,NIC,2030,wind,306,1.127219
+Nicaragua,NIC,2040,solar,412,3.677187
+Nicaragua,NIC,2040,wind,306,2.193543
+Nicaragua,NIC,2050,solar,412,4.385623
+Nicaragua,NIC,2050,wind,347,4.88808
+Niger,NER,2030,solar,755,19.729024
+Niger,NER,2030,wind,364,3.170336
+Niger,NER,2040,solar,755,33.533432
+Niger,NER,2040,wind,364,5.822054
+Niger,NER,2050,solar,857,52.229884
+Niger,NER,2050,wind,751,23.417663
+Nigeria,NGA,2030,solar,3306,33.262498
+Nigeria,NGA,2030,wind,3540,73.86751
+Nigeria,NGA,2040,solar,3310,54.725137
+Nigeria,NGA,2040,wind,3540,125.291389
+Nigeria,NGA,2050,solar,3930,83.887949
+Nigeria,NGA,2050,wind,4954,183.51799
+North Korea,PRK,2030,solar,37,0.34392
+North Korea,PRK,2030,wind,386,4.257279
+North Korea,PRK,2040,solar,37,0.382791
+North Korea,PRK,2040,wind,386,7.306584
+North Korea,PRK,2050,solar,61,0.393495
+North Korea,PRK,2050,wind,732,18.293229
+North Macedonia,MKD,2030,solar,139,0.429633
+North Macedonia,MKD,2030,wind,90,0.785221
+North Macedonia,MKD,2040,solar,147,0.559736
+North Macedonia,MKD,2040,wind,90,1.364249
+North Macedonia,MKD,2050,solar,147,0.559737
+North Macedonia,MKD,2050,wind,103,1.605932
+Norway,-99,2030,solar,431,1.462959
+Norway,-99,2030,wind,221,1.381295
+Norway,-99,2040,solar,435,2.130455
+Norway,-99,2040,wind,221,2.488023
+Norway,-99,2050,solar,715,3.103652
+Norway,-99,2050,wind,224,6.182715
+Oman,OMN,2030,solar,915,32.924238
+Oman,OMN,2030,wind,787,21.584966
+Oman,OMN,2040,solar,916,57.628732
+Oman,OMN,2040,wind,787,39.060911
+Oman,OMN,2050,solar,1249,101.214758
+Oman,OMN,2050,wind,1086,75.930082
+Pakistan,PAK,2030,solar,3755,106.652658
+Pakistan,PAK,2030,wind,3202,78.596294
+Pakistan,PAK,2040,solar,3765,162.090537
+Pakistan,PAK,2040,wind,3202,133.366737
+Pakistan,PAK,2050,solar,4236,197.705833
+Pakistan,PAK,2050,wind,4080,196.02162
+Palestine,PSE,2030,solar,43,0.193262
+Palestine,PSE,2030,wind,19,0.355587
+Palestine,PSE,2040,solar,43,0.33102
+Palestine,PSE,2040,wind,19,0.617455
+Palestine,PSE,2050,solar,44,0.746817
+Palestine,PSE,2050,wind,48,1.039428
+Panama,PAN,2030,solar,104,0.701024
+Panama,PAN,2030,wind,96,0.4943
+Panama,PAN,2040,solar,104,1.005313
+Panama,PAN,2040,wind,96,0.876579
+Panama,PAN,2050,solar,166,1.635374
+Panama,PAN,2050,wind,246,7.633124
+Papua New Guinea,PNG,2030,solar,136,1.102651
+Papua New Guinea,PNG,2030,wind,162,2.72464
+Papua New Guinea,PNG,2040,solar,136,1.892075
+Papua New Guinea,PNG,2040,wind,162,4.600353
+Papua New Guinea,PNG,2050,solar,136,1.98372
+Papua New Guinea,PNG,2050,wind,268,6.987066
+Paraguay,PRY,2030,solar,1217,24.722596
+Paraguay,PRY,2030,wind,996,12.206569
+Paraguay,PRY,2040,solar,1218,38.503388
+Paraguay,PRY,2040,wind,996,21.467023
+Paraguay,PRY,2050,solar,1455,46.23738
+Paraguay,PRY,2050,wind,1316,35.691125
+Peru,PER,2030,solar,1536,20.257745
+Peru,PER,2030,wind,784,9.095017
+Peru,PER,2040,solar,1537,34.827607
+Peru,PER,2040,wind,785,15.801556
+Peru,PER,2050,solar,1854,47.510533
+Peru,PER,2050,wind,1025,22.159405
+Philippines,PHL,2030,solar,386,4.726863
+Philippines,PHL,2030,wind,795,12.304502
+Philippines,PHL,2040,solar,386,6.434763
+Philippines,PHL,2040,wind,800,21.566927
+Philippines,PHL,2050,solar,415,7.185829
+Philippines,PHL,2050,wind,1131,34.474811
+Poland,POL,2030,solar,1285,4.610517
+Poland,POL,2030,wind,2520,24.801034
+Poland,POL,2040,solar,1291,6.841334
+Poland,POL,2040,wind,2520,42.899914
+Poland,POL,2050,solar,1745,10.266779
+Poland,POL,2050,wind,3394,80.247235
+Portugal,PRT,2030,solar,416,1.742973
+Portugal,PRT,2030,wind,295,1.637774
+Portugal,PRT,2040,solar,832,5.52778
+Portugal,PRT,2040,wind,295,3.077538
+Portugal,PRT,2050,solar,832,5.52778
+Portugal,PRT,2050,wind,723,16.097564
+Puerto Rico,PRI,2030,solar,26,0.229675
+Puerto Rico,PRI,2030,wind,13,0.114802
+Puerto Rico,PRI,2040,solar,26,0.331135
+Puerto Rico,PRI,2040,wind,13,0.208597
+Puerto Rico,PRI,2050,solar,26,0.331135
+Puerto Rico,PRI,2050,wind,13,0.315949
+Qatar,QAT,2030,solar,69,0.871172
+Qatar,QAT,2030,wind,12,0.291277
+Qatar,QAT,2040,solar,69,1.465086
+Qatar,QAT,2040,wind,12,0.474034
+Qatar,QAT,2050,solar,73,2.124784
+Qatar,QAT,2050,wind,70,11.021582
+Romania,ROU,2030,solar,802,2.879793
+Romania,ROU,2030,wind,1695,16.977422
+Romania,ROU,2040,solar,806,4.757907
+Romania,ROU,2040,wind,1695,29.492527
+Romania,ROU,2050,solar,940,6.544127
+Romania,ROU,2050,wind,2445,51.756287
+Russia,RUS,2030,solar,16022,109.650061
+Russia,RUS,2030,wind,22612,253.083617
+Russia,RUS,2040,solar,16068,158.385018
+Russia,RUS,2040,wind,22612,449.6933
+Russia,RUS,2050,solar,20080,185.231665
+Russia,RUS,2050,wind,32886,832.309718
+Rwanda,RWA,2030,solar,77,0.295119
+Rwanda,RWA,2030,wind,89,0.852418
+Rwanda,RWA,2040,solar,78,0.534946
+Rwanda,RWA,2040,wind,89,1.576463
+Rwanda,RWA,2050,solar,78,0.748125
+Rwanda,RWA,2050,wind,89,1.895995
+S. Sudan,SSD,2030,solar,318,7.740318
+S. Sudan,SSD,2030,wind,132,2.735655
+S. Sudan,SSD,2040,solar,318,13.388851
+S. Sudan,SSD,2040,wind,132,5.126911
+S. Sudan,SSD,2050,solar,461,19.573962
+S. Sudan,SSD,2050,wind,284,13.087813
+Saudi Arabia,SAU,2030,solar,5512,125.546879
+Saudi Arabia,SAU,2030,wind,2712,34.11388
+Saudi Arabia,SAU,2040,solar,5516,216.94752
+Saudi Arabia,SAU,2040,wind,2713,62.005892
+Saudi Arabia,SAU,2050,solar,5917,347.445571
+Saudi Arabia,SAU,2050,wind,5012,242.379235
+Senegal,SEN,2030,solar,343,9.481749
+Senegal,SEN,2030,wind,469,3.702776
+Senegal,SEN,2040,solar,343,13.804821
+Senegal,SEN,2040,wind,469,8.202201
+Senegal,SEN,2050,solar,438,16.376039
+Senegal,SEN,2050,wind,624,16.237315
+Serbia,SRB,2030,solar,225,0.980933
+Serbia,SRB,2030,wind,265,1.84196
+Serbia,SRB,2040,solar,359,3.585218
+Serbia,SRB,2040,wind,265,3.256485
+Serbia,SRB,2050,solar,372,3.658342
+Serbia,SRB,2050,wind,481,5.53654
+Sierra Leone,SLE,2030,solar,124,0.282407
+Sierra Leone,SLE,2030,wind,260,11.153717
+Sierra Leone,SLE,2040,solar,124,0.50866
+Sierra Leone,SLE,2040,wind,260,18.71319
+Sierra Leone,SLE,2050,solar,218,1.276104
+Sierra Leone,SLE,2050,wind,322,21.543761
+Slovakia,SVK,2030,solar,199,0.587173
+Slovakia,SVK,2030,wind,349,3.290179
+Slovakia,SVK,2040,solar,200,0.857562
+Slovakia,SVK,2040,wind,349,6.105735
+Slovakia,SVK,2050,solar,271,1.023488
+Slovakia,SVK,2050,wind,409,13.642717
+Slovenia,SVN,2030,solar,106,0.265152
+Slovenia,SVN,2030,wind,194,1.409119
+Slovenia,SVN,2040,solar,111,0.55976
+Slovenia,SVN,2040,wind,194,2.557057
+Slovenia,SVN,2050,solar,111,0.55976
+Slovenia,SVN,2050,wind,202,3.610602
+Somalia,SOM,2030,solar,6,0.154118
+Somalia,SOM,2040,solar,6,0.267426
+Somalia,SOM,2050,solar,6,0.357682
+Somaliland,-99,2030,solar,147,4.948658
+Somaliland,-99,2030,wind,17,0.144765
+Somaliland,-99,2040,solar,147,7.416617
+Somaliland,-99,2040,wind,17,0.270147
+Somaliland,-99,2050,solar,208,10.564139
+Somaliland,-99,2050,wind,17,0.328731
+South Africa,ZAF,2030,solar,6367,85.689271
+South Africa,ZAF,2030,wind,3699,41.024293
+South Africa,ZAF,2040,solar,6371,146.644433
+South Africa,ZAF,2040,wind,3699,70.913179
+South Africa,ZAF,2050,solar,7904,245.269173
+South Africa,ZAF,2050,wind,5200,126.592691
+South Korea,KOR,2030,solar,205,2.282498
+South Korea,KOR,2030,wind,302,1.248195
+South Korea,KOR,2040,solar,206,3.138135
+South Korea,KOR,2040,wind,303,2.33667
+South Korea,KOR,2050,solar,348,4.335353
+South Korea,KOR,2050,wind,365,8.479347
+Spain,ESP,2030,solar,1844,9.283444
+Spain,ESP,2030,wind,2767,19.525608
+Spain,ESP,2040,solar,4195,35.342285
+Spain,ESP,2040,wind,2767,35.311854
+Spain,ESP,2050,solar,4228,35.482432
+Spain,ESP,2050,wind,3835,68.826437
+Sri Lanka,LKA,2030,solar,269,8.119662
+Sri Lanka,LKA,2030,wind,304,9.366606
+Sri Lanka,LKA,2040,solar,271,10.653595
+Sri Lanka,LKA,2040,wind,304,17.027259
+Sri Lanka,LKA,2050,solar,343,11.094627
+Sri Lanka,LKA,2050,wind,491,31.247304
+Sudan,SDN,2030,solar,1904,33.545217
+Sudan,SDN,2030,wind,1188,31.195649
+Sudan,SDN,2040,solar,1905,56.525445
+Sudan,SDN,2040,wind,1245,55.138435
+Sudan,SDN,2050,solar,2097,89.603653
+Sudan,SDN,2050,wind,1901,85.321307
+Suriname,SUR,2030,solar,19,0.320056
+Suriname,SUR,2030,wind,56,0.361621
+Suriname,SUR,2040,solar,19,0.473875
+Suriname,SUR,2040,wind,56,0.69671
+Suriname,SUR,2050,solar,19,0.474121
+Suriname,SUR,2050,wind,56,1.12547
+Sweden,SWE,2030,solar,476,0.847215
+Sweden,SWE,2030,wind,336,3.244788
+Sweden,SWE,2040,solar,476,1.021837
+Sweden,SWE,2040,wind,337,5.813853
+Sweden,SWE,2050,solar,637,1.237626
+Sweden,SWE,2050,wind,977,9.791036
+Switzerland,CHE,2030,solar,137,0.747153
+Switzerland,CHE,2030,wind,201,2.385147
+Switzerland,CHE,2040,solar,324,2.737211
+Switzerland,CHE,2040,wind,201,4.011118
+Switzerland,CHE,2050,solar,324,2.737211
+Switzerland,CHE,2050,wind,202,5.990581
+Syria,SYR,2030,solar,1112,32.606638
+Syria,SYR,2030,wind,574,4.031032
+Syria,SYR,2040,solar,1116,51.279474
+Syria,SYR,2040,wind,574,7.234735
+Syria,SYR,2050,solar,1197,59.040419
+Syria,SYR,2050,wind,1062,15.109686
+Tajikistan,TJK,2030,solar,107,2.322029
+Tajikistan,TJK,2030,wind,283,4.354136
+Tajikistan,TJK,2040,solar,107,2.944961
+Tajikistan,TJK,2040,wind,283,8.078556
+Tajikistan,TJK,2050,solar,218,4.137108
+Tajikistan,TJK,2050,wind,516,14.16639
+Tanzania,TZA,2030,solar,1292,15.758623
+Tanzania,TZA,2030,wind,1142,14.550138
+Tanzania,TZA,2040,solar,1295,25.942531
+Tanzania,TZA,2040,wind,1142,26.090351
+Tanzania,TZA,2050,solar,1628,51.335556
+Tanzania,TZA,2050,wind,2096,58.621598
+Thailand,THA,2030,solar,1827,11.701697
+Thailand,THA,2030,wind,2079,44.710675
+Thailand,THA,2040,solar,1839,17.545066
+Thailand,THA,2040,wind,2079,78.716323
+Thailand,THA,2050,solar,2117,20.549228
+Thailand,THA,2050,wind,3093,132.200301
+Timor-Leste,TLS,2030,wind,65,2.801981
+Timor-Leste,TLS,2040,wind,65,4.625619
+Timor-Leste,TLS,2050,wind,67,7.236816
+Togo,TGO,2030,solar,447,3.42559
+Togo,TGO,2030,wind,245,4.793815
+Togo,TGO,2040,solar,448,5.554141
+Togo,TGO,2040,wind,245,9.239831
+Togo,TGO,2050,solar,448,5.954751
+Togo,TGO,2050,wind,315,13.708888
+Trinidad and Tobago,TTO,2030,solar,12,0.36358
+Trinidad and Tobago,TTO,2040,solar,12,0.6498
+Trinidad and Tobago,TTO,2050,solar,12,0.690459
+Tunisia,TUN,2030,solar,718,7.200286
+Tunisia,TUN,2030,wind,485,10.26104
+Tunisia,TUN,2040,solar,719,12.461888
+Tunisia,TUN,2040,wind,485,17.907314
+Tunisia,TUN,2050,solar,767,21.854766
+Tunisia,TUN,2050,wind,849,28.729134
+Turkey,TUR,2030,solar,1895,7.227738
+Turkey,TUR,2030,wind,3578,37.943441
+Turkey,TUR,2040,solar,1973,10.768932
+Turkey,TUR,2040,wind,3578,66.511732
+Turkey,TUR,2050,solar,2306,14.341055
+Turkey,TUR,2050,wind,6056,121.339164
+Turkmenistan,TKM,2030,solar,1923,64.084768
+Turkmenistan,TKM,2030,wind,1479,34.811167
+Turkmenistan,TKM,2040,solar,1925,98.219555
+Turkmenistan,TKM,2040,wind,1479,61.086437
+Turkmenistan,TKM,2050,solar,2003,121.522835
+Turkmenistan,TKM,2050,wind,2032,126.601482
+Uganda,UGA,2030,solar,320,5.44528
+Uganda,UGA,2030,wind,501,9.258473
+Uganda,UGA,2040,solar,321,9.641112
+Uganda,UGA,2040,wind,501,15.782372
+Uganda,UGA,2050,solar,454,15.830253
+Uganda,UGA,2050,wind,915,25.314446
+Ukraine,UKR,2030,solar,2364,10.64736
+Ukraine,UKR,2030,wind,3804,43.982084
+Ukraine,UKR,2040,solar,2374,15.884323
+Ukraine,UKR,2040,wind,3804,78.686769
+Ukraine,UKR,2050,solar,3417,21.714864
+Ukraine,UKR,2050,wind,5596,144.227718
+United Arab Emirates,ARE,2030,solar,190,3.496343
+United Arab Emirates,ARE,2030,wind,101,0.929786
+United Arab Emirates,ARE,2040,solar,190,6.267308
+United Arab Emirates,ARE,2040,wind,101,1.650272
+United Arab Emirates,ARE,2050,solar,384,15.822907
+United Arab Emirates,ARE,2050,wind,305,11.121732
+United Kingdom,GBR,2030,solar,1593,23.757554
+United Kingdom,GBR,2030,wind,1453,16.411056
+United Kingdom,GBR,2040,solar,1599,29.998671
+United Kingdom,GBR,2040,wind,1453,29.650054
+United Kingdom,GBR,2050,solar,1712,31.32653
+United Kingdom,GBR,2050,wind,2140,48.255386
+United States of America,USA,2030,solar,42432,725.28198
+United States of America,USA,2030,wind,30706,403.163679
+United States of America,USA,2040,solar,42542,1102.112593
+United States of America,USA,2040,wind,30794,725.380427
+United States of America,USA,2050,solar,47401,1394.110395
+United States of America,USA,2050,wind,48634,1637.125475
+Uruguay,URY,2030,solar,1314,13.664565
+Uruguay,URY,2030,wind,796,6.838871
+Uruguay,URY,2040,solar,1315,24.566801
+Uruguay,URY,2040,wind,796,12.122561
+Uruguay,URY,2050,solar,1382,35.726069
+Uruguay,URY,2050,wind,1220,40.140835
+Uzbekistan,UZB,2030,solar,1911,54.71262
+Uzbekistan,UZB,2030,wind,1316,13.973284
+Uzbekistan,UZB,2040,solar,1913,82.343908
+Uzbekistan,UZB,2040,wind,1316,24.678848
+Uzbekistan,UZB,2050,solar,2041,88.99031
+Uzbekistan,UZB,2050,wind,1872,65.400943
+Venezuela,VEN,2030,solar,2309,26.714828
+Venezuela,VEN,2030,wind,1578,21.523034
+Venezuela,VEN,2040,solar,2322,48.911964
+Venezuela,VEN,2040,wind,1578,37.851466
+Venezuela,VEN,2050,solar,2675,87.994334
+Venezuela,VEN,2050,wind,2406,62.72037
+Vietnam,VNM,2030,solar,342,3.137669
+Vietnam,VNM,2030,wind,1080,19.449167
+Vietnam,VNM,2040,solar,344,4.484679
+Vietnam,VNM,2040,wind,1080,32.886391
+Vietnam,VNM,2050,solar,725,7.523422
+Vietnam,VNM,2050,wind,1645,44.938305
+W. Sahara,ESH,2030,solar,13,2.001616
+W. Sahara,ESH,2030,wind,7,0.053078
+W. Sahara,ESH,2040,solar,13,2.773096
+W. Sahara,ESH,2040,wind,7,0.094239
+W. Sahara,ESH,2050,solar,21,3.111623
+W. Sahara,ESH,2050,wind,18,2.168109
+Yemen,YEM,2030,solar,673,17.86397
+Yemen,YEM,2030,wind,525,4.085729
+Yemen,YEM,2040,solar,677,26.062485
+Yemen,YEM,2040,wind,525,7.437108
+Yemen,YEM,2050,solar,919,44.727842
+Yemen,YEM,2050,wind,836,13.91099
+Zambia,ZMB,2030,solar,1669,25.578916
+Zambia,ZMB,2030,wind,1412,13.261341
+Zambia,ZMB,2040,solar,1670,42.225644
+Zambia,ZMB,2040,wind,1412,22.786774
+Zambia,ZMB,2050,solar,2142,63.529594
+Zambia,ZMB,2050,wind,1903,38.296785
+Zimbabwe,ZWE,2030,solar,1337,22.488393
+Zimbabwe,ZWE,2030,wind,1520,32.51586
+Zimbabwe,ZWE,2040,solar,1340,36.829103
+Zimbabwe,ZWE,2040,wind,1520,56.427899
+Zimbabwe,ZWE,2050,solar,2000,65.918283
+Zimbabwe,ZWE,2050,wind,1924,78.680582
+eSwatini,SWZ,2030,solar,23,0.005687
+eSwatini,SWZ,2030,wind,25,0.964947
+eSwatini,SWZ,2040,solar,23,0.009992
+eSwatini,SWZ,2040,wind,25,1.574722
+eSwatini,SWZ,2050,solar,31,0.134296
+eSwatini,SWZ,2050,wind,44,2.396347
