@@ -1,15 +1,15 @@
 # 全球 country / patch / station 映射
 
-这个目录是基于当前工程输入数据生成的静态映射快照，用于把后续 patchify 结果重新聚合到国家（region）。
+这个目录是基于当前工程输入数据生成的静态映射快照，用于把后续 patchify 结果重新聚合到国家（region）。生成文件统一写入 `generated/`，查询接口会从该目录读取。
 
 ## 生成内容
 
-- `stations_ssp126.csv`、`stations_ssp245.csv`、`stations_ssp585.csv`：逐行保留原始场站记录，并新增 `station_key`、`country`、`country_iso3`、`patch_id` 等字段。
-- `country_capacity_summary_<ssp>.csv`：按国家、年份、风/光类型汇总场站数和装机容量（GW）。
-- `country_patch_capacity_<ssp>.csv`：按国家、年份、类型、patch 汇总场站数和装机容量。
-- `country_patch_mapping.csv`：每个国家与 patch 的关系；`geometry_intersects` 表示 Natural Earth 边界与 patch 核心区相交，`station_observed_<ssp>` 表示该 SSP 的场站数据实际出现过该 patch。
-- `mapping.json`：国家别名、patch 定义、SSP 文件、源文件哈希和完整国家元数据。
-- `patches.json`：单独的 patch 边界快照。
+- `generated/stations_ssp126.csv`、`generated/stations_ssp245.csv`、`generated/stations_ssp585.csv`：逐行保留原始场站记录，并新增 `station_key`、`country`、`country_iso3`、`patch_id` 等字段。
+- `generated/country_capacity_summary_<ssp>.csv`：按国家、年份、风/光类型汇总场站数和装机容量（GW）。
+- `generated/country_patch_capacity_<ssp>.csv`：按国家、年份、类型、patch 汇总场站数和装机容量。
+- `generated/country_patch_mapping.csv`：每个国家与 patch 的关系；`geometry_intersects` 表示 Natural Earth 边界与 patch 核心区相交，`station_observed_<ssp>` 表示该 SSP 的场站数据实际出现过该 patch。
+- `generated/mapping.json`：国家别名、patch 定义、SSP 文件、源文件哈希和完整国家元数据。
+- `generated/patches.json`：单独的 patch 边界快照。
 - `mapping.py`：读取静态文件的 Python 查询接口。
 - `build_mapping.py`：在输入数据更新后重新生成上述文件。
 
@@ -57,4 +57,4 @@ capacity_summary("China", "ssp560")
 python country_patch_mapping/build_mapping.py
 ```
 
-生成时间、输入文件 SHA-256 和校验计数写在 `mapping.json` 中。
+生成时间、输入文件 SHA-256 和校验计数写在 `generated/mapping.json` 中。

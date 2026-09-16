@@ -28,6 +28,7 @@ from shapely.ops import unary_union
 from shapely.strtree import STRtree
 
 ROOT = Path(__file__).resolve().parents[1]
+GENERATED_DIR = Path(__file__).resolve().parent / "generated"
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
@@ -528,7 +529,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--stations-dir", type=Path, default=DEFAULT_STATIONS)
     parser.add_argument("--natural-earth", type=Path, default=DEFAULT_NATURAL_EARTH)
-    parser.add_argument("--output-dir", type=Path, default=Path(__file__).resolve().parent)
+    parser.add_argument("--output-dir", type=Path, default=GENERATED_DIR)
     args = parser.parse_args()
     output_dir = args.output_dir.resolve()
     output_dir.mkdir(parents=True, exist_ok=True)

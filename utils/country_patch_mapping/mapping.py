@@ -15,7 +15,8 @@ import pandas as pd
 
 
 DATA_DIR = Path(__file__).resolve().parent
-MAPPING_JSON = DATA_DIR / "mapping.json"
+GENERATED_DIR = DATA_DIR / "generated"
+MAPPING_JSON = GENERATED_DIR / "mapping.json"
 
 
 @lru_cache(maxsize=1)
@@ -115,7 +116,7 @@ def patches_for_country(
 def station_mapping_path(scenario: object) -> Path:
     """返回 SSP 场站逐行映射 CSV 路径。"""
     canonical = normalize_scenario(scenario)
-    return DATA_DIR / _payload()["scenarios"][canonical]["mapping_file"]
+    return GENERATED_DIR / _payload()["scenarios"][canonical]["mapping_file"]
 
 
 def load_station_mapping(
@@ -166,7 +167,7 @@ def stations_for_country(
 
 def capacity_summary(country: object | None = None, scenario: object = "ssp126") -> pd.DataFrame:
     """读取按国家、年份和风光类型汇总的装机容量。"""
-    path = DATA_DIR / _payload()["scenarios"][normalize_scenario(scenario)]["country_capacity_file"]
+    path = GENERATED_DIR / _payload()["scenarios"][normalize_scenario(scenario)]["country_capacity_file"]
     table = pd.read_csv(path)
     if country is not None:
         table = table[table["country"] == normalize_country(country)]

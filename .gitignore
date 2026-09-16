@@ -228,5 +228,5 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
-# country_patch_mapping: 构建生成的大文件（超过 GitHub 100MB 限制）
-utils/country_patch_mapping/stations_*.csv
+# country_patch_mapping: build outputs
+utils/country_patch_mapping/generated/
