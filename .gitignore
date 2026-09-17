@@ -1,5 +1,8 @@
 # Custom
 .claude
+
+tmp/*
+
 test.ipynb
 ref_code
 data/*
