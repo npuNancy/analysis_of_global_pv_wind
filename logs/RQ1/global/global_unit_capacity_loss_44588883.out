@@ -1,0 +1,29 @@
+Read CANESM5 / ssp126 / wind
+Read CANESM5 / ssp126 / solar
+Read CANESM5 / ssp245 / wind
+Read CANESM5 / ssp245 / solar
+Read CANESM5 / ssp585 / wind
+Read CANESM5 / ssp585 / solar
+Saved: /work/home/acbw9wpn5k/project_climate_patchify/repos/analysis_of_global_pv_wind/RQ1/global/outputs/CANESM5
+Read MPI-ESM1-2-HR / ssp126 / wind
+Read MPI-ESM1-2-HR / ssp126 / solar
+Read MPI-ESM1-2-HR / ssp245 / wind
+Read MPI-ESM1-2-HR / ssp245 / solar
+Read MPI-ESM1-2-HR / ssp585 / wind
+Read MPI-ESM1-2-HR / ssp585 / solar
+Saved: /work/home/acbw9wpn5k/project_climate_patchify/repos/analysis_of_global_pv_wind/RQ1/global/outputs/MPI-ESM1-2-HR
+Read MRI-ESM2-0 / ssp126 / wind
+Read MRI-ESM2-0 / ssp126 / solar
+Read MRI-ESM2-0 / ssp245 / wind
+Read MRI-ESM2-0 / ssp245 / solar
+Read MRI-ESM2-0 / ssp585 / wind
+Read MRI-ESM2-0 / ssp585 / solar
+Saved: /work/home/acbw9wpn5k/project_climate_patchify/repos/analysis_of_global_pv_wind/RQ1/global/outputs/MRI-ESM2-0
+Read BCC-CSM2-MR / ssp126 / wind
+Read BCC-CSM2-MR / ssp126 / solar
+Read BCC-CSM2-MR / ssp245 / wind
+Read BCC-CSM2-MR / ssp245 / solar
+Read BCC-CSM2-MR / ssp585 / wind
+Read BCC-CSM2-MR / ssp585 / solar
+Saved: /work/home/acbw9wpn5k/project_climate_patchify/repos/analysis_of_global_pv_wind/RQ1/global/outputs/BCC-CSM2-MR
+Saved: /work/home/acbw9wpn5k/project_climate_patchify/repos/analysis_of_global_pv_wind/RQ1/global/outputs/ensemble_mean
