@@ -27,7 +27,7 @@ from shapely.geometry import box, shape
 from shapely.ops import unary_union
 from shapely.strtree import STRtree
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 GENERATED_DIR = Path(__file__).resolve().parent / "generated"
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
@@ -430,7 +430,7 @@ def build_station_files(
         unmapped = int((assigned["country"] == "UNMAPPED").sum())
         inactive_patch_rows = int((~assigned["patch_active"]).sum())
         summaries[scenario] = {
-            "source_file": str(input_path.relative_to(ROOT)),
+            "source_file": str(input_path.resolve()),
             "source_sha256": sha256(input_path),
             "mapping_file": station_output.name,
             "country_capacity_file": country_path.name,
@@ -564,7 +564,7 @@ def main() -> None:
             "removed_patch_count": int(len(REMOVED_PATCHES)),
         },
         "sources": {
-            "natural_earth_shapefile": str(args.natural_earth.resolve().relative_to(ROOT)),
+            "natural_earth_shapefile": str(args.natural_earth.resolve()),
             "natural_earth_sha256": sha256(args.natural_earth),
             "patch_definition": "bcsd/global_bcsd/patches.py",
         },
