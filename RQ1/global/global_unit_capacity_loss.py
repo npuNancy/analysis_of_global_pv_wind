@@ -2,7 +2,9 @@
 
 Read annual station NetCDF results through data/loss_outputs. Each output set
 contains annual trajectories, 2050s event shares and SSP126-based two-factor and
-three-factor waterfalls. The default pipeline reads model/SSP/technology units in
+three-factor waterfalls. Only stations with positive ``normal_all_generation_mwh_all``
+(BCSD weather covered; zero-CF stations are excluded from capacity and loss sums)
+enter the metrics. The default pipeline reads model/SSP/technology units in
 parallel; the original single-process pipeline remains available with
 ``--execution-mode single``. Figures are PNG only; importing this module does not
 read inputs or draw figures.
@@ -59,6 +61,7 @@ TECH_EVENTS = {
 }
 UNIT_COLUMN = "unit_capacity_loss_mwh_per_mw_year"
 UNIT_LABEL = "Unit-capacity loss (MWh MW$^{-1}$ yr$^{-1}$)"
+COVERAGE_COLUMN = "normal_all_generation_mwh_all"
 ANNUAL_KEYS = ["scenario", "tech", "snapshot_year", "analysis_year"]
 EXP_COLOR, RES_COLOR, INT_COLOR, INK = "#9EC3D3", "#A6C48A", "#C99581", "#30363C"
 LOGGER = logging.getLogger("rq1.global_unit_capacity_loss")
@@ -177,7 +180,7 @@ def load_model_unit(
                 path = folder / f"{tech}_generation_loss_station_{year}.nc"
                 required = [
                     "station_id", "capacity_mw", "activation_year",
-                    "normal_generation_mwh_all",
+                    COVERAGE_COLUMN,
                     *[name for event in ("all", *TECH_EVENTS[tech])
                       for name in (f"net_generation_loss_mwh_{event}",
                                    f"event_duration_hours_{event}")],
@@ -215,10 +218,20 @@ def load_model_unit(
                     seen.update(ids)
                 elif not np.array_equal(ids, first_ids) or not np.array_equal(capacity, first_capacity):
                     raise ValueError(f"Station fleet changes within snapshot: {path}")
-                normal_event = finite_vector(ds, "normal_generation_mwh_all", path)
+                normal_event = finite_vector(ds, COVERAGE_COLUMN, path)
+                covered = normal_event > 0
+                dropped = int((~covered).sum())
+                if dropped:
+                    LOGGER.warning(
+                        "Excluding %d zero-coverage stations of %d (%.2f%% capacity) "
+                        "from %s", dropped, len(ids),
+                        100.0 * float(capacity[~covered].sum() / capacity.sum()), path,
+                    )
+                capacity = capacity[covered]
+                ids = ids[covered]
                 for event in ("all", *TECH_EVENTS[tech]):
-                    loss = finite_vector(ds, f"net_generation_loss_mwh_{event}", path)
-                    hours = finite_vector(ds, f"event_duration_hours_{event}", path)
+                    loss = finite_vector(ds, f"net_generation_loss_mwh_{event}", path)[covered]
+                    hours = finite_vector(ds, f"event_duration_hours_{event}", path)[covered]
                     if (hours < 0).any():
                         raise ValueError(f"Negative event duration: {path}")
                     records.append({
@@ -679,6 +692,8 @@ def main() -> None:
         "script_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         "scenario_aliases": {"ssp560": "ssp585"},
         "metric": "global annual net loss (MWh) / global snapshot installed capacity (MW)",
+        "station_filter": f"stations with {COVERAGE_COLUMN} > 0 in each annual file; "
+                          "zero-coverage stations (missing BCSD weather, zero CF) are excluded",
         "event_composition": "2050s global event net loss annualized over the ten-year snapshot / capacity; clip at zero, normalize within group",
         "decomposition": "R = E * I; E = sum(capacity * event hours) / capacity / year; I = loss / sum(capacity * event hours)",
         "decomposition_3f": "R = E * cf_ev * r_ev; cf_ev = event-window normal generation / sum(capacity * event hours); r_ev = loss / event-window normal generation",

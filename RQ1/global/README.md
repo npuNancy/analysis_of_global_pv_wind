@@ -20,6 +20,9 @@ sbatch RQ1/global/global_unit_capacity_loss.sh
 避免每个 worker 再创建额外线程。
 标准输出和错误输出共用 `logs/RQ1/global/global_unit_capacity_loss_<jobid>.out`。
 日志目录必须在提交前存在；环境激活文件为 `.venv/bin/activate`。
+作业脚本不包含账号专属绝对路径：`#SBATCH` 日志路径相对仓库根目录（提交目录），
+脚本体内的仓库位置由 `$HOME/project_climate_patchify/repos/analysis_of_global_pv_wind`
+推导，因此同一脚本可在不同超算账号下直接提交。
 
 Python 脚本可通过 `--loss-root`、`--patch-manifest`、`--output-dir` 指定路径。
 `--execution-mode parallel`（默认）启用多进程，`--execution-mode single` 保留原有单进程流程；
@@ -47,6 +50,12 @@ data/loss_outputs/
 
 ## 指标和图形
 
+只统计 `normal_all_generation_mwh_all > 0` 的场站：该值为零的场站对应 BCSD 气象输入
+缺失（CF 被转换为零），损失与事件时长亦为零，但会计入容量分母并稀释 R 与 E
+（依据 `tmp/场站无数据问题/数据覆盖问题独立抽查.md`）。过滤按年度文件逐个执行，
+被剔除的场站数和容量占比以 WARNING 记录进日志；`run_config.json` 的
+`station_filter` 字段记录该口径。
+
 图形采用 Python/matplotlib 的双面板 quantitative grid，左风右光。
 四类图共同用于比较不同 SSP 下全球单位装机损失的时间变化、事件组成及情景差值来源；
 具体变化方向由实际数据决定。年度图为主要证据，事件组成和瀑布图提供组成与分解信息。
@@ -65,7 +74,7 @@ data/loss_outputs/
   两者严格相加等于 $\Delta R$。先逐快照分解，再对三个快照等权平均。
 - 三因子瀑布图：把强度项 $I$ 拆为事件期资源 $\mathrm{cf}_{\mathrm{ev}}$ 与事件期损失率 $r_{\mathrm{ev}}$，
   即 $I=\mathrm{cf}_{\mathrm{ev}}\times r_{\mathrm{ev}}$，故 $R=E\times\mathrm{cf}_{\mathrm{ev}}\times r_{\mathrm{ev}}$。
-  其中 $G_0^{\mathrm{ev}}$ 为场站 `normal_generation_mwh_all` 的全球年均总和（事件窗口内反事实应发电量），
+  其中 $G_0^{\mathrm{ev}}$ 为场站 `normal_all_generation_mwh_all` 的全球年均总和（事件窗口内反事实应发电量），
   $\mathrm{cf}_{\mathrm{ev}}=G_0^{\mathrm{ev}}/H$ 是事件窗口内容量因子，
   $r_{\mathrm{ev}}=L/G_0^{\mathrm{ev}}$ 是事件窗口内损失率。三个贡献采用对称 Shapley 归因（六种因子排序取平均），
   严格相加等于 $\Delta R$；同样先逐快照分解、再对三个快照等权平均。
