@@ -2,6 +2,7 @@
 .claude
 
 tmp/*
+logs/*
 
 test.ipynb
 ref_code

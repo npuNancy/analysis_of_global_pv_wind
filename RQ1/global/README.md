@@ -48,7 +48,7 @@ data/loss_outputs/
 ## 指标和图形
 
 图形采用 Python/matplotlib 的双面板 quantitative grid，左风右光。
-三类图共同用于比较不同 SSP 下全球单位装机损失的时间变化、事件组成及情景差值来源；
+四类图共同用于比较不同 SSP 下全球单位装机损失的时间变化、事件组成及情景差值来源；
 具体变化方向由实际数据决定。年度图为主要证据，事件组成和瀑布图提供组成与分解信息。
 所有图使用白底、无上右边框、无边框图例和参考脚本配色，只导出 600 dpi PNG。
 
@@ -60,13 +60,19 @@ data/loss_outputs/
   “去除低资源事件”两组百分比堆叠柱，风光分别显示适用事件图例。
   事件可以重叠，因此这里是正事件损失池的组成，不能将事件之和解释为 all-event 净损失。
 - 瀑布图：目标 SSP 减去 SSP126 的单位装机损失，单位 MWh MW⁻¹ yr⁻¹。
-  定义年均净损失 L、装机 C、年均装机加权事件时长 H，令 E=H/C、I=L/H，故 R=L/C=E×I。
-  暴露贡献为 ΔE×(I_target+I_base)/2，强度贡献为 ΔI×(E_target+E_base)/2，
-  两者严格相加等于 ΔR。先逐快照分解，再对三个快照等权平均。
+  定义年均净损失 $L$、装机 $C$、年均装机加权事件时长 $H$，令 $E=H/C$、$I=L/H$，故 $R=L/C=E\times I$。
+  暴露贡献为 $\Delta E\times(I_{\mathrm{target}}+I_{\mathrm{base}})/2$，强度贡献为 $\Delta I\times(E_{\mathrm{target}}+E_{\mathrm{base}})/2$，
+  两者严格相加等于 $\Delta R$。先逐快照分解，再对三个快照等权平均。
+- 三因子瀑布图：把强度项 $I$ 拆为事件期资源 $\mathrm{cf}_{\mathrm{ev}}$ 与事件期损失率 $r_{\mathrm{ev}}$，
+  即 $I=\mathrm{cf}_{\mathrm{ev}}\times r_{\mathrm{ev}}$，故 $R=E\times\mathrm{cf}_{\mathrm{ev}}\times r_{\mathrm{ev}}$。
+  其中 $G_0^{\mathrm{ev}}$ 为场站 `normal_generation_mwh_all` 的全球年均总和（事件窗口内反事实应发电量），
+  $\mathrm{cf}_{\mathrm{ev}}=G_0^{\mathrm{ev}}/H$ 是事件窗口内容量因子，
+  $r_{\mathrm{ev}}=L/G_0^{\mathrm{ev}}$ 是事件窗口内损失率。三个贡献采用对称 Shapley 归因（六种因子排序取平均），
+  严格相加等于 $\Delta R$；同样先逐快照分解、再对三个快照等权平均。
 
 四模式平均均先逐模式计算指标，再等权平均。年度阴影为同年四个模式的最小值到最大值
 （alpha=0.16），不是置信区间。事件图平均各模式的占比；瀑布图平均各模式分解后的贡献。
-平均指标表中的 E、I、R 各自独立取平均，不能用平均 E×平均 I 代替平均 R。
+平均指标表中的 E、I、R、cf_ev、r_ev 各自独立取平均，不能用平均 E×平均 I 代替平均 R。
 每个均值记录均检查有且只有四个模式。
 
 ## 输出
@@ -83,8 +89,8 @@ outputs/
     └── run_config.json
 ```
 
-每套 `figures/` 包含年度折线、事件组成、情景瀑布三张 PNG；`csv/` 包含
-年度数值、快照指标、事件占比、分解贡献和趋势系数。单模式目录另外保存
+每套 `figures/` 包含年度折线、事件组成、二因子瀑布和三因子瀑布四张 PNG；`csv/` 包含
+年度数值、快照指标、事件占比、二因子与三因子分解贡献和趋势系数。单模式目录另外保存
 `input_files.csv`（输入文件路径、大小、修改时间）和 `patch_coverage.csv`（patch 完成状态）。
 `run_config.json` 记录指标口径、四模式列表、patch 清单、脚本及清单哈希、软件版本和绘图参数。
 

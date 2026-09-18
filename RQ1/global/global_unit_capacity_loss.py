@@ -1,10 +1,11 @@
 """Global unit-capacity losses for four CMIP6 models and their equal-weight mean.
 
 Read annual station NetCDF results through data/loss_outputs. Each output set
-contains annual trajectories, 2050s event shares and SSP126-based waterfalls.
-The default pipeline reads model/SSP/technology units in parallel; the original
-single-process pipeline remains available with ``--execution-mode single``.
-Figures are PNG only; importing this module does not read inputs or draw figures.
+contains annual trajectories, 2050s event shares and SSP126-based two-factor and
+three-factor waterfalls. The default pipeline reads model/SSP/technology units in
+parallel; the original single-process pipeline remains available with
+``--execution-mode single``. Figures are PNG only; importing this module does not
+read inputs or draw figures.
 """
 
 from __future__ import annotations
@@ -59,7 +60,7 @@ TECH_EVENTS = {
 UNIT_COLUMN = "unit_capacity_loss_mwh_per_mw_year"
 UNIT_LABEL = "Unit-capacity loss (MWh MW$^{-1}$ yr$^{-1}$)"
 ANNUAL_KEYS = ["scenario", "tech", "snapshot_year", "analysis_year"]
-EXP_COLOR, INT_COLOR, INK = "#9EC3D3", "#C99581", "#30363C"
+EXP_COLOR, RES_COLOR, INT_COLOR, INK = "#9EC3D3", "#A6C48A", "#C99581", "#30363C"
 LOGGER = logging.getLogger("rq1.global_unit_capacity_loss")
 
 
@@ -176,6 +177,7 @@ def load_model_unit(
                 path = folder / f"{tech}_generation_loss_station_{year}.nc"
                 required = [
                     "station_id", "capacity_mw", "activation_year",
+                    "normal_generation_mwh_all",
                     *[name for event in ("all", *TECH_EVENTS[tech])
                       for name in (f"net_generation_loss_mwh_{event}",
                                    f"event_duration_hours_{event}")],
@@ -213,6 +215,7 @@ def load_model_unit(
                     seen.update(ids)
                 elif not np.array_equal(ids, first_ids) or not np.array_equal(capacity, first_capacity):
                     raise ValueError(f"Station fleet changes within snapshot: {path}")
+                normal_event = finite_vector(ds, "normal_generation_mwh_all", path)
                 for event in ("all", *TECH_EVENTS[tech]):
                     loss = finite_vector(ds, f"net_generation_loss_mwh_{event}", path)
                     hours = finite_vector(ds, f"event_duration_hours_{event}", path)
@@ -224,6 +227,8 @@ def load_model_unit(
                         "patch_id": patch, "event": event,
                         "net_loss_mwh": loss.sum(), "capacity_mw": capacity.sum(),
                         "capacity_event_hours_mw_h": np.dot(capacity, hours),
+                        "normal_event_generation_mwh": (
+                            normal_event.sum() if event == "all" else 0.0),
                         "n_stations": len(ids),
                     })
                 del ds
@@ -257,6 +262,7 @@ def annual_trajectory(patches: pd.DataFrame) -> pd.DataFrame:
     annual = patches[patches.event.eq("all")].groupby(ANNUAL_KEYS, as_index=False).agg(
         net_loss_mwh=("net_loss_mwh", "sum"), capacity_mw=("capacity_mw", "sum"),
         capacity_event_hours_mw_h=("capacity_event_hours_mw_h", "sum"),
+        normal_event_generation_mwh=("normal_event_generation_mwh", "sum"),
         n_stations=("n_stations", "sum"), n_patches=("patch_id", "nunique"),
     )
     expected = {(s, t, y, a) for s in SSPS for t in TECHS
@@ -274,15 +280,21 @@ def capacity_metrics(annual: pd.DataFrame) -> pd.DataFrame:
     metrics = annual.groupby(ANNUAL_KEYS[:3], as_index=False).agg(
         C_MW=("capacity_mw", "mean"), L_MWh_per_year=("net_loss_mwh", "mean"),
         H_MW_h_per_year=("capacity_event_hours_mw_h", "mean"),
+        G0_ev_MWh_per_year=("normal_event_generation_mwh", "mean"),
     )
-    if not metrics.H_MW_h_per_year.gt(0).all():
-        raise ValueError("Positive exposure is required for the exposure/intensity decomposition")
+    if not (metrics.H_MW_h_per_year.gt(0) & metrics.G0_ev_MWh_per_year.gt(0)).all():
+        raise ValueError("Positive exposure and event-window normal generation are required")
     metrics["E_h_per_year"] = metrics.H_MW_h_per_year / metrics.C_MW
     metrics["I_MWh_per_MW_h"] = metrics.L_MWh_per_year / metrics.H_MW_h_per_year
     metrics["R_MWh_MW_per_year"] = metrics.L_MWh_per_year / metrics.C_MW
+    metrics["cf_ev"] = metrics.G0_ev_MWh_per_year / metrics.H_MW_h_per_year
+    metrics["r_ev"] = metrics.L_MWh_per_year / metrics.G0_ev_MWh_per_year
     if not np.allclose(metrics.E_h_per_year * metrics.I_MWh_per_MW_h,
                        metrics.R_MWh_MW_per_year, rtol=1e-12, atol=1e-10):
         raise AssertionError("R = E × I failed")
+    if not np.allclose(metrics.cf_ev * metrics.r_ev, metrics.I_MWh_per_MW_h,
+                       rtol=1e-12, atol=1e-10):
+        raise AssertionError("I = cf_ev × r_ev failed")
     return metrics
 
 
@@ -337,6 +349,50 @@ def unit_decomposition(metrics: pd.DataFrame) -> pd.DataFrame:
                     "target_unit_loss": other.R_MWh_MW_per_year,
                     "gap_unit_loss": gap, "exposure_unit_loss": exposure,
                     "intensity_unit_loss": intensity,
+                })
+    result = pd.DataFrame(records)
+    mean = result.groupby(["tech", "baseline", "target"], as_index=False).mean(numeric_only=True)
+    mean["snapshot_year"] = MEAN_PERIOD
+    return pd.concat([result, mean], ignore_index=True)
+
+
+def symmetric_contribution(
+    delta: float, others: tuple[tuple[float, float], tuple[float, float]],
+) -> float:
+    """Symmetric (Shapley) contribution of one factor of a three-factor product."""
+    (b_target, c_target), (b_base, c_base) = others
+    return delta / 6 * (2 * b_target * c_target + 2 * b_base * c_base
+                        + b_base * c_target + b_target * c_base)
+
+
+def unit_decomposition_3f(metrics: pd.DataFrame) -> pd.DataFrame:
+    """Symmetric exact three-factor attribution of target-minus-SSP126 unit loss."""
+    records = []
+    for tech in TECHS:
+        for snapshot in SNAPSHOTS:
+            rows = metrics[metrics.tech.eq(tech) & metrics.snapshot_year.eq(snapshot)].set_index("scenario")
+            base = rows.loc["ssp126"]
+            for target in SSPS[1:]:
+                other = rows.loc[target]
+                exposure = symmetric_contribution(
+                    other.E_h_per_year - base.E_h_per_year,
+                    ((other.cf_ev, other.r_ev), (base.cf_ev, base.r_ev)))
+                resource = symmetric_contribution(
+                    other.cf_ev - base.cf_ev,
+                    ((other.E_h_per_year, other.r_ev), (base.E_h_per_year, base.r_ev)))
+                rate = symmetric_contribution(
+                    other.r_ev - base.r_ev,
+                    ((other.E_h_per_year, other.cf_ev), (base.E_h_per_year, base.cf_ev)))
+                gap = other.R_MWh_MW_per_year - base.R_MWh_MW_per_year
+                if not np.isclose(exposure + resource + rate, gap, rtol=1e-11, atol=1e-9):
+                    raise AssertionError(f"Three-factor decomposition failed: {tech}/{snapshot}/{target}")
+                records.append({
+                    "tech": tech, "snapshot_year": str(snapshot),
+                    "baseline": "ssp126", "target": target,
+                    "baseline_unit_loss": base.R_MWh_MW_per_year,
+                    "target_unit_loss": other.R_MWh_MW_per_year,
+                    "gap_unit_loss": gap, "exposure_unit_loss": exposure,
+                    "resource_unit_loss": resource, "rate_unit_loss": rate,
                 })
     result = pd.DataFrame(records)
     mean = result.groupby(["tech", "baseline", "target"], as_index=False).mean(numeric_only=True)
@@ -483,6 +539,55 @@ def plot_waterfall(decomposition: pd.DataFrame, output: Path) -> None:
     save_figure(fig, output)
 
 
+def plot_waterfall_3f(decomposition: pd.DataFrame, output: Path) -> None:
+    configure_style()
+    mean = decomposition[decomposition.snapshot_year.eq(MEAN_PERIOD)]
+    fig, axes = plt.subplots(1, 2, figsize=(13.2, 4.8))
+    edges = [0.0]
+    for ax, tech in zip(axes, TECHS):
+        labels, positions = [], []
+        for group_index, target in enumerate(SSPS[1:]):
+            row = mean[mean.tech.eq(tech) & mean.target.eq(target)].iloc[0]
+            start, level = group_index * 5, 0.0
+            for offset, (value, color, label) in enumerate((
+                (row.exposure_unit_loss, EXP_COLOR, "Exposure"),
+                (row.resource_unit_loss, RES_COLOR, "Event resource"),
+                (row.rate_unit_loss, INT_COLOR, "Event loss rate"),
+            )):
+                position = start + offset
+                ax.bar(position, abs(value), bottom=min(level, level + value), width=.65, color=color, zorder=3)
+                ax.annotate(f"{value:+.2f}", (position, max(level, level + value)),
+                            xytext=(0, 4), textcoords="offset points", ha="center", fontsize=8)
+                level += value
+                edges.append(level)
+                ax.plot([position + .325, position + .675], [level, level], color="#8F969B", lw=.8)
+                positions.append(position)
+                labels.append(label)
+            position, gap = start + 3, row.gap_unit_loss
+            ax.bar(position, gap, width=.65, color=INK, zorder=3)
+            ax.annotate(f"{gap:+.2f}", (position, gap), xytext=(0, 4 if gap >= 0 else -4),
+                        textcoords="offset points", ha="center", va="bottom" if gap >= 0 else "top",
+                        fontsize=8, fontweight="bold")
+            positions.append(position)
+            labels.append(f"Δ {SSP_LABEL[target]}")
+        ax.set_xticks(positions, labels)
+        ax.tick_params(axis="x", labelsize=8, length=0, pad=4)
+        ax.axhline(0, color="#6D757B", lw=.8)
+        ax.grid(axis="y", color="#E4E7E9", lw=.6)
+        ax.set_axisbelow(True)
+        ax.set_title(TECH_LABEL[tech], loc="left", fontweight="bold")
+        ax.set_xlim(-.6, 8.6)
+    pad = max(1.0, (max(edges) - min(edges)) * .18)
+    for ax in axes:
+        ax.set_ylim(min(edges) - pad, max(edges) + pad)
+    axes[0].set_ylabel("Contribution to unit-loss gap\n(MWh MW$^{-1}$ yr$^{-1}$)")
+    fig.text(.5, .025, "Target minus SSP1-2.6; mean of 2030s, 2040s and 2050s. "
+             "Unit loss = Exposure × Event resource × Event loss rate.",
+             ha="center", fontsize=8)
+    fig.subplots_adjust(left=.09, right=.985, bottom=.20, top=.86, wspace=.25)
+    save_figure(fig, output)
+
+
 def write_outputs(output: Path, tables: dict[str, pd.DataFrame], config: dict) -> None:
     (output / "csv").mkdir(parents=True, exist_ok=True)
     (output / "figures").mkdir(parents=True, exist_ok=True)
@@ -494,6 +599,7 @@ def write_outputs(output: Path, tables: dict[str, pd.DataFrame], config: dict) -
     plot_annual_trajectory(tables["global_annual_unit_capacity_loss"], output / "figures/global_annual_unit_capacity_loss.png")
     plot_event_composition(tables["global_event_composition_2050"], output / "figures/global_event_composition.png")
     plot_waterfall(tables["global_ssp_waterfall_decomposition"], output / "figures/global_ssp_waterfall_decomposition.png")
+    plot_waterfall_3f(tables["global_ssp_waterfall_decomposition_3f"], output / "figures/global_ssp_waterfall_decomposition_3f.png")
     LOGGER.info("Saved: %s", output)
 
 
@@ -575,11 +681,13 @@ def main() -> None:
         "metric": "global annual net loss (MWh) / global snapshot installed capacity (MW)",
         "event_composition": "2050s global event net loss annualized over the ten-year snapshot / capacity; clip at zero, normalize within group",
         "decomposition": "R = E * I; E = sum(capacity * event hours) / capacity / year; I = loss / sum(capacity * event hours)",
+        "decomposition_3f": "R = E * cf_ev * r_ev; cf_ev = event-window normal generation / sum(capacity * event hours); r_ev = loss / event-window normal generation",
         "waterfall_aggregation": "exact decomposition per model and snapshot, then equal-weight mean over snapshots and models",
         "ensemble": "equal-weight arithmetic mean of four model-specific metrics, shares and decomposition terms",
         "range": "pointwise minimum–maximum across four models; not a confidence interval",
         "figure_archetype": "quantitative grid", "figure_format": "png", "dpi": 600,
-        "figure_sizes_inches": {"annual": [10.5, 4.3], "events": [13, 6], "waterfall": [11.4, 4.8]},
+        "figure_sizes_inches": {"annual": [10.5, 4.3], "events": [13, 6],
+                                "waterfall": [11.4, 4.8], "waterfall_3f": [13.2, 4.8]},
         "software": {"numpy": np.__version__, "pandas": pd.__version__,
                      "xarray": xr.__version__, "matplotlib": matplotlib.__version__},
     }
@@ -588,6 +696,7 @@ def main() -> None:
         "global_unit_capacity_metrics": ANNUAL_KEYS[:3],
         "global_event_composition_2050": ["scenario", "tech", "event", "group"],
         "global_ssp_waterfall_decomposition": ["tech", "snapshot_year", "baseline", "target"],
+        "global_ssp_waterfall_decomposition_3f": ["tech", "snapshot_year", "baseline", "target"],
     }
     results: dict[str, dict[str, pd.DataFrame]] = {}
     if args.execution_mode == "single":
@@ -606,6 +715,7 @@ def main() -> None:
             "global_unit_capacity_metrics": metrics,
             "global_event_composition_2050": event_composition(raw, metrics),
             "global_ssp_waterfall_decomposition": unit_decomposition(metrics),
+            "global_ssp_waterfall_decomposition_3f": unit_decomposition_3f(metrics),
             "global_annual_trends": trend_table(annual),
             "input_files": inventory, "patch_coverage": coverage,
         }
