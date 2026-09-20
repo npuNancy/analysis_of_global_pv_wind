@@ -54,10 +54,11 @@ data/loss_outputs/
 缺失（CF 被转换为零），损失与事件时长亦为零，但会计入容量分母并稀释 R 与 E
 （依据 `tmp/场站无数据问题/数据覆盖问题独立抽查.md`）。过滤按年度文件逐个执行，
 被剔除的场站数和容量占比以 WARNING 记录进日志；`run_config.json` 的
-`station_filter` 字段记录该口径。
+`station_filter` 字段记录该口径。注意 `normal_all_generation_mwh_all` 只用于覆盖判据；
+三因子分解中的事件窗口反事实发电量 $G_0^{\mathrm{ev}}$ 使用 `normal_generation_mwh_all`。
 
-图形采用 Python/matplotlib 的双面板 quantitative grid，左风右光。
-四类图共同用于比较不同 SSP 下全球单位装机损失的时间变化、事件组成及情景差值来源；
+图形采用 Python/matplotlib 的 quantitative grid，左风右光。
+六类图共同用于比较不同 SSP 下全球单位装机损失的时间变化、事件组成、情景差值来源和年代变化来源；
 具体变化方向由实际数据决定。年度图为主要证据，事件组成和瀑布图提供组成与分解信息。
 所有图使用白底、无上右边框、无边框图例和参考脚本配色，只导出 600 dpi PNG。
 
@@ -74,10 +75,15 @@ data/loss_outputs/
   两者严格相加等于 $\Delta R$。先逐快照分解，再对三个快照等权平均。
 - 三因子瀑布图：把强度项 $I$ 拆为事件期资源 $\mathrm{cf}_{\mathrm{ev}}$ 与事件期损失率 $r_{\mathrm{ev}}$，
   即 $I=\mathrm{cf}_{\mathrm{ev}}\times r_{\mathrm{ev}}$，故 $R=E\times\mathrm{cf}_{\mathrm{ev}}\times r_{\mathrm{ev}}$。
-  其中 $G_0^{\mathrm{ev}}$ 为场站 `normal_all_generation_mwh_all` 的全球年均总和（事件窗口内反事实应发电量），
+  其中 $G_0^{\mathrm{ev}}$ 为场站 `normal_generation_mwh_all` 的全球年均总和（事件窗口内反事实应发电量），
   $\mathrm{cf}_{\mathrm{ev}}=G_0^{\mathrm{ev}}/H$ 是事件窗口内容量因子，
   $r_{\mathrm{ev}}=L/G_0^{\mathrm{ev}}$ 是事件窗口内损失率。三个贡献采用对称 Shapley 归因（六种因子排序取平均），
   严格相加等于 $\Delta R$；同样先逐快照分解、再对三个快照等权平均。
+- 年代变化瀑布图：同一 SSP 内 2050s 减 2030s 的单位装机损失差，分解口径与上述瀑布图相同。
+  每张图为 3 行（SSP1-2.6 / SSP2-4.5 / SSP5-8.5）× 2 列（风 / 光）共六个子图，
+  每个子图展示 Exposure、Intensity（三因子版为 Exposure、Event resource、Event loss rate）
+  贡献与总的 $\Delta R$（黑色柱）。注意 2030s 与 2050s 的场站覆盖不同，
+  两个快照分别使用各自的过滤后装机作分母。
 
 四模式平均均先逐模式计算指标，再等权平均。年度阴影为同年四个模式的最小值到最大值
 （alpha=0.16），不是置信区间。事件图平均各模式的占比；瀑布图平均各模式分解后的贡献。
@@ -98,9 +104,10 @@ outputs/
     └── run_config.json
 ```
 
-每套 `figures/` 包含年度折线、事件组成、二因子瀑布和三因子瀑布四张 PNG；`csv/` 包含
-年度数值、快照指标、事件占比、二因子与三因子分解贡献和趋势系数。单模式目录另外保存
-`input_files.csv`（输入文件路径、大小、修改时间）和 `patch_coverage.csv`（patch 完成状态）。
+每套 `figures/` 包含年度折线、事件组成、情景差二因子与三因子瀑布、年代变化二因子与三因子瀑布
+六张 PNG；`csv/` 包含年度数值、快照指标、事件占比、情景差与年代变化的二因子与三因子分解贡献
+和趋势系数。单模式目录另外保存 `input_files.csv`（输入文件路径、大小、修改时间）和
+`patch_coverage.csv`（patch 完成状态）。
 `run_config.json` 记录指标口径、四模式列表、patch 清单、脚本及清单哈希、软件版本和绘图参数。
 
 本次仅编写代码，没有运行完整分析或绘图；实际图面的文字碰撞、裁切和清晰度需在首次绘图后检查。
