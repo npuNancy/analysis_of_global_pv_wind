@@ -73,7 +73,7 @@ def paint_map(assignments: pd.DataFrame, model: str, tech: str,
     configure_style()
     subset = assignments[assignments["tech"].eq(tech)]
     label_by_country = dict(zip(subset["country"], subset["cluster"]))
-    clusters = sorted(label_by_country.values())
+    clusters = sorted(set(label_by_country.values()))
     projection = ccrs.PlateCarree()
     fig, ax = plt.subplots(figsize=(11.0, 5.6), subplot_kw={"projection": projection})
     ax.set_global()

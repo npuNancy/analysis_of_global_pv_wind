@@ -6,8 +6,8 @@
 # Four worker processes at 3.5 GB per core (one model is loaded at a time, 4 units each).
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=14G
-#SBATCH --output=logs/RQ1/country/country_unit_loss_clustering_%j.out
-#SBATCH --error=logs/RQ1/country/country_unit_loss_clustering_%j.out
+#SBATCH --output=logs/RQ1/country/ssp_gap_clustering/country_unit_loss_clustering_%j.out
+#SBATCH --error=logs/RQ1/country/ssp_gap_clustering/country_unit_loss_clustering_%j.out
 
 set -euo pipefail
 
@@ -22,7 +22,7 @@ export MKL_NUM_THREADS=1
 export OPENBLAS_NUM_THREADS=1
 export NUMEXPR_NUM_THREADS=1
 
-mkdir -p "$REPO_ROOT/logs/RQ1/country"
+mkdir -p "$REPO_ROOT/logs/RQ1/country/ssp_gap_clustering"
 cd "$REPO_ROOT"
 
-python RQ1/country/country_unit_loss_clustering.py
+python RQ1/country/ssp_gap_clustering/country_unit_loss_clustering.py

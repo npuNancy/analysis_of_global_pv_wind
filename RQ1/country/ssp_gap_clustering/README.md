@@ -28,7 +28,7 @@
 
 ```bash
 mkdir -p logs/RQ1/country
-sbatch RQ1/country/country_unit_loss_clustering.sh
+sbatch RQ1/country/ssp_gap_clustering/country_unit_loss_clustering.sh
 ```
 
 作业使用 `wzhctest` 队列、1 节点、4 核和 14 GB 内存。读取阶段按
@@ -58,7 +58,7 @@ sbatch RQ1/country/country_unit_loss_clustering.sh
 ## 输出
 
 ```text
-RQ1/country/outputs/
+RQ1/country/ssp_gap_clustering/outputs/
 ├── CANESM5/
 ├── MPI-ESM1-2-HR/
 ├── MRI-ESM2-0/
