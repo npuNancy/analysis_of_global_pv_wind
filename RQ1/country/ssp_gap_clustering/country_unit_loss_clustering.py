@@ -36,7 +36,7 @@ from scipy.cluster.hierarchy import fcluster, leaves_list, linkage
 from scipy.optimize import linear_sum_assignment
 from scipy.spatial.distance import pdist, squareform
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
 PACKAGE_DIR = Path(__file__).resolve().parent
 if str(PROJECT_ROOT / "utils") not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT / "utils"))
