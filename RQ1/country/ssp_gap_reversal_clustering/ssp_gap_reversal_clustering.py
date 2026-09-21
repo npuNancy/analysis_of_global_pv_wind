@@ -173,10 +173,15 @@ def main() -> None:
         assignments = analyze_model(decade, model, args.output_dir / model)
         for tech in TECHS:
             tech_assign = assignments["assignments"][assignments["assignments"]["tech"].eq(tech)]
-            clusters, all_mean, order = event_composition_by_cluster(events, tech_assign)
-            plot_event_composition(clusters, all_mean, order, tech,
-                                   args.output_dir / model / "figures" /
-                                   f"country_cluster_event_composition_{tech}.png")
+            for exclude in (False, True):
+                stem = ("country_cluster_event_composition_no_low_resource"
+                        if exclude else "country_cluster_event_composition")
+                clusters, all_mean, order = event_composition_by_cluster(
+                    events, tech_assign, exclude_low_resource=exclude)
+                plot_event_composition(clusters, all_mean, order, tech,
+                                       args.output_dir / model / "figures" /
+                                       f"{stem}_{tech}.png",
+                                       exclude_low_resource=exclude)
             paint_map(tech_assign, model, tech, args.output_dir / model / "figures" /
                       f"cluster_map_{model}_{tech}.png")
     combined = pd.concat([table.assign(model=model)
@@ -203,10 +208,15 @@ def main() -> None:
         net_loss_mwh=("net_loss_mwh", "mean")))
     for tech in TECHS:
         tech_assign = result["assignments"][result["assignments"]["tech"].eq(tech)]
-        clusters, all_mean, order = event_composition_by_cluster(mean_events, tech_assign)
-        plot_event_composition(clusters, all_mean, order, tech,
-                               args.output_dir / "ensemble_mean" / "figures" /
-                               f"country_cluster_event_composition_{tech}.png")
+        for exclude in (False, True):
+            stem = ("country_cluster_event_composition_no_low_resource"
+                    if exclude else "country_cluster_event_composition")
+            clusters, all_mean, order = event_composition_by_cluster(
+                mean_events, tech_assign, exclude_low_resource=exclude)
+            plot_event_composition(clusters, all_mean, order, tech,
+                                   args.output_dir / "ensemble_mean" / "figures" /
+                                   f"{stem}_{tech}.png",
+                                   exclude_low_resource=exclude)
         paint_map(tech_assign, "ensemble_mean", tech,
                   args.output_dir / "ensemble_mean" / "figures" /
                   f"cluster_map_ensemble_mean_{tech}.png")

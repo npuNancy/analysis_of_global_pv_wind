@@ -39,6 +39,8 @@ sbatch RQ1/country/ssp_gap_reversal_clustering/ssp_gap_reversal_clustering.sh
 2. `country_cluster_event_composition_<tech>.png`：2050s 正净损失事件池组成。
    左图为全部国家的国家等权平均（两柱：SSP126/SSP585）；右图按四类分组
    （每类两柱），左右宽度比 1 : 4。事件可重叠，占比为组内正损失池份额。
+   另有 `country_cluster_event_composition_no_low_resource_<tech>.png`：
+   剔除低资源事件后在剩余事件正损失池内重新归一化的同版图。
 3. `cluster_map_<model>_<tech>.png`：Plate Carrée 世界地图，按类别给国家上色，
    复用 `../ssp_gap_clustering/map_country_clusters.py`；被剔除国家不上色。
 

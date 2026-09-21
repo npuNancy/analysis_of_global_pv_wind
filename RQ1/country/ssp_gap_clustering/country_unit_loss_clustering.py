@@ -518,15 +518,21 @@ def plot_country_heatmap(assignments: pd.DataFrame, tree: np.ndarray, output: Pa
     save_figure(fig, output)
 
 
-def event_composition_by_cluster(annual_events: pd.DataFrame,
-                                 assignments: pd.DataFrame) -> pd.DataFrame:
+def event_composition_by_cluster(
+    annual_events: pd.DataFrame, assignments: pd.DataFrame,
+    *, exclude_low_resource: bool = False,
+) -> tuple[pd.DataFrame, pd.DataFrame, list[str]]:
     """2050s positive event-loss shares per cluster and SSP, plus all-country mean shares.
 
     Cluster shares are loss-weighted within each cluster × SSP positive pool.
     The all-country reference averages country-internal shares equally.
+    With ``exclude_low_resource`` the low-resource event is dropped and the
+    pools renormalize over the remaining events.
     """
     tech = assignments["tech"].iloc[0]
     events = annual_events[annual_events["tech"].eq(tech)]
+    if exclude_low_resource:
+        events = events[~events["event"].eq("low_resource")]
     snapshot_years = ANALYSIS_YEARS[EVENT_SNAPSHOT]
     decade = (events[events["analysis_year"].isin(snapshot_years)]
               .groupby(["country", "scenario", "event"], as_index=False)
@@ -535,7 +541,8 @@ def event_composition_by_cluster(annual_events: pd.DataFrame,
         assignments[["country", "cluster"]], on="country", how="inner",
         validate="many_to_one")
     decade["positive_net_loss_mwh_per_year"] = decade["net_loss_mwh_per_year"].clip(lower=0)
-    order = [event for event in EVENT_LABEL if event in TECH_EVENTS[tech]]
+    order = [event for event in EVENT_LABEL
+             if event in TECH_EVENTS[tech] and event in set(decade["event"])]
     full_index = pd.MultiIndex.from_product(
         [sorted(decade["cluster"].unique()), COMPARE_SSPS],
         names=["cluster", "scenario"])
@@ -568,9 +575,11 @@ def event_composition_by_cluster(annual_events: pd.DataFrame,
 
 
 def plot_event_composition(clusters: pd.DataFrame, all_mean: pd.DataFrame,
-                           events: list[str], tech: str, output: Path) -> None:
+                           events: list[str], tech: str, output: Path,
+                           *, exclude_low_resource: bool = False) -> None:
     """Left: all-country mean (two bars, ssp126/ssp585). Right: per cluster (two bars each)."""
     configure_style()
+    suffix = " (excl. low resource)" if exclude_low_resource else ""
     cluster_ids = sorted({index[0] for index in clusters.index})
     fig, axes = plt.subplots(
         1, 2, figsize=(3.2 + 1.6 * len(cluster_ids) + 1.2, 4.6),
@@ -609,13 +618,14 @@ def plot_event_composition(clusters: pd.DataFrame, all_mean: pd.DataFrame,
             bottoms += values_array
         ax.set_xticks(positions, labels)
         if group_label is not None:
-            ax.set_title(f"{group_label} mean", loc="left", fontsize=9, fontweight="bold")
+            ax.set_title(f"{group_label} mean{suffix}", loc="left", fontsize=9,
+                         fontweight="bold")
         else:
             for cluster_index, cluster in enumerate(cluster_ids):
                 center = cluster_index * 2.6 + 0.5
                 ax.text(center, -0.16, f"C{cluster}", transform=ax.get_xaxis_transform(),
                         ha="center", va="top", fontweight="bold", fontsize=9)
-            ax.set_title("By cluster", loc="left", fontsize=9, fontweight="bold")
+            ax.set_title(f"By cluster{suffix}", loc="left", fontsize=9, fontweight="bold")
         ax.set_ylim(0, 100)
         ax.set_ylabel("Positive event-loss pool share (%)")
         ax.grid(axis="y", alpha=.25)
@@ -751,11 +761,15 @@ def main() -> None:
                                   "country_cluster_assignments.csv")
         for tech in TECHS:
             tech_assign = assignments[assignments["tech"].eq(tech)]
-            clusters, all_mean, order = event_composition_by_cluster(
-                events, tech_assign)
-            plot_event_composition(clusters, all_mean, order, tech,
-                                   args.output_dir / model / "figures" /
-                                   f"country_cluster_event_composition_{tech}.png")
+            for exclude in (False, True):
+                stem = ("country_cluster_event_composition_no_low_resource"
+                        if exclude else "country_cluster_event_composition")
+                clusters, all_mean, order = event_composition_by_cluster(
+                    events, tech_assign, exclude_low_resource=exclude)
+                plot_event_composition(clusters, all_mean, order, tech,
+                                       args.output_dir / model / "figures" /
+                                       f"{stem}_{tech}.png",
+                                       exclude_low_resource=exclude)
     combined = pd.concat([table.assign(model=model)
                           for model, table in decade_tables.items()], ignore_index=True)
     keys = ["country", "scenario", "tech", "snapshot_year"]
@@ -787,11 +801,15 @@ def main() -> None:
         args.output_dir / "ensemble_mean" / "csv" / "country_cluster_assignments.csv")
     for tech in TECHS:
         tech_assign = ensemble_assignments[ensemble_assignments["tech"].eq(tech)]
-        clusters, all_mean, order = event_composition_by_cluster(
-            mean_events, tech_assign)
-        plot_event_composition(clusters, all_mean, order, tech,
-                               args.output_dir / "ensemble_mean" / "figures" /
-                               f"country_cluster_event_composition_{tech}.png")
+        for exclude in (False, True):
+            stem = ("country_cluster_event_composition_no_low_resource"
+                    if exclude else "country_cluster_event_composition")
+            clusters, all_mean, order = event_composition_by_cluster(
+                mean_events, tech_assign, exclude_low_resource=exclude)
+            plot_event_composition(clusters, all_mean, order, tech,
+                                   args.output_dir / "ensemble_mean" / "figures" /
+                                   f"{stem}_{tech}.png",
+                                   exclude_low_resource=exclude)
     (args.output_dir / "run_config.json").parent.mkdir(parents=True, exist_ok=True)
     for model in [*MODELS, "ensemble_mean"]:
         target = args.output_dir / model / "run_config.json"
