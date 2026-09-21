@@ -662,12 +662,12 @@ def plot_waterfall_3f(decomposition: pd.DataFrame, output: Path) -> None:
 
 
 def plot_year_change_waterfall(decomposition: pd.DataFrame, output: Path) -> None:
-    """Rows: SSPs; columns: wind/solar; each panel: 2050s minus 2030s two-factor waterfall."""
+    """Rows: wind/solar; columns: SSPs; each panel: 2050s minus 2030s two-factor waterfall."""
     configure_style()
-    fig, axes = plt.subplots(len(SSPS), len(TECHS), figsize=(10.0, 10.2))
+    fig, axes = plt.subplots(len(TECHS), len(SSPS), figsize=(15.0, 6.8))
     edges = [0.0]
-    for row, scenario in enumerate(SSPS):
-        for col, tech in enumerate(TECHS):
+    for row, tech in enumerate(TECHS):
+        for col, scenario in enumerate(SSPS):
             ax = axes[row, col]
             row_data = decomposition[decomposition.tech.eq(tech) & decomposition.scenario.eq(scenario)].iloc[0]
             level = 0.0
@@ -699,26 +699,26 @@ def plot_year_change_waterfall(decomposition: pd.DataFrame, output: Path) -> Non
             ax.set_axisbelow(True)
             ax.set_xlim(-.6, 2.6)
             if col == 0:
-                ax.set_ylabel(f"{SSP_LABEL[scenario]}\n(MWh MW$^{{-1}}$ yr$^{{-1}}$)")
+                ax.set_ylabel(f"{TECH_LABEL[tech]}\n(MWh MW$^{{-1}}$ yr$^{{-1}}$)")
             if row == 0:
-                ax.set_title(TECH_LABEL[tech], loc="left", fontweight="bold")
+                ax.set_title(SSP_LABEL[scenario], loc="left", fontweight="bold")
     pad = max(1.0, (max(edges) - min(edges)) * .18)
     for ax in axes.flat:
         ax.set_ylim(min(edges) - pad, max(edges) + pad)
     fig.text(.5, .025,
              "2050s minus 2030s within each SSP; unit loss = Exposure × Intensity.",
              ha="center", fontsize=8)
-    fig.subplots_adjust(left=.11, right=.97, bottom=.10, top=.94, hspace=.3, wspace=.25)
+    fig.subplots_adjust(left=.08, right=.98, bottom=.14, top=.92, hspace=.3, wspace=.25)
     save_figure(fig, output)
 
 
 def plot_year_change_waterfall_3f(decomposition: pd.DataFrame, output: Path) -> None:
-    """Rows: SSPs; columns: wind/solar; each panel: 2050s minus 2030s three-factor waterfall."""
+    """Rows: wind/solar; columns: SSPs; each panel: 2050s minus 2030s three-factor waterfall."""
     configure_style()
-    fig, axes = plt.subplots(len(SSPS), len(TECHS), figsize=(11.6, 10.2))
+    fig, axes = plt.subplots(len(TECHS), len(SSPS), figsize=(17.4, 6.8))
     edges = [0.0]
-    for row, scenario in enumerate(SSPS):
-        for col, tech in enumerate(TECHS):
+    for row, tech in enumerate(TECHS):
+        for col, scenario in enumerate(SSPS):
             ax = axes[row, col]
             row_data = decomposition[decomposition.tech.eq(tech) & decomposition.scenario.eq(scenario)].iloc[0]
             level = 0.0
@@ -751,9 +751,9 @@ def plot_year_change_waterfall_3f(decomposition: pd.DataFrame, output: Path) -> 
             ax.set_axisbelow(True)
             ax.set_xlim(-.6, 3.6)
             if col == 0:
-                ax.set_ylabel(f"{SSP_LABEL[scenario]}\n(MWh MW$^{{-1}}$ yr$^{{-1}}$)")
+                ax.set_ylabel(f"{TECH_LABEL[tech]}\n(MWh MW$^{{-1}}$ yr$^{{-1}}$)")
             if row == 0:
-                ax.set_title(TECH_LABEL[tech], loc="left", fontweight="bold")
+                ax.set_title(SSP_LABEL[scenario], loc="left", fontweight="bold")
     pad = max(1.0, (max(edges) - min(edges)) * .18)
     for ax in axes.flat:
         ax.set_ylim(min(edges) - pad, max(edges) + pad)
@@ -761,7 +761,7 @@ def plot_year_change_waterfall_3f(decomposition: pd.DataFrame, output: Path) -> 
              "2050s minus 2030s within each SSP; "
              "unit loss = Exposure × Event resource × Event loss rate.",
              ha="center", fontsize=8)
-    fig.subplots_adjust(left=.11, right=.97, bottom=.10, top=.94, hspace=.3, wspace=.25)
+    fig.subplots_adjust(left=.08, right=.98, bottom=.14, top=.92, hspace=.3, wspace=.25)
     save_figure(fig, output)
 
 

@@ -80,7 +80,7 @@ data/loss_outputs/
   $r_{\mathrm{ev}}=L/G_0^{\mathrm{ev}}$ 是事件窗口内损失率。三个贡献采用对称 Shapley 归因（六种因子排序取平均），
   严格相加等于 $\Delta R$；同样先逐快照分解、再对三个快照等权平均。
 - 年代变化瀑布图：同一 SSP 内 2050s 减 2030s 的单位装机损失差，分解口径与上述瀑布图相同。
-  每张图为 3 行（SSP1-2.6 / SSP2-4.5 / SSP5-8.5）× 2 列（风 / 光）共六个子图，
+  每张图为 2 行（风 / 光）× 3 列（SSP1-2.6 / SSP2-4.5 / SSP5-8.5）共六个子图，
   每个子图展示 Exposure、Intensity（三因子版为 Exposure、Event resource、Event loss rate）
   贡献与总的 $\Delta R$（黑色柱）。注意 2030s 与 2050s 的场站覆盖不同，
   两个快照分别使用各自的过滤后装机作分母。
