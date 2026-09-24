@@ -39,7 +39,7 @@ from map_country_clusters import paint_map  # noqa: E402
 OUTPUT_DIR = Path(__file__).resolve().parent / "outputs"
 EARLY_SNAPSHOT, LATE_SNAPSHOT = SNAPSHOTS[0], SNAPSHOTS[-1]
 GAP_LABEL = "SSP5-8.5 minus SSP1-2.6 gap (MWh MW$^{-1}$ yr$^{-1}$)"
-LOGGER = logging.getLogger("rq1.country_ssp_gap_reversal")
+LOGGER = logging.getLogger("rq2_loss.country_ssp_gap_reversal")
 
 # Fixed class order: ++, +-, -+, -- ; sign is (early, late).
 SIGN_CLASSES = ((1, 1), (1, -1), (-1, 1), (-1, -1))

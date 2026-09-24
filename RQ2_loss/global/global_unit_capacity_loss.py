@@ -66,7 +66,7 @@ COVERAGE_COLUMN = "normal_all_generation_mwh_all"
 EVENT_NORMAL_COLUMN = "normal_generation_mwh_all"
 ANNUAL_KEYS = ["scenario", "tech", "snapshot_year", "analysis_year"]
 EXP_COLOR, RES_COLOR, INT_COLOR, INK = "#9EC3D3", "#A6C48A", "#C99581", "#30363C"
-LOGGER = logging.getLogger("rq1.global_unit_capacity_loss")
+LOGGER = logging.getLogger("rq2_loss.global_unit_capacity_loss")
 
 
 def configure_logging() -> None:

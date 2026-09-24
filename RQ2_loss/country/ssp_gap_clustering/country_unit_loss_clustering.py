@@ -1,6 +1,6 @@
 """Hierarchical clustering of countries by SSP585-minus-SSP126 unit-loss gap curves.
 
-Reads the same annual station NetCDF files as RQ1/global, maps each station to a
+Reads the same annual station NetCDF files as RQ2_loss/global, maps each station to a
 country through utils/country_patch_mapping (lon/lat join per snapshot year),
 aggregates per-country unit-capacity loss (net annual loss / installed capacity)
 for ssp126 and ssp585, and Ward-clusters the 30-year gap trajectories. Each
@@ -77,7 +77,7 @@ GAP_LABEL = "SSP5-8.5 minus SSP1-2.6 gap (MWh MW$^{-1}$ yr$^{-1}$)"
 CLUSTER_COLORS = ("#1d3b6f", "#b64342", "#42949e", "#9a4d8e",
                   "#d08b32", "#5f7f4f")
 EVENT_SNAPSHOT = 2050
-LOGGER = logging.getLogger("rq1.country_unit_loss_clustering")
+LOGGER = logging.getLogger("rq2_loss.country_unit_loss_clustering")
 
 
 def configure_logging() -> None:

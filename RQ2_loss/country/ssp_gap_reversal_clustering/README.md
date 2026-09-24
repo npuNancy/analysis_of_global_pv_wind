@@ -22,13 +22,12 @@
 在仓库根目录提交 SLURM 作业：
 
 ```bash
-mkdir -p logs/RQ1/country/ssp_gap_reversal_clustering
-sbatch RQ1/country/ssp_gap_reversal_clustering/ssp_gap_reversal_clustering.sh
+mkdir -p logs/RQ2_loss/country/ssp_gap_reversal_clustering
+sbatch RQ2_loss/country/ssp_gap_reversal_clustering/ssp_gap_reversal_clustering.sh
 ```
 
 作业使用 `wzhctest` 队列、1 节点、4 核和 14 GB 内存（与情景差聚类相同）。
-`#SBATCH` 日志路径相对提交目录；脚本内仓库位置由 `$HOME` 推导，可在不同
-超算账号下直接提交。
+`#SBATCH` 使用当前仓库的绝对日志路径；脚本体内的仓库位置由脚本目录推导。
 
 ## 图形
 

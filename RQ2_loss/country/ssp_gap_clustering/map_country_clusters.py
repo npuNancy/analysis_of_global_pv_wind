@@ -39,7 +39,7 @@ CLUSTER_COLORS = ("#1d3b6f", "#b64342", "#42949e", "#9a4d8e",
 LAND_COLOR = "#E9ECEF"
 EDGE_COLOR = "#9AA0A6"
 OCEAN_COLOR = "white"
-LOGGER = logging.getLogger("rq1.map_country_clusters")
+LOGGER = logging.getLogger("rq2_loss.map_country_clusters")
 
 
 def configure_logging() -> None:

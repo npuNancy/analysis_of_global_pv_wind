@@ -10,26 +10,24 @@
 在仓库根目录提交 SLURM 作业：
 
 ```bash
-mkdir -p logs/RQ1/global
-sbatch RQ1/global/global_unit_capacity_loss.sh
+mkdir -p logs/RQ2_loss/global
+sbatch RQ2_loss/global/global_unit_capacity_loss.sh
 ```
 
 作业使用 `wzhctest` 队列、1 个节点、8 核和 28 GB 内存，以 Python 默认参数运行。
 默认启用多进程，按 `model × SSP × technology` 拆成 24 个独立读取任务，worker 数量默认取
 `SLURM_CPUS_PER_TASK`。8 核用于按 3.5 GB/核申请内存；SLURM 脚本将数值库线程限制为 1，
 避免每个 worker 再创建额外线程。
-标准输出和错误输出共用 `logs/RQ1/global/global_unit_capacity_loss_<jobid>.out`。
+标准输出和错误输出共用 `logs/RQ2_loss/global/global_unit_capacity_loss_<jobid>.out`。
 日志目录必须在提交前存在；环境激活文件为 `.venv/bin/activate`。
-作业脚本不包含账号专属绝对路径：`#SBATCH` 日志路径相对仓库根目录（提交目录），
-脚本体内的仓库位置由 `$HOME/project_climate_patchify/repos/analysis_of_global_pv_wind`
-推导，因此同一脚本可在不同超算账号下直接提交。
+`#SBATCH` 使用当前仓库的绝对日志路径；脚本体内的仓库位置由脚本目录推导。
 
 Python 脚本可通过 `--loss-root`、`--patch-manifest`、`--output-dir` 指定路径。
 `--execution-mode parallel`（默认）启用多进程，`--execution-mode single` 保留原有单进程流程；
 `--workers N` 可限制多进程 worker 数量。单进程复现示例：
 
 ```bash
-.venv/bin/python RQ1/global/global_unit_capacity_loss.py --execution-mode single
+.venv/bin/python RQ2_loss/global/global_unit_capacity_loss.py --execution-mode single
 ```
 
 脚本运行日志统一为 `[时间戳] [日志等级]: [消息]`。
