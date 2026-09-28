@@ -27,7 +27,7 @@ sbatch RQ2_loss/country/ssp_gap_reversal_clustering/ssp_gap_reversal_clustering.
 ```
 
 作业使用 `wzhctest` 队列、1 节点、4 核和 14 GB 内存（与情景差聚类相同）。
-`#SBATCH` 使用当前仓库的绝对日志路径；脚本体内的仓库位置由脚本目录推导。
+`#SBATCH` 使用超算仓库的绝对日志路径；脚本体内的仓库位置由脚本目录推导。
 
 ## 图形
 

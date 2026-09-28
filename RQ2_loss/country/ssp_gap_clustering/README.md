@@ -34,7 +34,7 @@ sbatch RQ2_loss/country/ssp_gap_clustering/country_unit_loss_clustering.sh
 作业使用 `wzhctest` 队列、1 节点、4 核和 14 GB 内存。读取阶段按
 `model × SSP × technology`（每模式 4 个单元）并行，worker 数默认取
 `SLURM_CPUS_PER_TASK`；一次只加载一个模式，因此 4 核足够。
-`#SBATCH` 使用当前仓库的绝对日志路径；脚本体内的仓库位置由脚本目录推导。
+`#SBATCH` 使用超算仓库的绝对日志路径；脚本体内的仓库位置由脚本目录推导。
 
 常用参数（`--k-min/--k-max/--min-cluster-size/--bootstrap/--noise-scale/--seed`）
 与 `RQ4/ssp126_ssp585_loss_gap_clustering` 一致，另有 `--workers` 限制并行度。

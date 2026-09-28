@@ -20,7 +20,7 @@ sbatch RQ2_loss/global/global_unit_capacity_loss.sh
 避免每个 worker 再创建额外线程。
 标准输出和错误输出共用 `logs/RQ2_loss/global/global_unit_capacity_loss_<jobid>.out`。
 日志目录必须在提交前存在；环境激活文件为 `.venv/bin/activate`。
-`#SBATCH` 使用当前仓库的绝对日志路径；脚本体内的仓库位置由脚本目录推导。
+`#SBATCH` 使用超算仓库的绝对日志路径；脚本体内的仓库位置由脚本目录推导。
 
 Python 脚本可通过 `--loss-root`、`--patch-manifest`、`--output-dir` 指定路径。
 `--execution-mode parallel`（默认）启用多进程，`--execution-mode single` 保留原有单进程流程；
