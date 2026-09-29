@@ -42,9 +42,12 @@ def parse_args():
     parser.add_argument("--future-years", nargs="+", type=int, default=list(range(2050, 2060)))
     parser.add_argument("--min-time-coverage", type=float, default=0.99)
     parser.add_argument("--time-chunk", type=int, default=240)
-    parser.add_argument("--workers", type=int, default=min(4, int(os.environ.get("SLURM_CPUS_PER_TASK", "1"))))
-    parser.add_argument("--phase", choices=("all", "aggregate", "plot"), default="all")
+    parser.add_argument("--workers", type=int, default=min(16, int(os.environ.get("SLURM_CPUS_PER_TASK", "1"))))
+    parser.add_argument("--phase", choices=("all", "cache", "manifest", "aggregate", "plot"), default="all")
     parser.add_argument("--shapefile", type=Path, default=SHAPEFILE)
+    parser.add_argument("--manifest-path", type=Path,
+                        help="Unique manifest destination for a cache shard")
+    parser.add_argument("--cache-manifests", type=Path, nargs="+", help="Shard manifests for --phase manifest")
     args = parser.parse_args()
     args.years = sorted(set(args.years))
     args.baseline_years = sorted(set(args.baseline_years))
@@ -58,7 +61,43 @@ def parse_args():
     for values in (args.models, args.ssps, args.techs, args.patches or []):
         if len(values) != len(set(values)):
             parser.error("Selections must not contain duplicates")
+    if args.phase == "cache" and args.manifest_path is None:
+        parser.error("--phase cache requires a unique --manifest-path")
+    if args.phase == "manifest" and not args.cache_manifests:
+        parser.error("--phase manifest requires --cache-manifests")
+    if args.phase == "cache" and args.manifest_path.resolve() == (args.output_dir / "cache_manifest.json").resolve():
+        parser.error("Cache shards must use a separate manifest path")
+    if "SLURM_CPUS_PER_TASK" in os.environ and args.workers > int(os.environ["SLURM_CPUS_PER_TASK"]):
+        parser.error("--workers exceeds allocated SLURM CPUs")
     return args
+
+
+def assemble_manifest(paths, records, scope, index_hash):
+    """Join disjoint, complete shards without reading hourly inputs."""
+    expected = {(r["model"], r["scenario"], r["tech"], r["patch"]) for r in records}
+    found = {}
+    for path in paths:
+        shard = json.loads(path.read_text())
+        if shard["input_index_sha256"] != index_hash:
+            raise ValueError("Shard input index differs: " + str(path))
+        for key in ("years", "min_time_coverage", "baseline_years", "future_years"):
+            if shard["scope"][key] != scope[key]:
+                raise ValueError("Shard scope differs: " + key)
+        shard_expected = {(m, s, t, p) for m in shard["scope"]["models"]
+                          for s in shard["scope"]["ssps"] for t in shard["scope"]["techs"]
+                          for p in shard["scope"]["patches"]}
+        actual = [(r["model"], r["scenario"], r["tech"], r["patch"]) for r in shard["records"]]
+        if len(actual) != len(set(actual)) or set(actual) != shard_expected:
+            raise ValueError("Incomplete or duplicate shard records: " + str(path))
+        for record, key in zip(shard["records"], actual):
+            if key not in expected or key in found:
+                raise ValueError("Unexpected or overlapping shard: " + str(key))
+            with cache_dataset(record):
+                pass
+            found[key] = record
+    if set(found) != expected:
+        raise ValueError("Missing cache records: " + str(len(expected - set(found))))
+    return [found[(r["model"], r["scenario"], r["tech"], r["patch"])] for r in records]
 
 
 def build_tables(records, models):
@@ -221,17 +260,26 @@ def main():
     records, patches, index_hash = select_inventory(args.input_root, args.models, args.ssps, args.techs, args.patches)
     args.patches = patches
     config = {k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items() if k != "phase"}
-    manifest_path = args.output_dir / "cache_manifest.json"
+    manifest_path = args.manifest_path or args.output_dir / "cache_manifest.json"
     # Cache identity excludes concurrency knobs, but records the exact scientific scope.
     scope = {k: config[k] for k in ("models", "ssps", "techs", "patches", "years", "min_time_coverage",
                                       "baseline_years", "future_years")}
-    if args.phase != "plot":
+    if args.phase == "manifest":
+        cached = assemble_manifest(args.cache_manifests, records, scope, index_hash)
+        manifest = {"schema_version": 1, "scope": scope, "input_index_sha256": index_hash,
+                    "baseline_years": args.baseline_years, "future_years": args.future_years,
+                    "records": cached}
+        write_json(manifest_path, manifest)
+    elif args.phase != "plot":
         tasks = [(r, args.years, str(args.output_dir), args.min_time_coverage, args.time_chunk) for r in records]
         if args.workers == 1:
             cached = [aggregate_combination(t) for t in tasks]
         else:
             with ProcessPoolExecutor(max_workers=args.workers, mp_context=mp.get_context("spawn")) as pool:
-                cached = list(pool.map(aggregate_combination, tasks))
+                cached = []
+                for i, record in enumerate(pool.map(aggregate_combination, tasks), 1):
+                    cached.append(record)
+                    LOGGER.info("Cache progress %d/%d", i, len(tasks))
         manifest = {"schema_version": 1, "scope": scope, "input_index_sha256": index_hash, "baseline_years": args.baseline_years,
                     "future_years": args.future_years, "records": cached}
         write_json(manifest_path, manifest)
@@ -240,6 +288,9 @@ def main():
         if manifest["scope"] != scope or manifest["input_index_sha256"] != index_hash:
             raise ValueError("Cached selection differs from requested input/scope")
         cached = manifest["records"]
+    if args.phase in ("cache", "manifest"):
+        LOGGER.info("Saved %d cache records to %s", len(cached), manifest_path)
+        return
     annual, patch_rows = build_tables(cached, args.models)
     periods = save_tables(annual, patch_rows, args)
     configure_style()
