@@ -56,13 +56,13 @@ sbatch RQ1_extreme/global/grid/test_grid_extremes.sh
 
 ## 多作业并行
 
-`scnet/create_extreme_grid_jobs.py` 生成独立的 SLURM 脚本和 `jobs.json`，不会自动提交。默认按模式 × SSP 拆成 12 个缓存作业，每作业处理 47 patch × 风/光 = 94 个组合；每作业 16 进程、16 CPU、56 GB，总计最多 192 个缓存计算进程。生成目录必须位于仓库外且尚不存在。
+`scnet/extreme_grid/create_extreme_grid_jobs.py` 生成独立的 SLURM 脚本和 `jobs.json`，不会自动提交。默认按模式 × SSP 拆成 12 个缓存作业，每作业处理 47 patch × 风/光 = 94 个组合；每作业 16 进程、16 CPU、56 GB，总计最多 192 个缓存计算进程。生成目录必须位于仓库外且尚不存在。
 
 ```bash
-python scnet/create_extreme_grid_jobs.py --dry-run
-python scnet/create_extreme_grid_jobs.py --job-dir /work/home/acp6varuz3/project_climate_patchify/runtime/extreme_grid_jobs
+python scnet/extreme_grid/create_extreme_grid_jobs.py --dry-run
+python scnet/extreme_grid/create_extreme_grid_jobs.py --job-dir /work/home/acp6varuz3/project_climate_patchify/runtime/extreme_grid_jobs
 ```
 
 依赖链：12 个缓存作业 → 统一缓存清单 → 全球绘图、国家分析（并行）。缓存作业使用 `--phase cache --manifest-path <独立路径>`，不写全局清单和公共表图；`--phase manifest --cache-manifests ...` 核对并合并全部缓存清单；全球绘图使用 `--phase plot`。默认单作业 `--phase all` 仍可使用。
 
-提交前创建日志目录；每次提交前在共享锁内统计账号全部活动作业，遵守 wzhctest 最多 20 个提交中作业的限制。完整运行与监控约定见 `scnet/goal.md`。
+提交前创建日志目录；每次提交前在共享锁内统计账号全部活动作业，遵守 wzhctest 最多 20 个提交中作业的限制。完整运行与监控约定见 `scnet/extreme_grid/goal.md`。

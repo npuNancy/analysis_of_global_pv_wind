@@ -13,4 +13,4 @@ set -euo pipefail
 REPO_ROOT="/work/home/acp6varuz3/project_climate_patchify/repos/analysis_of_global_pv_wind"
 source "$REPO_ROOT/.venv/bin/activate"
 cd "$REPO_ROOT"
-python scnet/create_extreme_grid_jobs.py "$@"
+python scnet/extreme_grid/create_extreme_grid_jobs.py "$@"

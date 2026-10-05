@@ -16,7 +16,7 @@ Global/country figures each use 4 CPUs and 14 GB; plotting is not a 16-process c
 Manifests use 2 CPUs and 7 GB. Threaded BLAS/OpenMP are limited to one thread per process.
 
 ## Generate and submit
-Run scnet/create_extreme_grid_jobs.py --dry-run to inspect the selected workload.
+Run scnet/extreme_grid/create_extreme_grid_jobs.py --dry-run to inspect the selected workload.
 Use --job-dir for a new repository-external directory; the generator never submits jobs or overwrites an existing job directory.
 It reads only JSON inventory and generates scripts; it can run on the login node.
 Create the requested log directory before submission. Submit cache scripts first, the manifest script with afterok dependencies on all cache jobs, then global/country scripts with afterok on the manifest job.
