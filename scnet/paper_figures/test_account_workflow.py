@@ -15,6 +15,15 @@ def record(job=''):
 
 
 class AccountTests(unittest.TestCase):
+    def test_disabled_account_cannot_submit(self):
+        with TemporaryDirectory() as directory:
+            path=Path(directory)/'jobs.json'
+            path.write_text(json.dumps(dict(accounts=[dict(username='retired',submit_enabled=False)])))
+            with patch.object(controller,'command',return_value='retired'),patch.object(controller.subprocess,'run') as run,patch('sys.argv',['control',str(path),'--submit']):
+                with self.assertRaises(SystemExit) as caught:controller.main()
+                self.assertEqual(caught.exception.code,2)
+                run.assert_not_called()
+
     def test_shared_state_retries_transient_missing_file(self):
         with patch.object(Path,'read_text',side_effect=[FileNotFoundError('visibility delay'),json.dumps({'job_id':'123'})]),patch.object(controller.time,'sleep'):
             self.assertEqual(controller.read_state(Path('state.json')),{'job_id':'123'})

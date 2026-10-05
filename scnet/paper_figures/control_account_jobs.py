@@ -68,6 +68,7 @@ def main():
     m=json.loads(a.manifest.read_text());user=command(['id','-un']).strip()
     account=next((x for x in m['accounts'] if x['username']==user),None)
     if account is None:raise ValueError('Execution user is not an assigned account')
+    if a.submit and not account.get('submit_enabled',True):p.error('Submissions disabled for execution account')
     require_complete(Path(m['prerequisite']).parent)
     folder=a.manifest.parent/'accounts'/user;status=STATUS/'accounts'/user
     lock=(status/'controller.lock').open('a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)

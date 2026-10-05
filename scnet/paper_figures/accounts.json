@@ -1,11 +1,5 @@
 [
   {
-    "alias": "scnet-wuzhen-1872",
-    "username": "acjpoxgsdu",
-    "max_active": 20,
-    "submit_lock": "/work/home/acjpoxgsdu/.bcsd_submit.lock"
-  },
-  {
     "alias": "scnet-wuzhen-1866",
     "username": "aczlvkl1ac",
     "max_active": 20,

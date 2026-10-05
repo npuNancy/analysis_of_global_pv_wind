@@ -46,3 +46,5 @@ Per-account state and `progress.md` are updated atomically. The coordinator peri
 Account status: `logs/paper_figures/completion_status/accounts/<username>/progress.md`. Global status: `logs/paper_figures/completion_status/progress.md`. Controllers may run on login nodes; scientific processing, environment/data smoke checks, and numerical equivalence checks run through Slurm.
 
 Controllers check every 15 minutes (900 seconds). At each check, each account fills available slots with dependency-ready units while other jobs may still be running; there is no whole-batch completion barrier.
+
+Wuzhen1872 is excluded from submission accounts. Historical campaign records retain its completed tasks with `submit_enabled: false`; unfinished cancelled tasks are reassigned with their prior attempt records preserved.
