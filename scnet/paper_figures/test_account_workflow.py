@@ -14,6 +14,16 @@ def record(job=''):
 
 
 class AccountTests(unittest.TestCase):
+    def test_shared_state_retries_transient_missing_file(self):
+        with patch.object(Path,'read_text',side_effect=[FileNotFoundError('visibility delay'),json.dumps({'job_id':'123'})]),patch.object(controller.time,'sleep'):
+            self.assertEqual(controller.read_state(Path('state.json')),{'job_id':'123'})
+        with patch.object(Path,'read_text',side_effect=FileNotFoundError('missing')),patch.object(controller.time,'sleep'):
+            with self.assertRaises(RuntimeError):controller.read_state(Path('state.json'))
+
+    def test_completion_retries_delayed_visibility(self):
+        with patch.object(controller,'require_complete',side_effect=[FileNotFoundError('visibility delay'),{'status':'COMPLETED'}]),patch.object(controller.time,'sleep'):
+            self.assertEqual(controller.verify_outputs(Path('output')),{'status':'COMPLETED'})
+
     def test_existing_jobs_stay_and_pairs_share_account(self):
         names=['loss_ssp126_wind_R01C01','events_ssp126_wind_R01C01','loss_ssp585_solar_R01C02','events_ssp585_solar_R01C02','loss_summary']
         state={n:record() for n in names};state[names[0]]=record('123')

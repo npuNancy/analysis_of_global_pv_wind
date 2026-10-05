@@ -22,9 +22,25 @@ def command(args):
     return p.stdout
 
 
+def read_state(path):
+    for attempt in range(10):
+        try:return json.loads(Path(path).read_text())
+        except (FileNotFoundError,json.JSONDecodeError) as exc:
+            if attempt==9:raise RuntimeError('Shared state temporarily unavailable: '+str(path)) from exc
+            time.sleep(.1*(attempt+1))
+
+
+def verify_outputs(folder):
+    for attempt in range(10):
+        try:return require_complete(folder)
+        except (FileNotFoundError,json.JSONDecodeError,ValueError):
+            if attempt==9:raise
+            time.sleep(.1*(attempt+1))
+
+
 def read_states(manifest):
     result={};base=Path(manifest['job_dir'])/'accounts'
-    for a in manifest['accounts']:result.update(json.loads((base/a['username']/'state.json').read_text()))
+    for a in manifest['accounts']:result.update(read_state(base/a['username']/'state.json'))
     return result
 
 
@@ -52,7 +68,7 @@ def main():
     require_complete(Path(m['prerequisite']).parent)
     folder=a.manifest.parent/'accounts'/user;status=STATUS/'accounts'/user
     lock=(status/'controller.lock').open('a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
-    statepath=folder/'state.json';state=json.loads(statepath.read_text());units=[u for u in m['units'] if u['account']==user]
+    statepath=folder/'state.json';state=read_state(statepath);units=[u for u in m['units'] if u['account']==user]
     Path(status/'controller.pid').write_text(str(os.getpid())+'\n');Path(status/'controller.host').write_text(command(['hostname']))
     shared=Path(account['submit_lock']);shared.parent.mkdir(parents=True,exist_ok=True)
     failures=[];notes=[]
@@ -60,8 +76,11 @@ def main():
         write_json(statepath,state);counts=write_progress(status/'progress.md',m,state,notes)
         write_progress(folder/'progress.md',m,state,notes)
         if user==m['coordinator']:
-            combined=read_states(m);write_json(a.manifest.parent/'state.json',combined)
-            write_progress(STATUS/'progress.md',m,combined,notes);write_progress(a.manifest.parent/'progress.md',m,combined,notes)
+            try:combined=read_states(m)
+            except RuntimeError as exc:print('Global snapshot deferred:',exc,flush=True)
+            else:
+                write_json(a.manifest.parent/'state.json',combined)
+                write_progress(STATUS/'progress.md',m,combined,notes);write_progress(a.manifest.parent/'progress.md',m,combined,notes)
         print(datetime.now().astimezone().isoformat(),user,counts,flush=True)
     while True:
         notes=[]
@@ -79,7 +98,7 @@ def main():
                 if not fact:r.update(classification='unknown',reason='accounting not yet available');continue
                 batch=accounting.get(job+'.batch',fact);r.update(state=fact[1],exit=fact[2],elapsed=fact[3],maxrss=batch[4])
                 if fact[1]=='COMPLETED' and fact[2]=='0:0':
-                    try:require_complete(Path(u['marker']).parent)
+                    try:verify_outputs(Path(u['marker']).parent)
                     except Exception as e:r.update(classification='incomplete_output',reason=str(e))
                     else:r.update(classification='succeeded',reason='COMPLETED/0:0 and completion artifacts verified')
                 elif fact[1].startswith(TERMINAL):
@@ -118,9 +137,11 @@ def main():
             persist()
         except (RuntimeError,subprocess.SubprocessError) as e:
             notes.append('Scheduler observation error: '+str(e));persist()
-        allstate=read_states(m)
+        try:allstate=read_states(m)
+        except RuntimeError as exc:
+            print('Dependency snapshot deferred:',exc,flush=True);allstate=None
         local_done=all(r['classification'] in ('succeeded','failed','incomplete_output','submission_failed','submission_unknown') for r in state.values())
-        if not a.watch or (local_done and (user!=m['coordinator'] or all(r['classification'] in ('succeeded','failed','incomplete_output','submission_failed','submission_unknown') for r in allstate.values()))):break
+        if not a.watch or (local_done and (user!=m['coordinator'] or (allstate is not None and all(r['classification'] in ('succeeded','failed','incomplete_output','submission_failed','submission_unknown') for r in allstate.values())))):break
         time.sleep(a.interval)
     lock.close()
 
