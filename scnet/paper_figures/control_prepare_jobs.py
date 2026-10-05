@@ -16,6 +16,7 @@ def command(args):
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('manifest',type=Path);p.add_argument('--submit',action='store_true');p.add_argument('--watch',action='store_true');p.add_argument('--interval',type=int,default=120);p.add_argument('--max-active',type=int,default=20);a=p.parse_args()
     if not 1<=a.max_active<=20 or a.interval<30:p.error('max-active must be 1..20 and interval >=30')
+    if (a.manifest.parent/'distribution.json').exists():raise SystemExit('Campaign distributed; use control_account_jobs')
     j=json.loads(a.manifest.read_text());require_complete(Path(j['prerequisite']).parent)
     status=ROOT/'logs/paper_figures/completion_status';status.mkdir(parents=True,exist_ok=True)
     lock=(status/'controller.lock').open('a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)

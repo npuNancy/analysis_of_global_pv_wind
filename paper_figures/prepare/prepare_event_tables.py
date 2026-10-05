@@ -95,16 +95,17 @@ def run_serial(a,s,t,p,worker_key):
     complete(out,models=a.models,climate_ssps=a.climate_ssps,snapshots=a.snapshots,event_runs=a.event_runs,minimum_time_coverage=MIN_TIME_COVERAGE,exposure='observed hours; no extrapolation',support='Loss common station cohort; all event types share valid timestamps')
 
 def event_worker(task):
-    a,s,t,p,m,c=task
+    a,s,t,p,m,c,*snapshot=task
     a=copy.copy(a);a.models=[m];a.climate_ssps=[c]
-    key=m+'_'+c
+    if snapshot:a.snapshots=snapshot
+    key=m+'_'+c+('_'+str(snapshot[0]) if snapshot else '')
     run_serial(a,s,t,p,key)
     return str(a.output_root/'station_events'/s/t/p/'parts'/key)
 
 def run(a,s,t,p):
     out=a.output_root/'station_events'/s/t/p;out.mkdir(parents=True,exist_ok=True)
     if (out/'complete.json').exists():require_complete(out);return
-    tasks=[(a,s,t,p,m,c) for m,c in itertools.product(a.models,a.climate_ssps)]
+    tasks=[(a,s,t,p,m,c,snap) for m,c,snap in itertools.product(a.models,a.climate_ssps,a.snapshots)] if a.parallel_snapshots else [(a,s,t,p,m,c) for m,c in itertools.product(a.models,a.climate_ssps)]
     with ProcessPoolExecutor(max_workers=min(a.workers,len(tasks)),mp_context=multiprocessing.get_context('spawn')) as pool:
         folders=list(pool.map(event_worker,tasks,chunksize=1))
     for name in ['monthly.csv.gz','coverage.csv']+(['frequency_duration.csv.gz'] if a.event_runs else []):
@@ -119,7 +120,7 @@ def run(a,s,t,p):
              minimum_time_coverage=MIN_TIME_COVERAGE,exposure='observed hours; no extrapolation',support='Loss common station cohort')
 
 def main():
-    p=parser(__doc__);p.add_argument('--time-chunk',type=int,default=80);p.add_argument('--event-runs',action='store_true');p.add_argument('--workers',type=int,default=min(4,int(os.environ.get('SLURM_CPUS_PER_TASK','4'))));a=p.parse_args()
+    p=parser(__doc__);p.add_argument('--parallel-snapshots',action='store_true');p.add_argument('--time-chunk',type=int,default=80);p.add_argument('--event-runs',action='store_true');p.add_argument('--workers',type=int,default=min(4,int(os.environ.get('SLURM_CPUS_PER_TASK','4'))));a=p.parse_args()
     if not 1<=a.workers<=int(os.environ.get('SLURM_CPUS_PER_TASK',str(a.workers))):raise ValueError('Workers exceed allocated CPUs')
     if not a.patches or a.time_chunk<1:raise ValueError('Positive time chunk and source patches required')
     for s,t,patch in itertools.product(a.station_ssps,a.techs,a.patches):run(a,s,t,patch)

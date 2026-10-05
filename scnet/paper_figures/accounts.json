@@ -1,0 +1,80 @@
+[
+  {
+    "alias": "scnet-wuzhen-1872",
+    "username": "acjpoxgsdu",
+    "max_active": 20,
+    "submit_lock": "/work/home/acjpoxgsdu/.bcsd_submit.lock"
+  },
+  {
+    "alias": "scnet-wuzhen-1866",
+    "username": "aczlvkl1ac",
+    "max_active": 20,
+    "submit_lock": "/work/home/aczlvkl1ac/project_climate_patchify/repos/analysis_of_global_pv_wind/logs/RQ1_extreme/completion_status/submit.lock"
+  },
+  {
+    "alias": "scnet-wuzhen-1775",
+    "username": "acsep06cn2",
+    "max_active": 20,
+    "submit_lock": "/work/home/acsep06cn2/.bcsd_submit.lock"
+  },
+  {
+    "alias": "scnet-wuzhen-1311",
+    "username": "acv2o7b0gn",
+    "max_active": 20,
+    "submit_lock": "/work/home/acv2o7b0gn/.bcsd_submit.lock"
+  },
+  {
+    "alias": "scnet-wuzhen-1331",
+    "username": "acbzycio4i",
+    "max_active": 20,
+    "submit_lock": "/work/home/acbzycio4i/.bcsd_submit.lock"
+  },
+  {
+    "alias": "scnet-wuzhen-1863",
+    "username": "ace4cjbrjf",
+    "max_active": 20,
+    "submit_lock": "/work/home/ace4cjbrjf/.bcsd_submit.lock"
+  },
+  {
+    "alias": "scnet-wuzhen-1892",
+    "username": "acmctdumnv",
+    "max_active": 20,
+    "submit_lock": "/work/home/acmctdumnv/.bcsd_submit.lock"
+  },
+  {
+    "alias": "scnet-wuzhen-1520",
+    "username": "acebblgpte",
+    "max_active": 20,
+    "submit_lock": "/work/home/acebblgpte/.bcsd_submit.lock"
+  },
+  {
+    "alias": "scnet-wuzhen-1870",
+    "username": "acjp7am6kd",
+    "max_active": 20,
+    "submit_lock": "/work/home/acjp7am6kd/.bcsd_submit.lock"
+  },
+  {
+    "alias": "scnet-wuzhen-1959",
+    "username": "acxujo26gv",
+    "max_active": 20,
+    "submit_lock": "/work/home/acxujo26gv/.bcsd_submit.lock"
+  },
+  {
+    "alias": "scnet-wuzhen-1752",
+    "username": "acavkyjhiz",
+    "max_active": 20,
+    "submit_lock": "/work/home/acavkyjhiz/.bcsd_submit.lock"
+  },
+  {
+    "alias": "scnet-wuzhen-1862",
+    "username": "acdnwyi34a",
+    "max_active": 20,
+    "submit_lock": "/work/home/acdnwyi34a/.bcsd_submit.lock"
+  },
+  {
+    "alias": "scnet-wuzhen-1359",
+    "username": "ac8svj4ybp",
+    "max_active": 20,
+    "submit_lock": "/work/home/ac8svj4ybp/.bcsd_submit.lock"
+  }
+]

@@ -58,3 +58,11 @@ python -m scnet.paper_figures.control_prepare_jobs /work/home/aczlvkl1ac/project
 生成器不提交。控制器是轻量调度工具，可在登录节点运行；使用账号已有共享提交锁，计入所有项目作业并保持不超过20个活动作业。仅在前置作业COMPLETED/0:0且完成产物存在后释放依赖。遇到失败停止新提交，保留其他运行中作业，不自动无限重试。状态保存在外部campaign的state.json，阅读记录在 `logs/paper_figures/completion_status/progress.md`。
 
 S7季节损失与S9共同基线必须先另行复现年度损失再运行重建；现有月度暴露不能替代它们。S11需要科学可比的粗尺度实验，当前正式五类产品不包含这个对照。它们不在本准备DAG的完成声明中。
+
+## 多账号共享执行
+
+可使用 `scnet/paper_figures/accounts.json` 中通过读取检查的账号共同运行，数据、日志和结果路径仍统一使用1866。每个账号最多20个活跃作业，计入该账号其他项目作业。尚未提交的任务由 `distribute_prepare_jobs.py` 分配；已提交的任务保持原账号、作业编号和资源。
+
+新分块作业申请16核、56 GB内存；Loss使用16个进程，Extreme通过 `--parallel-snapshots` 将模式、气候情景及独立十年窗口共同作为并行维度，最多16个进程。三个窗口之间的删失边界与原统计口径一致。汇总阶段申请16核用于内存预算，其串行运算不因此自动变成多进程。
+
+ACL为执行账号开放其分配到的输出和日志目录，并通过默认ACL保证1866能读取、管理新增结果。各结果文件仍归创建它的账号所有。每个账号单独运行 `control_account_jobs.py`，状态集中在 `logs/paper_figures/completion_status/accounts/`，1866控制器负责更新全局进度。完整操作见 `scnet/paper_figures/goal.md`。
