@@ -1,5 +1,6 @@
 """Account assignment and scheduler visibility regression checks."""
 import json
+import errno
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
@@ -19,6 +20,12 @@ class AccountTests(unittest.TestCase):
             self.assertEqual(controller.read_state(Path('state.json')),{'job_id':'123'})
         with patch.object(Path,'read_text',side_effect=FileNotFoundError('missing')),patch.object(controller.time,'sleep'):
             with self.assertRaises(RuntimeError):controller.read_state(Path('state.json'))
+
+    def test_shared_state_retries_transient_io_and_preserves_permission_errors(self):
+        with patch.object(Path,'read_text',side_effect=[OSError(errno.EIO,'temporary I/O failure'),json.dumps({'job_id':'123'})]),patch.object(controller.time,'sleep'):
+            self.assertEqual(controller.read_state(Path('state.json')),{'job_id':'123'})
+        with patch.object(Path,'read_text',side_effect=PermissionError(errno.EACCES,'denied')),patch.object(controller.time,'sleep'):
+            with self.assertRaises(PermissionError):controller.read_state(Path('state.json'))
 
     def test_completion_retries_delayed_visibility(self):
         with patch.object(controller,'require_complete',side_effect=[FileNotFoundError('visibility delay'),{'status':'COMPLETED'}]),patch.object(controller.time,'sleep'):

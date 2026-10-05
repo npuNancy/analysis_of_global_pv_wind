@@ -2,6 +2,7 @@
 import argparse
 from collections import Counter
 import fcntl
+import errno
 import json
 import os
 from pathlib import Path
@@ -25,7 +26,8 @@ def command(args):
 def read_state(path):
     for attempt in range(10):
         try:return json.loads(Path(path).read_text())
-        except (FileNotFoundError,json.JSONDecodeError) as exc:
+        except (OSError,json.JSONDecodeError) as exc:
+            if isinstance(exc,OSError) and not isinstance(exc,FileNotFoundError) and exc.errno not in (errno.EIO,errno.ESTALE,errno.EAGAIN,errno.ETIMEDOUT):raise
             if attempt==9:raise RuntimeError('Shared state temporarily unavailable: '+str(path)) from exc
             time.sleep(.1*(attempt+1))
 
@@ -33,7 +35,8 @@ def read_state(path):
 def verify_outputs(folder):
     for attempt in range(10):
         try:return require_complete(folder)
-        except (FileNotFoundError,json.JSONDecodeError,ValueError):
+        except (OSError,json.JSONDecodeError,ValueError) as exc:
+            if isinstance(exc,OSError) and not isinstance(exc,FileNotFoundError) and exc.errno not in (errno.EIO,errno.ESTALE,errno.EAGAIN,errno.ETIMEDOUT):raise
             if attempt==9:raise
             time.sleep(.1*(attempt+1))
 
