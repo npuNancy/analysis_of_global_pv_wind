@@ -9,6 +9,9 @@
 - Cache jobs write disjoint annual NetCDF files; only the manifest job writes the full cache_manifest.json.
 
 ## Environment and resources
+Execution account: scnet-wuzhen-1866 (aczlvkl1ac).
+Checkout: /work/home/aczlvkl1ac/project_climate_patchify/repos/analysis_of_global_pv_wind.
+Published input: /work/share/acjpoxgsdu/extreme_grid/grid_v2; outputs and logs belong to the execution account.
 Scientific jobs use repository .venv and wzhctest. Memory is 3.5 GB per CPU.
 The confirmed partition QOS allows at most 20 active/submitted jobs per user; count all account jobs under the shared submit lock before each submission.
 Lock: repository logs/RQ1_extreme/completion_status/submit.lock.
@@ -29,5 +32,5 @@ Update logs/RQ1_extreme/completion_status/progress.md after every check, includi
 Success requires zero-exit COMPLETED status plus the expected manifest, CSV and PNG outputs.
 Do not infer completion from disappearance from squeue.
 If a cache job fails, inspect evidence and retry only that shard when appropriate. Preserve source data and valid caches.
-Input NetCDF and symlinks under /work/share/acp6varuz3/extreme_grid/grid_v2 are read-only.
+Input NetCDF and symlinks under /work/share/acjpoxgsdu/extreme_grid/grid_v2 are read-only.
 All array computation, scientific validation and rendering run on compute nodes.

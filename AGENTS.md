@@ -8,6 +8,15 @@
 - 每次回复我时，都称呼我为 `小凯`，并且在回复的最后加上 `希望对你有帮助，小凯！`。
 - 对话框中的公式必须使用人类可读的纯文本形式；写入 Markdown 文件的公式使用可渲染的 Markdown、LaTeX 等格式。
 
+## 绘图与分析环境
+
+- 默认执行账号：乌镇1866 / `scnet-wuzhen-1866` / `aczlvkl1ac`。
+- 远程项目目录：`/work/home/aczlvkl1ac/project_climate_patchify/repos/analysis_of_global_pv_wind`；绘图分析代码、结果、缓存和日志均使用该账号的项目目录。
+- 五类正式结果数据仍集中存储在乌镇1872 / `scnet-wuzhen-1872` / `acjpoxgsdu`，按 `document/BCSD_v2数据使用指南.md` 的入口只读访问。
+- 场站与 Natural Earth 边界使用1866项目中的 `data/stations/` 和 `data/maps/natural_earth/` 数据副本。
+- 远程 `.venv` 为软链，目标是 `/work/home/acbw9wpn5k/project_climate_patchify/repos/analysis_of_global_pv_wind/.venv`。
+- 论文绘图遵循 `document/主图与子图设计.md` 和 `$pv-wind-paper-figures`。
+
 ## Engineering Defaults
 
 - 优先遵循项目已有风格，不引入不必要抽象。

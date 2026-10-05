@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[2]
 def parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--repo-root", type=Path, default=ROOT)
-    parser.add_argument("--input-root", type=Path, default=Path("/work/share/acp6varuz3/extreme_grid/grid_v2"))
+    parser.add_argument("--input-root", type=Path, default=Path("/work/share/acjpoxgsdu/extreme_grid/grid_v2"))
     parser.add_argument("--job-dir", type=Path)
     parser.add_argument("--grid-output-dir", type=Path)
     parser.add_argument("--country-output-dir", type=Path)

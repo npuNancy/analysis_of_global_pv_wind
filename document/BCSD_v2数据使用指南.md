@@ -2,6 +2,8 @@
 
 核对日期：2026-10-04。数据账号为 **乌镇1872 / `scnet-wuzhen-1872` / `acjpoxgsdu`**。本文描述已发布的数据及其正式索引，配套查询工具位于 [`utils/data_access`](../utils/data_access/)。
 
+绘图分析使用 **乌镇1866 / `scnet-wuzhen-1866` / `aczlvkl1ac`**，工作目录为 `/work/home/aczlvkl1ac/project_climate_patchify/repos/analysis_of_global_pv_wind`。以下数据发布路径保持指向乌镇1872，分析结果和日志写入1866的项目目录。场站与地图分别读取该项目内的 `data/stations/`、`data/maps/natural_earth/` 副本。
+
 ## 1. 数据总览与稳定入口
 
 | 数据 | 含义 | 稳定根目录 | 正式索引入口，相对于根目录 |

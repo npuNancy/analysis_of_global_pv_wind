@@ -6,8 +6,8 @@
 # Eight worker processes at 3.5 GB per core; the Python reader is single-threaded per worker.
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=28G
-#SBATCH --output=/work/home/acp6varuz3/project_climate_patchify/repos/analysis_of_global_pv_wind/logs/RQ2_loss/global/global_unit_capacity_loss_%j.out
-#SBATCH --error=/work/home/acp6varuz3/project_climate_patchify/repos/analysis_of_global_pv_wind/logs/RQ2_loss/global/global_unit_capacity_loss_%j.out
+#SBATCH --output=/work/home/aczlvkl1ac/project_climate_patchify/repos/analysis_of_global_pv_wind/logs/RQ2_loss/global/global_unit_capacity_loss_%j.out
+#SBATCH --error=/work/home/aczlvkl1ac/project_climate_patchify/repos/analysis_of_global_pv_wind/logs/RQ2_loss/global/global_unit_capacity_loss_%j.out
 
 set -euo pipefail
 

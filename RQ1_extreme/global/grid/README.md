@@ -4,7 +4,7 @@
 
 ## 输入与统计
 
-- 默认入口：`/work/share/acp6varuz3/extreme_grid/grid_v2/runtime/authoritative_index.json`，按 `artifacts[*].unified_output` 读取。单个组合按时间块读取，工作进程数默认取已分配 CPU 数和 16 的较小值。
+- 默认入口：`/work/share/acjpoxgsdu/extreme_grid/grid_v2/runtime/authoritative_index.json`，按 `artifacts[*].unified_output` 读取。单个组合按时间块读取，工作进程数默认取已分配 CPU 数和 16 的较小值。
 - 任一事件先逐时间步求并集；各事件及并集共用有效时间掩膜。仅 0/1 是有效事件信号；缺测不作为零。年度有效时间达到 99% 的格点参与统计，阈值由 `--min-time-coverage` 控制。
 - 暴露天数为已观测事件小时除以 24，不补齐缺失时段；模型日历和时间步长从 NetCDF 读取，年度分母按原生日历计算。输出有效时间与有效面积覆盖率，体现部分风电时间轴缺少 2015 年起始 3 小时的情况。
 - 使用球面格点面积；patch 核心范围采用西/南闭、东/北开区间，北极端点保留，避免边界格点重复。全球指标先合并各 patch 的加权分子和有效面积，再相除。
@@ -60,7 +60,7 @@ sbatch RQ1_extreme/global/grid/test_grid_extremes.sh
 
 ```bash
 python scnet/extreme_grid/create_extreme_grid_jobs.py --dry-run
-python scnet/extreme_grid/create_extreme_grid_jobs.py --job-dir /work/home/acp6varuz3/project_climate_patchify/runtime/extreme_grid_jobs
+python scnet/extreme_grid/create_extreme_grid_jobs.py --job-dir /work/home/aczlvkl1ac/project_climate_patchify/runtime/extreme_grid_jobs
 ```
 
 依赖链：12 个缓存作业 → 统一缓存清单 → 全球绘图、国家分析（并行）。缓存作业使用 `--phase cache --manifest-path <独立路径>`，不写全局清单和公共表图；`--phase manifest --cache-manifests ...` 核对并合并全部缓存清单；全球绘图使用 `--phase plot`。默认单作业 `--phase all` 仍可使用。

@@ -12,7 +12,7 @@ import numpy as np
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[3]
-INPUT_ROOT = Path("/work/share/acp6varuz3/extreme_grid/grid_v2")
+INPUT_ROOT = Path("/work/share/acjpoxgsdu/extreme_grid/grid_v2")
 MODELS = ("CANESM5", "MPI-ESM1-2-HR", "MRI-ESM2-0", "BCC-CSM2-MR")
 SSPS = ("ssp126", "ssp245", "ssp585")
 TECHS = ("wind", "solar")

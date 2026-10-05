@@ -6,8 +6,8 @@
 # Four worker processes at 3.5 GB per core (one model is loaded at a time, 4 units each).
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=14G
-#SBATCH --output=/work/home/acp6varuz3/project_climate_patchify/repos/analysis_of_global_pv_wind/logs/RQ2_loss/country/ssp_gap_clustering/country_unit_loss_clustering_%j.out
-#SBATCH --error=/work/home/acp6varuz3/project_climate_patchify/repos/analysis_of_global_pv_wind/logs/RQ2_loss/country/ssp_gap_clustering/country_unit_loss_clustering_%j.out
+#SBATCH --output=/work/home/aczlvkl1ac/project_climate_patchify/repos/analysis_of_global_pv_wind/logs/RQ2_loss/country/ssp_gap_clustering/country_unit_loss_clustering_%j.out
+#SBATCH --error=/work/home/aczlvkl1ac/project_climate_patchify/repos/analysis_of_global_pv_wind/logs/RQ2_loss/country/ssp_gap_clustering/country_unit_loss_clustering_%j.out
 
 set -euo pipefail
 

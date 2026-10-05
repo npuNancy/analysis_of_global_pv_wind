@@ -2,7 +2,7 @@
 
 ## 已核对的数据
 
-- 网格 V2 的统一入口为 `/work/share/acp6varuz3/extreme_grid/grid_v2/`。后续网格分析使用该目录的 `runtime/authoritative_index.json` 定位输入；结果入口为 `outputs/<model>/<ssp>/<patch>/<tech>/`，包含 `baseline_2015-2024.nc`、10 个时段的 `signals_<start>-<end>.nc`、`audit_2015-2060.json` 及配套元数据。
+- 网格 V2 的统一入口为 `/work/share/acjpoxgsdu/extreme_grid/grid_v2/`。后续网格分析使用该目录的 `runtime/authoritative_index.json` 定位输入；结果入口为 `outputs/<model>/<ssp>/<patch>/<tech>/`，包含 `baseline_2015-2024.nc`、10 个时段的 `signals_<start>-<end>.nc`、`audit_2015-2060.json` 及配套元数据。
 - 统一索引的 `combinations` 是按 audit unit ID 索引的字典；各组合的 `artifacts[*].unified_output` 和 `unified_audit_output` 指向统一目录。`output`、`audit_output`、`receipt` 保留原始文件路径，`source_run_id` 保留生产运行身份。`runtime/patch_manifest.json` 提供 patch 定义，`runtime/verification.json` 保存汇总检查结果。
 - 四模式共 1128 个组合（4 模式 × 3 SSP × 47 patch × 风/光），包括 1128 个基线和 11280 个信号 NetCDF；2026-09-28 汇总检查已核对全部组合、文件可读性、信号文件大小及所有链接，未重读 NetCDF 数组。CANESM5 的 282 个组合来自 `grid_v2_20260922T215235`，其余三个模式的 846 个组合来自 `grid_v2_20260924T165153`；可通过统一目录的 `sources/<RUN_ID>/` 追溯原始运行。统一入口以软链接引用 worker 上的原始文件，原有目录保留原位，后续分析只读这些输入。
 - 信号覆盖 2015–2060 年；基线为 2015–2024 年；SSP 为 ssp126、ssp245、ssp585。风电事件为 high_temp、high_wind、hot_humid、icing、low_resource；光伏事件为 cold_highwind、freezing_rain、high_humidity、icing、low_resource、rainstorm。抽查的 sidecar 显示信号变量为 `signal_<event>`，维度含 time、lat、lon 和 `domain_mask`。

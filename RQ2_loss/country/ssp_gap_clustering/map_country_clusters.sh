@@ -5,8 +5,8 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --mem=7G
-#SBATCH --output=/work/home/acp6varuz3/project_climate_patchify/repos/analysis_of_global_pv_wind/logs/RQ2_loss/country/ssp_gap_clustering/map_country_clusters_%j.out
-#SBATCH --error=/work/home/acp6varuz3/project_climate_patchify/repos/analysis_of_global_pv_wind/logs/RQ2_loss/country/ssp_gap_clustering/map_country_clusters_%j.out
+#SBATCH --output=/work/home/aczlvkl1ac/project_climate_patchify/repos/analysis_of_global_pv_wind/logs/RQ2_loss/country/ssp_gap_clustering/map_country_clusters_%j.out
+#SBATCH --error=/work/home/aczlvkl1ac/project_climate_patchify/repos/analysis_of_global_pv_wind/logs/RQ2_loss/country/ssp_gap_clustering/map_country_clusters_%j.out
 
 set -euo pipefail
 
