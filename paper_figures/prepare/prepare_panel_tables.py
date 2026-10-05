@@ -36,7 +36,7 @@ def main():
         if country not in cases:cases.append(country)
         if len(cases)>=18:break
     case_table=pd.DataFrame({'country':cases,'order':range(len(cases)),'reason':['reference_capacity_top12' if i<12 else 'large_model_supported_difference' for i in range(len(cases))]})
-    write_csv(a.output_root/'loss_summary/country_selection.csv',case_table)
+    selection=a.output_root/'panel_loss/country_selection.csv';write_csv(selection,case_table);artifacts.append(selection)
     explanation=cases[:8]
     save('main',2,'panel_ab.csv',annual[annual.support.eq('common')&annual.country.eq('GLOBAL')&annual.event.eq('all')&annual.climate_ssp.eq(annual.station_ssp)])
     save('main',2,'panel_cd.csv',diff[diff.country.eq('GLOBAL')]);save('main',2,'panel_ef.csv',paired[paired.country.eq('GLOBAL')&paired.snapshot.eq(2050)&paired.event.ne('all')])
@@ -57,7 +57,8 @@ def main():
         population=early.loc[early.index.intersection(late)]
         if len(population):
             for q in [.5,.75,.9]:thresholds.append(dict(tech=t,quantile=q,threshold=float(population.quantile(q)),n_countries=len(population),countries=';'.join(sorted(population.index))))
-    thresholds=pd.DataFrame(thresholds,columns=['tech','quantile','threshold','n_countries','countries']);write_csv(base/'residual_thresholds.csv',thresholds)
+    thresholds=pd.DataFrame(thresholds,columns=['tech','quantile','threshold','n_countries','countries'])
+    threshold_path=a.output_root/'panel_loss/residual_thresholds.csv';write_csv(threshold_path,thresholds);artifacts.append(threshold_path)
     fig5=diff[diff.snapshot.eq(2050)&~diff.country.isin(special)].merge(refs,on=['country','tech'],how='left',validate='many_to_one').merge(ens[ens.snapshot.eq(2050)][['tech','country','category','agreement']],on=['tech','country'],how='left',validate='many_to_one')
     if len(thresholds):fig5=fig5.merge(thresholds[thresholds['quantile'].eq(.75)][['tech','threshold']],on='tech',how='left',validate='many_to_one')
     save('main',5,'panel_ab.csv',fig5)

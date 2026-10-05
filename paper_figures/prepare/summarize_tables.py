@@ -66,7 +66,8 @@ def summarize_loss(a):
     coverage=coverage.merge(catalogs,on=['station_ssp','tech','snapshot','country'],how='left',validate='many_to_one')
     coverage['coverage_pct']=100*safe_ratio(coverage.capacity_mw,coverage.catalogue_capacity_mw)
     write_csv(out/'capacity_coverage.csv.gz',coverage)
-    complete(out,models=a.models,station_ssps=a.station_ssps,climate_ssps=a.climate_ssps,snapshots=a.snapshots,patches=a.patches,
+    artifacts=[out/name for name in ['station_support.csv.gz','annual.csv.gz','window.csv.gz','contrasts.csv.gz','three_factor.csv.gz','capacity_coverage.csv.gz']]
+    complete(out,artifact_paths=artifacts,models=a.models,station_ssps=a.station_ssps,climate_ssps=a.climate_ssps,snapshots=a.snapshots,patches=a.patches,
              scope='GLOBAL means selected patches; publish only when all formal patches are included',units={'R':'MWh MW-1 yr-1','E_loss':'h yr-1','capacity_mw':'MW'})
 
 def summarize_events(a):
