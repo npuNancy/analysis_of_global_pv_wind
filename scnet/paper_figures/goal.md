@@ -36,7 +36,7 @@ Start one controller through each account's existing SSH connection; no SSH cred
 cd /work/home/aczlvkl1ac/project_climate_patchify/repos/analysis_of_global_pv_wind
 source .venv/bin/activate
 export PYTHONDONTWRITEBYTECODE=1
-python -m scnet.paper_figures.control_account_jobs --submit --watch --interval 120
+python -m scnet.paper_figures.control_account_jobs --submit --watch --interval 900
 ```
 
 The current manifest is resolved from `logs/paper_figures/completion_status/multi_account.json`. Each account holds its own controller lock and its pre-existing shared submission lock (configured in `accounts.json`). The cap of 20 counts all of that account's active jobs, including other projects and newly acknowledged submissions before they appear in `squeue`.
@@ -44,3 +44,5 @@ The current manifest is resolved from `logs/paper_figures/completion_status/mult
 Per-account state and `progress.md` are updated atomically. The coordinator periodically assembles the global `progress.md` and state snapshot. Downstream work waits for the producing account's COMPLETED/0:0 plus verified completion artifacts. Deterministic failures block their dependency branches; ambiguous submission acknowledgements require investigation to avoid duplicates. Transient unambiguous submission rejections have at most three attempts; stderr is recorded. Existing Slurm jobs are never cancelled by these controllers.
 
 Account status: `logs/paper_figures/completion_status/accounts/<username>/progress.md`. Global status: `logs/paper_figures/completion_status/progress.md`. Controllers may run on login nodes; scientific processing, environment/data smoke checks, and numerical equivalence checks run through Slurm.
+
+Controllers check every 15 minutes (900 seconds). At each check, each account fills available slots with dependency-ready units while other jobs may still be running; there is no whole-batch completion barrier.

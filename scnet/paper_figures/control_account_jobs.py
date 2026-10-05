@@ -62,7 +62,7 @@ def active_jobs(user):
 
 
 def main():
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('manifest',type=Path,nargs='?');p.add_argument('--submit',action='store_true');p.add_argument('--watch',action='store_true');p.add_argument('--interval',type=int,default=120);a=p.parse_args()
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('manifest',type=Path,nargs='?');p.add_argument('--submit',action='store_true');p.add_argument('--watch',action='store_true');p.add_argument('--interval',type=int,default=900);a=p.parse_args()
     if a.interval<30:p.error('Minimum interval is 30 seconds')
     if a.manifest is None:a.manifest=Path(json.loads((STATUS/'multi_account.json').read_text())['manifest'])
     m=json.loads(a.manifest.read_text());user=command(['id','-un']).strip()
