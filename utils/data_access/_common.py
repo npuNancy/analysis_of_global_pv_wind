@@ -108,7 +108,8 @@ def open_record(record_or_path, *, variables=None, years=None, station_ids=None,
             if missing:
                 raise KeyError(f'Variables absent from this file: {missing}')
             data = data[selected]
-        data.set_close(source.close)
+        if data is not source:
+            data.set_close(source.close)
         return data
     except BaseException:
         source.close()

@@ -64,6 +64,15 @@ class CommonReaderTests(unittest.TestCase):
         self.addCleanup(temporary.cleanup)
         self.root = Path(temporary.name)
 
+    def test_unfiltered_dataset_closes_once(self):
+        source = xr.Dataset({"value": ("station", [1.0])})
+        closed = Mock()
+        source.set_close(closed)
+        with patch("xarray.open_dataset", return_value=source):
+            with common.open_record("unused.nc") as data:
+                self.assertIs(data, source)
+        closed.assert_called_once_with()
+
     def test_cli_limit_paths_and_check_only_printed_records(self):
         present = self.root / "present.nc"
         present.touch()
