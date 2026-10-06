@@ -1,30 +1,31 @@
-# Fig. 2 — Global generation loss
+# 图 2：全球发电损失
 
-Scientific question: how do signed global net losses per MW, paired-pathway differences and event-labelled losses vary between wind and solar?
+科学问题：风电与光伏的全球单位装机净损失、配对路径差和各事件标签下的损失如何变化？净损失保留正负符号。
 
-Six-panel quantitative grid; annual trajectories are the primary evidence.
-- a–b: 2030–2059 annual net loss per MW; four-model means and min–max. Lines and bands break at capacity snapshots.
-- c–d: within-model SSP245−SSP126 and SSP585−SSP126 differences for three ten-year windows; individual models, means and min–max.
-- e–f: 2050–2059 event losses; SSP126 circles, SSP245 squares, SSP585 triangles, ordered by descending SSP126 exposure as in Fig. 1.
+采用六面板定量子图布局，以年度变化轨迹为主要证据。
 
-Python/matplotlib; 183 × 165 mm, 600 dpi PNG only. Units: MWh MW⁻¹ yr⁻¹. Shared ranges between technologies in each row.
+- a–b：2030—2059 年的年度单位装机净损失，展示四模式均值和最小值至最大值范围。折线与范围带在容量快照切换处断开。
+- c–d：三个十年窗口内，先逐模式计算 SSP245−SSP126 和 SSP585−SSP126 的差值，再展示各模式结果、均值及最小值至最大值范围。
+- e–f：2050—2059 年各事件标签下的损失；圆形、方形、三角形分别表示 SSP126、SSP245、SSP585。事件按 SSP126 暴露水平从高到低排序，与图 1 一致。
 
-## Inputs and definitions
+使用 Python/matplotlib，画布为 183 × 165 mm，仅输出 600 dpi PNG。单位为 MWh MW⁻¹ yr⁻¹。同一行的风电与光伏子图使用相同坐标范围。
 
-Reuse accepted outputs/source_data/panel_ab.csv, panel_cd.csv and panel_ef.csv without rewriting. Shared prepare/outputs/event_summary/window.csv.gz supplies event order; catalogues/capacity_by_country.csv supplies coverage. No dependency on other figures' output.
+## 输入与指标定义
 
-Net loss is summed signed energy divided by capacity of the same valid stations. Common support is fixed across models, climate SSPs, events and ten years within each deployment snapshot. Event denominators include all valid capacity. The all-event union is read directly; overlapping event labels are not added. Wind uses original values.
+直接复用已验收的 `outputs/source_data/panel_ab.csv`、`panel_cd.csv` 和 `panel_ef.csv`，不改写原表。事件排序来自公共数据 `paper_figures/prepare/outputs/event_summary/window.csv.gz`，容量覆盖核验使用公共目录中的 `catalogues/capacity_by_country.csv`。本图不依赖其他图件的输出。
 
-Each pathway pairs climate and deployment SSP; differences include both effects. station_ssp585 uses stations_SSP5-6.0.csv. Four models are equally weighted. Ranges describe model spread, not confidence intervals. Annual Loss support does not establish identical valid three-hourly timestamps.
+单位装机净损失为同一有效站点集合上的带符号损失能量之和除以容量之和。每个部署情景、容量快照内，采用跨模式、气候 SSP、事件及窗口内十年的共同有效站点集合。各事件的分母包含全部有效容量。全部事件的时间并集指标直接读取正式结果，不将可能重叠的事件标签相加。风电使用原始数值，不作缩放。
 
-## Run
+每条路径配对相应的气候 SSP 与部署 SSP，因此路径差同时包含气候与部署变化。`station_ssp585` 的部署来源为 `stations_SSP5-6.0.csv`。四模式等权汇总；范围表示模式间差异，不是置信区间。年度损失产品中的共同有效站点集合，不代表三小时尺度的有效时刻完全一致。
 
-From the remote repository root:
+## 运行方式
+
+在远程仓库根目录执行：
 
 ```bash
 bash paper_figures/main/fig02_generation_loss/plot.sh
 ```
 
-The wrapper creates logs before submission. The compute job activates the repository environment, audits inputs, supplements only display/coverage tables and renders outputs/fig02.png. Data audit, metadata, caption and separate visual review accompany the PNG.
+作业脚本在提交前创建日志目录。计算节点上的作业激活仓库环境，核验输入，仅补充展示与容量覆盖所需的表格，并生成 `outputs/fig02.png`。数据核验记录、元数据、图注及独立的视觉检查记录与 PNG 一并保存。
 
-Review focuses on signed values, snapshot boundaries, within-model pairing, event overlap, coverage and deployment semantics.
+检查重点包括净损失符号、容量快照切换、模式内配对、事件重叠、有效覆盖及部署情景含义。
