@@ -1,32 +1,149 @@
-# Fig. 5 — Residual loss under SSP126
+# Fig. 5：SSP126 下的剩余损失与路径差
 
-The figure tests whether residual SSP126 loss and paired-path differences identify different national priorities. Panels a (wind) and b (solar PV) form a quantitative grid, 183 mm wide and approximately 103 mm high, exported only as 600 dpi PNG.
+本图检验：SSP126 下的剩余损失与两条配对路径的损失差，是否指向不同的国家关注重点。子图 a 为风电，子图 b 为光伏，左右并列；初始画布宽 183 mm、高约 103 mm，仅输出 600 dpi PNG。
 
-- x: equal-weight four-model mean SSP126 climate × SSP126 deployment net loss in 2050–2059, using the 2050 capacity snapshot.
-- y: mean of within-model SSP585 climate × SSP585 deployment minus SSP126 climate × SSP126 deployment losses. Both axes use MWh MW⁻¹ yr⁻¹ and retain signed values.
-- Circle area: SSP126 2050 catalogue capacity in GW, one scale across technologies.
-- Colour: at least three of four models agree with the nonzero mean path difference; other complete cases are hollow grey.
-- Vertical line: pre-established P75 of country-equal four-model mean SSP126 loss in 2030–2039 in the fixed early/late population. Horizontal line: zero path difference.
-- Labels: eight Fig. 4 explanation countries from shared selection. Crosses: the four individual models for the two largest reference-capacity countries, USA and China.
+## 1. 图中各元素的含义
 
-## Input audit
+- **横轴**：2050–2059 年，气候 SSP126 × 部署 SSP126 下的国家单位装机年均净损失。使用 2050 年容量快照，先逐模式计算，再对四个模式等权平均。
+- **纵轴**：同一时期，气候 SSP585 × 部署 SSP585 的损失减去气候 SSP126 × 部署 SSP126 的损失。先在各模式内作差，再平均。该差同时包含气候与部署变化。
+- **单位和符号**：两轴均为 MWh MW⁻¹ yr⁻¹，保留净损失的正负号。
+- **圆面积**：该国 SSP126 部署下的 2050 年目录容量，单位 GW。风光共用面积标度，不对小容量国家人为设置最小圆面积。
+- **颜色**：至少 3/4 模式的非零路径差与集合均值同向时，红色表示 SSP585 更高，蓝色表示 SSP126 更高；比较完整但方向不明确的国家使用灰色空心圆。
+- **参考线**：水平线表示路径差为零；竖线表示固定早晚期可比国家集中，2030–2039 年 SSP126 国家损失的第 75 百分位数。先计算各国四模式均值，再按国家等权取分位数。
+- **国家标签与模式点**：标注公共名单中用于 Fig. 4 解释的八个国家；美国（USA）和中国（CHN）额外显示四个模式的单独结果。
 
-Both panels already have model-resolved R126, R585, D, capacity, categories and thresholds in `outputs/source_data/panel_ab.csv`. Shared `panel_loss/residual_thresholds.csv` supplies the fixed lists (147 wind, 149 solar) and thresholds (129.45283084495588 and 96.76119105865192). No raw-product preparation is rerun.
+风电和光伏的早期参考阈值分别为 **129.45283084495588** 和 **96.76119105865192 MWh MW⁻¹ yr⁻¹**。相对高损失要求超过对应阈值且损失大于零。该阈值用于相对比较，不是电力可靠性或停电安全阈值。
 
-`plot.py` checks these inputs against accepted shared summaries, reproduces the thresholds, and verifies normalization and coverage. Missing figure-specific tables are written to `outputs/source_data/`: countries, paired windows, annual coverage, threshold population, thresholds, excluded countries, and country labels. Inputs and source hashes, numerical checks and sample counts are recorded in `outputs/metadata.json`. The original panel input remains unchanged.
+## 2. 输入、复用与验证
 
-Country aggregation reuses the accepted China–Taiwan union and common station support within each deployment. Values preserve native-calendar annual sums and ten-year averaging. Wind energy is unscaled; all-event union is used directly. Missing comparisons and countries outside the pre-established common early/late population are documented separately.
+原有 [panel_ab.csv](outputs/source_data/panel_ab.csv) 已包含逐模式的 R126、R585、路径差 D、参考容量、方向类别和阈值。[公共阈值表](../../prepare/outputs/panel_loss/residual_thresholds.csv) 给出固定国家名单：风电 147 个、光伏 149 个。本图复用已验收的公共结果，不重跑上游准备流程。
 
-These are descriptive comparisons with four equally weighted GCMs. Direction agreement is not significance. The axes are mathematically coupled; no regression is fitted. Thresholds are relative comparisons, not reliability limits. Station SSP5-6.0 remains mapped to the formal SSP585 label.
+[plot.py](plot.py) 将原有面板数据与公共汇总核对，复现早期阈值，检查逐模式配对差、四模式完整性、损失归一化、参考容量和年度覆盖，并补充以下源数据：
 
-## Run
+| 文件（位于 outputs/source_data/） | 内容 |
+|---|---|
+| panel_ab.csv | 原有逐模式面板输入，保持不变 |
+| countries.csv | 最终绘图国家、四模式汇总、类别、容量及标签选择 |
+| paired_windows.csv | 两条配对路径的逐模式窗口损失、能量分子和容量分母 |
+| coverage.csv | 逐国家、模式、情景、年份的有效容量与目录容量 |
+| threshold_population.csv、thresholds.csv | 早期阈值的逐模式输入、阈值和固定名单 |
+| excluded_countries.csv | 未纳入图中的国家及排除原因 |
+| country_labels.csv | 标签国家及选择依据 |
 
-From the remote repository root:
+国家汇总复用已验收的中国与台湾几何合并结果。年度量保留模式原生日历，按十年窗口汇总；风电能量不缩放；全部事件使用 all 时间并集，不将分类事件相加代替。原始场站 SSP5-6.0 数据沿用正式查询标签 station_ssp585。
 
-```bash
+## 3. “共同有效容量覆盖”的具体含义
+
+以下数值按 2026-10-06 的源数据核对。
+
+### 3.1 分子、分母与共同有效样本
+
+覆盖率定义为：
+
+$$
+\mathrm{Coverage}_{n,s}
+=100\times
+\frac{C^{\mathrm{common}}_{n,s}}
+     {C^{\mathrm{catalogue}}_{n,s}}.
+$$
+
+- **分子 capacity_mw**：国家在指定技术、部署情景和容量快照下，通过共同有效性筛选的场站容量之和。
+- **分母 catalogue_capacity_mw**：同一国家、技术、部署情景、容量快照的目录容量之和。它随部署情景改变，不统一使用 SSP126 的参考容量。
+- **辅助字段 available_capacity_mw**：进入 Loss 产品读取集合、尚未按共同有效性筛选的场站容量，用于区分目录覆盖与后续有效性筛选。
+
+“共同有效”是在**同一个部署情景内部**建立的。现有[公共准备代码](../../prepare/prepare_loss_tables.py)要求场站在四个模式、三个气候 SSP 和该快照对应的十个年份中都满足年度有效性条件。具体条件为：all 及各适用事件的六类年度量均为有限值，且 all 的全年正常发电量大于零。六类年度量是净损失、正损失、事件正常发电量、全年正常发电量、事件实际发电量和事件持续时数。任一组合不满足条件，该站点便不进入这一部署下的共同有效集合。
+
+这样可使固定部署下的模式、气候和年度对照使用相同场站与容量权重，减少样本变动对差值的干扰。不同部署情景分别建立自己的集合，不跨部署情景强求 station ID 交集。Fig. 5 虽只展示两条配对路径，仍沿用这套公共分析口径。
+
+这是一项**装机容量覆盖指标**，不是发电损失比例、时间序列有效率、事件发生率或置信度。年度文件的有效性也不能证明年内所有三小时时刻都完整。
+
+### 3.2 78.34% 和 79.71% 对应什么
+
+这两个数是最终绘图国家集中，2050 年快照、两条配对路径、四模式和 2050–2059 年覆盖记录的**最小值**，不是全球覆盖率。
+
+| 技术 | 最低覆盖对应国家 | 配对气候／部署情景 | 共同有效容量（MW） | 目录容量（MW） | 覆盖率 |
+|---|---|---|---:|---:|---:|
+| 风电 | 厄立特里亚（ERI） | SSP585／SSP585 | 158.782 | 202.690 | 78.337362% |
+| 光伏 | 利比里亚（LBR） | SSP126／SSP126 | 422.314 | 529.835 | 79.706701% |
+
+例如，厄立特里亚该风电部署目录中有 202.690 MW，其中 158.782 MW 满足共同有效性要求，43.908 MW 未进入共同集合；利比里亚该光伏部署对应的未纳入容量为 107.521 MW。
+
+两例的 available_capacity_mw 都等于 catalogue_capacity_mw，因此上述差额发生在共同有效性筛选环节，而非目录容量尚未进入 Loss 读取集合。仅凭这些汇总表，不能进一步确定是哪个站点、年度或变量触发了筛选。两个最低值各在四模式、十个年份中重复出现，共 40 条记录，这是固定共同集合与容量快照的结果。
+
+作为对照，将**本图已纳入国家**的共同有效容量求和，再除以这些国家的目录容量之和，得到：
+
+| 技术 | SSP126 部署 | SSP585 部署 |
+|---|---:|---:|
+| 风电（147 个国家） | 99.6541% | 99.6144% |
+| 光伏（149 个国家） | 99.7031% | 99.6670% |
+
+这些是图中所选国家集合的容量加权覆盖率，不包括被排除国家，不能称为全部国家或全部部署资产的全球覆盖率。
+
+### 3.3 覆盖不足如何影响损失计算与解读
+
+损失分子和容量分母始终来自同一个共同有效集合：
+
+$$
+R_{n,c,s}
+=\frac{\sum_{i\in V_{n,s}}E^{\mathrm{net}}_{i,c,s}}
+       {\sum_{i\in V_{n,s}}C_{i,s}},
+$$
+
+其中能量先按年度汇总，再形成十年年均值。未纳入的场站既不贡献损失能量，也不进入损失率的容量分母。不能把这些场站的损失填成零后保留其容量，否则会人为压低单位装机损失。
+
+因此，图中损失描述的是该国**共同有效场站集合**，没有据此补算未覆盖容量的损失。若被筛掉的场站具有不同的风险特征，国家结果可能受到样本选择影响；即使所选国家整体容量覆盖很高，也不能据此断言局部覆盖不足没有影响。
+
+圆面积另用 SSP126 的 2050 年目录容量作为固定展示参照；它不等于所有路径计算损失时的有效容量，也不表示所有目录容量都已进入损失估计。
+
+## 4. “缺失比较未填零”及排除名单
+
+“一个国家只有部分容量通过共同筛选”和“一个国家无法形成完整的两路径比较”是两个层次。前者仍可计算有效集合上的损失，后者无法确定完整的二维坐标。
+
+### 4.1 两条配对路径的损失不完整
+
+[排除名单](outputs/source_data/excluded_countries.csv)中的 incomplete_paired_loss 表示不能取得四模式完整的两路径损失及其差值：
+
+- 风电 13 个：ALB、BDI、CAF、CRI、GNB、JAM、KOS、MKD、NOR、PRI、QAT、RWA、SUR。
+- 光伏 17 个：BRN、CRI、CYN、CYP、FIN、GNQ、JAM、KOR、KWT、NCL、PAN、PRK、PSX、SLE、SOM、SVN、TTO。
+
+对照 [2050 年国家容量目录](../../prepare/outputs/catalogues/capacity_by_country.csv)，这批记录均至少在一个端点部署情景中没有对应的目录装机记录。风电这 13 个国家均缺少 SSP585 部署记录；光伏包括缺少 SSP126、缺少 SSP585 或两个端点都没有记录的情况。这描述的是当前情景数据，不能解释为现实中这些国家没有该技术装机，也不表示上游准备作业未完成。
+
+没有该情景的装机分母，单位装机损失便未定义，不能设为零。例如风电阿尔巴尼亚（ALB）有四模式 SSP126 损失，但没有 SSP585 损失；若将后者填为零，会人为制造“SSP585 损失更低”的路径差。
+
+### 4.2 晚期比较完整，但不属于固定早晚期名单
+
+outside_fixed_early_late_population 包括：
+
+- 风电：黎巴嫩（LBN）、黑山（MNE）。
+- 光伏：阿尔巴尼亚（ALB）。
+
+这三个技术—国家组合都有完整的 2050s 两路径结果，但在 SSP126 的 2030 年容量目录中没有对应记录，不能进入用于计算早期参考阈值的共同国家样本。因此本图沿用固定早晚期名单将其排除，没有将早期损失填零，也没有为了扩大晚期样本重新定义阈值。
+
+最终纳入数量为：
+
+| 技术 | 原面板国家记录数 | 两路径损失不完整 | 不在固定早晚期名单 | 最终绘图数 |
+|---|---:|---:|---:|---:|
+| 风电 | 162 | 13 | 2 | 147 |
+| 光伏 | 167 | 17 | 1 | 149 |
+
+记录中的国家代码沿用现有地理分析单元。排除名单保留原因和原始汇总值，可结合容量目录核查。**灰色空心圆代表有完整结果但模式方向不明确，不能与缺失比较混为一类。**
+
+## 5. 解释边界与运行方式
+
+四模式等权结果用于描述性比较，方向一致性不等于统计显著性。横轴的 SSP126 损失也参与纵轴计算，两者存在数学耦合，因此不拟合回归作因果解释，也不将 SSP126 的剩余损失称为不可避免。
+
+在1866远程仓库根目录运行：
+
+~~~bash
 bash paper_figures/main/fig05_residual_loss/plot.sh
-```
+~~~
 
-The wrapper creates logs and submits to wzhctest (one node, two CPUs, 7 GB), using the repository .venv. All analysis and drawing run on the compute node. The first check validates a representative country/model before full panel verification.
+脚本先创建日志目录，再提交到 wzhctest：1 个节点、2 核、7 GB，使用仓库 .venv。汇总核对和绘图均在计算节点运行；先验证一个代表性的国家—模式组合，再核验完整面板。
 
-Output: `outputs/fig05.png`. Figure legend: `caption.md` (also delivered in `outputs/caption.md`). Visual inspection: `outputs/visual_qa.json`.
+- 完整图：[outputs/fig05.png](outputs/fig05.png)
+- 图注：[caption.md](caption.md)，交付副本位于 outputs/caption.md
+- 数据与来源校验：[outputs/metadata.json](outputs/metadata.json)
+- 视觉验收：[outputs/visual_qa.json](outputs/visual_qa.json)
+- 作业日志：仓库根目录下的 logs/paper_figures/fig05/
+
+outputs/ 和日志受 Git 忽略规则管理，代码仓库中提交绘图脚本及说明文件。

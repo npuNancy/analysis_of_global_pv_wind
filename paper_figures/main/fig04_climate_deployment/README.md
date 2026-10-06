@@ -1,43 +1,150 @@
-# Fig. 4: climate and deployment counterfactuals
+# Fig. 4：气候与部署的反事实解释
 
-## Figure contract
+## 科学问题与子图安排
 
-Test how climate and deployment contributions combine into the paired-path difference, and whether deployment changes the climate response. This is a quantitative six-panel grid: wind left, solar right; all panels use the 2050 capacity snapshot and 2050–2059 annual mean. The interpretation is conditional on the published events and normal-CF baseline.
+本图检验气候条件和部署配置如何共同形成综合路径差，以及改变部署是否会改变气候响应。采用两列三行布局，左列风电、右列光伏；全部子图固定使用 **2050 年容量快照和 2050–2059 年分析窗口**。解释范围限于正式产品采用的事件定义和正常容量因子（CF）基线。
 
-- **a–b:** nine global climate SSP × station SSP combinations. Cell values are equal-weight means of four model-specific signed net losses per MW; frames identify paired pathways. Both technologies share the absolute color scale.
-- **c–d:** symmetric climate and deployment contributions for the global system and the first eight countries in the shared Fig. 3 selection. Positive and negative contributions stack separately; their algebraic sum is the dark diamond. Small dots and the horizontal line show the four model-specific net differences and their minimum–maximum, not a confidence interval. Interaction is already allocated between the two contributions.
-- **e–f:** all countries with finite four-model climate contrasts under both deployments and positive SSP126 reference capacity. Both axes are climate 585 minus climate 126; x holds deployment 126 fixed and y holds deployment 585 fixed. Color shows J = y − x. Areas are proportional to SSP126 2050 capacity, with the same scale for both technologies. Grey borders mean fewer than three of four models agree with the nonzero ensemble direction of J. This is direction agreement, not statistical significance. USA, CHN and BRA are labelled; plus signs show the individual models for USA and CHN. Coordinates include every plotted country and displayed model point without clipping.
+- **a–b：全球九组合热图。** 横轴为场站部署 SSP，纵轴为气候 SSP。每格为四个模式的单位装机年均净损失的等权均值；对角框线标出三条配对路径。风光共用绝对损失色标。
+- **c–d：全球和代表国家的贡献分解。** 气候贡献和部署贡献分别用蓝灰色、赭色表示；正贡献向右堆叠，负贡献向左堆叠，深色菱形表示其代数和。小点为四模式各自的净差，细线为最小值—最大值，不是置信区间。交互作用已分摊到两项贡献，不能再作为第三项相加。
+- **e–f：两种固定部署下的国家气候响应。** 横轴为固定部署126时的气候差，纵轴为固定部署585时的气候差；均比较气候585减气候126。颜色表示交互量 J，气泡面积正比于 SSP126 的2050参考容量。两技术共用坐标范围、零中心色标和气泡面积尺度，数据区为正方形。仅纳入两个气候差均有四模式有效结果且参考容量为正的国家／地区。标注美国、中国、巴西；加号显示美国和中国的四模式结果。灰边表示 J 的方向一致模式少于3个，不表示统计显著性。
 
-## Inputs and validation
+c–d 沿用 Fig. 3 共用名单的前8个国家，依次为美国、中国、巴西、俄罗斯、印度、伊朗、哈萨克斯坦、澳大利亚；选择依据为 SSP126 的2050参考风光总容量排序。具体贡献、差值幅度、模式支持和参考容量保存在 [country_selection_audit.csv](outputs/source_data/country_selection_audit.csv)。
 
-Reuse the existing `outputs/source_data/panel_ab.csv`, `panel_cd.csv` and `panel_ef.csv`, the shared `prepare/outputs/loss_summary/window.csv.gz`, catalogue capacities, and `prepare/outputs/panel_loss/country_selection.csv`. No upstream product or preparation task is recomputed. The plotting entry point creates only small figure-specific summaries and a coverage extract.
+## 指标口径与输入
 
-Before rendering, check a representative global wind comparison, the 72 global combination rows, unique model identities, signed net energy/capacity ratios, fixed capacities across climates and models, country contrasts recomputed from the shared combinations, and decomposition closure. The representative cases are United States, China, Brazil, Russia, India, Iran, Kazakhstan and Australia, selected by combined reference capacity; their magnitudes and model agreement are retained in `country_selection_audit.csv`. Global totals retain unassigned/ambiguous stations; the country scatter excludes those non-country classes. China uses the already merged CHN catalogue, including Taiwan.
+所有损失指标先在每个模式内计算，再对 CANESM5、MPI-ESM1-2-HR、MRI-ESM2-0、BCC-CSM2-MR 四个模式等权平均。损失单位为 MWh MW⁻¹ yr⁻¹。
 
-Common support is fixed across models, climates and all ten years within each station SSP; station IDs are not intersected across different deployments. Missing or zero-capacity comparisons remain undefined and are excluded with explicit reasons. Wind uses the original energy values. The all-event metric is the event union, not a sum of event labels. Finite annual Loss does not demonstrate identical valid timestamps within the year; this remains a limitation of the available annual product.
+设 $R_{c,s}$ 为气候情景 $c$、部署情景 $s$ 下的单位装机年均净损失，则：
 
-Station SSP585 retains the upstream source `stations_SSP5-6.0.csv`; the short query label does not imply that the source deployment is SSP5-8.5. Model identities, both SSPs, capacity, snapshot, window, coverage and this source mapping are retained in `model_combinations_coverage.csv`.
+$$
+\delta_C^{(126)}=R_{585,126}-R_{126,126},\qquad
+\delta_C^{(585)}=R_{585,585}-R_{126,585}
+$$
 
-## Run
+$$
+\Phi_C=\frac{\delta_C^{(126)}+\delta_C^{(585)}}{2},\qquad
+\Phi_S=\frac{(R_{126,585}-R_{126,126})+(R_{585,585}-R_{585,126})}{2}
+$$
 
-From the repository root on scnet-wuzhen-1866:
+$$
+D=R_{585,585}-R_{126,126}=\Phi_C+\Phi_S,\qquad
+J=\delta_C^{(585)}-\delta_C^{(126)}
+$$
+
+复用已有数据，不重跑上游产品或整个准备流程：
+
+| 输入 | 用途 |
+|---|---|
+| [panel_ab.csv](outputs/source_data/panel_ab.csv) | 全球九组合的逐模式结果 |
+| [panel_cd.csv](outputs/source_data/panel_cd.csv) | 全球及8个代表国家的逐模式分解 |
+| [panel_ef.csv](outputs/source_data/panel_ef.csv) | 全部候选国家的逐模式反事实结果与参考容量 |
+| [公共窗口汇总](../../prepare/outputs/loss_summary/window.csv.gz) | 重新核对九组合、分解恒等式和容量覆盖 |
+| [国家容量目录](../../prepare/outputs/catalogues/capacity_by_country.csv) | 各部署、快照和技术的国家容量 |
+| [公共国家名单](../../prepare/outputs/panel_loss/country_selection.csv) | 与 Fig. 3 保持一致的国家选择和排序 |
+
+绘图入口仅补充本图集合汇总和覆盖摘录。有效站点集合及容量在同一部署内固定，跨四模式、三种气候和十个分析年份保持一致；不同部署之间不强求场站 ID 交集。区域损失为同一有效集合上的净损失能量之和除以容量之和，再取十年均值。
+
+风电使用原始能量数值，不乘以0.1；保留净损失符号。`all` 为事件时间并集，不能用事件类别损失之和替代。全球汇总包含无法归属国家及边界归属不明确的站点；国家散点不包含 `UNASSIGNED`、`AMBIGUOUS` 等非国家类别。中国沿用已经合并 China 与 Taiwan 的 CHN 目录。
+
+场站情景 `ssp585` 的原始来源是 `stations_SSP5-6.0.csv`，查询标签不意味着原始部署情景为 SSP5-8.5。源数据覆盖表保留模式、双 SSP、快照、窗口、容量、有效覆盖及原始场站文件映射。
+
+## “不可比”国家／地区的含义与核验结果
+
+以下结果核对于 **2026-10-06**，对应当前2050快照及2050–2059窗口，仅说明 **e–f 国家散点图**的纳入条件。
+
+### 为什么不能填零或直接画入散点图
+
+一个点必须同时具备固定部署126和585下的四模式气候差，并具备正的部署126参考容量。某种部署没有对应场站容量时，该部署的单位装机损失没有定义，因此无法构造相应坐标；不能填成零。
+
+逐项核对国家容量目录和九组合覆盖表后，当前被排除对象均与某种部署缺少2050容量记录有关。可用部署的四模式结果完整，没有发现这些对象因某一个气候模式任务漏跑而被排除。这里的“没有容量记录”仅指本项目输入场站数据、2050快照及国家空间归属结果，不代表现实世界没有风电或光伏。
+
+### 具体对象与缺失组合
+
+| 技术 | 数量 | 具体原因 | 国家／地区及代码 |
+|---|---:|---|---|
+| 风电 | 13 | 部署126的四模式气候差完整；部署585无2050容量记录，缺纵坐标 | 阿尔巴尼亚 ALB、布隆迪 BDI、中非共和国 CAF、哥斯达黎加 CRI、几内亚比绍 GNB、牙买加 JAM、科索沃 KOS、北马其顿 MKD、挪威 NOR、波多黎各 PRI、卡塔尔 QAT、卢旺达 RWA、苏里南 SUR |
+| 光伏 | 12 | 部署126的四模式气候差完整；部署585无2050容量记录，缺纵坐标 | 文莱 BRN、哥斯达黎加 CRI、赤道几内亚 GNQ、韩国 KOR、科威特 KWT、巴拿马 PAN、朝鲜 PRK、巴勒斯坦 PSX、塞拉利昂 SLE、索马里 SOM、斯洛文尼亚 SVN、特立尼达和多巴哥 TTO |
+| 光伏 | 3 | 部署585的四模式气候差完整；部署126无2050容量记录，缺横坐标和参考容量 | 北塞浦路斯 CYN、塞浦路斯 CYP、牙买加 JAM |
+| 光伏 | 2 | 2050仅部署245有容量记录，部署126和585均无记录，缺两个坐标及参考容量 | 芬兰 FIN、新喀里多尼亚 NCL |
+
+最后一类中，部署245的光伏容量分别为芬兰175.750 MW、新喀里多尼亚223.212 MW，因此它们出现在候选源数据中，但不能用于126与585两端部署的反事实对照。
+
+### 当前原因标签如何解释
+
+结果文件保留绘图程序输出的以下标签；上表进一步明确了本次实际缺失的部署组合。
+
+| `exclusion_reason` | 程序含义 | 本次实际对应情况 |
+|---|---|---|
+| `incomplete_four_model_counterfactual` | 两个部署气候差或 J 未同时具备四模式有效结果 | 风电13个、光伏12个对象均为部署585整体无容量记录；部署126结果完整。不是各缺一个模式。 |
+| `no_positive_reference_capacity` | 没有可用的正部署126参考容量 | 光伏5个对象；其中3个具备部署585结果，2个仅部署245有容量。 |
+
+每行只保留一个原因标签。`no_positive_reference_capacity` 的对象也同时缺少部署126气候差，所以不能将其解释为“仅无法确定气泡大小”。
+
+### 排除范围及容量占比
+
+| 技术 | 候选国家／地区 | 实际绘制 | 排除数量 | 排除对象的已知部署126参考容量 | 已归属国家的部署126参考总容量 | 排除容量占比 |
+|---|---:|---:|---:|---:|---:|---:|
+| 风电 | 162 | 149 | 13 | 39.796 GW | 12,545.198 GW | 0.317% |
+| 光伏 | 167 | 150 | 17 | 22.311 GW | 9,341.667 GW | 0.239% |
+
+容量占比的分母为2050快照、SSP126下已归属国家的目录容量之和，不包含 `UNASSIGNED`、`AMBIGUOUS`，也不是共同有效容量。光伏排除对象中有5个没有部署126容量记录，因此22.311 GW来自其余12个对象，不能据此声称全部17个对象在其他部署中的容量也很小。
+
+这些容量占比较小，但 e–f 仍不能代表被排除对象的跨部署响应。a–b 的全球九组合、c–d 的全球及8个代表国家结果完整；散点筛选没有用于重新计算全球指标。
+
+**模式方向不一致不构成排除条件。** 已绘制国家中，J 至少3/4模式与均值方向一致的数量为风电97、光伏85；其余风电52、光伏65个仍保留，以灰边表示。
+
+### 去哪里查原始记录
+
+- [data_audit.json](outputs/data_audit.json)：查看 `panels_ef.wind.excluded_countries` 和 `panels_ef.solar.excluded_countries`，获取名单和原因标签。
+- [panel_ef_ensemble.csv](outputs/source_data/panel_ef_ensemble.csv)：筛选 `plotted=False`；查看 `exclusion_reason`、`delta_C_126_n_models`、`delta_C_585_n_models`、`J_n_models` 和 `reference_capacity_mw`。这些模式数字段统计有限数值的数量。
+- [model_combinations_coverage.csv](outputs/source_data/model_combinations_coverage.csv)：按 `tech`、`country`、`station_ssp`、`climate_ssp`、`model` 查看 `R`、`capacity_mw`、`catalogue_capacity_mw`、`n_stations`、`coverage_pct`。某部署没有记录时，不会补造零容量行。
+- [公共国家容量目录](../../prepare/outputs/catalogues/capacity_by_country.csv)：按上述身份字段和 `snapshot=2050` 交叉核对容量是否存在。
+
+`outputs/` 和日志被 Git 忽略，实际数据及核验记录保存在远程工作区，不包含在代码提交中。本 README 保存可随代码追踪的解释及本次核验摘要。
+
+## 运行方式
+
+执行位置为 `scnet-wuzhen-1866`，仓库根目录为：
+
+```text
+/work/home/aczlvkl1ac/project_climate_patchify/repos/analysis_of_global_pv_wind
+```
+
+在仓库根目录提交：
 
 ```bash
 mkdir -p logs/paper_figures/fig04
 sbatch paper_figures/main/fig04_climate_deployment/plot.sh
 ```
 
-The paired SLURM script uses the repository `.venv`, two CPUs and 7 GB on one wzhctest node. It writes stdout and stderr to `logs/paper_figures/fig04/plot_%j.out`.
+[plot.sh](plot.sh) 使用仓库 `.venv`、`wzhctest` 队列、1个节点、2核和7 GB内存，通过 [plot.py](plot.py) 生成图件。标准输出和错误输出写入同一个 `logs/paper_figures/fig04/plot_%j.out`。大量数据读取及绘图在计算节点运行。
 
-## Outputs
+## 产物与验证记录
 
-- `outputs/fig04.png`: full a–f figure, 600 dpi, nominal 183 × 165 mm canvas.
-- `outputs/data_audit.json`: scientific checks, coverage, plotted/excluded countries and exclusion reasons.
-- `outputs/metadata.json`: input/code SHA256, SLURM job ID, plotting scales, automated checks and visual review.
-- `outputs/source_data/panel_*_ensemble.csv`: actual panel means, ranges and model agreement, including excluded scatter cases.
-- `outputs/source_data/model_combinations_coverage.csv`: model-resolved combinations with denominators and catalogue coverage.
-- `outputs/source_data/country_selection_audit.csv`: shared case selection, contributions, model support and reference capacity.
+以下图件产物相对于当前 Fig. 4 目录；日志路径相对于仓库根目录。
 
-## Caption
+| 文件 | 内容 |
+|---|---|
+| [outputs/fig04.png](outputs/fig04.png) | 完整 a–f 图件，600 dpi；名义画布183 × 165 mm，紧边界保存后4284 × 3933像素 |
+| [outputs/data_audit.json](outputs/data_audit.json) | 科学核验、全球容量覆盖、散点纳入及排除名单 |
+| [outputs/metadata.json](outputs/metadata.json) | 输入及代码 SHA256、作业编号、绘图尺度、自动检查、视觉验收和最终 PNG 哈希 |
+| [panel_ab_ensemble.csv](outputs/source_data/panel_ab_ensemble.csv) | 九组合损失的集合均值、模式范围及模式数 |
+| [panel_cd_ensemble.csv](outputs/source_data/panel_cd_ensemble.csv) | 贡献及路径差的集合均值、模式范围和方向支持 |
+| [panel_ef_ensemble.csv](outputs/source_data/panel_ef_ensemble.csv) | 国家散点的集合结果、参考容量、是否绘制及排除原因 |
+| [model_combinations_coverage.csv](outputs/source_data/model_combinations_coverage.csv) | 逐模式组合、分母、国家目录容量及覆盖率 |
+| [country_selection_audit.csv](outputs/source_data/country_selection_audit.csv) | 代表国家选择依据、贡献、模式支持和参考容量 |
+| `logs/paper_figures/fig04/completion.json` | 运行与交付完成记录 |
+| `logs/paper_figures/fig04/plot_45951877.out` | 最终绘图作业日志 |
 
-**Climate and deployment contributions to renewable-generation loss in the 2050s.** a,b, Global signed net loss under nine combinations of climate and deployment, averaged across CANESM5, MPI-ESM1-2-HR, MRI-ESM2-0 and BCC-CSM2-MR; outlined diagonal cells denote paired pathways. c,d, Symmetric contributions of climate and deployment to the paired 585 minus 126 path difference for the global system and eight countries selected by reference wind-plus-solar capacity. Diamonds denote the mean net difference; small points and lines denote four models and their range. e,f, Country mean climate contrasts under fixed deployments 126 and 585. The dashed identity line denotes equal climate responses. Color represents interaction J; grey outlines indicate fewer than three models agreeing with the mean direction. Bubble area is proportional to SSP126 reference capacity. All loss metrics are MWh MW⁻¹ yr⁻¹, calculated per model as annual net energy summed over the common valid station set divided by its capacity, then averaged over 2050–2059. No significance test is applied. Missing deployment comparisons are omitted from e,f and explicitly listed in the audit; country counts appear within each panel. Coverage fractions and all underlying model values accompany the figure.
+2026-10-06 验证结果：
+
+- 先核对代表性的全球风电组合，再验证全部目标结果；a–b 共72条模式记录，对应18个技术—情景单元，每单元4模式；c–d 共72条模式记录，对应两技术下的全球及8国。
+- 检查唯一模式身份、净能量／容量比值、固定部署容量跨气候和模式不变；从共用九组合重新核对国家反事实差和分解结果。最大绝对分解闭合残差为 **2.842170943040401 × 10⁻¹⁴**。
+- 全球共同有效容量占目录容量的比例为 **99.42%–99.62%**；这是有效站点容量覆盖率，与上文散点排除国家的参考容量占比含义不同。
+- 最终作业 **45951877** 状态为 `COMPLETED`，退出码为 `0:0`。
+- 完整 PNG 已通过视觉检查：六个子图齐全，标题与坐标标签无重叠，图例、色条可读，无标签或数据裁切，风光尺度一致；散点横纵轴等比例，并提供三个容量面积示例。
+- 无未解决的执行或视觉问题。年度 Loss 的有限值只能证明年度指标有效，**不能证明年内有效时间戳完全一致**；这一解释限制仍然保留。
+
+## 中文图注
+
+**2050年代风光发电损失的气候与部署贡献。** a、b，九种气候与部署组合下的全球单位装机年均净损失，为四个气候模式的等权均值，对角框线标出配对路径。c、d，全球及按参考风光总容量选择的8个国家中，配对585路径减配对126路径损失差的气候与部署对称分解；菱形为平均净差，小点和细线分别为四模式结果及最小值—最大值。e、f，分别固定部署126和585时的国家气候差，两轴均为气候585减气候126。虚线为两种部署气候响应相同的1:1线，颜色表示交互量 J，灰边表示与均值方向一致的模式少于3个，气泡面积正比于 SSP126 的2050参考容量。所有损失量单位为 MWh MW⁻¹ yr⁻¹，按逐模式共同有效站点的年度净损失能量之和除以容量之和，再对2050–2059年平均。未进行显著性检验。e、f 分别纳入149和150个国家／地区；缺少部署对照的对象不填零，完整名单、原因、容量覆盖与模式值见配套源数据及核验记录。
