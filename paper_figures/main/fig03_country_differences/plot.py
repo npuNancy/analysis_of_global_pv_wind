@@ -12,6 +12,7 @@ from matplotlib.lines import Line2D
 from matplotlib.patches import Patch, Rectangle
 from matplotlib.text import Text
 import cartopy.crs as ccrs
+from cartopy.mpl.ticker import LongitudeFormatter, LatitudeFormatter
 from PIL import Image
 from paper_figures.config import ROOT, TECHS, SNAPSHOTS
 from paper_figures.common.io import digest, write_json
@@ -59,7 +60,7 @@ def main():
     for col, tech in enumerate(TECHS):
         left = 0.035 + col * 0.5
         title(fig, left-0.014, 0.970, 'ab'[col], f'{tech.title()} | Country pathway difference')
-        ax = fig.add_axes([left, 0.765, 0.445, 0.185], projection=ccrs.Robinson())
+        ax = fig.add_axes([left, 0.765, 0.445, 0.185], projection=pc)
         ax.set_extent([-180, 180, -60, 85], crs=pc)
         table = ab[ab.tech.eq(tech)].set_index('country')
         for iso, _, geom in geo:
@@ -69,11 +70,11 @@ def main():
                               edgecolor='#777777', linewidth=0.2, hatch='///' if unclear else None)
         ax.gridlines(xlocs=[-120, 0, 120], ylocs=[0, 60],
                      linewidth=0.25, color='#888888', alpha=0.45, linestyle=':')
-        for lon, text in [(-120, '120°W'), (0, '0°'), (120, '120°E')]:
-            ax.text(lon, -59, text, transform=pc, ha='center', va='top', fontsize=5.5)
-        for lat in [0, 60]:
-            ax.text(-178, lat, f'{lat}°' + ('N' if lat else ''),
-                    transform=pc, ha='right', va='center', fontsize=5.3)
+        ax.set_xticks([-120, 0, 120], crs=pc)
+        ax.set_yticks([0, 60], crs=pc)
+        ax.xaxis.set_major_formatter(LongitudeFormatter())
+        ax.yaxis.set_major_formatter(LatitudeFormatter())
+        ax.tick_params(axis='both', labelsize=5.5, pad=2, length=2)
         ax.spines['geo'].set_linewidth(0.4)
         ax.text(0.5, 1.045, '2050–2059 · paired SSP585 − SSP126', transform=ax.transAxes,
                 ha='center', va='bottom', fontsize=6)
@@ -213,6 +214,7 @@ def main():
     sources = sorted(p for p in SOURCE.iterdir() if p.is_file())
     write_json(OUT / 'metadata.json', dict(figure='Fig. 3', created_utc=datetime.now(timezone.utc).isoformat(),
                job_id=os.environ.get('SLURM_JOB_ID'), backend='Python/matplotlib + Cartopy',
+               map_projection='Plate Carrée', map_extent_degrees=[-180,180,-60,85],
                canvas_mm=[183,165], image=image_info, panels=list('abcdef'),
                colour_limits=[-limit,limit], distribution_y_limits=distribution_limits, values_clipped=int((pd.concat([ab['mean'],cd['mean']]).abs()>limit).sum()),
                text_outside_canvas=outside, data_audit='PASSED', visual_review='PENDING',

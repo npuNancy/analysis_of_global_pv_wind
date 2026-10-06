@@ -11,6 +11,7 @@ from matplotlib.colors import TwoSlopeNorm
 from matplotlib.lines import Line2D
 from matplotlib.text import Text
 import cartopy.crs as ccrs
+from cartopy.mpl.ticker import LongitudeFormatter, LatitudeFormatter
 from PIL import Image
 from paper_figures.config import ROOT, MODELS, SSPS, SSP_COLORS, TECHS, SNAPSHOTS
 from paper_figures.common.io import digest, write_json
@@ -66,14 +67,13 @@ def main():
                          'savefig.pad_inches': 0})
     fig = plt.figure(figsize=(183 / 25.4, 165 / 25.4), facecolor='white')
     pc = ccrs.PlateCarree()
-    projection = ccrs.Robinson()
     geo = countries()
     cmap = plt.get_cmap('RdBu_r')
     mapnorm = TwoSlopeNorm(vmin=-MAP_LIMIT, vcenter=0, vmax=MAP_LIMIT)
     eventnorm = TwoSlopeNorm(vmin=-EVENT_LIMIT, vcenter=0, vmax=EVENT_LIMIT)
     for col, tech in enumerate(TECHS):
         left = 0.025 + col * 0.5
-        ax = fig.add_axes([left, 0.735, 0.45, 0.215], projection=projection)
+        ax = fig.add_axes([left + 0.015, 0.735, 0.435, 0.215], projection=pc)
         ax.set_extent([-180, 180, -60, 85], crs=pc)
         ax.add_geometries([g for _, _, g in geo], pc, facecolor='#f4f4f4',
                           edgecolor='none', zorder=0)
@@ -96,11 +96,11 @@ def main():
         label(fig, left, 0.976, 'ab'[col], f'{tech.title()} | Grid event-hour difference')
         ax.text(0.5, 1.012, '2050–2059 · climate SSP585 − SSP126',
                 transform=ax.transAxes, ha='center', va='bottom', fontsize=6)
-        for lon, txt in [(-120, '120°W'), (0, '0°'), (120, '120°E')]:
-            ax.text(lon, -58, txt, transform=pc, ha='center', va='top', fontsize=5.5)
-        for lat in [0, 60]:
-            ax.text(-178, lat, f'{lat}°' + ('N' if lat else ''), transform=pc,
-                    ha='right', va='center', fontsize=5.3)
+        ax.set_xticks([-120, 0, 120], crs=pc)
+        ax.set_yticks([0, 60], crs=pc)
+        ax.xaxis.set_major_formatter(LongitudeFormatter())
+        ax.yaxis.set_major_formatter(LatitudeFormatter())
+        ax.tick_params(axis='both', labelsize=5.5, pad=2, length=2)
     cb = fig.colorbar(plt.cm.ScalarMappable(norm=mapnorm, cmap=cmap),
                       cax=fig.add_axes([0.105, 0.699, 0.33, 0.012]), orientation='horizontal',
                       ticks=[-1200, -600, 0, 600, 1200])
@@ -194,7 +194,7 @@ def main():
         im.verify()
     caption = """# Fig. 1 | Spatial, temporal and event-type differences in extreme-event exposure
 
-a–b, Wind and solar grid event-union hours in 2050–2059 under climate SSP585 minus SSP126. Differences are calculated within each of four models, then averaged equally. Native cells common to all models and climate scenarios are area-weighted to a 1° display grid. Both maps share a symmetric ±1200 h yr⁻¹ colour scale; no values are clipped. Grey hollow circles have area proportional to the SSP126 deployment's 2050 total capacity, aggregated to a 3° display grid (GW). Capacity is a location reference, not a weight for grid climate differences. Unavailable climate cells are uncoloured; the valid domain is not restricted to land. China and Taiwan geometries are united in the map boundaries.
+a–b, Wind and solar grid event-union hours in 2050–2059 under climate SSP585 minus SSP126. Differences are calculated within each of four models, then averaged equally. Native cells common to all models and climate scenarios are area-weighted to a 1° display grid. Both maps use the Plate Carrée projection and share a symmetric ±1200 h yr⁻¹ colour scale; no values are clipped. Grey hollow circles have area proportional to the SSP126 deployment's 2050 total capacity, aggregated to a 3° display grid (GW). Capacity is a location reference, not a weight for grid climate differences. Unavailable climate cells are uncoloured; the valid domain is not restricted to land. China and Taiwan geometries are united in the map boundaries.
 
 c–d, Global capacity-weighted annual hours in the union of selected meteorological events, averaged over 2030–2039, 2040–2049 and 2050–2059 with the corresponding fixed 2030, 2040 and 2050 capacity snapshots. Each SSP line pairs its climate and deployment scenario. Small points are four individual models, large symbols the equal-model mean, and vertical bars the model minimum–maximum, not confidence intervals. Small horizontal offsets separate pathways and model points; they do not represent dates within the window. Station locations and weights may change between pathways and snapshots. The y-axis range is shared across technologies.
 
@@ -209,6 +209,7 @@ Source data: panel_ab.csv.gz and panel_ab_models.csv.gz (grid means and model di
     write_json(OUT / 'metadata.json', {
         'figure': 'Fig. 1', 'created_utc': datetime.now(timezone.utc).isoformat(),
         'job_id': os.environ.get('SLURM_JOB_ID'), 'backend': 'Python/matplotlib + Cartopy',
+        'map_projection': 'Plate Carrée', 'map_extent_degrees': [-180, 180, -60, 85],
         'canvas_mm': [183, 165], 'image': image_info, 'dpi': 600,
         'panels': ['a', 'b', 'c', 'd', 'e', 'f'],
         'map_colour_limits': [-MAP_LIMIT, MAP_LIMIT], 'event_colour_limits': [-EVENT_LIMIT, EVENT_LIMIT],
