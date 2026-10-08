@@ -35,3 +35,36 @@ sbatch paper_figures/main/fig01_extreme_events/plot.sh
 - 地图继续复用 `panel_ab.csv.gz`，配套逐模式差与容量气泡表。
 
 模式范围是四个气候模式的描述性离散程度，不是置信区间。气象事件暴露与 Loss 有效窗口不同；全球网格指正式产品有效域，不代表未覆盖区域。视觉检查记录写入 metadata.json。
+
+## 国家暴露分布地图
+
+`plot_country_exposure.py/.sh` 在同一目录生成两张 2 行 × 3 列国家地图：行是风电、光伏，列是 SSP126、SSP245、SSP585。完整图为 240 × 133 mm；每张同时导出风电 a–c、光伏 d–f 两个独立组合（240 × 86 mm），全部为 600 dpi PNG。
+
+- 2050年代图：国家底色为有效原生网格的面积加权年均事件并集暴露；圆颜色为场站容量加权年均事件并集暴露。
+- 变化图：底色和圆颜色均为 2050–2059 减 2030–2039，先逐模式相减，再对四模式等权平均。场站分别使用2030和2050容量快照，变化包含部署变化。
+- 两图的圆面积均与各 SSP、各技术、各国的2050总装机成正比；暴露缺测的装机仍计入面积。沿用参考地图的容量尺度（最大风光合计国家容量对应1000 pt²），圆直径乘0.75，散点面积因子为0.5625。
+- 底色和圆严格共用色系与数值范围：绝对值使用 YlOrBr；变化使用以零对称的 RdBu_r，范围按所有国家、技术、情景及两类暴露变化的绝对值95%分位向上取整至2.5天/年。变化色条两端尖角，超限值保持原值写入源数据，数量和极值记录在元数据。
+- 投影为 Cartopy Plate Carrée，统一范围为经度 −180–180°、纬度 −60–85°。采用项目边界副本，China/Taiwan在空间归属前合并；不显示南极、UNASSIGNED和AMBIGUOUS，但在源数据中保留后两类。
+- 网格复用已验收的 `prepare/outputs/grid_events`，采用四模式、三情景、三个窗口共同有效的原生格点，按格点中心归属国家。面积加权分子、分母在国家内汇总后相除；不是将国家平均暴露再次除面积。
+- 场站复用 `prepare/outputs/event_summary/window.csv.gz` 的配对路径和已验收共同有效站点集合，时间覆盖至少99%；国家容量使用 `catalogues/capacity_by_country.csv`。各窗口使用自身快照，记录有效容量及其占目录总容量的比例。
+- 暴露单位为 day yr⁻¹，1 day = 24 h；表示累计时长而非事件日历天数。均值要求四模式齐全，源数据另保留模式最小值、最大值；地图不表达显著性。缺测以灰色表示，无装机不画圆。
+
+运行：
+
+```bash
+mkdir -p logs/paper_figures/fig01
+sbatch paper_figures/main/fig01_extreme_events/plot_country_exposure.sh --pilot
+sbatch paper_figures/main/fig01_extreme_events/plot_country_exposure.sh
+```
+
+`--pilot` 核对风光各一个代表分块及全部场站汇总表；默认作业重新准备47分块的国家源数据并绘图；`--skip-prepare` 校验本图源数据哈希后重绘。默认4核、14 GB，使用仓库环境与 wzhctest。
+
+产物：
+
+- `outputs/fig01_country_exposure_2050s.png` 及 `_abc.png`、`_def.png`。
+- `outputs/fig01_country_exposure_change_2050s_minus_2030s.png` 及 `_abc.png`、`_def.png`。
+- `outputs/source_data/country_exposure_grid_windows.csv.gz`、`country_exposure_station_windows.csv.gz`：逐模式、年代、国家的基础分子和分母。
+- `outputs/source_data/country_exposure_models.csv.gz`、`country_exposure_display.csv`：逐模式地图指标与完整四模式展示汇总。
+- `outputs/country_exposure_data_audit.json`、`country_exposure_metadata.json`：来源哈希、覆盖、守恒检查、色标截断计数、图件及视觉检查记录。
+
+2026-10-08 验证：代表分块作业 46083676、全量准备及绘图作业 46083857、最终排版重绘作业 46084188 均 COMPLETED（0:0）。通过国家/全球面积、暴露及容量守恒和现有全球网格结果复现；六张 PNG 已逐张视觉检查，图件与源数据哈希、600 dpi 和文字边界检查通过。最终绝对值色标0–170天/年，变化色标−10–10天/年。
