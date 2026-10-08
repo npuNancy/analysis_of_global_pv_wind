@@ -148,3 +148,65 @@ sbatch paper_figures/main/fig04_climate_deployment/plot.sh
 ## 中文图注
 
 **2050年代风光发电损失的气候与部署贡献。** a、b，九种气候与部署组合下的全球单位装机年均净损失，为四个气候模式的等权均值，对角框线标出配对路径。c、d，全球及按参考风光总容量选择的8个国家中，配对585路径减配对126路径损失差的气候与部署对称分解；菱形为平均净差，小点和细线分别为四模式结果及最小值—最大值。e、f，分别固定部署126和585时的国家气候差，两轴均为气候585减气候126。虚线为两种部署气候响应相同的1:1线，颜色表示交互量 J，灰边表示与均值方向一致的模式少于3个，气泡面积正比于 SSP126 的2050参考容量。所有损失量单位为 MWh MW⁻¹ yr⁻¹，按逐模式共同有效站点的年度净损失能量之和除以容量之和，再对2050–2059年平均。未进行显著性检验。e、f 分别纳入149和150个国家／地区；缺少部署对照的对象不填零，完整名单、原因、容量覆盖与模式值见配套源数据及核验记录。
+
+## 2050s 独立反事实矩阵：全年 CF、事件暴露与单位装机损失
+
+三张风电／光伏对照图，检验全球场站的全年容量因子、事件暴露和单位装机损失随气候、部署的变化。与 a–b 一致，行是气候 SSP，列是场站部署 SSP，使用2050容量快照和2050–2059窗口；对角框线表示配对路径。每格标注四模式等权均值，同一指标的风光面板共用绝对值色标。模式最小值、最大值保存在源数据，不把色彩差异解释为统计显著性。
+
+- **全年 CF（%）**：读取正式场站 `wind_cf`／`solar_cf`；在每站每年先求有效三小时时刻均值，再按2050容量加权，十年等权平均，最后四模式等权平均。每站每年原生日历时间覆盖至少99%；实际覆盖保存在源数据。它是全年实际CF，不是损失产品的正常CF基线，也不是事件期CF。
+- **暴露（day yr⁻¹）**：复用公共 `event_summary/window.csv.gz` 中 `event=all` 的全球容量加权年均并集暴露，小时除以24转换为天。不同事件类型不能相加替代并集。
+- **损失（MWh MW⁻¹ yr⁻¹）**：复用原 Fig4 的 `panel_ab.csv`，使用事件并集的年均净损失能量除以共同有效容量，保留正负值和风电原始量值。
+- 三者复用 Fig4 的共同有效场站集合；每一部署内的站点和容量跨气候、模式、年份保持一致，不要求不同部署的站点ID交集。脚本逐组合核对与原 `panel_ab.csv` 的容量一致。场站 SSP585 的原始文件仍为 `stations_SSP5-6.0.csv`。
+
+入口及输出：
+
+```bash
+mkdir -p logs/paper_figures/fig04
+sbatch paper_figures/main/fig04_climate_deployment/prepare_cf_counterfactual.sh
+# 上述数组任务全部成功后：
+sbatch paper_figures/main/fig04_climate_deployment/plot_counterfactuals.sh
+```
+
+CF准备脚本默认16个数组分片、最多16个同时运行，每个4核／14GB；按现有场站分区、模式缓存已完成结果。只读取权威索引声明的CF文件，缓存保留输入记录、共同支持及汇总的校验值。时间坐标保留模式原生日历，按年验证完整三小时间隔与覆盖。
+
+| 产物 | 内容 |
+|---|---|
+| `outputs/fig04_cf_counterfactual_2050s.png` | 全年CF独立组图 |
+| `outputs/fig04_exposure_counterfactual_2050s.png` | 年均并集暴露独立组图 |
+| `outputs/fig04_loss_counterfactual_2050s.png` | 年均单位装机净损失独立组图 |
+| `outputs/source_data/counterfactual_cf_annual.csv` | 逐模式、双SSP、逐年CF与有效覆盖 |
+| `outputs/source_data/counterfactual_model_values.csv` | 三指标的逐模式窗口均值、容量及覆盖 |
+| `outputs/source_data/counterfactual_ensemble.csv` | 四模式均值、最小值、最大值 |
+| `outputs/source_data/counterfactual_contrasts.csv` | 三指标的气候／部署对照及对称分解，CF差为百分点，暴露差为天／年，损失差为MWh MW⁻¹ yr⁻¹ |
+| `outputs/counterfactual_data_audit.json` | 完整性、容量一致性、时间覆盖核验 |
+| `outputs/counterfactual_metadata.json` | 指标口径、作业、图片尺寸及校验值 |
+
+2026-10-08运行核验：复用CF数组作业45993627的缓存，绘图作业46054431成功。864个非空分区×模式任务、720条逐年全球CF、三指标216条逐模式窗口结果及54个集合格完整。CF和暴露有效时间覆盖均为100%；共同集合覆盖各部署目录容量的99.42%–99.62%，与原Fig4一致。三张600dpi PNG通过检查：CF、暴露与既有验收图片的SHA256一致，损失图已视觉检查；记录见`outputs/counterfactual_visual_review.json`。
+
+## 三个年代与三年代均值的反事实矩阵
+
+使用 `plot_counterfactual_decades.py` 生成十二张风电／光伏对照图：2030s、2040s、2050s 和三个年代均值各展示全年 CF、事件并集暴露和单位装机净损失。复用上述矩阵绘图函数，每张图保存一个包含风电、光伏面板及共享色标的完整600dpi PNG。
+
+每个年代分别使用2030、2040、2050装机快照与对应十年窗口。固定某个年代和部署时，站点及容量在三个气候、四模式间一致；站点集合与容量可以随年代改变。全年CF使用正式原生三小时序列，暴露和损失复用公共窗口汇总表。损失采用带符号的 `event=all` 年均净损失／共同有效容量，单位 MWh MW⁻¹ yr⁻¹，风电保留原始量值。
+
+对每个模式、技术、气候SSP和部署SSP，先将三个年代的指标按1/3等权平均，再对四模式等权汇总。CF先在各年／年代完成容量加权，暴露和损失也先在各年代按相应容量归一。因此三个年代均值表征按对应年代部署配置计算的平均状态。模式最小值／最大值来自四个模式各自的三年代均值；单格均值、模式范围和气候／部署对照均保留在源数据。各指标在四个时期图之间使用相同色标。
+
+```bash
+mkdir -p logs/paper_figures/fig04
+sbatch paper_figures/main/fig04_climate_deployment/prepare_cf_counterfactual.sh --snapshots 2030 2040
+# 上述数组全部成功后：
+sbatch paper_figures/main/fig04_climate_deployment/plot_counterfactual_decades.sh
+```
+
+准备脚本的默认年代为2030、2040、2050，已有结果会核对缓存并复用。2050年度CF表及已验收公共表直接用于本次跨年代汇总。
+
+| 时期 | 文件名（位于 outputs/） |
+|---|---|
+| 2030s | `fig04_{cf,exposure,loss}_counterfactual_2030s.png` |
+| 2040s | `fig04_{cf,exposure,loss}_counterfactual_2040s.png` |
+| 2050s | `fig04_{cf,exposure,loss}_counterfactual_2050s.png` |
+| 三年代均值 | `fig04_{cf,exposure,loss}_counterfactual_mean_2030s_2050s.png` |
+
+源数据为 `outputs/source_data/counterfactual_decades_*.csv`：`model_values` 保存逐模式、逐年代指标、实际容量及覆盖，`mean_model_values` 保存每模式的三年代均值及权重，`ensemble` 保存四模式汇总，`contrasts` 保存反事实对照及其分解。`cf_annual` 包含全部30年的年度CF。`outputs/counterfactual_decades_data_audit.json` 和 `counterfactual_decades_metadata.json` 分别记录数值核验及图件元数据。
+
+2026-10-08运行核验：复用CF数组作业46000569的缓存，绘图作业46054443完成。30年共2160条年度CF、648条逐模式年代指标及216条逐模式三年代均值完整；原2050s三项指标均复现，均值闭合最大误差为2.84×10⁻¹⁴。共同容量覆盖各年代目录总容量的99.29%–99.63%，CF与暴露时间覆盖均为100%。十二张600dpi PNG均通过检查，最终文件SHA256与已有逐图视觉验收及本次2050s验收记录一致；每个独立组图保存一个PNG；记录见 `outputs/counterfactual_decades_visual_review.json`。
