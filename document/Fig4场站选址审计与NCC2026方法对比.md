@@ -217,6 +217,204 @@ CF阈值 → 低CF事件 → 下降速度阈值 → 骤旱筛选 → 网格指�
 
 因此，NCC可以提供候选约束和比较思路，但不能作为“它已经证明我的选址错了”或“我的气候信号应该更大”的依据。
 
+## 七、1°优化过程与各SSP各年份参数
+
+本节说明 `Optimization_10km_ssp126/245/560` 的 Python 阶段一：在1°父格网中优化连续开发比例，再由阶段二分配到0.1°子格网。这里的“1°优化”采用单目标遗传算法，联合配置光伏、陆上风电、储能和输电；每个候选方案通过逐小时调度计算成本和约束。
+
+以下参数按本地 `ref_code/station_addresses` 源码版本 `6b6c175` 核对，日期为2026-10-07。表中列出的是**源码默认值及实际调用方式**，不是正式场站CSV对应运行的参数记录；运行时的环境变量覆盖、pymoo版本和实际停止代数仍需生产日志确认。第三套优化情景为SSP5-6.0，目录后缀为 `ssp560`。
+
+### 7.1 输入数据与父格网构造
+
+阶段一读取 `GlobalPotential_10km/outputs/aggregated_1deg/parent_solar.npz` 和 `parent_wind.npz`。三种SSP共用这套资源输入。每个“父格网×技术”包含技术潜力容量 `C_max`、满开发条件下8760小时发电序列 `gens`、所属大区 `region_id` 和父格网索引 `parent_lin_idx`。
+
+其上游构造过程是：
+
+1. 用0.1°适宜面积和装机密度计算每个子格网的最大容量；风电密度为3.68 MW/km²，光伏密度由纬度相关铺设系数、161.9 W/m²组件功率密度和0.15系数组成。
+2. 读取 `mean_solar_cf_2015_2015.nc` 和 `mean_wind_cf_2015_2015.nc`，以2015年的逐小时CF计算每个子格网满开发发电量。
+3. 按1°父格网累加容量和发电量；先按大区汇总父格网内的子格容量，再将父格网归入汇总容量最大的那个大区。
+4. 保留潜力容量超过下限且具有有效大区归属的父格网，再交给优化器。
+
+对技术 $k$、父格网 $g$，可写为：
+
+$$
+C^{\max}_{g,k}=\sum_{i\in g}U_{i,k},\qquad
+G^{\max}_{g,k,h}=\sum_{i\in g}U_{i,k}\,\mathrm{CF}_{i,k,h}\,\Delta t,
+\qquad \Delta t=1\ \mathrm{h}.
+$$
+
+其中 $U_{i,k}$ 为子格网技术潜力容量。阶段一直接按比例缩放整个父格网的满开发曲线，不在这一阶段选择父格网内具体建设哪些0.1°子格网。**2030、2040、2050是需求和容量配置年份，气象输入仍为同一个2015年；8760小时也不是后续下推使用的288个月—小时平均槽。**
+
+候选过滤应以实际聚合脚本为准：当前 `S06E01` 的光伏和风电容量门槛均为严格大于0.0001 TW，即0.1 GW。优化目录 `config.py` 中的 `SOLAR_MIN_CAP_TWP=0.001` 未在阶段一加载时重新使用；90/10 TWh年发电量上限虽然保留为常量，当前聚合筛选也未应用，不能当作生效约束。
+
+依据：[父格网聚合与实际门槛](/data6/yanxiaokai/project_climate/analysis_of_global_pv_wind/ref_code/station_addresses/GlobalPotential_10km/S06E01_Aggregate_01deg_to_1deg.py:55)、[父格网筛选](/data6/yanxiaokai/project_climate/analysis_of_global_pv_wind/ref_code/station_addresses/GlobalPotential_10km/S06E01_Aggregate_01deg_to_1deg.py:185)、[阶段一数据加载](/data6/yanxiaokai/project_climate/analysis_of_global_pv_wind/ref_code/station_addresses/Optimization_10km_ssp126/data_io.py:22)。
+
+### 7.2 决策变量、逐小时评估和目标函数
+
+遗传算法的一条染色体依次包含光伏开发比例、风电开发比例、20个大区的储能功率、20个大区的储能时长，以及候选输电链路容量。总维度为“光伏候选数＋风电候选数＋40＋候选链路数”，候选数由输入NPZ决定。
+
+| 变量 | 数量与单位 | 搜索边界及实际处理 |
+|---|---|---|
+| 风光开发比例 $x_{g,k}$ | 每个父格网×技术一个，无量纲 | 2030为0–1；2040/2050以上期比例为下界、1为上界；连续变量 |
+| 储能功率 $P_r$ | 20个，GW | 2030下界为代码中的 `cur_storage/1000`，以后取上期保存的功率；上界为当年各大区峰值负荷换算为GW；下界超过上界时被截断 |
+| 储能时长 $H_r$ | 20个，h | 三个年份均为2–72 h，未以上期时长为下界 |
+| 输电容量 $T_e$ | 每条候选链路一个，GW | 2030用初始网络转换后的下界，以后用上期链路容量；上界统一为10,000 GW，下界超过上界时被截断 |
+
+储能功率、时长和输电容量均由实数编码GA搜索，但在评估及保存时取整；因此它们的粒度分别为1 GW、1 h、1 GW。储能能量容量按功率乘时长计算。输出中的 `opt_stoCap` 实际保存时长，不能仅凭字段名将其当作能量容量；时长可下降，也不能宣称储能能量跨年必然单调。
+
+对一个候选方案，实际建设容量和大区逐小时风光发电量为：
+
+$$
+C_{g,k}=x_{g,k}C^{\max}_{g,k},\qquad
+G_{r,h}=\sum_{g\in r}\sum_k x_{g,k}G^{\max}_{g,k,h}.
+$$
+
+随后依次执行：
+
+1. 从各情景对应的 `Global_Load_22region.mat` 读取所选年份切片，按7.3节中的全球电量需求缩放20个大区的8760小时负荷。
+2. 每个大区以“本区年负荷×基荷比例/8760”构造恒定基荷，并从逐小时负荷中扣除。
+3. 每小时先让富余区域沿可用输电路径向缺电区域送电，路径按损耗排序；然后处理本地储能充放电，剩余富余计为弃电，剩余缺口由灵活电源补足。
+4. 汇总发电量、弃电量、风光占比及年度成本，返回一个目标值和五项不等式约束。
+
+内层是代码规定的逐小时调度规则，不是每次另解一个调度LP。外层最小化 `total_annual_cost`，单位为十亿美元/年；默认包括风光、储能、输电的年化增量投资和风光运维。增量投资以初始装机为基准扣除既有资产信用，不是只计算相对上一十年新增的成本。储能/输电运维、灵活电源运行成本和弃电成本默认关闭。
+
+五项约束要求：光伏容量低于初始装机的大区数不超过允许值；风电同理；风光发电占比不低于下界、不高于上界；弃电率不高于上限。SSP5-6.0关闭下界，其第三项约束直接置零。
+
+这里风光占比的代码定义是：
+
+$$
+s_{\mathrm{VRE}}=
+\frac{E_{\mathrm{VRE,gross}}-E_{\mathrm{curtailed}}}
+{E_{\mathrm{VRE,gross}}-E_{\mathrm{curtailed}}+E_{\mathrm{base}}+E_{\mathrm{flex}}},
+\qquad
+q_{\mathrm{curtail}}=\frac{E_{\mathrm{curtailed}}}{E_{\mathrm{VRE,gross}}}.
+$$
+
+它约束风光合计发电占比，不是风光装机占比，也不是分别给风电、光伏设定容量目标；代码另输出的毛风光发电量/负荷比并非这一约束。初始装机约束作用于20个大区的总量，不固定真实电站坐标。
+
+依据：[变量边界](/data6/yanxiaokai/project_climate/analysis_of_global_pv_wind/ref_code/station_addresses/Optimization_10km_ssp126/optimize_stage.py:27)、[逐小时调度及指标](/data6/yanxiaokai/project_climate/analysis_of_global_pv_wind/ref_code/station_addresses/Optimization_10km_ssp126/dispatch.py:102)、[五项约束](/data6/yanxiaokai/project_climate/analysis_of_global_pv_wind/ref_code/station_addresses/Optimization_10km_ssp126/problem.py:37)、[成本核算](/data6/yanxiaokai/project_climate/analysis_of_global_pv_wind/ref_code/station_addresses/Optimization_10km_ssp126/cost_model.py:54)。
+
+### 7.3 各SSP与各年份的情景参数
+
+这些是电力系统情景与约束参数，和下一小节的GA搜索超参数分开列示。百分数由源码中的0–1比例换算。
+
+| SSP | 年份 | 全球电量需求，TWh/年 | 基荷比例 | VRE下界 | VRE上界 | 弃电率上限 |
+|---|---:|---:|---:|---:|---:|---:|
+| SSP1-2.6 | 2030 | 34,633 | 55.8% | 26.35% | 57.89% | 16% |
+| SSP1-2.6 | 2040 | 44,860 | 37.5% | 43.08% | 68.23% | 16% |
+| SSP1-2.6 | 2050 | 54,767 | 23.9% | 55.44% | 71.11% | 16% |
+| SSP2-4.5 | 2030 | 37,134 | 71.7% | 14.17% | 25.79% | 16% |
+| SSP2-4.5 | 2040 | 44,521 | 63.9% | 20.91% | 35.72% | 16% |
+| SSP2-4.5 | 2050 | 51,940 | 51.8% | 28.71% | 46.46% | 16% |
+| SSP5-6.0 | 2030 | 40,483 | 78.8% | 不启用 | 8.90% | 30% |
+| SSP5-6.0 | 2040 | 53,189 | 74.7% | 不启用 | 11.73% | 30% |
+| SSP5-6.0 | 2050 | 65,277 | 64.2% | 不启用 | 14.20% | 30% |
+
+| SSP | 年份 | 光伏允许未达既有容量的大区数 | 风电允许未达既有容量的大区数 |
+|---|---:|---:|---:|
+| SSP1-2.6 | 2030 | 3 | 8 |
+| SSP1-2.6 | 2040 | 1 | 4 |
+| SSP1-2.6 | 2050 | 0 | 0 |
+| SSP2-4.5 | 2030 | 3 | 8 |
+| SSP2-4.5 | 2040 | 1 | 4 |
+| SSP2-4.5 | 2050 | 0 | 0 |
+| SSP5-6.0 | 2030 | 6 | 8 |
+| SSP5-6.0 | 2040 | 6 | 5 |
+| SSP5-6.0 | 2050 | 0 | 0 |
+
+上表是20个大区中的“数量”上限，不是允许容量短缺的百分比；2050的零表示所有大区都必须满足对应初始容量下限。
+
+三个SSP按以下相同顺序分别运行，每条路径只继承自己的上一年份结果：
+
+| 年份 | 负荷切片索引，Python从0起 | 风光比例下界 | 输电模式 | 初始化与repair |
+|---|---:|---|---|---|
+| 2030 | 1 | 全部为0 | S-A，相邻区域直接链路 | 技术分段稀疏采样＋小容量归零 |
+| 2040 | 2 | 本SSP的2030逐格比例 | S-C，允许经一个中间区域转送 | `FloatRandomSampling()`；无repair |
+| 2050 | 3 | 本SSP的2040逐格比例 | S-C，允许经一个中间区域转送 | `FloatRandomSampling()`；无repair |
+
+代码中S-A路径最多2个节点、S-C最多3个节点；两者均排除标记为跨洲的链路。因此S-C并不表示任意长度的全大陆路径。后两期保留上期比例作为下界，但没有把上期最优解直接作为新种群的热启动；在父格潜力不变的前提下，风光逐格容量因此不减。
+
+参数来源：[SSP1-2.6配置](/data6/yanxiaokai/project_climate/analysis_of_global_pv_wind/ref_code/station_addresses/Optimization_10km_ssp126/config.py:123)、[SSP2-4.5配置](/data6/yanxiaokai/project_climate/analysis_of_global_pv_wind/ref_code/station_addresses/Optimization_10km_ssp245/config.py:123)、[SSP5-6.0配置](/data6/yanxiaokai/project_climate/analysis_of_global_pv_wind/ref_code/station_addresses/Optimization_10km_ssp560/config.py:123)、[输电路径长度](/data6/yanxiaokai/project_climate/analysis_of_global_pv_wind/ref_code/station_addresses/Optimization_10km_ssp126/dispatch.py:56)。
+
+### 7.4 GA搜索超参数与2030稀疏初始化
+
+除初始化策略随年份变化外，下列GA默认值在三个SSP、三个年份中相同：
+
+| 参数 | 默认值 | 覆盖入口或实际作用 |
+|---|---|---|
+| 算法 | pymoo单目标 `GA` | 风光比例连续搜索；非风光变量评估时取整 |
+| 种群规模 | 1000 | 环境变量 `POPULATION_SIZE` |
+| 最大代数 | 200 | 环境变量 `MAX_GENERATIONS`；传给 `n_max_gen`，不是保证实际运行200代 |
+| 并行评估进程数 | 64 | 环境变量 `PARPOOL_NUM_WORKERS`；不是自动申请的SLURM CPU数 |
+| 随机种子 | 42 | `GA_SEED`；传给NumPy及 `minimize` |
+| 交叉算子 | `SBX(prob=0.9, eta=15)` | 交叉概率0.9、分布指数15 |
+| 变异算子 | `PM(eta=20)` | 分布指数20；变异概率未显式指定，使用运行环境中pymoo默认值 |
+| 重复个体处理 | `eliminate_duplicates=True` | 开启去重 |
+| 终止器 | `DefaultSingleObjectiveTermination` | 显式传入最大代数；其他停止条件使用安装版本默认值 |
+| 完整进化历史 | `save_history=False` | 不保存完整代际历史对象 |
+
+仅2030调用以下稀疏初始化及repair参数，三个SSP的默认值一致：
+
+| 参数或环境变量 | 光伏 | 风电 | 含义 |
+|---|---:|---:|---|
+| `SOLAR_INIT_MAX_FRAC` / `WIND_INIT_MAX_FRAC` | 1.0 | 0.3 | 普通初始化中被启用格点的比例从0至该上限均匀采样 |
+| `SOLAR_INIT_ACTIVE_PROB` / `WIND_INIT_ACTIVE_PROB` | 0.5 | 0.2 | 普通初始化中各候选格点被启用的概率；未启用回到0 |
+| `SOLAR_MIN_EFFECTIVE_CAP_TWP` / `WIND_MIN_EFFECTIVE_CAP_TWP` | 0.0001 TW | 0.0001 TW | 小于0.1 GW的实际父格建设容量归零；初始化和每代repair均使用 |
+| `SOLAR_FLOOR_SEED_FRACTION` | 0.1 | 不设置 | 将前10%的初始个体补足指定大区的光伏既有容量下限 |
+| `solar_floor_seed_regions` | 大区6、7 | 不设置 | 西欧、南欧；代码内固定元组，无同名环境变量覆盖 |
+
+保底种子按资源质量从高到低补容量，资源评分为父格全年满开发发电量除以潜力容量。初始化比例上限只影响普通第一代采样，不改变真实开发比例上界1；保底补容按真实剩余潜力进行。储能和输电等非风光变量在2030也仍按全边界均匀采样。
+
+2040/2050不调用上述稀疏采样和阈值repair；继续设置这些环境变量并不会让它们在后两期生效。
+
+还需区分两个“配置里存在，但当前入口没有实际用到”的字段：
+
+- `MAX_STALL_GENERATIONS=25` 虽进入 `OptConfig`，却没有传给终止器，因此不能写成“连续25代无改进就停止”。
+- `CURTAILMENT_ACCEPTANCE_MARGIN=0.01` 没有进入Python阶段一约束计算；实际约束使用16%或30%，没有自动收紧为15%或29%。
+
+依据：[GA入口和年份分支](/data6/yanxiaokai/project_climate/analysis_of_global_pv_wind/ref_code/station_addresses/Optimization_10km_ssp126/optimize_stage.py:134)、[稀疏采样与保底种子](/data6/yanxiaokai/project_climate/analysis_of_global_pv_wind/ref_code/station_addresses/Optimization_10km_ssp126/ga_operators.py:56)、[默认超参数](/data6/yanxiaokai/project_climate/analysis_of_global_pv_wind/ref_code/station_addresses/Optimization_10km_ssp126/config.py:150)。
+
+### 7.5 三个SSP与三个年份共用的成本参数
+
+源码没有为2030、2040、2050分别设置技术学习曲线；以下成本参数在三个SSP和三个年份中相同。
+
+| 成本参数 | 默认值 |
+|---|---|
+| 成本口径 | `annualized_incremental`，年度化增量成本 |
+| 加权平均资本成本 WACC | 7.4% |
+| 光伏/陆风寿命 | 25年 / 25年 |
+| 储能/输电寿命 | 15年 / 40年 |
+| 光伏/陆风年度运维系数 | 对应投资额的1% / 3% |
+| 储能投资单价 | 350十亿美元/TWh，即350美元/kWh |
+| 输电投资单价 | 98十亿美元/TW，即98美元/kW |
+| 储能、输电运维 | 默认关闭，系数均为0 |
+| 灵活电源运行成本 | 默认关闭，各大区边际成本均为0美元/MWh |
+| 弃电成本 | 默认关闭，单价为0；弃电率上限约束仍生效 |
+
+投资通过资本回收因子 $\mathrm{CRF}=r(1+r)^n/[(1+r)^n-1]$ 年度化，其中 $r=0.074$，$n$ 为相应技术寿命。光伏与陆风投资按洲区分：
+
+| 洲 | 大区编号 | 光伏CAPEX，美元/kW | 陆风CAPEX，美元/kW |
+|---|---|---:|---:|
+| 北美 | 1 | 1012.6 | 1284.8 |
+| 拉丁美洲 | 2–4 | 861.4 | 1499.4 |
+| 欧洲 | 5–8 | 1075.9 | 1650.4 |
+| 亚洲 | 9–13 | 927.6 | 1313.0 |
+| 大洋洲 | 14–15 | 922.5 | 1360.7 |
+| 非洲 | 16–20 | 1256.6 | 1684.7 |
+
+依据：[成本配置](/data6/yanxiaokai/project_climate/analysis_of_global_pv_wind/ref_code/station_addresses/Optimization_10km_ssp126/config.py:58)、[洲与大区映射](/data6/yanxiaokai/project_climate/analysis_of_global_pv_wind/ref_code/station_addresses/Optimization_10km_ssp126/cost_model.py:17)。
+
+### 7.6 求解结果与0.1°下推的衔接
+
+每个SSP依次运行2030、2040、2050；每期先构造继承边界，再初始化种群，通过交叉、变异、评估和选择搜索成本较低且满足约束的方案。结束后重新评估选中方案并输出：
+
+- `Opt_<year>_Sel.npz`：180×360父格开发比例及容量，以及储能、输电变量和关键指标。
+- `parent_1deg_capacity_<year>.csv`：逐父格潜力、建设比例、实际容量和大区归属。
+- `Optimization_<year>_metrics.json`：成本、弃电率、VRE占比等；245/560还保存五项约束及 `is_feasible` 等元数据。
+
+若未找到可行解，当前入口仍会选择约束违反最小的个体并输出。因此这些文件名中的“Sel”或“optimal”不等于可行性证书，也不构成全局最优保证；需要结合第四节已指出的验收问题解释。
+
+阶段二才将父格容量分配到0.1°子格网，默认 `lam_curve=1.0`、`lam_cf=0.0`，分别控制288个典型时段曲线偏差与资源质量项。它们是下推LP参数，不是本节GA超参数。最终CSV的确切配置必须从其对应的阶段一/二输出与运行日志追溯，不能将本节默认表直接标注为那次生产运行的实际参数。
+
 ## 建议优先处理的顺序
 
 1. **闭合正式场站来源和可行性验收。** 找到这批CSV对应的优化NPZ、下推NPZ、日志及生成版本。现行导出脚本的经度和小数格式与正式CSV不同，而且默认目录还指向旧结果转换的测试夹具；必须确认真实生产入口。
