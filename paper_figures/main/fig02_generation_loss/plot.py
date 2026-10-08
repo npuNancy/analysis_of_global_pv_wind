@@ -1,4 +1,5 @@
-"""Audit existing Fig. 2 tables, supplement display data and render six panels."""
+"""Fig. 2: annual losses, exposure-intensity attribution and event composition."""
+import argparse
 import itertools
 import json
 import os
@@ -9,257 +10,238 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
-from matplotlib.patches import Rectangle
-from matplotlib.text import Text
-from PIL import Image
-from paper_figures.config import ROOT, OUTPUT, MODELS, SSPS, TECHS, SNAPSHOTS, EVENTS, SSP_COLORS
-from paper_figures.common.io import digest, require_complete, write_csv, write_json
-from paper_figures.common.metrics import ensemble
-from paper_figures.common.plotting import configure, save_png
+from matplotlib.patches import Patch
+from matplotlib.ticker import MaxNLocator
+from paper_figures.config import ROOT, SSPS, TECHS, SNAPSHOTS, SSP_COLORS
+from paper_figures.common.io import digest, write_csv, write_json
+from paper_figures.common.plotting import configure, export_panel_png
+from paper_figures.main.fig02_generation_loss.prepare_data import main as prepare, require
 
 FOLDER = ROOT / 'paper_figures/main/fig02_generation_loss'
 OUT = FOLDER / 'outputs'
 SOURCE = OUT / 'source_data'
 UNIT = 'MWh MW⁻¹ yr⁻¹'
-MARKERS = dict(zip(SSPS, ['o', 's', '^']))
-NAMES = {'low_resource': 'Low resource', 'high_temp': 'High temperature',
-         'icing': 'Icing', 'hot_humid': 'Hot–humid', 'high_wind': 'High wind',
-         'high_humidity': 'High humidity', 'freezing_rain': 'Freezing rain',
-         'rainstorm': 'Rainstorm', 'cold_highwind': 'Cold + high wind'}
-
-
-def require(condition, message):
-    if not condition:
-        raise ValueError(message)
-
-
-def audit():
-    OUT.mkdir(parents=True, exist_ok=True)
-    final_path = ROOT / 'logs/paper_figures/completion_status/final_audit.json'
-    final = json.loads(final_path.read_text())
-    require(final['acceptance']['status'] == 'PASSED' and
-            final['verified_output_units'] == final['manifest_units'] == 664,
-            'Preparation acceptance incomplete')
-    for folder in ['loss_summary', 'event_summary', 'panel_loss', 'catalogues']:
-        require_complete(OUTPUT / folder)
-    a, c, e = [pd.read_csv(SOURCE / name) for name in
-               ['panel_ab.csv', 'panel_cd.csv', 'panel_ef.csv']]
-    keys = ['model', 'climate_ssp', 'station_ssp', 'tech', 'snapshot', 'country', 'event', 'support']
-    first = a.iloc[0]
-    require(np.isclose(first.R, first.net_mwh / first.capacity_mw), 'Sample normalization')
-    for t, count in [(a, 720), (c, 24), (e, 132)]:
-        require(len(t) == count, 'Incomplete panel table')
-        require(t.country.eq('GLOBAL').all() and t.support.eq('common').all(), 'Scope mismatch')
-        require(set(t.model) == set(MODELS), 'Model coverage')
-    require(not c.duplicated(['model', 'tech', 'snapshot']).any(), 'Duplicate contrast')
-    require(c.event.eq('all').all() and c.metric.eq('R').all(), 'Contrast metric mismatch')
-    for t, extra in [(a, ['year']), (e, [])]:
-        require(not t.duplicated(keys + extra).any(), 'Duplicate loss record')
-        require(t.climate_ssp.eq(t.station_ssp).all(), 'Unpaired pathway')
-        require(np.isfinite(t[['R', 'net_mwh', 'capacity_mw']]).all().all(), 'Missing loss value')
-        require(t.capacity_mw.gt(0).all(), 'Non-positive denominator')
-        require(np.allclose(t.R, t.net_mwh / t.capacity_mw, rtol=1e-11), 'Normalization mismatch')
-    require(a.event.eq('all').all(), 'Annual table must use event union')
-    expected = set(itertools.product(MODELS, SSPS, TECHS, range(2030, 2060)))
-    require(set(a[['model', 'climate_ssp', 'tech', 'year']].itertuples(index=False, name=None))
-            == expected, 'Missing annual combination')
-    require((a.snapshot == (a.year // 10) * 10).all(), 'Year/snapshot mismatch')
-    cap = a.groupby(['station_ssp', 'tech', 'snapshot']).capacity_mw.agg(['min', 'max'])
-    require(np.allclose(cap['min'], cap['max']), 'Common support capacity varies')
-    window = a.groupby(keys, as_index=False).agg(
-        R=('R', 'mean'), net_mwh=('net_mwh', 'mean'), capacity_mw=('capacity_mw', 'first'),
-        available_capacity_mw=('available_capacity_mw', 'first'), n_stations=('n_stations', 'first'),
-        n_years=('year', 'nunique'))
-    require(window.n_years.eq(10).all(), 'Incomplete decade')
-    window['year_start'] = window.snapshot
-    window['year_end'] = window.snapshot + 9
-    wide = window.pivot(index=['model', 'tech', 'snapshot'], columns='climate_ssp', values='R')
-    contrasts = []
-    for ssp, field in [('ssp245', 'D245'), ('ssp585', 'D')]:
-        reference = c.set_index(['model', 'tech', 'snapshot'])[field].sort_index()
-        delta = (wide[ssp] - wide.ssp126).sort_index()
-        require(reference.index.equals(delta.index) and np.allclose(reference, delta, atol=1e-10),
-                'Stored contrast differs from within-model annual means')
-        block = window[window.climate_ssp.eq(ssp)].copy()
-        base = window[window.climate_ssp.eq('ssp126')][
-            ['model', 'tech', 'snapshot', 'R', 'capacity_mw', 'n_stations']].rename(
-                columns={'R': 'reference_R', 'capacity_mw': 'reference_capacity_mw',
-                         'n_stations': 'reference_n_stations'})
-        block = block.merge(base, on=['model', 'tech', 'snapshot'], validate='one_to_one')
-        block['difference'] = block.R - block.reference_R
-        block['reference_climate_ssp'] = 'ssp126'
-        block['reference_station_ssp'] = 'ssp126'
-        contrasts.append(block)
-    contrasts = pd.concat(contrasts, ignore_index=True)
-    require(e.snapshot.eq(2050).all(), 'Wrong event period')
-    expected_events = {(m, s, t, ev) for m in MODELS for s in SSPS for t in TECHS for ev in EVENTS[t]}
-    require(set(e[['model', 'climate_ssp', 'tech', 'event']].itertuples(index=False, name=None))
-            == expected_events, 'Missing event combination')
-    denominator = window[window.snapshot.eq(2050)][
-        ['model', 'climate_ssp', 'tech', 'capacity_mw']].rename(columns={'capacity_mw': 'all_capacity_mw'})
-    check = e.merge(denominator, on=['model', 'climate_ssp', 'tech'], validate='many_to_one')
-    require(np.allclose(check.capacity_mw, check.all_capacity_mw), 'Event denominator differs from all valid capacity')
-    event_path = OUTPUT / 'event_summary/window.csv.gz'
-    chunks = []
-    for part in pd.read_csv(event_path, chunksize=50000):
-        chunks.append(part[part.country.eq('GLOBAL') & part.snapshot.eq(2050) &
-                           part.climate_ssp.eq('ssp126') & part.station_ssp.eq('ssp126') &
-                           part.event.ne('all')])
-    exposure = pd.concat(chunks, ignore_index=True)
-    require(len(exposure) == 44 and np.isfinite(exposure.E).all(), 'Incomplete ordering exposure')
-    require(not exposure.duplicated(['model', 'tech', 'event']).any(), 'Duplicate ordering exposure')
-    order = {}
-    for tech in TECHS:
-        g = exposure[exposure.tech.eq(tech)].groupby('event', as_index=False).E.mean()
-        order[tech] = g.sort_values(['E', 'event'], ascending=[False, True]).event.tolist()
-        require(set(order[tech]) == set(EVENTS[tech]), 'Ordering event mismatch')
-    refs_path = OUTPUT / 'catalogues/capacity_by_country.csv'
-    refs = pd.read_csv(refs_path).groupby(['station_ssp', 'tech', 'snapshot']).capacity_mw.sum()
-    coverage = window.copy()
-    coverage['catalogue_capacity_mw'] = [
-        refs.loc[(r.station_ssp, r.tech, r.snapshot)] for r in coverage.itertuples()]
-    coverage['capacity_coverage_pct'] = 100 * coverage.capacity_mw / coverage.catalogue_capacity_mw
-    require(coverage.capacity_coverage_pct.between(0, 100 + 1e-8).all(), 'Invalid capacity coverage')
-    annual_display = ensemble(a, ['tech', 'climate_ssp', 'snapshot', 'year'], 'R')
-    contrast_display = ensemble(contrasts, ['tech', 'climate_ssp', 'snapshot'], 'difference')
-    event_display = ensemble(e, ['tech', 'climate_ssp', 'event'], 'R')
-    event_display['row'] = [order[r.tech].index(r.event) for r in event_display.itertuples()]
-    for t in [annual_display, contrast_display, event_display]:
-        require(t.n_models.eq(4).all() and t['mean'].notna().all(), 'Ensemble incomplete')
-        t['units'] = UNIT
-    for name, table in {
-        'panel_ab_display.csv': annual_display, 'panel_cd_models.csv': contrasts,
-        'panel_cd_display.csv': contrast_display, 'panel_ef_display.csv': event_display,
-        'panel_ef_ordering.csv': exposure, 'capacity_coverage.csv': coverage}.items():
-        write_csv(SOURCE / name, table)
-    inputs = [SOURCE / n for n in ['panel_ab.csv', 'panel_cd.csv', 'panel_ef.csv']]
-    inputs += [event_path, refs_path, final_path]
-    result = {
-        'status': 'PASSED', 'created_utc': datetime.now(timezone.utc).isoformat(),
-        'input_rows': {'ab': len(a), 'cd': len(c), 'ef': len(e)},
-        'display_rows': {'ab': len(annual_display), 'cd': len(contrast_display), 'ef': len(event_display)},
-        'checks': ['664 accepted units', 'full model/pathway/year/event coverage', 'unique records',
-                   'signed energy divided by common capacity', 'fixed capacity within snapshot',
-                   'ten-year means and within-model paired differences', 'event denominators equal all valid capacity',
-                   'Fig. 1 exposure-based event order', 'four-model equal weighting', 'catalogue capacity coverage'],
-        'event_order': order, 'capacity_coverage_pct': [float(coverage.capacity_coverage_pct.min()),
-                                                       float(coverage.capacity_coverage_pct.max())],
-        'negative_event_model_values': int(e.R.lt(0).sum()), 'zero_event_model_values': int(e.R.eq(0).sum()),
-        'input_sha256': {str(p.relative_to(ROOT)): digest(p) for p in inputs},
-        'support': 'Common finite annual fields across climates, models, events and ten years within each deployment snapshot',
-        'limitation': 'Annual Loss validity does not establish identical valid three-hourly timestamps',
-        'units': UNIT, 'wind_energy_scale': 1,
-    }
-    write_json(OUT / 'data_audit.json', result)
-    print(json.dumps(result, ensure_ascii=False), flush=True)
-    return annual_display, contrasts, contrast_display, event_display, order
+SSP_LABEL = dict(zip(SSPS, ['SSP1-2.6', 'SSP2-4.5', 'SSP5-8.5']))
+EVENT_LABEL = {
+    'low_resource': 'Low resource', 'high_temp': 'High temperature',
+    'high_wind': 'High wind', 'hot_humid': 'Hot–humid', 'icing': 'Icing',
+    'rainstorm': 'Rainstorm', 'cold_highwind': 'Cold + high wind',
+    'freezing_rain': 'Freezing rain', 'high_humidity': 'High humidity'}
+EVENT_COLOR = dict(zip(EVENT_LABEL, [
+    '#3b6fb6', '#d95f02', '#b2182b', '#e78ac3', '#67a9cf',
+    '#1b9e77', '#7570b3', '#80cdc1', '#66a61e']))
+EVENT_ORDER = {
+    'wind': ('low_resource', 'high_temp', 'high_wind', 'hot_humid', 'icing'),
+    'solar': ('low_resource', 'icing', 'rainstorm', 'cold_highwind',
+              'freezing_rain', 'high_humidity')}
+FACTOR_COLORS = {'exposure': '#9EC3D3', 'intensity': '#C99581', 'gap': '#30363C'}
+PERCENT_LABEL_MIN = 5
+PERCENT_LABEL_MIN_HEIGHT_PT = 7
 
 
 def label(fig, x, y, letter, title):
     fig.text(x, y, letter, fontsize=8, fontweight='bold', va='bottom')
-    fig.text(x + 0.024, y, title, fontsize=7, va='bottom')
+    fig.text(x + .024, y, title, fontsize=7, va='bottom')
 
 
-def main():
-    a, models, c, e, order = audit()
-    configure()
-    plt.rcParams.update({'font.sans-serif': ['DejaVu Sans'], 'font.size': 6.5,
-                         'axes.labelsize': 6.5, 'xtick.labelsize': 6, 'ytick.labelsize': 6,
-                         'axes.linewidth': 0.6, 'xtick.major.size': 2, 'ytick.major.size': 2,
-                         'savefig.pad_inches': 0})
-    fig = plt.figure(figsize=(183 / 25.4, 165 / 25.4), facecolor='white')
-    fig.legend([Line2D([], [], color=SSP_COLORS[s], marker=MARKERS[s], lw=1, ms=3.5)
-                for s in SSPS], [s.upper() for s in SSPS], loc='upper center',
-               bbox_to_anchor=(0.5, 0.995), ncol=3, fontsize=6.5)
-    fig.text(0.5, 0.949, 'Paired climate and deployment pathways', ha='center', fontsize=6)
-    annual_limits = (float(np.floor(a.minimum.min() / 10) * 10 - 5), float(a.maximum.max()) * 1.06)
-    delta_limit = float(np.ceil(max(abs(c.minimum.min()), abs(c.maximum.max())) / 5) * 5 + 2)
-    event_limits = (min(-2, float(e['mean'].min()) * 1.2), float(e['mean'].max()) * 1.08)
+def annual_panels(fig, annual, trends):
+    fig.legend([Line2D([], [], color=SSP_COLORS[s], lw=1.1) for s in SSPS],
+               [SSP_LABEL[s] for s in SSPS], loc='center', bbox_to_anchor=(.5, .978),
+               ncol=3, fontsize=6.5, handlelength=2.5, columnspacing=2.5)
+    limits = {}
     for col, tech in enumerate(TECHS):
-        left = 0.102 + col * 0.50
-        width = 0.365
-        ax = fig.add_axes([left, 0.678, width, 0.224])
-        label(fig, left - 0.07, 0.912, 'ab'[col], tech.title() + ' | Annual net loss')
+        left = .105 + col * .5
+        ax = fig.add_axes([left, .715, .360, .202])
+        label(fig, left - .08, .936, 'ab'[col], tech.title() + ' | Annual net loss')
         for ssp in SSPS:
-            for snap in SNAPSHOTS:
-                g = a[a.tech.eq(tech) & a.climate_ssp.eq(ssp) & a.snapshot.eq(snap)].sort_values('year')
-                ax.fill_between(g.year, g.minimum, g.maximum, color=SSP_COLORS[ssp], alpha=0.12, linewidth=0)
-                ax.plot(g.year, g['mean'], color=SSP_COLORS[ssp], marker=MARKERS[ssp], ms=1.9,
-                        lw=0.9, markeredgewidth=0)
-        for year in [2040, 2050]:
-            ax.axvline(year, color='#999999', ls=':', lw=0.55)
-        ax.set(xlim=(2029.4, 2059.6), ylim=annual_limits, xticks=[2030, 2040, 2050, 2059],
-               xlabel='Year', ylabel='Net loss (' + UNIT + ')')
-        ax.grid(axis='y', color='#eeeeee', linewidth=0.4)
+            g = annual[annual.tech.eq(tech) & annual.climate_ssp.eq(ssp)].sort_values('year')
+            x, y = g.year.to_numpy(), g['mean'].to_numpy()
+            require(np.array_equal(x, np.arange(2030, 2060)), 'Incomplete annual line')
+            color = SSP_COLORS[ssp]
+            ax.fill_between(x, g.minimum, g.maximum, color=color, alpha=.16, linewidth=0, zorder=1)
+            ax.plot(x, y, color=color, lw=1.05, zorder=3)
+            fit = trends[trends.tech.eq(tech) & trends.climate_ssp.eq(ssp)].iloc[0]
+            require(np.allclose([fit.slope, fit.intercept], np.polyfit(x, y, 1)), 'Trend mismatch')
+            ax.plot(x, fit.slope * x + fit.intercept, '--', color=color, lw=1.0, zorder=4)
+        ax.set(xlabel='Year', ylabel='Unit-capacity loss\n(' + UNIT + ')',
+               xlim=(2028.6, 2060.4), xticks=range(2030, 2061, 5))
+        ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
+        ax.grid(axis='y', color='#dddddd', alpha=.65, linewidth=.4)
         ax.set_axisbelow(True)
+        limits[tech] = list(ax.get_ylim())
+    fig.text(.5, .661, 'Four-model means; shading: model min–max; dashed lines: least-squares trends.',
+             ha='center', fontsize=6)
+    return limits
 
-        ax = fig.add_axes([left, 0.385, width, 0.19])
-        label(fig, left - 0.07, 0.590, 'cd'[col], tech.title() + ' | Difference from SSP126')
-        for si, ssp in enumerate(SSPS[1:]):
-            for xi, snap in enumerate(SNAPSHOTS):
-                x = xi + (-0.16 if si == 0 else 0.16)
-                g = c[c.tech.eq(tech) & c.climate_ssp.eq(ssp) & c.snapshot.eq(snap)].iloc[0]
-                ax.vlines(x, g.minimum, g.maximum, color=SSP_COLORS[ssp], lw=0.8)
-                ax.hlines([g.minimum, g.maximum], x - 0.045, x + 0.045, color=SSP_COLORS[ssp], lw=0.6)
-                vals = models[models.tech.eq(tech) & models.climate_ssp.eq(ssp) &
-                              models.snapshot.eq(snap)].set_index('model').loc[list(MODELS), 'difference']
-                ax.scatter(x + np.linspace(-0.065, 0.065, 4), vals, s=8,
-                           facecolors='white', edgecolors=SSP_COLORS[ssp], linewidths=0.5, zorder=3)
-                ax.plot(x, g['mean'], marker=MARKERS[ssp], color=SSP_COLORS[ssp], ms=4,
-                        markeredgecolor='white', markeredgewidth=0.3, zorder=4)
-        ax.axhline(0, color='#666666', lw=0.65)
-        ax.set(xlim=(-0.5, 2.5), ylim=(-delta_limit, delta_limit),
-               xticks=[0, 1, 2], xticklabels=['2030–39', '2040–49', '2050–59'],
-               xlabel='Ten-year window', ylabel='Net-loss difference\n(' + UNIT + ')')
-        ax.grid(axis='y', color='#eeeeee', linewidth=0.4)
+
+def waterfall_panels(fig, summary):
+    wide = summary.pivot(index=['tech', 'snapshot'], columns='term', values='mean')
+    require(np.allclose(wide.exposure + wide.intensity, wide.gap, atol=1e-10), 'Waterfall closure')
+    limits = {}
+    waterfall_axes = []
+    fig.legend([Patch(facecolor=FACTOR_COLORS[t]) for t in ['exposure', 'intensity', 'gap']],
+               ['E: Exposure', 'I: Intensity', 'Δ: Net gap'], loc='center',
+               bbox_to_anchor=(.5, .589), ncol=3, fontsize=6.2, columnspacing=2.5)
+    for col, tech in enumerate(TECHS):
+        left = .105 + col * .5
+        tech_values = wide.loc[tech]
+        edges = np.r_[0, tech_values.exposure, tech_values.gap]
+        pad = max(.7, (edges.max() - edges.min()) * .22)
+        limits[tech] = [float(edges.min() - pad), float(edges.max() + 1.6 * pad)]
+        ax = fig.add_axes([left, .426, .360, .138])
+        waterfall_axes.append(ax)
+        label(fig, left - .08, .614, 'cd'[col], tech.title() + ' | SSP585 − SSP126')
+        for gi, snapshot in enumerate(SNAPSHOTS):
+            r = wide.loc[(tech, snapshot)]
+            level = 0.
+            start = gi * 3.5
+            for offset, term in enumerate(['exposure', 'intensity']):
+                value = r[term]
+                x = start + offset
+                ax.bar(x, abs(value), bottom=min(level, level + value), width=.67,
+                       color=FACTOR_COLORS[term], edgecolor='white', linewidth=.3, zorder=3)
+                ax.annotate(f'{value:+.2f}', (x, max(level, level + value)),
+                            xytext=(0, 11 if term == 'intensity' else 3),
+                            textcoords='offset points', ha='center', va='bottom', fontsize=5.6)
+                level += value
+                ax.plot([x + .335, x + .665], [level, level], color='#8f969b', lw=.6, zorder=4)
+            ax.bar(start + 2, r.gap, width=.67, color=FACTOR_COLORS['gap'], zorder=3)
+            ax.annotate(f'{r.gap:+.2f}', (start + 2, r.gap),
+                        xytext=(0, 3 if r.gap >= 0 else -3), textcoords='offset points',
+                        ha='center', va='bottom' if r.gap >= 0 else 'top',
+                        fontsize=5.6, fontweight='bold')
+            ax.text(start + 1, -.25, f'{snapshot}s', transform=ax.get_xaxis_transform(),
+                    ha='center', va='top', fontsize=6.3)
+        ax.axhline(0, color='#6d757b', lw=.65)
+        ax.set(xlim=(-.7, 9.7), ylim=limits[tech],
+               xticks=[0, 1, 2, 3.5, 4.5, 5.5, 7, 8, 9], xticklabels=['E', 'I', 'Δ'] * 3,
+               ylabel='Contribution to net-loss gap\n(' + UNIT + ')')
+        ax.tick_params(axis='x', length=0, pad=3)
+        ax.yaxis.set_major_locator(MaxNLocator(nbins=4))
+        ax.grid(axis='y', color='#dddddd', linewidth=.4)
         ax.set_axisbelow(True)
-
-        ax = fig.add_axes([left + 0.045, 0.105, width - 0.045, 0.171])
-        label(fig, left - 0.07, 0.299, 'ef'[col], tech.title() + ' | Event losses, 2050–59')
-        rows = order[tech]
-        vals = e[e.tech.eq(tech)].set_index(['event', 'climate_ssp'])['mean']
-        for yi, event in enumerate(rows):
-            ax.axhline(yi, color='#eeeeee', linewidth=0.4, zorder=0)
-            ax.plot([vals.loc[event, 'ssp126'], vals.loc[event, 'ssp585']], [yi, yi],
-                    color='#b0b0b0', lw=1.6, zorder=1)
-            for ssp in SSPS:
-                ax.plot(vals.loc[event, ssp], yi, marker=MARKERS[ssp], ms={'ssp126': 5.5, 'ssp245': 4.3, 'ssp585': 3.8}[ssp],
-                        color=SSP_COLORS[ssp], markeredgecolor='white', markeredgewidth=0.35, zorder=3)
-        ax.axvline(0, color='#888888', linewidth=0.55)
-        ax.set(yticks=range(len(rows)), yticklabels=[NAMES[ev] for ev in rows],
-               ylim=(len(rows) - 0.5, -0.5), xlim=event_limits, xlabel='Net loss (' + UNIT + ')')
-        ax.tick_params(axis='y', length=0, pad=3)
-    fig.text(0.5, 0.613, 'Lines and symbols: four-model means; shading: model min–max. Dotted lines: capacity snapshots.',
-             ha='center', fontsize=6)
-    fig.text(0.5, 0.320, 'Small open points: four models; large symbols: means; bars: model min–max.',
-             ha='center', fontsize=6)
-    fig.text(0.5, 0.039, 'Event labels may overlap; their losses cannot be added to recover the event union.',
+    fig.text(.5, .366, 'Unit loss = Exposure × Intensity · Exact attribution within each model, then four-model means',
              ha='center', fontsize=6)
     fig.canvas.draw()
     renderer = fig.canvas.get_renderer()
-    outside = []
-    for artist in fig.findobj(Text):
-        if artist.get_visible() and artist.get_text():
-            box = artist.get_window_extent(renderer).transformed(fig.transFigure.inverted())
-            if box.x0 < -0.002 or box.y0 < -0.002 or box.x1 > 1.002 or box.y1 > 1.002:
-                outside.append(artist.get_text())
-    require(not outside, 'Text outside canvas: ' + repr(outside))
-    fig.add_artist(Rectangle((0, 0), 1, 1, transform=fig.transFigure, fill=False, edgecolor='none', linewidth=0))
-    save_png(fig, OUT / 'fig02.png')
+    for ax in waterfall_axes:
+        for first, second in itertools.combinations(ax.texts, 2):
+            require(not first.get_window_extent(renderer).overlaps(second.get_window_extent(renderer)),
+                    'Overlapping waterfall labels: ' + first.get_text() + ' / ' + second.get_text())
+    return limits
+
+
+def composition_panels(fig, summary):
+    summary = summary.copy()
+    keys = ['tech', 'climate_ssp', 'snapshot']
+    summary['event_sum'] = summary.groupby(keys)['mean'].transform('sum')
+    require(summary.event_sum.gt(0).all(), 'Event pool must be positive')
+    summary['share_pct'] = 100 * summary['mean'] / summary.event_sum
+    require(np.allclose(summary.groupby(keys).share_pct.sum(), 100), 'Composition shares')
+    summary['units'] = UNIT
+    totals = summary.groupby(keys)['mean'].agg(
+        positive=lambda x: x.clip(lower=0).sum(), negative=lambda x: x.clip(upper=0).sum())
+    limits = [float(min(0, totals.negative.min()) * 1.08), float(totals.positive.max() * 1.08)]
+    segment_points = summary['mean'].abs() / (limits[1] - limits[0]) * fig.get_figheight() * 72 * .171
+    summary['percentage_label_shown'] = (
+        summary.share_pct.abs().ge(PERCENT_LABEL_MIN) & segment_points.ge(PERCENT_LABEL_MIN_HEIGHT_PT))
+    write_csv(SOURCE / 'event_composition_display.csv', summary)
+    for col, tech in enumerate(TECHS):
+        left = .105 + col * .5
+        ax = fig.add_axes([left, .090, .360, .171])
+        label(fig, left - .08, .328, 'ef'[col], tech.title() + ' | Event loss composition')
+        fig.legend([Patch(facecolor=EVENT_COLOR[e]) for e in EVENT_ORDER[tech]],
+                   [EVENT_LABEL[e] for e in EVENT_ORDER[tech]], loc='center',
+                   bbox_to_anchor=(left + .180, .294), ncol=3, fontsize=5.7,
+                   handlelength=1.2, handletextpad=.4, columnspacing=.8, labelspacing=.55)
+        for gi, snapshot in enumerate(SNAPSHOTS):
+            positions = gi * 3.5 + np.arange(3) * .8
+            for si, ssp in enumerate(SSPS):
+                block = summary[summary.tech.eq(tech) & summary.snapshot.eq(snapshot) &
+                                summary.climate_ssp.eq(ssp)].set_index('event')
+                pos = neg = 0.
+                for event in EVENT_ORDER[tech]:
+                    row = block.loc[event]
+                    value = row['mean']
+                    bottom = pos if value >= 0 else neg
+                    ax.bar(positions[si], value, bottom=bottom, width=.66,
+                           color=EVENT_COLOR[event], edgecolor='white', linewidth=.35, zorder=3)
+                    if row.percentage_label_shown:
+                        color = 'white' if event in ['low_resource', 'high_temp', 'high_wind',
+                                                     'rainstorm', 'cold_highwind', 'high_humidity'] else '#222222'
+                        ax.text(positions[si], bottom + value / 2, f'{row.share_pct:.0f}%',
+                                ha='center', va='center', color=color, fontsize=5.5, zorder=4)
+                    if value >= 0:
+                        pos += value
+                    else:
+                        neg += value
+                require(np.isclose(pos + neg, block.event_sum.iloc[0]), 'Stack total mismatch')
+            ax.text(positions[1], -.26, f'{snapshot}s', transform=ax.get_xaxis_transform(),
+                    ha='center', va='top', fontsize=6.3)
+        ax.set(xticks=[gi * 3.5 + si * .8 for gi in range(3) for si in range(3)],
+               xticklabels=['126', '245', '585'] * 3, xlim=(-.6, 9.2), ylim=limits,
+               ylabel='Event-labelled net loss\n(' + UNIT + ')')
+        ax.tick_params(axis='x', length=0, pad=3, labelsize=5.8)
+        ax.yaxis.set_major_locator(MaxNLocator(nbins=4))
+        ax.grid(axis='y', color='#dddddd', linewidth=.4)
+        ax.set_axisbelow(True)
+    fig.text(.5, .005, 'Bars within each decade: SSP126, SSP245, SSP585.\n'
+             'Percentages ≥5% of summed event-labelled losses; event categories can overlap.',
+             ha='center', va='bottom', fontsize=6)
+    return limits
+
+
+def main():
+    parser = argparse.ArgumentParser(__doc__)
+    parser.add_argument('--skip-prepare', action='store_true')
+    args = parser.parse_args()
+    if not args.skip_prepare:
+        prepare()
+    audit = json.loads((OUT / 'data_audit.json').read_text())
+    require(audit['status'] == 'PASSED', 'Source audit failed')
+    for name, sha in audit['input_sha256'].items():
+        require(digest(ROOT / name) == sha, 'Audited input changed: ' + name)
+    annual = pd.read_csv(SOURCE / 'panel_ab_display.csv')
+    trends = pd.read_csv(SOURCE / 'annual_trends.csv')
+    decomposition = pd.read_csv(SOURCE / 'two_factor_display.csv')
+    events = pd.read_csv(SOURCE / 'event_composition_display.csv')
+    configure()
+    plt.rcParams.update({'font.sans-serif': ['DejaVu Sans'], 'font.size': 6.5,
+                         'axes.labelsize': 6, 'xtick.labelsize': 6, 'ytick.labelsize': 6,
+                         'axes.linewidth': .6, 'xtick.major.size': 2, 'ytick.major.size': 2,
+                         'savefig.pad_inches': 0})
+    fig = plt.figure(figsize=(183 / 25.4, 220 / 25.4), facecolor='white')
+    annual_limits = annual_panels(fig, annual, trends)
+    waterfall_limits = waterfall_panels(fig, decomposition)
+    event_limits = composition_panels(fig, events)
+    products = [export_panel_png(fig, OUT / 'fig02.png', close=False)]
+    groups = {'ab': [0, .642, 1, 1], 'cd': [0, .353, 1, .638], 'ef': [0, 0, 1, .348]}
+    for group, bounds in groups.items():
+        products.append(export_panel_png(fig, OUT / f'fig02_{group}.png', bounds=bounds, close=False))
     plt.close(fig)
-    with Image.open(OUT / 'fig02.png') as im:
-        info = {'pixels': list(im.size), 'dpi': list(im.info.get('dpi', []))}
-        im.verify()
-    metadata = {'created_utc': datetime.now(timezone.utc).isoformat(), 'slurm_job_id': os.getenv('SLURM_JOB_ID'),
-                'figure': 'Fig. 2', 'panels': 'a–f', 'backend': 'matplotlib', 'size_mm': [183, 165],
-                'image': info, 'annual_limits': annual_limits, 'difference_limits': [-delta_limit, delta_limit],
-                'event_limits': event_limits, 'out_of_canvas_text': outside, 'n_models': 4,
-                'model_offset_order': list(MODELS), 'event_order': order,
-                'figure_sha256': digest(OUT / 'fig02.png'), 'code_sha256': digest(FOLDER / 'plot.py'),
-                'source_sha256': {p.name: digest(p) for p in sorted(SOURCE.glob('*.csv'))}}
-    (OUT / 'caption.md').write_text((FOLDER / 'caption.md').read_text(), encoding='utf-8')
-    write_json(OUT / 'metadata.json', metadata)
-    print(json.dumps(metadata, ensure_ascii=False), flush=True)
+    (OUT / 'caption.md').write_text((FOLDER / 'caption.md').read_text())
+    write_json(OUT / 'metadata.json', {
+        'figure': 'Fig. 2', 'created_utc': datetime.now(timezone.utc).isoformat(),
+        'job_id': os.getenv('SLURM_JOB_ID'), 'backend': 'Python/matplotlib',
+        'archetype': 'quantitative grid', 'size_mm': [183, 220], 'dpi': 600,
+        'products': products, 'panel_groups': groups, 'n_models': 4,
+        'annual_limits': annual_limits, 'waterfall_limits': waterfall_limits, 'event_limits': event_limits,
+        'annual_encoding': 'continuous mean lines; four-model min-max shading; 2030-2059 OLS dashed trends',
+        'two_factor_definition': 'R=E*I; symmetric exact attribution of paired SSP585 minus SSP126 per model',
+        'two_factor_max_closure': audit['two_factor_max_closure'],
+        'event_encoding': 'signed ensemble-mean event losses in physical units; percentage of displayed event sum',
+        'percentage_label_min_pct': PERCENT_LABEL_MIN,
+        'percentage_label_min_segment_height_pt': PERCENT_LABEL_MIN_HEIGHT_PT,
+        'waterfall_label_overlap_check': 'PASSED', 'negative_event_means': audit['negative_event_means'],
+        'event_order': EVENT_ORDER, 'event_colours': EVENT_COLOR, 'factor_colours': FACTOR_COLORS,
+        'source_data': {p.name: digest(p) for p in sorted(SOURCE.glob('*.csv'))},
+        'code_sha256': {str(p.relative_to(ROOT)): digest(p) for p in
+                       (FOLDER / 'plot.py', FOLDER / 'prepare_data.py', ROOT / 'paper_figures/common/plotting.py')},
+        'reference_style': 'RQ2_loss/global/global_unit_capacity_loss.py; two-factor layout from supplied reference',
+        'data_audit': 'PASSED', 'visual_review': 'PENDING'})
+    print(json.dumps({'figure': 'Fig. 2', 'products': products}), flush=True)
+    from paper_figures.supplementary.fig_s12_global_loss_contrasts.plot import main as supplement
+    supplement()
 
 
 if __name__ == '__main__':
