@@ -68,3 +68,40 @@ sbatch paper_figures/main/fig01_extreme_events/plot_country_exposure.sh
 - `outputs/country_exposure_data_audit.json`、`country_exposure_metadata.json`：来源哈希、覆盖、守恒检查、色标截断计数、图件及视觉检查记录。
 
 2026-10-08 验证：代表分块作业 46083676、全量准备及绘图作业 46083857、最终排版重绘作业 46084188 均 COMPLETED（0:0）。通过国家/全球面积、暴露及容量守恒和现有全球网格结果复现；六张 PNG 已逐张视觉检查，图件与源数据哈希、600 dpi 和文字边界检查通过。最终绝对值色标0–170天/年，变化色标−10–10天/年。
+
+## 国家风光容量因子地图
+
+科学问题：各国全部有效格点与实际装机位置的CF水平及年代变化是否一致，三个SSP下有何空间差异？不预设情景排序。
+
+`prepare_country_cf.py/.sh` 从正式CF网格和场站索引读取2030–2039、2050–2059三小时序列；`plot_country_cf.py/.sh` 绘制两张2行×3列的地图。上排风电、下排光伏；三列为SSP126、SSP245、SSP585的配对气候与部署情景。Python/Cartopy Plate Carrée，240×133 mm，600 dpi PNG；各图另导出a–c、d–f独立组合。
+
+- 底色：先计算格点的年度有效时刻CF平均，再对十年等权平均，最后对国家内格点取算术平均。原生格点以中心位置归属国家，四模式、三气候SSP和两个年代采用共同有效格点。
+- 圆颜色：对应国家的场站CF按装机容量加权，场站以正式station_id对齐。每个部署内部使用四模式及两个年代共同有效站点；2030年代使用2030容量快照，2050年代使用2050快照。因此年代差包含气候和部署变化。
+- 所有年度均须达到99%有效时间覆盖；每年预期时刻数来自模式原生日历，缺测不作零值。十年均需有效。CF单位为1，差值是CF绝对差，不是相对百分比。
+- 圆面积：两图统一使用对应SSP、技术、国家的2050年总装机（GW），包括CF不可用的装机。无装机不画圆；CF缺测用灰色。有效容量与目录容量比例保存在源数据。
+- 四模式分别计算国家指标和2050年代减2030年代，再等权平均。四模式齐全才显示；模式最小值和最大值保留在源数据，不作显著性推断。
+- 绝对值使用viridis，固定范围0–0.3，色条右端箭头表示CF > 0.3；变化使用零中心RdBu_r，范围按所有国家、技术、情景及两类CF变化绝对值的95%分位向上取整至0.005。同一图全部面板的底色和圆颜色共用范围。变化色条两端尖角表示超界值，源数据保留完整数值；范围、超界数量和极值记录在元数据。
+- 中国几何在空间归属前合并；使用项目Natural Earth副本。源数据保留UNASSIGNED和AMBIGUOUS，地图不显示这两类和南极。SSP585部署原始来源为stations_SSP5-6.0.csv。
+
+运行（均在1866项目根目录）：
+
+```bash
+mkdir -p logs/paper_figures/fig01
+sbatch --time=00:30:00 paper_figures/main/fig01_extreme_events/prepare_country_cf.sh --pilot
+# 代表分块通过后，16个作业分摊94个技术×分块任务：
+sbatch --array=0-15 --cpus-per-task=8 --mem=28000M paper_figures/main/fig01_extreme_events/prepare_country_cf.sh --shards 16 --workers 8
+# 全部任务成功后：
+sbatch paper_figures/main/fig01_extreme_events/prepare_country_cf.sh --aggregate
+sbatch paper_figures/main/fig01_extreme_events/plot_country_cf.sh
+```
+
+可用Slurm afterok依赖串接上述步骤。准备作业4核/14GB，默认4个进程；默认参数处理全部分块。缓存写入本图outputs/country_cf_cache，按输入索引与准备代码哈希检查复用，不修改公共缓存。源数据保留逐模式、双SSP、技术、窗口、国家、格点数、有效容量、目录容量和CF加权分子。
+
+输出：
+
+- `outputs/fig01_country_cf_2050s.png`，及`_abc.png`、`_def.png`。
+- `outputs/fig01_country_cf_change_2050s_minus_2030s.png`，及`_abc.png`、`_def.png`。
+- `outputs/source_data/country_cf_*.csv*`，逐分块、逐模式窗口表及展示表。
+- `outputs/country_cf_data_audit.json`、`country_cf_metadata.json`，来源、覆盖、投影、色标及图件核验。
+
+2026-10-09 验证：代表分块作业46160039、全量数组46160116（16个任务，共1128个CF组合）、国家汇总46160133、独立抽样复算46160130和最终绘图46163862均成功完成。抽样原始序列直接复算与分块汇总的最大CF绝对误差为8.30×10⁻⁸。六张600 dpi PNG已逐张视觉检查，图件哈希、文字边界、地图对齐与图例完整性检查通过。绝对值色标后续按要求调整为0–0.3，右端箭头表示CF > 0.3；变化色标−0.02–0.02；超界值保留在源数据，计数见metadata。
