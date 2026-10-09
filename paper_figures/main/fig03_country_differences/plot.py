@@ -16,7 +16,7 @@ from cartopy.mpl.ticker import LongitudeFormatter, LatitudeFormatter
 from PIL import Image
 from paper_figures.config import ROOT, TECHS, SNAPSHOTS
 from paper_figures.common.io import digest, write_json
-from paper_figures.common.plotting import configure, save_png
+from paper_figures.common.plotting import configure, save_png, export_panel_png
 from paper_figures.common.spatial import countries
 
 FOLDER = ROOT / 'paper_figures/main/fig03_country_differences'
@@ -42,8 +42,8 @@ def main():
     e = pd.read_csv(SOURCE / 'panel_e_display.csv')
     f = pd.read_csv(SOURCE / 'panel_f.csv')
     selection = pd.read_csv(SOURCE / 'country_selection.csv').sort_values('order')
-    vmax = float(np.nanmax(np.abs(pd.concat([ab['mean'], cd['mean']]))))
-    limit = float(np.ceil(vmax / 5) * 5)
+    colour_values = pd.concat([ab['mean'], cd['mean']]).dropna()
+    limit = float(max(5, np.ceil(np.quantile(np.abs(colour_values), .95) / 5) * 5))
     configure()
     plt.rcParams.update({'font.sans-serif': ['DejaVu Sans'], 'font.size': 6.5,
                          'axes.labelsize': 6.5, 'xtick.labelsize': 6, 'ytick.labelsize': 6,
@@ -80,7 +80,8 @@ def main():
                 ha='center', va='bottom', fontsize=6)
     cb = fig.colorbar(plt.cm.ScalarMappable(norm=norm, cmap=cmap),
                       cax=fig.add_axes([0.105, 0.717, 0.34, 0.011]),
-                      orientation='horizontal', ticks=np.linspace(-limit, limit, 5))
+                      orientation='horizontal', ticks=np.linspace(-limit, limit, 7),
+                      extend='both', extendfrac=.04)
     cb.outline.set_linewidth(0.4)
     cb.set_label(f'Pathway difference ({UNIT}); panels a–d', labelpad=2, fontsize=6)
     fig.legend(handles=[Patch(facecolor='white', edgecolor='#777777', hatch='///',
@@ -201,6 +202,17 @@ def main():
         raise ValueError(f'Text outside figure canvas: {outside}')
     fig.add_artist(Rectangle((0,0), 1,1, transform=fig.transFigure, fill=False, edgecolor='none', linewidth=0))
     save_png(fig, OUT / 'fig03.png')
+    panel_outputs = []
+    for group, bounds in [('ab', [0, .66, 1, 1]),
+                          ('abcd', [0, .301, 1, 1]),
+                          ('ef', [0, 0, 1, .301])]:
+        hidden = [t for t in fig.texts if group == 'ab' and t.get_position()[1] == .658]
+        for text in hidden:
+            text.set_visible(False)
+        panel_outputs.append(export_panel_png(fig, OUT / f'fig03_{group}.png',
+                                               bounds=bounds, close=False))
+        for text in hidden:
+            text.set_visible(True)
     plt.close(fig)
     with Image.open(OUT / 'fig03.png') as im:
         image_info = dict(pixels=list(im.size), dpi=list(im.info.get('dpi', [])))
@@ -216,7 +228,12 @@ def main():
                job_id=os.environ.get('SLURM_JOB_ID'), backend='Python/matplotlib + Cartopy',
                map_projection='Plate Carrée', map_extent_degrees=[-180,180,-60,85],
                canvas_mm=[183,165], image=image_info, panels=list('abcdef'),
-               colour_limits=[-limit,limit], distribution_y_limits=distribution_limits, values_clipped=int((pd.concat([ab['mean'],cd['mean']]).abs()>limit).sum()),
+               colour_limits=[-limit,limit], colour_limit_quantile=.95, colour_extend='both',
+               colour_scale_values=len(colour_values),
+               below_colour_scale=int((colour_values < -limit).sum()),
+               above_colour_scale=int((colour_values > limit).sum()),
+               distribution_y_limits=distribution_limits, values_clipped=int((colour_values.abs()>limit).sum()),
+               panel_outputs=panel_outputs,
                text_outside_canvas=outside, data_audit='PASSED', visual_review='PENDING',
                global_results=global_records, png_sha256=digest(OUT/'fig03.png'),
                source_data=[dict(path=str(p.relative_to(OUT)),sha256=digest(p)) for p in sources],
