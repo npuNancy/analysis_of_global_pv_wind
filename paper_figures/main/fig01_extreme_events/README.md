@@ -104,4 +104,29 @@ sbatch paper_figures/main/fig01_extreme_events/plot_country_cf.sh
 - `outputs/source_data/country_cf_*.csv*`，逐分块、逐模式窗口表及展示表。
 - `outputs/country_cf_data_audit.json`、`country_cf_metadata.json`，来源、覆盖、投影、色标及图件核验。
 
+## 主要国家的网格—场站暴露比较
+
+`plot_country_comparison.py/.sh` 复用已验收的逐模式国家暴露表，生成8张600 dpi PNG（每种画法4张，均为左风电、右光伏），不另存单技术子图。
+
+- 国家类型Ⅰ：Australia、Germany、South Africa、USA、Brazil、China、India，固定顺序。
+- 国家类型Ⅱ：按 SSP126、2050年国家风电与光伏合计总装机降序选前 k 国，默认10；两技术使用相同国家和排序，容量并列时按国家代码排序。不按暴露结果筛选国家。
+- 横向分组点—区间图：各国三个 SSP；横坐标分别为2050年代的“网格面积加权暴露−场站容量加权暴露”，或两类暴露的“2050年代−2030年代变化量之差”。点为四模式等权均值，区间为逐模式配对差的最小值至最大值，不是置信区间。
+- 散点图：x为网格面积加权暴露，y为场站容量加权暴露；变化图的两个轴均为2050年代减2030年代。国家用颜色、SSP用形状、固定点大小；同国三个SSP用细线连接。两轴等比例，含1:1线，变化图另含水平和垂直零线。
+- 同一画法、同一时期在两类国家及两技术间共用坐标范围。事件为all时间并集，单位为累计暴露天/年。场站采用配对气候—部署SSP和各年代自身容量快照，变化包含部署及权重变化。
+- 先逐模式计算差值及年代变化，再汇总四模式。校验源数据哈希、完整模式矩阵、差值恒等式及已有展示均值复现。若选中国家缺少完整数据，明确报错，不以零填补或替换国家。
+
+本任务仅处理已有的小型汇总表，直接从仓库根目录运行：
+
+```bash
+source .venv/bin/activate
+python -m paper_figures.main.fig01_extreme_events.plot_country_comparison
+# 自定义前k国：
+python -m paper_figures.main.fig01_extreme_events.plot_country_comparison --k 15
+```
+
+同名 `.sh` 保留为配套作业脚本。
+
+输出命名：`outputs/country_exposure_{interval,scatter}_{representative,top10}_{2050,change}.png`；自定义k时，`top10`替换为相应`top{k}`。
+逐模式表、展示表及国家选择表写入`outputs/source_data/country_comparison_k{k}_*.csv*`；输入哈希、检查结果、作业号及PNG校验信息写入`outputs/country_comparison_k{k}_metadata.json`。
+
 2026-10-09 验证：代表分块作业46160039、全量数组46160116（16个任务，共1128个CF组合）、国家汇总46160133、独立抽样复算46160130和最终绘图46163862均成功完成。抽样原始序列直接复算与分块汇总的最大CF绝对误差为8.30×10⁻⁸。六张600 dpi PNG已逐张视觉检查，图件哈希、文字边界、地图对齐与图例完整性检查通过。绝对值色标后续按要求调整为0–0.3，右端箭头表示CF > 0.3；变化色标−0.02–0.02；超界值保留在源数据，计数见metadata。
