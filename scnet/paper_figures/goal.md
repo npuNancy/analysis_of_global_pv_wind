@@ -48,3 +48,26 @@ Account status: `logs/paper_figures/completion_status/accounts/<username>/progre
 Controllers check every 15 minutes (900 seconds). At each check, each account fills available slots with dependency-ready units while other jobs may still be running; there is no whole-batch completion barrier.
 
 Wuzhen1872 is excluded from submission accounts. Historical campaign records retain its completed tasks with `submit_enabled: false`; unfinished cancelled tasks are reassigned with their prior attempt records preserved.
+
+## SSP grid frequency, duration and synchrony
+
+The entry point is `paper_figures.main.fig01_extreme_events.prepare_ssp_dynamics`.
+Independent unit: technology x model x climate SSP x patch; three ten-year windows are sequential within the unit. The fixed campaign contains 1128 units. Twenty batch jobs distribute these units deterministically, with sixteen spawn workers per batch (16 CPUs / 56 GB); no worker shares a NetCDF handle. Each unit is independently restartable and immutable after its completion marker. Raw products remain read-only. The full reduction is released only after all 20 batch jobs have COMPLETED/0:0 and declared outputs verified.
+
+Representative validation: CANESM5 / SSP126 / R02C08, wind and solar, 2050–2059, isolated under `outputs/ssp_grid/dynamics/pilot`. Validate original exposure reproduction, duration accounting and time-area integrals before full submission. Unit tests independently simulate time sequences and validate censoring, file/block continuity and union handoffs.
+
+Generate without submission:
+```bash
+python -m scnet.paper_figures.create_ssp_dynamics_jobs --dry-run
+python -m scnet.paper_figures.create_ssp_dynamics_jobs
+```
+Default generated jobs are outside the checkout at `../../runtime/ssp_dynamics_jobs/20261018/`.
+Controller:
+```bash
+python -m scnet.paper_figures.control_ssp_dynamics --submit --watch --interval 60
+```
+It uses the established account-wide 20-job limit and shared submission lock. Status is isolated at `logs/paper_figures/ssp_dynamics/completion_status/progress.md`; state and manifest live beside generated scripts. Deterministic errors stop further submissions and require inspection; already active unrelated jobs are preserved. Terminal success requires raw shard markers, reduction marker, numerical audit and report. Kernel/input identity changes prohibit silent cache reuse. Scientific computations and bulk scans execute only on compute nodes; small report reading and scheduler control may run on login nodes.
+
+The streaming kernel uses the node's existing GCC (C99, -O3, no fast-math) and writes its shared library to the campaign output directory under a lock. The Python implementation remains the independent reference. Full release also requires compiled/Python equivalence on both real ten-year pilot datasets. Kernel source changes are included in shard identity; no package installation is required.
+
+Validated 2026-10-18: all 20 raw batches and 1128 units succeeded. Reduction job 46849039 completed with exit 0:0; all 72 reductions and 282 native contrast files passed. Final exposure reproduction, both decompositions, source identities, native support and report links were verified. The earlier SSP report links to the new dynamics report.
