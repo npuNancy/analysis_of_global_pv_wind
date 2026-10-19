@@ -36,8 +36,8 @@ NAMES = {"high_temp": "High temperature", "high_wind": "High wind",
 SHORT = dict(NAMES, high_temp="High temp.", cold_highwind="Cold + wind",
              high_humidity="High humid.", freezing_rain="Freezing rain",
              overlap_correction="Overlap", low_resource="Low resource")
-REGIONS = ("60N-90N", "30N-60N", "0-30N", "30S-0", "60S-30S")
-LAT_LABELS = ("60–90°N", "30–60°N", "0–30°N", "0–30°S", "30–60°S")
+REGIONS = ("GLOBAL", "60N-90N", "30N-60N", "0-30N", "30S-0", "60S-30S")
+LAT_LABELS = ("Global", "60–90°N", "30–60°N", "0–30°N", "0–30°S", "30–60°S")
 GROUPS = {"ab": (0, .75, 1, 1), "cd": (0, .51, 1, .75),
           "ef": (0, .235, 1, .51), "gh": (0, 0, 1, .235)}
 INPUTS = [DYN / "levels.csv", DYN / "levels_models.csv.gz",
@@ -93,12 +93,12 @@ def prepare():
     events["unit"] = "day yr-1"
     events.to_csv(SOURCE / "panel_cd.csv", index=False)
     event_models.to_csv(SOURCE / "panel_cd_models.csv", index=False)
-    selector = lambda d: d.snapshot.eq(2050) & d.scope.eq("latitude") & d.low.eq("ssp126") & d.high.isin(["ssp245", "ssp585"])
+    selector = lambda d: d.snapshot.eq(2050) & d.scope.isin(["global", "latitude"]) & d.low.eq("ssp126") & d.high.isin(["ssp245", "ssp585"])
     regional = select_csv(GRID / "contrasts.csv", selector)
     regional_models = select_csv(GRID / "contrasts_models.csv.gz", selector)
     keys = ["tech", "region", "high", "low", "event"]
     check_ensemble(regional, regional_models, keys, "difference")
-    require(set(regional.region) == set(REGIONS), "Unexpected latitude support")
+    require(set(regional.region) == set(REGIONS), "Unexpected global/latitude support")
     max_closure = 0.
     for tech in TECHS:
         part = regional_models[regional_models.tech.eq(tech)]
@@ -248,12 +248,14 @@ def draw_regions(fig, table):
         events = [*EVENTS[tech], "overlap_correction", "all"]
         ax = fig.add_axes([.135 + .50 * col, .325, .34, .145])
         heat_axes.append(ax)
-        values = np.full((11, len(events)), np.nan)
+        nregions = len(REGIONS)
+        stride, nrows = nregions + 1, 2 * nregions + 1
+        values = np.full((nrows, len(events)), np.nan)
         data = table[table.tech.eq(tech)].set_index(["high", "region", "event"])
         positions = []
         for ci, high in enumerate(("ssp245", "ssp585")):
             for ri, region in enumerate(REGIONS):
-                y = ri + 6 * ci
+                y = ri + stride * ci
                 positions.append(y)
                 for ei, event in enumerate(events):
                     values[y, ei] = data.loc[(high, region, event), "mean"]
@@ -262,16 +264,22 @@ def draw_regions(fig, table):
             val = values[yi, xi]
             text = "0.0" if abs(val) < .05 else f"{val:+.1f}"
             ax.text(xi, yi, text, ha="center", va="center", fontsize=5.1,
+                    weight="bold" if yi in (0, stride) else "normal",
                     color="white" if abs(val) > .65 * limit else "#222222")
         ax.set_yticks(positions, list(LAT_LABELS) * 2, fontsize=5.6)
+        for tick in ax.get_yticklabels():
+            if tick.get_text() == "Global":
+                tick.set_fontweight("bold")
+        for row in (0, stride):
+            ax.axhline(row + .5, color="#777777", lw=.4)
         ax.set_xticks(range(len(events)), [SHORT[e] for e in events], rotation=48, ha="right", fontsize=5.3)
         ax.tick_params(length=0, pad=2)
         for spine in ax.spines.values():
             spine.set_visible(False)
-        for offset, label in ((0, "SSP245 − 126"), (6, "SSP585 − 126")):
-            ax.text(-.29, 1 - (offset + 2.5) / 11, label, transform=ax.transAxes,
+        for offset, label in ((0, "SSP245 − 126"), (stride, "SSP585 − 126")):
+            ax.text(-.29, 1 - (offset + nregions / 2) / nrows, label, transform=ax.transAxes,
                     rotation=90, va="center", ha="center", fontsize=5.5, fontweight="bold")
-        ax.add_patch(Rectangle((len(events) - 1.5, -.5), 1, 11, fill=False,
+        ax.add_patch(Rectangle((len(events) - 1.5, -.5), 1, nrows, fill=False,
                                edgecolor="#333333", linewidth=.7, clip_on=False))
     cb = fig.colorbar(plt.cm.ScalarMappable(norm=norm, cmap=cmap),
                       cax=fig.add_axes([.30, .268, .40, .006]), orientation="horizontal")
@@ -376,7 +384,7 @@ def main():
         core_question="How do climate SSPs differ in global event dynamics, event exposure and regional event composition?",
         panels={"ab": "union metrics grouped by metric; 3 SSP bars; fixed SSP126 ensemble-mean normalization",
                 "cd": "event exposure grouped horizontal bars for three SSPs; continuous bars on compressed coordinates; bottom x-axis break marks only",
-                "ef": "latitude-band event exposure contrasts; exact overlap accounting; SSP245 and SSP585 versus SSP126",
+                "ef": "global and latitude-band event exposure contrasts; exact overlap accounting; SSP245 and SSP585 versus SSP126",
                 "gh": "SSP585 minus SSP126 union exposure; original Fig.1 map data and style"},
         overview_y_limits=[.90, 1.25],
         overview_axis_truncated=True,
@@ -393,6 +401,7 @@ def main():
         projection="PlateCarree", map_extent=[-180, 180, -60, 85],
         map_limits_days=[-12.5, 12.5], map_extend="both", saturation_fraction=saturation,
         heatmap_limits_days=[-heat_limit, heat_limit],
+        heatmap_regions=list(REGIONS),
         capacity_reference="fixed SSP126/2050, 3-degree bins; symbol area 0.45 points^2 per GW",
         checks=checks, products=products, visual_review="PENDING",
         source_data=[dict(path=str(p.relative_to(OUT)), sha256=digest(p)) for p in [SOURCE / name for name in ("panel_ab.csv", "panel_ab_models.csv", "panel_cd.csv", "panel_cd_models.csv", "panel_ef.csv", "panel_ef_models.csv", "panel_gh.csv.gz", "panel_gh_capacity.csv")]],

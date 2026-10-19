@@ -33,8 +33,8 @@ UNITS=("days yr⁻¹","events yr⁻¹","h event⁻¹","% of capacity")
 DIFF_UNITS=("days yr⁻¹","events yr⁻¹","h event⁻¹","percentage points")
 PAIRS=(("ssp245","ssp126"),("ssp585","ssp126"),("ssp585","ssp245"))
 PAIR_NAMES=("245 − 126","585 − 126","585 − 245")
-REGIONS=("CHN","USA","IND","DEU","BRA","RUS","AUS")
-REGION_NAMES=("China","USA","India","Germany","Brazil","Russia","Australia")
+REGIONS=("global:GLOBAL","country:CHN","country:USA","country:IND","country:DEU","country:BRA","country:RUS","country:AUS")
+REGION_NAMES=("Global","China","USA","India","Germany","Brazil","Russia","Australia")
 NAMES={"high_temp":"High temperature","high_wind":"High wind","hot_humid":"Hot–humid",
        "icing":"Icing","low_resource":"Low resource","cold_highwind":"Cold + high wind",
        "freezing_rain":"Freezing rain","high_humidity":"High humidity","rainstorm":"Rainstorm",
@@ -46,7 +46,7 @@ INPUTS=[STATION/"dynamics/summary/combined_models.csv.gz",GRID/"levels_models.cs
         STATION/"levels.csv",STATION/"contrasts.csv",STATION/"station_grid.csv",
         STATION/"capacity_coverage.csv",STATION/"audit.json",GRID/"audit.json"]
 TABLES=("global_levels","global_models","event_levels","event_models","country_contrasts",
-        "country_contrast_models","comparison","comparison_models","capacity_coverage","global_extra_metrics")
+        "country_contrast_models","comparison","comparison_models","capacity_coverage","global_extra_metrics","global_contrasts","global_contrast_models")
 
 def need(ok,message):
     if not ok:raise ValueError(message)
@@ -90,15 +90,22 @@ def prepare(reuse=False):
     merged=gl.merge(ref,on=keys,suffixes=("_new","_reference"),validate="one_to_one")
     overview_error=float((merged.mean_new-merged.mean_reference).abs().max())
     need(len(merged)==24 and overview_error<1e-8,"Overview reference reproduction")
+    global_events=pd.concat([gm[gm.metric.eq("exposure_days")],em.assign(metric="exposure_days")],ignore_index=True)
+    global_events=additive_overlap(global_events,["exposure_days"])
+    global_cm=differences(global_events)
+    global_cm=global_cm[global_cm.comparison.eq("paired")].copy()
+    global_cc=summarize_diff(global_cm)
+    need(len(global_cc)==45 and global_cc.n_finite.eq(4).all(),"Global event contrast matrix")
     print("PREPARE country event accounting",flush=True)
     country=raw[raw.region.str.startswith("country:")][KEY+["exposure_days"]].rename(columns={"exposure_days":"value"})
     country["metric"]="exposure_days";country=additive_overlap(country,["exposure_days"])
     cm=differences(country);cm=cm[cm.comparison.eq("paired")].copy();cc=summarize_diff(cm)
     closure=0.
+    accounting=pd.concat([cm,global_cm],ignore_index=True)
     for tech in TECHS:
-        d=cm[cm.tech.eq(tech)].pivot(index=["model","region","high","low"],columns="event",values="difference")
+        d=accounting[accounting.tech.eq(tech)].pivot(index=["model","region","high","low"],columns="event",values="difference")
         closure=max(closure,float((d[list(EVENTS[tech])].sum(axis=1)+d.overlap_correction-d["all"]).abs().max()))
-    need(closure<1e-8,"Country event accounting")
+    need(closure<1e-8,"Global and country event accounting")
     ref=select(STATION/"contrasts.csv",lambda d:d.snapshot.eq(2050)&d.comparison.eq("paired")&
                d.metric.eq("exposure_days")&d.region.str.startswith("country:"))
     kk=["tech","snapshot","region","event","metric","high","low","comparison"]
@@ -131,11 +138,12 @@ def prepare(reuse=False):
     coverage=pd.read_csv(STATION/"capacity_coverage.csv").query("snapshot == 2050").copy()
     tables=dict(global_levels=gl,global_models=gm,event_levels=el,event_models=em,country_contrasts=cc,
                 country_contrast_models=cm,comparison=comp,comparison_models=comparison_models,
-                capacity_coverage=coverage,global_extra_metrics=global_raw[global_raw.event.eq("all")])
+                capacity_coverage=coverage,global_extra_metrics=global_raw[global_raw.event.eq("all")],
+                 global_contrasts=global_cc,global_contrast_models=global_cm)
     for name,data in tables.items():data.to_csv(SOURCE/(name+".csv"),index=False)
     validation={"overview_reference_max_error":overview_error,"country_reference_max_error":country_error,
                 "comparison_reference_max_error":comparison_error,"event_closure_max_days":closure,"n_models":4,
-                "global_level_rows":len(gl),"country_contrast_rows":len(cc),"comparison_rows":len(comp),
+                "global_level_rows":len(gl),"global_contrast_rows":len(global_cc),"country_contrast_rows":len(cc),"comparison_rows":len(comp),
                 "window":"2050–2059","snapshot":2050}
     write_json(manifest,{"inputs":identity(),"validation":validation,
                         "table_hashes":{k+".csv":digest(SOURCE/(k+".csv")) for k in TABLES}})
@@ -259,33 +267,39 @@ def spatial_maps(fig,y,tables,geometries):
     return saturation
 
 def country_events(fig,y,tables):
-    country=tables["country_contrasts"];cmap=plt.get_cmap("RdBu_r")
+    country=pd.concat([tables["global_contrasts"],tables["country_contrasts"]],ignore_index=True)
+    cmap=plt.get_cmap("RdBu_r")
     for col,tech in enumerate(TECHS):
-        left=8*col;panel_title(fig,left,y+3.22,"gh"[col],f"{'Wind' if tech=='wind' else 'Solar PV'} | Country event accounting")
+        left=8*col;panel_title(fig,left,y+3.22,"gh"[col],f"{'Wind' if tech=='wind' else 'Solar PV'} | Global and country events")
         part=country[country.tech.eq(tech)]
-        evt=[*EVENTS[tech],"overlap_correction","all"];nrows=15;values=np.full((nrows,len(evt)),np.nan)
+        evt=[*EVENTS[tech],"overlap_correction","all"]
+        nregions=len(REGIONS);stride=nregions+1;nrows=2*nregions+1
+        values=np.full((nrows,len(evt)),np.nan)
         lookup=part.set_index(["high","low","region","event"])["mean"];positions=[]
         for pi,(high,low) in enumerate(PAIRS[:2]):
             for ri,region in enumerate(REGIONS):
-                row=8*pi+ri;positions.append(row)
-                for ei,event in enumerate(evt):values[row,ei]=lookup.loc[(high,low,"country:"+region,event)]
+                row=stride*pi+ri;positions.append(row)
+                for ei,event in enumerate(evt):values[row,ei]=lookup.loc[(high,low,region,event)]
         hlim=max(1.,float(np.ceil(np.nanmax(np.abs(values)))));hnorm=TwoSlopeNorm(vmin=-hlim,vcenter=0,vmax=hlim)
         ax=axes(fig,left+1.55,y+1.00,5.65,2.05)
         ax.imshow(values,aspect="auto",cmap=cmap,norm=hnorm,interpolation="nearest")
         for ri,ei in np.argwhere(np.isfinite(values)):
             v=values[ri,ei];label="0" if abs(v)<.005 else f"{v:+.1f}" if abs(v)>=.1 else f"{v:+.2f}"
-            ax.text(ei,ri,label,ha="center",va="center",fontsize=7.6,weight="bold" if evt[ei]=="all" else "normal",
+            ax.text(ei,ri,label,ha="center",va="center",fontsize=7.6,weight="bold" if evt[ei]=="all" or ri in (0,stride) else "normal",
                     color="white" if abs(v)>.67*hlim else "#222222")
         for row in positions:
             ei=int(np.nanargmax(abs(values[row,:len(EVENTS[tech])])))
             ax.add_patch(Rectangle((ei-.48,row-.48),.96,.96,fill=False,edgecolor="#333333",lw=.7))
         ax.set_yticks(positions,list(REGION_NAMES)*2,fontsize=8)
+        for tick in ax.get_yticklabels():
+            if tick.get_text()=="Global":tick.set_fontweight("bold")
+        for row in (0,stride):ax.axhline(row+.5,color="#777777",lw=.5)
         ax.set_xticks(range(len(evt)),[SHORT[e] for e in evt],rotation=37,ha="right",fontsize=8)
         ax.tick_params(length=0,pad=3)
         for spine in ax.spines.values():spine.set_visible(False)
         ax.axvline(len(evt)-1.5,color="#333333",lw=.8)
         for pi,label in enumerate(PAIR_NAMES[:2]):
-            ax.text(-.24,1-(8*pi+3.5)/nrows,label,transform=ax.transAxes,rotation=90,ha="center",va="center",fontsize=8)
+            ax.text(-.24,1-(stride*pi+nregions/2)/nrows,label,transform=ax.transAxes,rotation=90,ha="center",va="center",fontsize=8)
         cax=axes(fig,left+7.40,y+1.05,.10,1.95)
         cb=fig.colorbar(plt.cm.ScalarMappable(norm=hnorm,cmap=cmap),cax=cax)
         cb.ax.tick_params(labelsize=7,length=2);cb.set_label("Exposure difference (days yr⁻¹)",fontsize=8,labelpad=5)
@@ -357,11 +371,12 @@ def render(tables,validation):
                       "solar":{"omitted_ranges":[[4.5,8.5]],"x_max":15},
                       "continuous_bars":True,"break_marks":"bottom x-axis only"},
         "panels":{"ab":"global union metrics","cd":"event exposure","ef":"country exposure maps",
-                  "gh":"country event heatmaps","ij":"station versus grid contrasts"},
+                  "gh":"global and country event heatmaps","ij":"station versus grid contrasts"},
         "map_limits_days":[-12.5,12.5],"map_extend":"both",
         "map_color_reference":"fig01_ssp_grid_2050, panels g/h",
         "map_saturation":saturation,
         "spatial_map_pairs":[["ssp585","ssp126"]],
+        "spatial_heatmap_regions":list(REGIONS),
         "spatial_heatmap_pairs":[["ssp245","ssp126"],["ssp585","ssp126"]],"job_id":os.environ.get("SLURM_JOB_ID"),
         "dpi":300,"figure_inches":[16,16]})
     print("RENDERED",len(files),"PNGs",flush=True)
