@@ -540,7 +540,7 @@ for block in blocks:
         _, level_no, title, anchor = block
         md.extend([f'<a id="{anchor}"></a>', "#" * level_no + " " + title, ""])
         body.append(f'<h{level_no} id="{anchor}">{escape(title)}</h{level_no}>')
-        if level_no == 2 or anchor == "event-contrasts":
+        if level_no == 2 or anchor == "event-contrasts" or anchor.startswith("country-question-"):
             nav.append(f'<a href="#{anchor}">{escape(title)}</a>')
     elif kind in ("paragraph", "note"):
         text = block[1]

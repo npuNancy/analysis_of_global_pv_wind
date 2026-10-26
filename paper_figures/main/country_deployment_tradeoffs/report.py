@@ -54,6 +54,317 @@ def robust_label(frame, country, tech, metric):
     return '无全组合一致最优'
 
 
+
+def question_analysis(selection, metrics, contrasts, findings, wins, robust, names_map,
+                      source, data_dir, data_prefix):
+    """Answer the five deployment questions with model-paired, country-level evidence."""
+    countries = list(selection.country)
+    nationals = [c for c in countries if c != 'GLOBAL']
+    climates = list(SSPS)
+    rows = []
+    for r in findings.itertuples():
+        target = 'ssp' + r.pair.split('/')[0]
+        c = contrasts[(contrasts.country == r.country) & (contrasts.tech == r.tech)
+                      & (contrasts.climate_ssp == r.climate_ssp) & (contrasts.target_ssp == target)]
+        assert c.model.nunique() == 4 and len(c) == 4
+        low = metrics[(metrics.country == r.country) & (metrics.tech == r.tech)
+                      & (metrics.climate_ssp == r.climate_ssp)
+                      & (metrics.station_ssp == r.low_capacity_ssp)].set_index('model')
+        high = metrics[(metrics.country == r.country) & (metrics.tech == r.tech)
+                       & (metrics.climate_ssp == r.climate_ssp)
+                       & (metrics.station_ssp == r.high_capacity_ssp)].set_index('model')
+        assert low.index.equals(high.index) or set(low.index) == set(high.index)
+        high = high.reindex(low.index)
+        dc, dl, dg = high.C_GW-low.C_GW, high.L_TWh-low.L_TWh, high.G0_TWh-low.G0_TWh
+        assert len(low) == 4 and np.isfinite(low[['C_GW','L_TWh','G0_TWh','H0']]).all().all()
+        assert np.isfinite(high[['C_GW','L_TWh','G0_TWh','H0']]).all().all()
+        assert np.allclose(dl.sort_index(), c.set_index('model').expansion_delta_L_TWh.sort_index())
+        assert np.allclose(c.expansion_scale_TWh+c.expansion_layout_TWh, c.expansion_delta_L_TWh)
+        offset = (c.expansion_scale_TWh > 1e-10) & (c.expansion_layout_TWh < -1e-10)
+        cost = offset & c.expansion_delta_H0_pct.lt(-1e-8)
+        efficiency = offset & c.expansion_delta_H0_pct.ge(-1e-8)
+        rows.append(dict(country=r.country, tech=r.tech, climate_ssp=r.climate_ssp, pair=r.pair,
+            low=r.low_capacity_ssp, high=r.high_capacity_ssp,
+            C_low_GW=low.C_GW.mean(), C_high_GW=high.C_GW.mean(), delta_C_GW=dc.mean(),
+            delta_L_TWh=dl.mean(), L_increase_models=int(dl.gt(0).sum()),
+            delta_G0_TWh=dg.mean(), G0_increase_models=int(dg.gt(0).sum()),
+            scale_TWh=r.scale_TWh, layout_TWh=r.layout_TWh,
+            offset_pct=(-100*r.layout_TWh/r.scale_TWh if r.scale_TWh>1e-10 and r.layout_TWh<0 else np.nan),
+            delta_H0_pct=r.delta_H0_pct, offset_models=int(offset.sum()),
+            cost_models=int(cost.sum()), offset_without_H0_decline_models=int(efficiency.sum())))
+    q = pd.DataFrame(rows)
+    assert len(q) == len(countries)*2*3*2
+    stability = []
+    for country in countries:
+        for tech in TECHS:
+            for metric in ['R','rho_pct']:
+                g = wins[(wins.country==country)&(wins.tech==tech)&(wins.metric==metric)&wins.ensemble_best.eq(True)]
+                sets = [set(g.loc[g.climate_ssp.eq(climate),'station_ssp']) for climate in climates]
+                common = set.intersection(*sets)
+                rg = robust[(robust.country==country)&(robust.tech==tech)&(robust.metric==metric)]
+                strict = rg[rg.robust_best.eq(True)]
+                stability.append(dict(country=country,tech=tech,metric=metric,
+                    climate126='/'.join(sorted(sets[0])),climate245='/'.join(sorted(sets[1])),
+                    climate585='/'.join(sorted(sets[2])),consistent_ensemble='/'.join(sorted(common)),
+                    strict_best='/'.join(sorted(strict.station_ssp)),complete=bool(rg.groups_available.eq(12).all())))
+    stable = pd.DataFrame(stability)
+    for stem, frame in [('five_questions_summary',q),('five_questions_stability',stable)]:
+        write_csv(source/(stem+'.csv'),frame)
+        shutil.copy2(source/(stem+'.csv'),data_dir/(stem+'.csv'))
+    def para(text):
+        return '<p>'+text+'</p>'
+    def direction(row):
+        return row.low[3:]+' → '+row.high[3:]
+    def pick(country,tech,pair,climate='ssp126'):
+        return q[(q.country==country)&(q.tech==tech)&(q.pair==pair)&(q.climate_ssp==climate)].iloc[0]
+    def country_names(codes):
+        return '、'.join(names_map[c] for c in countries if c in set(codes)) or '无'
+    def winner(country,tech,metric,climate):
+        g=wins[(wins.country==country)&(wins.tech==tech)&(wins.metric==metric)
+               &(wins.climate_ssp==climate)&wins.ensemble_best.eq(True)]
+        return ' / '.join(f'{r.station_ssp[3:]}（{fmt(r.mean)}；{int(r.model_wins)}/4）' for r in g.itertuples()) or '不可比'
+    parts=['<h2 id="question-1">问题1：装机规模增加伴随多少总损失变化？</h2>',
+        para('回答这个问题必须同时报告容量变化和总损失变化。下文固定气候，比较部署245与126、585与126，'
+             '并将每对部署统一为“低容量→高容量”。这比较的是同一2050年代的不同部署配置，'
+             '不是随时间扩建的观测过程，也不是把所有配对路径差归因于规模。'
+             '总损失L的差由规模项与布局项共同形成；规模项才是固定气候下的容量贡献。')]
+    if q.high.eq('ssp126').all():
+        parts.append(para('在当前样本的全部对照中，部署126的共同有效容量都高于部署245和585。'
+                          '因此本节扩张方向为245→126与585→126，与前文585−126的路径差方向相反。'
+                          '不能因为585的气候强迫更高，就把585预设为装机更多的一端。'))
+    positive=int(q.delta_L_TWh.gt(0).sum())
+    allmodels=int(q.L_increase_models.eq(4).sum())
+    parts.append(para(f'全球与{len(nationals)}国、两技术、三气候、两部署对共{len(q)}组比较中，'
+                      f'{positive}组的集合平均总损失随高容量部署增加，其中{allmodels}组由4/4模式支持。'
+                      '这些是条件组合的描述性计数，不能视为独立样本或国家概率。'))
+    grows=[]
+    for tech in TECHS:
+        for pair in ['245/126','585/126']:
+            r=pick('GLOBAL',tech,pair)
+            grows.append([TECH_NAMES[tech],direction(r),fmt(r.C_low_GW),fmt(r.C_high_GW),
+                          fmt(r.delta_C_GW),fmt(r.scale_TWh,signed=True),fmt(r.layout_TWh,signed=True),
+                          fmt(r.delta_L_TWh,signed=True),fmt(r.delta_G0_TWh,signed=True)])
+    parts.append(para('全球固定气候126：新增装机既带来新增正常发电量，也伴随新增总损失。'
+                      '因此总损失更低并不单独代表配置更好，还要同时看供给规模和单位发电损失率。'))
+    parts.append(table(['技术','部署方向','低容量/GW','高容量/GW','增加/GW','规模/TWh','布局/TWh',
+                        '总损失变化/TWh','全年正常电量变化/TWh'],grows))
+    for tech in TECHS:
+        local=q[q.tech.eq(tech)&q.country.isin(nationals)&q.climate_ssp.eq('ssp126')]
+        biggest=local.nlargest(3,'delta_L_TWh')
+        parts.append(para(TECH_NAMES[tech]+'固定气候126时，样本中总损失增量最大的三个部署对是：'+
+            '；'.join(f'{names_map[r.country]}{direction(r)}，容量增加{fmt(r.delta_C_GW)} GW，'
+                      f'总损失增加{fmt(r.delta_L_TWh)} TWh/年' for r in biggest.itertuples())+'。'
+            '这说明增量大小必须按国家和技术分别量化，不能用全球单位装机均值代替。'))
+        values=[]
+        for country in countries:
+            for pair in ['245/126','585/126']:
+                r=pick(country,tech,pair)
+                g=q[(q.country==country)&(q.tech==tech)&(q.pair==pair)]
+                values.append([names_map[country],direction(r),fmt(r.delta_C_GW),
+                    fmt(r.delta_L_TWh,signed=True),f'{fmt(g.delta_L_TWh.min())}—{fmt(g.delta_L_TWh.max())}',
+                    fmt(r.delta_G0_TWh,signed=True)])
+        parts.append('<h3>'+TECH_NAMES[tech]+'：各国扩张对应的电量变化</h3>')
+        parts.append(table(['区域','部署方向','气候126容量增量/GW','气候126总损失增量/TWh',
+                            '三气候均值的总损失增量范围/TWh','气候126正常电量增量/TWh'],values))
+    parts.append(para('上表的三气候范围比较三种气候条件下的集合均值，不是四模式范围。'
+                      '<a href="#paired_path_overview">配对路径绝对量图</a>同时包含气候与部署变化，'
+                      '应与这里固定气候的部署比较区分。'))
+
+    parts.extend(['<h2 id="question-2">问题2：布局变化能否抵消规模带来的损失？</h2>',
+        para('能否抵消取决于国家、技术和部署对。固定气候下，正的规模贡献与负的布局贡献同时出现才称为抵消。'
+             '以下抵消比例定义为“−集合平均布局贡献/集合平均规模贡献”；它不是逐模式抵消比例的均值。'
+             '比例小于100%表示部分抵消，不能写成总损失下降。')])
+    for tech in TECHS:
+        g=q[q.tech.eq(tech)]
+        partial=(g.scale_TWh.gt(0)&g.layout_TWh.lt(0)&g.delta_L_TWh.gt(0))
+        full=(g.scale_TWh.gt(0)&g.layout_TWh.lt(0)&g.delta_L_TWh.le(0))
+        amplify=(g.scale_TWh.gt(0)&g.layout_TWh.ge(0))
+        parts.append(para(f'{TECH_NAMES[tech]}的{len(g)}组全球及国家比较中，'
+            f'{int(partial.sum())}组部分抵消、{int(full.sum())}组完全抵消，'
+            f'{int(amplify.sum())}组布局项与规模项同向增加损失。'))
+    r=pick('GLOBAL','wind','585/126');r2=pick('GLOBAL','wind','245/126')
+    parts.append(para(f'全球风电在气候126下，585→126的规模项为+{fmt(r.scale_TWh)} TWh/年，'
+        f'布局项为{fmt(r.layout_TWh,signed=True)}，抵消约{fmt(r.offset_pct)}%，'
+        f'但总损失仍增加{fmt(r.delta_L_TWh)}。245→126的布局项则为+{fmt(r2.layout_TWh)}，'
+        '会放大而非抵消规模损失。同一技术不能给部署126贴上统一的“布局好”或“布局差”标签。'))
+    for country in ['CHN','BRA']:
+        if country in countries:
+            r=pick(country,'wind','585/126')
+            parts.append(para(f'{names_map[country]}风电585→126在气候126下，布局抵消{fmt(-r.layout_TWh)} TWh/年，'
+                f'相当于规模项的{fmt(r.offset_pct)}%；三种气候的集合均值均呈抵消，'
+                '但总损失仍增加。'))
+    for tech in TECHS:
+        for pair in ['245/126','585/126']:
+            g=q[q.tech.eq(tech)&q.pair.eq(pair)&q.country.isin(nationals)]
+            counts=g.groupby('country').layout_TWh.agg(lambda x:int((x<0).sum()))
+            consistent=country_names(counts[counts.eq(3)].index)
+            amplifying=country_names(counts[counts.eq(0)].index)
+            switching=country_names(counts[counts.between(1,2)].index)
+            parts.append(para(TECH_NAMES[tech]+'的'+pair.split('/')[0]+'→126对照中，'
+                '三气候集合均值均抵消的国家：'+consistent+'；均不抵消的国家：'+amplifying+
+                '；抵消与否随气候切换的国家：'+switching+'。'))
+    parts.append(para('逐国对照还能区分持续抵消与气候依赖：下面将三个气候下的布局贡献依次列出，'
+                      '并单独报告每个气候中支持抵消的模式数。仅均值为负，不代表四模式一致。'))
+    for tech in TECHS:
+        values=[]
+        for country in countries:
+            for pair in ['245/126','585/126']:
+                gs=[pick(country,tech,pair,c) for c in climates]
+                values.append([names_map[country],direction(gs[0]),
+                    ' / '.join(fmt(r.layout_TWh,signed=True) for r in gs),
+                    ' / '.join(fmt(r.offset_pct)+'%' if np.isfinite(r.offset_pct) else '不抵消' for r in gs),
+                    ' / '.join(str(r.offset_models)+'/4' for r in gs)])
+        parts.append('<h3>'+TECH_NAMES[tech]+'：布局贡献是否随气候改变方向</h3>')
+        parts.append(table(['区域','部署方向','布局TWh：气候126/245/585',
+                            '抵消比例：气候126/245/585','抵消模式数：气候126/245/585'],values))
+    parts.append(para('对应图件：<a href="#scale_layout_climate126">固定气候126</a>、'
+                      '<a href="#scale_layout_climate245">固定气候245</a>、'
+                      '<a href="#scale_layout_climate585">固定气候585</a>。图中的归一化分母为参考正常电量，'
+                      '不同于本节“相对于规模项”的抵消比例。'))
+
+    parts.extend(['<h2 id="question-3">问题3：这种抵消是否伴随发电能力下降？</h2>',
+        para('需要区分每MW正常发电能力H0与全年正常总电量G0。H0下降表示新增配置的单位容量产出较低；'
+             '即使H0下降，更大的装机容量仍可能使G0增加。因而不能把H0下降直接写成国家总发电能力下降。'
+             '下面仅在布局与规模确有抵消时判断H0是否下降，并保留同一模式中两个条件同时满足的支持数。')])
+    parts.append(para(f'本样本中，{len(q)}组对照有{int(q.delta_G0_TWh.gt(0).sum())}组的'
+        f'全年正常总电量集合均值随高容量部署增加，其中{int(q.G0_increase_models.eq(4).sum())}组获4/4模式支持。'
+        '因此本次出现的发电能力代价是每MW正常产出下降，而不是正常总电量下降。'))
+    r=pick('GLOBAL','wind','585/126')
+    parts.append(para(f'全球风电585→126在气候126下，布局抵消与H0下降同时出现于{r.cost_models}/4模式：'
+        f'H0平均变化{fmt(r.delta_H0_pct,signed=True)}%，但全年正常总电量仍增加{fmt(r.delta_G0_TWh)} TWh。'
+        '因此该案例是“每MW产出降低的同时，布局项减少损失”，而不是扩张使正常总电量减少。'
+        '这种共同出现只是给定配置间的权衡，不证明低产出是减损的必然原因。'))
+    for tech,country,pair in [('wind','CHN','585/126'),('wind','BRA','585/126'),
+                              ('solar','USA','245/126'),('solar','BRA','245/126')]:
+        if country in countries:
+            r=pick(country,tech,pair)
+            parts.append(para(f'{names_map[country]}{TECH_NAMES[tech]}{direction(r)}在气候126下：'
+                f'布局项{fmt(r.layout_TWh,signed=True)} TWh，H0变化{fmt(r.delta_H0_pct,signed=True)}%，'
+                f'正常总电量变化{fmt(r.delta_G0_TWh,signed=True)} TWh；'
+                f'抵消且H0下降{r.cost_models}/4模式，抵消且H0不下降{r.offset_without_H0_decline_models}/4模式。'))
+    parts.append(para('比较上述案例可见，较低损失有时伴随单位容量产出下降，有时可以与产出改善同时出现。'
+                      '全球光伏245→126是后一类：三种气候下的集合均值均抵消且H0提高。'
+                      '应同时报告R、H0和ρ；相同正常发电目标下的损失取决于ρ，而不是R单独决定。'))
+    costrows=[]
+    for tech in TECHS:
+        for country in countries:
+            for pair in ['245/126','585/126']:
+                gs=[pick(country,tech,pair,c) for c in climates]
+                if not any(r.layout_TWh<0 for r in gs):
+                    continue
+                labels=[]
+                for r in gs:
+                    if r.layout_TWh>=0:
+                        labels.append('均值不抵消')
+                    else:
+                        labels.append('抵消；H0'+fmt(r.delta_H0_pct,signed=True)+'%')
+                costrows.append([names_map[country],TECH_NAMES[tech],direction(gs[0]),
+                    *labels,' / '.join(str(r.cost_models)+'/4' for r in gs),
+                    ' / '.join(str(r.offset_without_H0_decline_models)+'/4' for r in gs)])
+    parts.append(table(['区域','技术','部署方向','气候126','气候245','气候585',
+                        '抵消且H0下降：126/245/585','抵消且H0不下降：126/245/585'],costrows))
+    for tech in TECHS:
+        for pair in ['245/126','585/126']:
+            g=q[q.tech.eq(tech)&q.pair.eq(pair)&q.country.isin(nationals)]
+            cost=g.groupby('country').cost_models.sum()
+            gain=g.groupby('country').offset_without_H0_decline_models.sum()
+            if cost.eq(12).any() or gain.eq(12).any():
+                parts.append(para(TECH_NAMES[tech]+'的'+pair.split('/')[0]+'→126对照中，'
+                    '全部12个气候—模式组合都出现“抵消且H0下降”的国家：'+country_names(cost[cost.eq(12)].index)+
+                    '；全部12组合都出现“抵消且H0不下降”的国家：'+country_names(gain[gain.eq(12)].index)+'。'))
+    parts.append(para('本表保留至少一种气候集合均值有抵消的部署对。即使某一格写“均值不抵消”，'
+                      '个别模式仍可能抵消，因此均值判定与模式计数可以不同。'
+                      '详见<a href="#generation_tradeoff">发电能力权衡图</a>及后文相同正常发电目标的容量需求表。'))
+
+    parts.extend(['<h2 id="question-4">问题4：同一气候下，哪种部署的单位装机损失或相对损失率更低？</h2>',
+        para('必须固定气候后比较三个部署，并分别给R和ρ排序。R回答每MW损失多少；'
+             'ρ回答每单位正常发电量损失多少。二者可能给出不同答案，因为R=H0×ρ（ρ取小数）。'
+             '较低R可能只是正常发电能力较低，不能直接称为更高发电效率。')])
+    parts.append(para('全球风电在三种气候下，R均由部署245最低，而ρ均由部署585最低，'
+                      '且两项各自都有全部12组合支持。全球光伏的两项集合均值均由部署126最低，'
+                      '但前两个气候下只有3/4模式支持，不能称为全模式一致。'))
+    values=[]
+    for tech in TECHS:
+        for deploy in SSPS:
+            g=metrics[(metrics.country=='GLOBAL')&(metrics.tech==tech)&
+                      (metrics.climate_ssp=='ssp126')&(metrics.station_ssp==deploy)]
+            a=g[['R','H0','rho_pct']].mean()
+            values.append([TECH_NAMES[tech],deploy[3:],fmt(a.R),fmt(a.H0),fmt(a.rho_pct)+'%'])
+    parts.append(table(['技术','部署（固定气候126）','R / MWh/MW/年','H0 / 小时/年','ρ'],values))
+    for tech in TECHS:
+        parts.append('<h3>'+TECH_NAMES[tech]+'：各国最低损失部署及支持程度</h3>')
+        values=[]
+        for country in countries:
+            values.append([names_map[country],
+                *[winner(country,tech,metric,c) for metric in ['R','rho_pct'] for c in climates]])
+        parts.append(table(['区域','R：气候126','R：气候245','R：气候585',
+                            'ρ：气候126','ρ：气候245','ρ：气候585'],values))
+    parts.append(para('单元格为“最低部署（该指标均值；支持该部署的模式数/4）”，'
+                      'R单位MWh/MW/年，ρ单位%。数值容差内允许并列。'
+                      '例如集合均值最低部署只获1/4模式支持也可能发生：模式平均的排序与模式投票多数不是同一个统计量。'))
+    for tech in TECHS:
+        for metric,label in [('R','单位装机损失'),('rho_pct','相对损失率')]:
+            ss=stable[(stable.tech==tech)&(stable.metric==metric)&stable.country.isin(nationals)]
+            groups=[]
+            for deploy in SSPS:
+                cs=ss.loc[ss.consistent_ensemble.eq(deploy),'country']
+                if len(cs):groups.append(deploy[3:]+'：'+country_names(cs))
+            changed=ss.loc[ss.consistent_ensemble.eq(''),'country']
+            parts.append(para(TECH_NAMES[tech]+'按'+label+'比较，三种气候下集合均值最低部署保持一致的国家分组为：'
+                              +'；'.join(groups)+'。最低部署随气候切换的国家：'+country_names(changed)+'。'))
+    parts.append(para('美国光伏对应126、中国和澳大利亚光伏对应585，体现不同国家可以偏向不同的部署配置；'
+                      '这里的结论只针对当前候选配置和发电损失指标，不等于这些国家应选择相应的全球SSP。'
+                      '<a href="#deployment_performance">固定气候部署表现图</a>展示其差值大小。')
+                 if all(c in countries for c in ['USA','CHN','AUS']) else
+                 para('这些排名只针对当前候选部署和发电损失指标，不等于国家应选择对应全球SSP。'))
+
+    parts.extend(['<h2 id="question-5">问题5：这种表现是否跨气候情景保持一致？</h2>',
+        para('答案分两层：第一层是三种气候下的集合均值最低部署相同；第二层更严格，'
+             '要求该部署在3种气候×4个模式全部12组合都不劣于其他部署。'
+             '第一层成立不保证第二层成立，也不代表差异达到统计显著性。')])
+    countrows=[]
+    for tech in TECHS:
+        for metric,label in [('R','R'),('rho_pct','ρ')]:
+            g=stable[stable.tech.eq(tech)&stable.metric.eq(metric)&stable.country.isin(nationals)]
+            consistent=g[g.consistent_ensemble.ne('')]
+            strict=g[g.strict_best.ne('')]
+            countrows.append([TECH_NAMES[tech],label,f'{len(consistent)}/{len(nationals)}',
+                f'{len(strict)}/{len(nationals)}',country_names(strict.country)])
+    parts.append(table(['技术','指标','三气候均值最低部署一致的国家数','12组合一致的国家数','12组合一致的国家'],countrows))
+    for tech in TECHS:
+        for metric,label in [('R','单位装机损失'),('rho_pct','相对损失率')]:
+            g=stable[stable.tech.eq(tech)&stable.metric.eq(metric)&stable.country.isin(nationals)]
+            nmean=int(g.consistent_ensemble.ne('').sum())
+            nstrict=int(g.strict_best.ne('').sum())
+            parts.append(para(f'{TECH_NAMES[tech]}按{label}评价时，{len(nationals)}国中有{nmean}国'
+                f'在三种气候下保持相同的均值最低部署，但只有{nstrict}国达到全部12组合一致。'
+                '这一区别决定结果应表述为平均表现稳定，还是跨模式也一致的优势。'))
+    values=[]
+    for tech in TECHS:
+        for country in countries:
+            r=stable[(stable.country==country)&(stable.tech==tech)].set_index('metric')
+            values.append([names_map[country],TECH_NAMES[tech],
+                r.loc['R','consistent_ensemble'].replace('ssp','') or '随气候切换',
+                r.loc['R','strict_best'].replace('ssp','') or '无',
+                r.loc['rho_pct','consistent_ensemble'].replace('ssp','') or '随气候切换',
+                r.loc['rho_pct','strict_best'].replace('ssp','') or '无'])
+    parts.append(table(['区域','技术','R：三气候均值共同最低','R：12组合共同最低',
+                        'ρ：三气候均值共同最低','ρ：12组合共同最低'],values))
+    parts.append(para('因此应把“跨气候平均排序稳定”与“跨气候且跨模式稳定”分开写。'
+                      '一些国家在三种气候下始终由同一配置取得最低均值，但模式之间仍有不同排序；'
+                      '仅靠平均热图会高估结论的一致性。对于会发生排序切换的国家，'
+                      '更合适的结论是部署表现依赖气候条件，而不是强行给出一条统一最优路径。'))
+    parts.append(para('国家结论应连成完整证据链：增加多少容量→增加多少总损失和正常电量→'
+                      '布局抵消多少→是否降低每MW正常产出→R与ρ分别偏向哪种配置→这些偏向在多少气候与模式中成立。'
+                      '比较不同配置时，不能用总损失、单位装机损失或相对损失率其中一项代替其余问题。'))
+    parts.append(para('本节源表：'
+        f'<a href="{data_prefix}/five_questions_summary.csv">容量—损失—布局—发电能力汇总</a> · '
+        f'<a href="{data_prefix}/five_questions_stability.csv">两层跨气候一致性</a>。'
+        '源表保留所有区域、两技术、三气候与两部署对；'
+        '<a href="#deployment_robustness">跨气候与模式排名图</a>提供图示对应。'))
+    return parts
+
+
 def main():
     parser = argparse.ArgumentParser(__doc__)
     parser.add_argument('--top-k', type=int, default=10)
@@ -164,6 +475,8 @@ details{margin:18px 0}summary{font-weight:600;cursor:pointer}.small{font-size:14
                       fmt(r.wind_capacity_mw / 1000), fmt(r.solar_capacity_mw / 1000),
                       fmt(r.capacity_mw / 1000)] for r in selection.itertuples()]
     body.append(table(['排名', '区域', '代码', '风电/GW', '光伏/GW', '合计/GW'], selected_rows))
+    body.extend(question_analysis(selection, metrics, contrasts, findings, wins, robust, names_map,
+                                  source, data_dir, data_prefix))
     body.extend(['<h2>五个问题的计算口径</h2><ol>',
         '<li><b>装机规模与总损失：</b>配对路径图展示气候与部署一起变化的结果；不能将这些差异解释为单独的规模效应。</li>',
         '<li><b>布局抵消：</b>固定气候比较部署245−126、585−126，采用 '
@@ -275,7 +588,9 @@ details{margin:18px 0}summary{font-weight:600;cursor:pointer}.small{font-size:14
         'created_utc': datetime.now(timezone.utc).isoformat(), 'top_k': args.top_k,
         'source_hashes': {name: digest(source / (name + '.csv')) for name in names},
         'report_path': str(report_path.relative_to(ROOT)), 'report_sha256': digest(report_path), 'script_sha256': digest(Path(__file__)),
-        'profile_count': len(selection), 'findings_rows': len(findings)})
+        'profile_count': len(selection), 'findings_rows': len(findings),
+        'question_sections': 5, 'question_source_hashes': {name: digest(source / (name + '.csv'))
+            for name in ['five_questions_summary', 'five_questions_stability']}})
     print(json.dumps({'report': str(report_path), 'profiles': len(selection),
                       'findings_rows': len(findings)}, ensure_ascii=False))
 

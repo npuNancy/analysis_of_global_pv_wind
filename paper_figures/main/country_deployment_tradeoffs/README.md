@@ -54,3 +54,5 @@ python -m paper_figures.main.country_deployment_tradeoffs.report --top-k 10
 当前任务只读取已有汇总表，优先在登录节点直接运行。每个Python入口均有同名SLURM脚本；用bash调用时先建日志目录再提交，默认wzhctest、1节点，使用仓库.venv。
 
 代码与SLURM脚本位于`paper_figures/main/country_deployment_tradeoffs/`。图件、源表和元数据输出位于本目录的`outputs/top10/`；更改k时三个入口使用相同`--top-k`，结果写入对应`outputs/top{k}/`。包括7张完整PNG及逻辑分组、逐国结果表、模式级与集合源表、输入/输出哈希和验收记录。HTML中文分析报告写入`paper_figures/analysis/analysis_20261019_005216/country_deployment_tradeoffs_top{k}.html`（默认`top10`），图件和源表复制至报告目录assets/images与assets/data的对应top-k子目录，使用相对链接。默认Top-10的完整分析同时整合进同目录report.html与report.md。较大k的绘图按脚本版式处理，不改变国家排名或结果数据。
+
+报告按五个问题逐项给出国家对照和结论：容量与总损失增量、布局抵消、抵消时的每MW正常产出与总正常电量、固定气候下R与ρ的最低部署、三气候均值一致性及全部12组合一致性。配套源表为five_questions_summary.csv和five_questions_stability.csv。
