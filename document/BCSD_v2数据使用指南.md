@@ -13,9 +13,9 @@
 | Extreme：全球网格 | 各网格、各时刻是否发生指定极端事件，以及资源异常判定基线 | `/work/home/acjpoxgsdu/extreme_grid/extreme_grid_v2/` | `runtime/authoritative_index.json` |
 | Extreme：气候 SSP × 场站 SSP | 将极端事件信号映射到各场站发展情景中的站点 | `/work/home/acjpoxgsdu/extreme_stations_new/extreme_stations_v2/` | `runtime/authoritative_index.json` |
 | Loss：气候 SSP × 场站 SSP | 各容量快照下，逐站点、逐年、逐事件的发电损失及配套正常发电基线 | `/work/home/acjpoxgsdu/generation_loss_stations/loss_stations_v2/` | `runtime/completion.json` → receipt → task manifest |
-| Loss：全球适宜网格 | 适宜建设光伏或陆风的 BCSD 网格，固定1 MW参考容量的单位装机损失 | `/work/home/acsep06cn2/generation_loss_suitable_grid/suitable_grid_20261028/` | `runtime/completion.json` → `receipts[]` → unit manifest → `tiles[].files[]` |
+| Loss：全球适宜网格 | 适宜建设光伏或陆风的 BCSD 网格，固定1 MW参考容量的单位装机损失 | `/work/home/acsep06cn2/generation_loss_suitable_grid/suitable_grid/` | `runtime/completion.json` → `receipts[]` → unit manifest → `tiles[].files[]` |
 
-以上均为运行根目录。第9节现有查询工具支持原五类产品，**其 `--root` 应传入根目录，不要追加 `outputs/`**；全球适宜网格损失按第8节读取。原五类产品的稳定目录是以下实际运行目录的软链；新增适宜网格损失直接使用带运行日期的目录，目前没有另设稳定别名。
+以上均为运行根目录。第9节现有查询工具支持原五类产品，**其 `--root` 应传入根目录，不要追加 `outputs/`**；全球适宜网格损失按第8节读取。原五类产品的稳定目录是以下实际运行目录的软链；全球适宜网格损失直接存放在 `suitable_grid/`，数据根目录不是软链。
 
 | 稳定目录名 | 实际目录 |
 |---|---|
@@ -289,18 +289,18 @@ L_{\mathrm{region}} = \frac{\sum_i E_{\mathrm{loss},i}}{\sum_i C_i}.
 | 结果规模 | 3132个unit窗口；334,872个tile窗口，每个含基线、年度损失各一个NC，合计669,744个NC文件 |
 | 容量与年份含义 | `capacity_mw=1`；2015为统一启用年，损失分析仅覆盖2030–2059；窗口起始年不是装机容量快照 |
 
-汇总账号为 **乌镇1775 / `scnet-wuzhen-1775` / `acsep06cn2`**，实际运行根目录为：
+统一保存账号为 **乌镇1775 / `scnet-wuzhen-1775` / `acsep06cn2`**，数据根目录为：
 
 ```text
-/work/home/acsep06cn2/generation_loss_suitable_grid/suitable_grid_20261028/
+/work/home/acsep06cn2/generation_loss_suitable_grid/suitable_grid/
 ```
 
-结果直接存放在该账号的home共享目录，文件可能由不同计算账号拥有。**2026-10-28实测1866尚不能读取该根目录。** 在1866分析前，需由数据维护方完成只读ACL授权，覆盖祖先目录遍历、完成索引及其声明的JSON/NC文件；以下示例应在1775或已获读取权限的账号执行。
+结果直接存放在该账号的home共享目录，目录和结果文件的所有者均为1775的 `acsep06cn2`。**2026-10-28实测1866尚不能读取该根目录。** 在1866分析前，需由数据维护方完成只读ACL授权，覆盖祖先目录遍历、完成索引及其声明的JSON/NC文件；以下示例应在1775或已获读取权限的账号执行。
 
 ### 目录与正式索引链
 
 ```text
-suitable_grid_20261028/
+suitable_grid/
 ├── inputs/
 │   ├── campaign.json
 │   ├── stations_suitable_1mw.csv
@@ -311,10 +311,13 @@ suitable_grid_20261028/
 │   └── input_sources.md
 ├── runtime/
 │   ├── completion.json
+│   ├── completion_original.json
+│   ├── relocation.json
 │   ├── final_acceptance.json
 │   ├── completion_audit.json
 │   ├── accepted_manifest_audit.json
-│   └── receipts/<unit_id>/<job_id>.json
+│   ├── receipts/<unit_id>/<job_id>.json
+│   └── receipts_original/<unit_id>/<job_id>.json
 └── outputs/<unit_id>/
     ├── manifest.json
     └── <window_start>/<tile>/
@@ -334,6 +337,8 @@ suitable_grid_20261028/
 
 `completion_audit.json` 和 `final_acceptance.json` 保存全量验收结论；计算节点已验证各tile文件、1 MW容量和十个分析年，并核对每个窗口的点位并集与适宜清单完全一致。按清单读取，不递归扫描输出树，也不等待全球合并NC。
 
+迁移时，`completion.json` 和 `receipts/` 更新为当前目录路径；迁移前的完成索引与回执分别保存在 `completion_original.json`、`receipts_original/`，`relocation.json` 记录新旧根目录及索引哈希。unit manifest和NC内容保持不变。`inputs/campaign.json`、历史台账和验收记录保留计算时的绝对路径及原始内容，不能直接把其中的旧根目录当作当前入口；需要定位历史记录中的文件时，可依据 `relocation.json` 的新旧根目录对应关系解析。
+
 ### 文件维度、变量与单位
 
 - `annual_loss.nc` 同时包含一个窗口的十个年度结果，主维度为 **`(analysis_year, station)`**，没有三小时 `time` 维度。这里的 `station` 是适宜网格点，不是真实场站；`station` 整数编号仅在当前tile内有效。
@@ -352,7 +357,7 @@ import json
 from pathlib import Path
 import xarray as xr
 
-root = Path("/work/home/acsep06cn2/generation_loss_suitable_grid/suitable_grid_20261028")
+root = Path("/work/home/acsep06cn2/generation_loss_suitable_grid/suitable_grid")
 unit_id = "sgl_BCC-CSM2-MR_ssp126_wind_R02C08"
 completion = json.loads((root / "runtime/completion.json").read_text())
 assert completion["status"] == "COMPLETED"
