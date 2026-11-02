@@ -1,0 +1,359 @@
+{
+  "status": "PASSED",
+  "primary_weighting": "area",
+  "preparation_job_id": "48004269",
+  "catalogue": {
+    "solar": {
+      "catalogue_cells": 557406,
+      "duplicate_patch_indices": 0,
+      "duplicate_coordinates": 0,
+      "duplicate_raster_cells": 0,
+      "matched_cells": 557406,
+      "common_cells": 546978,
+      "common_coverage_pct": 98.12919128965243
+    },
+    "wind": {
+      "catalogue_cells": 591798,
+      "duplicate_patch_indices": 0,
+      "duplicate_coordinates": 0,
+      "duplicate_raster_cells": 0,
+      "matched_cells": 591798,
+      "common_cells": 574922,
+      "common_coverage_pct": 97.1483512955434
+    }
+  },
+  "patches": 87,
+  "matched_one_to_one": true,
+  "unmatched_cells": 0,
+  "cache_duplicate_cells": 0,
+  "cf_vs_event_index_disagreements": 0,
+  "model_ssp_decade_coverage": {
+    "expected_per_tech": 36,
+    "complete_per_tech": 36,
+    "fraction": 1.0
+  },
+  "union_ge_each_event": "PASSED for every selected cell/year/combination",
+  "union_le_sum_events": "PASSED",
+  "overlap_closure_max_abs_days": 1.4210854715202004e-14,
+  "overlap_definition": "union minus sum of event exposures; negative repeated-event excess, not independent intersection measurement",
+  "snapshot_checked_values": 262021608,
+  "snapshot_max_abs_days": 8.138020831438553e-06,
+  "snapshot_tolerance": {
+    "rtol": 2e-07,
+    "atol_days": 3e-05
+  },
+  "rq1_sample_years": [
+    2030,
+    2040,
+    2050
+  ],
+  "rq1_checked_patch_event_years": 20304,
+  "rq1_max_abs_days": 5.684341886080802e-14,
+  "weighting_trends": [
+    {
+      "tech": "solar",
+      "climate_ssp": "ssp126",
+      "equal_change_days": -0.7171225693720729,
+      "area_change_days": -0.8262116283356917,
+      "same_direction": true
+    },
+    {
+      "tech": "solar",
+      "climate_ssp": "ssp245",
+      "equal_change_days": -1.6791587995769532,
+      "area_change_days": -1.797623810102479,
+      "same_direction": true
+    },
+    {
+      "tech": "solar",
+      "climate_ssp": "ssp585",
+      "equal_change_days": -2.399346934428806,
+      "area_change_days": -2.4416563984575532,
+      "same_direction": true
+    },
+    {
+      "tech": "wind",
+      "climate_ssp": "ssp126",
+      "equal_change_days": 0.6927721825743376,
+      "area_change_days": 0.7551473123621406,
+      "same_direction": true
+    },
+    {
+      "tech": "wind",
+      "climate_ssp": "ssp245",
+      "equal_change_days": 0.9988423103481878,
+      "area_change_days": 1.227293927896845,
+      "same_direction": true
+    },
+    {
+      "tech": "wind",
+      "climate_ssp": "ssp585",
+      "equal_change_days": 2.2299844750679227,
+      "area_change_days": 2.562888154797818,
+      "same_direction": true
+    }
+  ],
+  "weighting_max_abs_days": 2.9143990548048535,
+  "risks": [
+    "Exposure is observed event hours/24, not calendar event days; missing time is not extrapolated.",
+    "Common spatial support is fixed across all four models, three SSPs and 30 years; excluded cells remain missing.",
+    "Low-resource thresholds use each model/scenario 2015–2024 baseline.",
+    "Overlap correction is accounting identity; annual caches do not retain intersection chronology."
+  ],
+  "weighting_interval_checks": [
+    {
+      "tech": "solar",
+      "climate_ssp": "ssp126",
+      "first": 2030,
+      "last": 2040,
+      "equal_change_days": -0.3359322952659838,
+      "area_change_days": -0.32099906649619925,
+      "same_direction": true
+    },
+    {
+      "tech": "solar",
+      "climate_ssp": "ssp126",
+      "first": 2040,
+      "last": 2050,
+      "equal_change_days": -0.3811902741060891,
+      "area_change_days": -0.5052125618394925,
+      "same_direction": true
+    },
+    {
+      "tech": "solar",
+      "climate_ssp": "ssp126",
+      "first": 2030,
+      "last": 2050,
+      "equal_change_days": -0.7171225693720729,
+      "area_change_days": -0.8262116283356917,
+      "same_direction": true
+    },
+    {
+      "tech": "solar",
+      "climate_ssp": "ssp245",
+      "first": 2030,
+      "last": 2040,
+      "equal_change_days": -0.5799946364387552,
+      "area_change_days": -0.6162574785924093,
+      "same_direction": true
+    },
+    {
+      "tech": "solar",
+      "climate_ssp": "ssp245",
+      "first": 2040,
+      "last": 2050,
+      "equal_change_days": -1.0991641631382052,
+      "area_change_days": -1.1813663315100698,
+      "same_direction": true
+    },
+    {
+      "tech": "solar",
+      "climate_ssp": "ssp245",
+      "first": 2030,
+      "last": 2050,
+      "equal_change_days": -1.6791587995769603,
+      "area_change_days": -1.797623810102479,
+      "same_direction": true
+    },
+    {
+      "tech": "solar",
+      "climate_ssp": "ssp585",
+      "first": 2030,
+      "last": 2040,
+      "equal_change_days": -0.7354628008347674,
+      "area_change_days": -0.8780750884018858,
+      "same_direction": true
+    },
+    {
+      "tech": "solar",
+      "climate_ssp": "ssp585",
+      "first": 2040,
+      "last": 2050,
+      "equal_change_days": -1.6638841335940313,
+      "area_change_days": -1.5635813100556675,
+      "same_direction": true
+    },
+    {
+      "tech": "solar",
+      "climate_ssp": "ssp585",
+      "first": 2030,
+      "last": 2050,
+      "equal_change_days": -2.3993469344287988,
+      "area_change_days": -2.4416563984575532,
+      "same_direction": true
+    },
+    {
+      "tech": "wind",
+      "climate_ssp": "ssp126",
+      "first": 2030,
+      "last": 2040,
+      "equal_change_days": 0.5184802297094251,
+      "area_change_days": 0.5654016367111936,
+      "same_direction": true
+    },
+    {
+      "tech": "wind",
+      "climate_ssp": "ssp126",
+      "first": 2040,
+      "last": 2050,
+      "equal_change_days": 0.1742919528649125,
+      "area_change_days": 0.18974567565094702,
+      "same_direction": true
+    },
+    {
+      "tech": "wind",
+      "climate_ssp": "ssp126",
+      "first": 2030,
+      "last": 2050,
+      "equal_change_days": 0.6927721825743376,
+      "area_change_days": 0.7551473123621406,
+      "same_direction": true
+    },
+    {
+      "tech": "wind",
+      "climate_ssp": "ssp245",
+      "first": 2030,
+      "last": 2040,
+      "equal_change_days": 0.2984239492487646,
+      "area_change_days": 0.4211299398413928,
+      "same_direction": true
+    },
+    {
+      "tech": "wind",
+      "climate_ssp": "ssp245",
+      "first": 2040,
+      "last": 2050,
+      "equal_change_days": 0.7004183610994232,
+      "area_change_days": 0.8061639880554523,
+      "same_direction": true
+    },
+    {
+      "tech": "wind",
+      "climate_ssp": "ssp245",
+      "first": 2030,
+      "last": 2050,
+      "equal_change_days": 0.9988423103481878,
+      "area_change_days": 1.227293927896845,
+      "same_direction": true
+    },
+    {
+      "tech": "wind",
+      "climate_ssp": "ssp585",
+      "first": 2030,
+      "last": 2040,
+      "equal_change_days": 1.303816033957652,
+      "area_change_days": 1.3460178018498539,
+      "same_direction": true
+    },
+    {
+      "tech": "wind",
+      "climate_ssp": "ssp585",
+      "first": 2040,
+      "last": 2050,
+      "equal_change_days": 0.9261684411102706,
+      "area_change_days": 1.2168703529479643,
+      "same_direction": true
+    },
+    {
+      "tech": "wind",
+      "climate_ssp": "ssp585",
+      "first": 2030,
+      "last": 2050,
+      "equal_change_days": 2.2299844750679227,
+      "area_change_days": 2.562888154797818,
+      "same_direction": true
+    }
+  ],
+  "weighting_ssp_rankings": [
+    {
+      "tech": "solar",
+      "snapshot": 2030,
+      "equal_ascending": [
+        "ssp585",
+        "ssp245",
+        "ssp126"
+      ],
+      "area_ascending": [
+        "ssp585",
+        "ssp245",
+        "ssp126"
+      ],
+      "same_ranking": true
+    },
+    {
+      "tech": "solar",
+      "snapshot": 2040,
+      "equal_ascending": [
+        "ssp585",
+        "ssp245",
+        "ssp126"
+      ],
+      "area_ascending": [
+        "ssp585",
+        "ssp245",
+        "ssp126"
+      ],
+      "same_ranking": true
+    },
+    {
+      "tech": "solar",
+      "snapshot": 2050,
+      "equal_ascending": [
+        "ssp585",
+        "ssp245",
+        "ssp126"
+      ],
+      "area_ascending": [
+        "ssp585",
+        "ssp245",
+        "ssp126"
+      ],
+      "same_ranking": true
+    },
+    {
+      "tech": "wind",
+      "snapshot": 2030,
+      "equal_ascending": [
+        "ssp585",
+        "ssp245",
+        "ssp126"
+      ],
+      "area_ascending": [
+        "ssp585",
+        "ssp245",
+        "ssp126"
+      ],
+      "same_ranking": true
+    },
+    {
+      "tech": "wind",
+      "snapshot": 2040,
+      "equal_ascending": [
+        "ssp245",
+        "ssp126",
+        "ssp585"
+      ],
+      "area_ascending": [
+        "ssp245",
+        "ssp126",
+        "ssp585"
+      ],
+      "same_ranking": true
+    },
+    {
+      "tech": "wind",
+      "snapshot": 2050,
+      "equal_ascending": [
+        "ssp245",
+        "ssp126",
+        "ssp585"
+      ],
+      "area_ascending": [
+        "ssp126",
+        "ssp245",
+        "ssp585"
+      ],
+      "same_ranking": false
+    }
+  ]
+}

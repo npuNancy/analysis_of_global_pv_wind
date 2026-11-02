@@ -1,0 +1,41 @@
+{
+  "status": "PASSED",
+  "reviewed_utc": "2026-11-02T09:22:44.824157+00:00",
+  "preparation_job_id": "48004269",
+  "primary_weighting": "area",
+  "unique_figures_reviewed": 12,
+  "total_png_files": 24,
+  "checks": [
+    "Annual area denominators equal common valid grid area",
+    "Annual numerator/denominator normalization",
+    "Complete ten-year means and four-model ensemble",
+    "All PNG hashes match metadata; 600 dpi",
+    "Visual review of annual/decadal full figures and all individual panels for both weightings: labels, legends, units and clipping passed"
+  ],
+  "output_sha256": {
+    "suitable_grid_extreme_decadal.png": "494f2bf45ef01395a4c195d751e5729bafcd73de4615c1d472476734f817dfc6",
+    "suitable_grid_extreme_decadal_a.png": "0dc2cd6d4d454edef6612bb121f920e7dd8158c04d2867adf582a035a22a3d06",
+    "suitable_grid_extreme_decadal_b.png": "5b46dfcafdc5a19491aee0e6ce8abfc77876154b0678ec465618bbdd3d6c0f6f",
+    "suitable_grid_extreme_decadal_equal.png": "d077aba0cc38fdcafc0b6cb8f69e87648d5982e84321ac097ba4b6892131c30f",
+    "suitable_grid_extreme_decadal_equal_a.png": "180ebc64dc672f6bd599e406d606961455ef57e0e2e23812a11bbaebf09d35b8",
+    "suitable_grid_extreme_decadal_equal_b.png": "f0e1dbcee1f9ad3fafd38ca3530910adcaf47e9cb8905f889ae19d4ca4246f95",
+    "suitable_grid_extreme_annual.png": "5afdf6303ff563d44761b97748f6c95484135d4dbcddcf55109e7808e78e81ee",
+    "suitable_grid_extreme_annual_a.png": "9a18852b14d1ab66f52fc130827bacdf31c319d5e885a16ac52b8b1261c8a9ee",
+    "suitable_grid_extreme_annual_b.png": "7cdef69f3e68de88c74dfeeb46ae36b79e9c1414ca1fe84a3e765180bad35040",
+    "suitable_grid_extreme_annual_equal.png": "740bd8181e83d2254140558412016b16eb6e70c892a482336aa7c8f49d3086b4",
+    "suitable_grid_extreme_annual_equal_a.png": "7ad9c75910d061ec3aed1c60fc83f0d1e71e66bb5d8339f05e6a55191a07f4db",
+    "suitable_grid_extreme_annual_equal_b.png": "24eb38ceacf8ccf3f171a6ea46ca9f5b2b055d5f36f452f1f0b7fdc4904fc12b",
+    "fig_suitable_grid_extreme_decadal.png": "494f2bf45ef01395a4c195d751e5729bafcd73de4615c1d472476734f817dfc6",
+    "suitable_grid_extreme_decadal_area.png": "494f2bf45ef01395a4c195d751e5729bafcd73de4615c1d472476734f817dfc6",
+    "fig_suitable_grid_extreme_decadal_a.png": "0dc2cd6d4d454edef6612bb121f920e7dd8158c04d2867adf582a035a22a3d06",
+    "suitable_grid_extreme_decadal_area_a.png": "0dc2cd6d4d454edef6612bb121f920e7dd8158c04d2867adf582a035a22a3d06",
+    "fig_suitable_grid_extreme_decadal_b.png": "5b46dfcafdc5a19491aee0e6ce8abfc77876154b0678ec465618bbdd3d6c0f6f",
+    "suitable_grid_extreme_decadal_area_b.png": "5b46dfcafdc5a19491aee0e6ce8abfc77876154b0678ec465618bbdd3d6c0f6f",
+    "fig_suitable_grid_extreme_annual.png": "5afdf6303ff563d44761b97748f6c95484135d4dbcddcf55109e7808e78e81ee",
+    "suitable_grid_extreme_annual_area.png": "5afdf6303ff563d44761b97748f6c95484135d4dbcddcf55109e7808e78e81ee",
+    "fig_suitable_grid_extreme_annual_a.png": "9a18852b14d1ab66f52fc130827bacdf31c319d5e885a16ac52b8b1261c8a9ee",
+    "suitable_grid_extreme_annual_area_a.png": "9a18852b14d1ab66f52fc130827bacdf31c319d5e885a16ac52b8b1261c8a9ee",
+    "fig_suitable_grid_extreme_annual_b.png": "7cdef69f3e68de88c74dfeeb46ae36b79e9c1414ca1fe84a3e765180bad35040",
+    "suitable_grid_extreme_annual_area_b.png": "7cdef69f3e68de88c74dfeeb46ae36b79e9c1414ca1fe84a3e765180bad35040"
+  }
+}
