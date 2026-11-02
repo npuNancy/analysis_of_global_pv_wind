@@ -202,6 +202,8 @@ def main():
         g = closure.loc[tech]
         errors.extend(np.abs(g[list(EVENTS[tech])].sum(axis=1) + g.overlap_correction - g['all']))
     require(max(errors) < 1e-10, 'Aggregated overlap closure')
+    annual[annual.weighting.eq('area')].to_csv(SOURCE / 'annual_primary.csv', index=False)
+    decadal[decadal.weighting.eq('area')].to_csv(SOURCE / 'decadal_primary.csv', index=False)
     annual.to_csv(SOURCE / 'annual.csv', index=False)
     decadal.to_csv(SOURCE / 'decadal.csv', index=False)
     coverage = pd.concat([pd.read_csv(SOURCE / 'patches' / r['tech'] / r['patch'] / 'coverage.csv.gz') for r in reports])
@@ -232,7 +234,7 @@ def main():
         g = group.set_index('snapshot')
         eq = g.loc[2050, 'equal'] - g.loc[2030, 'equal']; ar = g.loc[2050, 'area'] - g.loc[2030, 'area']
         trends.append(dict(tech=tech, climate_ssp=ssp, equal_change_days=float(eq), area_change_days=float(ar), same_direction=bool(np.sign(eq) == np.sign(ar))))
-    audit = dict(status='PASSED', catalogue=checks, patches=len(reports), matched_one_to_one=True,
+    audit = dict(status='PASSED', primary_weighting='area', preparation_job_id=os.environ.get('SLURM_JOB_ID'), catalogue=checks, patches=len(reports), matched_one_to_one=True,
                  unmatched_cells=0, cache_duplicate_cells=0,
                  cf_vs_event_index_disagreements=sum(r['index_disagreements'] for r in reports),
                  model_ssp_decade_coverage=dict(expected_per_tech=36, complete_per_tech=36, fraction=1.0),
@@ -253,11 +255,11 @@ def main():
     write_json(OUT / 'validation.json', audit)
     write_json(OUT / 'metadata.json', dict(metric='annual event exposure', unit='day yr-1', main_event='all',
                models=list(MODELS), ssps=list(SSPS), years=YEARS.tolist(), snapshots=list(SNAPSHOTS),
-               weighting='equal suitable-cell primary; spherical cell area sensitivity',
+               weighting='spherical cell area primary; equal suitable-cell sensitivity',
                centre='four-model arithmetic mean', band='four-model min-max, not confidence interval',
                source_mapping=str(MAPPING), mapping_sha256=digest(MAPPING), manifest_sha256=digest(CACHE / 'cache_manifest.json'),
                preparation_code_sha256=digest(Path(__file__)), patch_reports=[str(SOURCE / 'patches' / r['tech'] / r['patch'] / 'validation.json') for r in reports]))
-    print(ensemble[ensemble.event.eq('all') & ensemble.weighting.eq('equal')].to_string(index=False), flush=True)
+    print(ensemble[ensemble.event.eq('all') & ensemble.weighting.eq('area')].to_string(index=False), flush=True)
     print(json.dumps(audit, ensure_ascii=False), flush=True)
 
 
