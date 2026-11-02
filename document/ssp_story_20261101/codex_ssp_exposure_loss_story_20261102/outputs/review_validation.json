@@ -1,0 +1,14 @@
+{
+  "station_rows": 216,
+  "max_unit_loss_identity_error": 2.842170943040401e-14,
+  "max_annual_loss_ratio_error": 1.7763568394002505e-15,
+  "source_sha256": {
+    "stations": "8aea5bfa96e994d9228f3220a7c7b9c4158c22d99ec8db8b690dc571c8d6c494",
+    "suitable": "5a29f19ca2f83ca11ab5fc3307bb88827f158b83719e3de42fc9c021897d5ac2"
+  },
+  "station_source_mapping": {
+    "ssp126": "stations_SSP1-2.6.csv",
+    "ssp245": "stations_SSP2-4.5.csv",
+    "ssp585": "stations_SSP5-6.0.csv"
+  }
+}

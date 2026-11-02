@@ -1,0 +1,17 @@
+{
+  "input": "paper_figures/main/fig02_generation_loss/outputs/meeting_loss/source_data/global_all_combinations.csv",
+  "input_sha256": "8aea5bfa96e994d9228f3220a7c7b9c4158c22d99ec8db8b690dc571c8d6c494",
+  "matrix_rows": 216,
+  "paired_level_rows": 72,
+  "max_product_identity_error": 5.684341886080802e-14,
+  "max_climate_deployment_closure_error": 0.0,
+  "max_shapley_closure_error": 5.684341886080802e-14,
+  "wind_2050_ssp585_minus_ssp126_exposure_all_negative": true,
+  "wind_2050_ssp585_minus_ssp126_loss_all_positive": true,
+  "models": [
+    "CANESM5",
+    "MPI-ESM1-2-HR",
+    "MRI-ESM2-0",
+    "BCC-CSM2-MR"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "input_sha256": {
+    "annual_technologies": "29d94c8283914a8293a767343e167c2818c159b279ef6db44f185f3b3408fdf7",
+    "published_combined": "11b57c438a41be9389ef9a4df21ae926052af8db35c6ed535210cb1551114a5c",
+    "crossed_pathways": "8aea5bfa96e994d9228f3220a7c7b9c4158c22d99ec8db8b690dc571c8d6c494"
+  },
+  "annual_recomputation_error": {
+    "unit_capacity_loss": 1.4210854715202004e-14,
+    "total_loss_pwh": 4.440892098500626e-16
+  },
+  "max_decadal_source_error": 2.842170943040401e-14,
+  "max_component_closure_error": 2.1316282072803006e-14,
+  "annual_technology_records": 720,
+  "combined_cross_cells": 108,
+  "ssp245_lower_R_at_each_climate_and_model": true,
+  "ssp245_lower_fraction_than_ssp126_at_each_climate_and_model": true,
+  "station_ssp585_source": "stations_SSP5-6.0.csv"
+}

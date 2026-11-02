@@ -1,0 +1,39 @@
+{
+  "status": "PASSED",
+  "source_sha256": {
+    "suitable_extreme": "504aadcf1b41ddb7962a5f84e98ad0738f84904da90672df60745a2042877a47",
+    "suitable_loss": "5a29f19ca2f83ca11ab5fc3307bb88827f158b83719e3de42fc9c021897d5ac2",
+    "full_grid_extreme": "cf85db8491820f336b91345b520e9cfa1509918502ad022fda38fe1872c69b9a",
+    "station_extreme": "5068e8d548382ae096f59f04a197c92a1d6946f3a2bc83af9e7d8b00d6548556",
+    "station_loss": "8aea5bfa96e994d9228f3220a7c7b9c4158c22d99ec8db8b690dc571c8d6c494"
+  },
+  "suitable_support": {
+    "wind": {
+      "patches": 45,
+      "catalogue_cells": 591798,
+      "common_cells": 574922,
+      "coverage_pct": 97.1483512955434
+    },
+    "solar": {
+      "patches": 42,
+      "catalogue_cells": 557406,
+      "common_cells": 546978,
+      "coverage_pct": 98.12919128965243
+    }
+  },
+  "suitable_model_ssp_tech_matrix": {
+    "rows": 24,
+    "expected": 24,
+    "complete": true
+  },
+  "event_overlap_closure_max_abs_days": 6.439293542825908e-15,
+  "station_factor_identity_max_abs": 5.684341886080802e-14,
+  "station_climate_deployment_closure_max_abs": 7.105427357601002e-15,
+  "definitions": {
+    "exposure": "event-union hours divided by 24; not calendar event days",
+    "loss": "signed net generation loss per MW on the all-event union",
+    "effective_net_loss_fraction": "net loss per MW divided by event-union exposure hours",
+    "model_summary": "equal arithmetic mean; support is number of models with the mean direction",
+    "station_decomposition": "symmetric algebraic split of paired SSP585 minus SSP126 into climate and deployment terms"
+  }
+}
