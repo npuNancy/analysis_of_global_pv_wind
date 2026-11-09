@@ -15,7 +15,7 @@ HERE=Path(__file__).resolve().parent
 STATUS=HERE/'completion_status'
 TZ=ZoneInfo('Asia/Shanghai')
 
-def ssh(alias,script,timeout=240):
+def ssh(alias,script,timeout=600):
     p=subprocess.run(['ssh','-o','ConnectTimeout=15',alias,'export LC_ALL=C LANG=C PYTHONUTF8=1; '+script],text=True,capture_output=True,timeout=timeout,env={**__import__('os').environ,'LC_ALL':'C'})
     if p.returncode:raise RuntimeError(alias+': '+p.stderr[-2000:]+p.stdout[-2000:])
     return p.stdout
