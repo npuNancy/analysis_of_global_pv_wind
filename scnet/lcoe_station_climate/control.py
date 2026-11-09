@@ -92,7 +92,10 @@ def main():
                         eligible.sort(key=lambda t:(-t['n_union'],t['unit']))
                         t=eligible[0];key=t['unit'];row=state[key]
                         row.update(state='SUBMITTING',account=user);write(statepath,state)
-                        proc=subprocess.run(['sbatch','--parsable',str(root/'jobs'/(key+'.sh'))],text=True,capture_output=True,timeout=90)
+                    proc=subprocess.run(['sbatch','--parsable',str(root/'jobs'/(key+'.sh'))],text=True,capture_output=True,timeout=90)
+                    with locked(globallock):
+                        state=read(statepath);row=state[key]
+                        if row['state']!='SUBMITTING' or row['account']!=user:raise RuntimeError('Submission claim changed '+key)
                         if proc.returncode:
                             row.update(state='SUBMISSION_FAILED',evidence=proc.stderr.strip());write(statepath,state);break
                         jid=proc.stdout.strip().split(';')[0]

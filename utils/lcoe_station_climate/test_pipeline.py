@@ -1,12 +1,16 @@
 """Small native-calendar fixtures for LCOE station extraction and restart contracts."""
 import json
+import fcntl
 from pathlib import Path
 import tempfile
+from types import SimpleNamespace
 import unittest
+from unittest.mock import patch
 import netCDF4 as nc
 import numpy as np
 from utils.lcoe_station_climate import pipeline as p
 from scnet.create_lcoe_station_climate_jobs import generate
+from scnet.lcoe_station_climate import control
 
 
 class ExtractionTests(unittest.TestCase):
@@ -75,5 +79,34 @@ class ExtractionTests(unittest.TestCase):
             self.assertIn('source /env/bin/activate',body)
             with self.assertRaises(ValueError):generate(config,tasks*2,'run',jobs)
             with self.assertRaises(FileExistsError):generate(config,tasks,'run',jobs,cpus=3)
+
+    def test_submission_releases_global_lock_and_respects_other_jobs(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d);(root/'inputs').mkdir();(root/'runtime').mkdir()
+            accounts=[dict(username=u,max_active=20,submit_lock=str(root/(u+'.lock'))) for u in ['a','b']]
+            (root/'inputs/campaign.json').write_text(json.dumps(dict(accounts=accounts)))
+            tasks=[dict(unit='unit'+str(i),n_union=10,marker=str(root/('marker'+str(i)))) for i in range(3)]
+            (root/'runtime/tasks.json').write_text(json.dumps(tasks))
+            (root/'runtime/pilot_accepted.json').write_text('{}')
+            submitted=[]
+            for user in ['a','b']:
+                def command(args):
+                    if args[0]=='id':return user
+                    if args[0]=='squeue':return '\n'.join(f'{j}|RUNNING' for j in range(1,20))
+                    raise AssertionError(args)
+                def sbatch(args,**kwargs):
+                    with (root/'runtime/queue.lock').open('a') as lock:
+                        fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+                        state=json.loads((root/'runtime/state.json').read_text())
+                        unit=Path(args[-1]).stem
+                        self.assertEqual(state[unit]['state'],'SUBMITTING')
+                        self.assertEqual(state[unit]['account'],user)
+                    submitted.append(unit)
+                    return SimpleNamespace(returncode=0,stdout=str(10000+len(submitted)),stderr='')
+                with patch.object(control,'command',command),patch.object(control.subprocess,'run',sbatch),patch('sys.argv',['control','--root',str(root),'--submit']):
+                    control.main()
+            self.assertEqual(submitted,['unit0','unit1'])
+            state=json.loads((root/'runtime/state.json').read_text())
+            self.assertEqual(state['unit2']['state'],'NOT_SUBMITTED')
 
 if __name__=='__main__':unittest.main()
