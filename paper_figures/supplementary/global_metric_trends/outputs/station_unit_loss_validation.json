@@ -1,0 +1,85 @@
+{
+  "status": "PASSED",
+  "figure": "station_unit_loss",
+  "panels": [
+    {
+      "tech": "wind+solar",
+      "lower": 75.0,
+      "upper": 100.0,
+      "step": 5.0,
+      "intervals": 5,
+      "ticks": [
+        75.0,
+        80.0,
+        85.0,
+        90.0,
+        95.0,
+        100.0
+      ],
+      "data_minimum": 80.30061953705491,
+      "data_maximum": 97.92080696884736
+    },
+    {
+      "tech": "wind",
+      "lower": 75.0,
+      "upper": 137.5,
+      "step": 12.5,
+      "intervals": 5,
+      "ticks": [
+        75.0,
+        87.5,
+        100.0,
+        112.5,
+        125.0,
+        137.5
+      ],
+      "data_minimum": 81.95364302678033,
+      "data_maximum": 127.81229968991555
+    },
+    {
+      "tech": "solar",
+      "lower": 70.0,
+      "upper": 95.0,
+      "step": 5.0,
+      "intervals": 5,
+      "ticks": [
+        70.0,
+        75.0,
+        80.0,
+        85.0,
+        90.0,
+        95.0
+      ],
+      "data_minimum": 72.64857657152743,
+      "data_maximum": 87.81634988625562
+    }
+  ],
+  "export": {
+    "path": "station_unit_loss.png",
+    "image": {
+      "pixels": [
+        5789,
+        2127
+      ],
+      "dpi": [
+        599.9988,
+        599.9988
+      ]
+    },
+    "sha256": "61aedaa73cbf2cf0ef77faf61e6305777b4674594d11bda317ef40b34382c06f",
+    "figure_fraction_bounds": null,
+    "text_bounds_check": "PASSED"
+  },
+  "source_tables_unchanged": {
+    "source_data/station_unit_loss_models.csv": "8571b87fea1d66a9f440b4c3684913993639e37e48cbcc3503e5530a69b324f0",
+    "source_data/station_unit_loss_display.csv": "b2be175fba28c09477b4d6b99d2b8c4ab6286e6493c082ed7645a19b339b33b0",
+    "source_data/station_unit_loss_fits.csv": "16da79e5fce36d40f567f11d01996e5f60e6192e791a54e0281bdc14061fe6bb"
+  },
+  "markdown_html_png_matches": 19,
+  "changed_html_image_1_based": 8,
+  "other_18_html_images_unchanged": true,
+  "code_sha256": {
+    "/work/home/aczlvkl1ac/project_climate_patchify/repos/analysis_of_global_pv_wind/paper_figures/supplementary/global_metric_trends/plot.py": "a76e3f284955fad404fcbfa3f76879066dd272e4e229aa5e1402c708950641a7",
+    "paper_figures/common/plotting.py": "9c173efd9b6278e0bab5ca20ce966936ac8b5bf213ad18b785a77533ea25ff00"
+  }
+}

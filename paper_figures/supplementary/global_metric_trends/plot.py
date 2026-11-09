@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 
 from paper_figures.config import ROOT, MODELS, SSPS, SSP_COLORS
-from paper_figures.common.plotting import configure, export_panel_png
+from paper_figures.common.plotting import configure, export_panel_png, independent_y_ticks
 
 HERE = Path(__file__).resolve().parent
 OUT = HERE / "outputs"
@@ -72,7 +72,8 @@ def emit(frame, name, scope, metric, ylabel, unit, annual, method, source, capac
     from matplotlib.lines import Line2D
     configure()
     plt.rcParams.update({"font.size": 8})
-    independent_y = name in PANEL_Y_STEPS
+    equal_intervals = name == "station_unit_loss"
+    independent_y = name in PANEL_Y_STEPS or equal_intervals
     fig, axes = plt.subplots(1, 3, figsize=(240/25.4, 85/25.4), sharey=not independent_y)
     fig.subplots_adjust(left=.10, right=.985, bottom=.23, top=.78,
                         wspace=.32 if independent_y else .14)
@@ -102,7 +103,12 @@ def emit(frame, name, scope, metric, ylabel, unit, annual, method, source, capac
         ax.ticklabel_format(axis="y", style="sci", scilimits=(-3, 5), useMathText=True)
         ax.tick_params(length=3, width=.7)
     axis_metadata = []
-    if independent_y:
+    if equal_intervals:
+        axis_metadata = [dict(tech=tech, **independent_y_ticks(ax))
+                         for ax, tech in zip(axes, TECHS)]
+        fig.text(.54, .875, "Independent y-axis ranges; 5 intervals per panel",
+                 ha="center", fontsize=7, color=".4")
+    elif independent_y:
         for ax, tech, step in zip(axes, TECHS, PANEL_Y_STEPS[name]):
             values = np.concatenate([line.get_ydata() for line in ax.lines])
             padding = max(float(np.ptp(values)) * .08, step * .15)

@@ -2,7 +2,7 @@
 
 Scientific question: how do capacity, extreme-event exposure, net losses and CF-based generation change along the three SSP pathways? No pathway ranking is assumed.
 
-Eleven complete 1 × 3 triptychs, ordered wind + solar, wind, solar. Python/matplotlib exports only full 600 dpi PNG figures (240 × 85 mm); no separate panels. SSP colours follow project configuration. Grid exposure, suitable-grid exposure/loss, station loss fraction and unit-capacity generation use independent panel y-axis ranges with visible ticks. The other six figures share y-axis ranges. Tick intervals are specified by PANEL_Y_STEPS in plot.py and recorded with axis limits in results_manifest.json.
+Eleven complete 1 × 3 triptychs, ordered wind + solar, wind, solar. Python/matplotlib exports only full 600 dpi PNG figures (240 × 85 mm); no separate panels. SSP colours follow project configuration. Grid exposure, suitable-grid exposure/loss, station loss fraction and unit-capacity generation use independent panel y-axis ranges with visible ticks. Station unit-capacity net loss also uses independent ranges, with five equal intervals (six ticks) per panel. The other five figures share y-axis ranges. Fixed tick intervals are specified by PANEL_Y_STEPS in plot.py; station unit-capacity net loss uses independent_y_ticks from common/plotting.py. All independent axis limits and intervals are recorded in results_manifest.json.
 
 ## Execution
 

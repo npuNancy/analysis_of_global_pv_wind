@@ -50,3 +50,34 @@ def export_panel_png(fig, path, bounds=None, close=True):
         im.verify()
     return {'path': path.name, 'image': info, 'sha256': digest(path),
             'figure_fraction_bounds': bounds, 'text_bounds_check': 'PASSED'}
+
+
+def independent_y_ticks(ax, intervals=5):
+    """Fit all displayed curves with padded, round ticks and a fixed interval count."""
+    import numpy as np
+    values=np.concatenate([np.asarray(line.get_ydata(),dtype=float) for line in ax.lines])
+    if not np.isfinite(values).all():
+        raise ValueError("Nonfinite plotted values")
+    minimum,maximum=float(values.min()),float(values.max())
+    span=max(maximum-minimum,abs(maximum)*1e-6,1e-12)
+    lower,upper=minimum-.06*span,maximum+.06*span
+    exponent=int(np.floor(np.log10((upper-lower)/intervals)))
+    for power in range(exponent,exponent+4):
+        for factor in (1.,1.25,1.5,2.,2.5,3.,4.,5.,6.,8.):
+            step=factor*10.**power
+            first=int(np.ceil(upper/step-intervals-1e-10))
+            last=int(np.floor(lower/step+1e-10))
+            if first>last:
+                continue
+            anchor=int(np.clip(np.rint((lower+upper)/(2*step)-intervals/2),first,last))
+            ticks=(anchor+np.arange(intervals+1,dtype=float))*step
+            ticks[np.abs(ticks)<step*1e-10]=0.
+            ax.set_yticks(ticks)
+            ax.set_ylim(float(ticks[0]),float(ticks[-1]))
+            if not (ticks[0]<minimum and maximum<ticks[-1]):
+                raise ValueError("Clipped curve")
+            np.testing.assert_allclose(np.diff(ticks),step,rtol=1e-10)
+            return dict(lower=float(ticks[0]),upper=float(ticks[-1]),step=step,
+                        intervals=intervals,ticks=ticks.tolist(),
+                        data_minimum=minimum,data_maximum=maximum)
+    raise ValueError("Unable to choose independent y ticks")

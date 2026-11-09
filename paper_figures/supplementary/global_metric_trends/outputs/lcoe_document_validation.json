@@ -24,7 +24,8 @@
   "source_event_files": 3672,
   "code_sha256": {
     "prepare_lcoe.py": "af86bdae943177e4ab187c75de5534a67a469d1ef6dfaa34ae11585d85523bd2",
-    "plot_lcoe.py": "f0a7486cc3e98bea25f06d34d9397613cc4dd3ded68213f0ded8126b1a8a1fb0"
+    "plot_lcoe.py": "0a1117cdb2a4ec8a8a6e2051993596b27de589eb2d864a446cb7c63b6eb8009d",
+    "../../common/plotting.py": "9c173efd9b6278e0bab5ca20ce966936ac8b5bf213ad18b785a77533ea25ff00"
   },
   "document_update_idempotence": "PASSED",
   "slurm": {
