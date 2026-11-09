@@ -1,6 +1,6 @@
 # BCSD-v2 数据使用指南
 
-核对日期：原五类产品为2026-10-04；新增“全球适宜网格损失数据”为2026-10-28。原五类数据集中在 **乌镇1872 / `scnet-wuzhen-1872` / `acjpoxgsdu`**，新增适宜网格损失集中在 **乌镇1775 / `scnet-wuzhen-1775` / `acsep06cn2`**。本文描述结果及其完成索引；原五类产品的配套查询工具位于 [`utils/data_access`](../utils/data_access/)。
+核对日期：原五类产品为2026-10-04；“全球适宜网格损失数据”为2026-10-28；新增“LCOE场站净损失与发电量”为2026-11-09。原五类数据集中在 **乌镇1872 / `scnet-wuzhen-1872` / `acjpoxgsdu`**，适宜网格损失集中在 **乌镇1775 / `scnet-wuzhen-1775` / `acsep06cn2`**，LCOE场站评价结果保存在 **乌镇1866 / `scnet-wuzhen-1866` / `aczlvkl1ac`**。本文描述结果及其完成索引；原五类产品的配套查询工具位于 [`utils/data_access`](../utils/data_access/)。
 
 绘图分析使用 **乌镇1866 / `scnet-wuzhen-1866` / `aczlvkl1ac`**，工作目录为 `/work/home/aczlvkl1ac/project_climate_patchify/repos/analysis_of_global_pv_wind`。分析结果和日志写入1866的项目目录；源数据按下表的实际账号和路径只读访问。场站与地图分别读取该项目内的 `data/stations/`、`data/maps/natural_earth/` 副本。新增适宜网格损失的访问权限见第8节。
 
@@ -14,8 +14,9 @@
 | Extreme：气候 SSP × 场站 SSP | 将极端事件信号映射到各场站发展情景中的站点 | `/work/home/acjpoxgsdu/extreme_stations_new/extreme_stations_v2/` | `runtime/authoritative_index.json` |
 | Loss：气候 SSP × 场站 SSP | 各容量快照下，逐站点、逐年、逐事件的发电损失及配套正常发电基线 | `/work/home/acjpoxgsdu/generation_loss_stations/loss_stations_v2/` | `runtime/completion.json` → receipt → task manifest |
 | Loss：全球适宜网格 | 适宜建设光伏或陆风的 BCSD 网格，固定1 MW参考容量的单位装机损失 | `/work/home/acsep06cn2/generation_loss_suitable_grid/suitable_grid/` | `runtime/completion.json` → `receipts[]` → unit manifest → `tiles[].files[]` |
+| Loss：LCOE场站配对情景（含全年发电量） | LCOE累计布局下，实际容量加权的逐格逐年净损失、正常基准与实际发电量；仅三组配对情景 | `/work/home/aczlvkl1ac/project_climate_patchify/repos/analysis_of_global_pv_wind/paper_figures/supplementary/lcoe_station_metrics/outputs/` | `delivery_manifest.json`；`station_results/manifest.json` → `files[]`，详见第11节 |
 
-以上均为运行根目录。第9节现有查询工具支持原五类产品，**其 `--root` 应传入根目录，不要追加 `outputs/`**；全球适宜网格损失按第8节读取。原五类产品的稳定目录是以下实际运行目录的软链；全球适宜网格损失直接存放在 `suitable_grid/`，数据根目录不是软链。
+原五类及全球适宜网格产品的上述目录均为运行根目录。第9节现有查询工具支持原五类产品，**其 `--root` 应传入根目录，不要追加 `outputs/`**；全球适宜网格损失按第8节读取。LCOE一行直接指向评价结果目录 `outputs/`，使用第11节的NPZ读取方式，不适用这些查询工具。原五类产品的稳定目录是以下实际运行目录的软链；全球适宜网格损失直接存放在 `suitable_grid/`，数据根目录不是软链。
 
 | 稳定目录名 | 实际目录 |
 |---|---|
@@ -30,6 +31,8 @@ Extreme 全球网格的发布文件已集中在上述 `/work/share/` 目录，`o
 索引可以记录带时间戳的绝对路径。稳定入口便于定位，不要求把索引里的绝对路径改写成稳定别名。工具按索引声明读取；`--root` 只改变索引查找位置，**不会自动改写绝对路径**。本地使用需能访问这些路径；仅复制一个索引到本地不能直接读取远程文件，工具不自动建立 SSH 连接或下载数据。
 
 ## 2. 共同索引维度
+
+本节描述原五类产品及全球适宜网格损失。原场站产品采用 globally_interconnected 布局；新增LCOE产品的情景命名、组合范围和网格ID单独见第11节，不套用本节的场站SSP归一规则或3384个任务计数。
 
 | 维度 | 当前取值 / 解释 |
 |---|---|
@@ -524,3 +527,115 @@ bash utils/data_access/read_loss_stations.sh \
 - 全球适宜网格损失：同一损失仓库的 `generation_loss/suitable_grid.py` 和 [`infos/scnet_patchify_suitable-grid`](../ref_code/calculate_wind_solar_generation_loss/infos/scnet_patchify_suitable-grid/)，入口为 `run_job.py`；正式科学代码Git版本为 `160ed84cf018fa859c691343b917fcb6f1b46ba7`，输入来源、配置及SHA256见本批 `inputs/` 和unit manifest。
 
 `ref_code` 是计算过程参考；本目录工具按已发布元数据定位文件，不重新计算这些产品。若稳定软链以后切换到新版本，先复核 schema、时间覆盖、快照窗口和完成状态，再复用本文的当前数量与语义。
+
+## 11. Loss：LCOE场站净损失与发电量
+
+### 数据来源、位置与范围
+
+本产品使用 `globally_interconnected_10km_LCOE` 的九组0.1°累计场站布局，将第8节的1 MW适宜网格净损失按实际装机加权，并从第3节原生三小时CF积分全年实际发电量。它是新布局的年度评价结果，不复用原 globally_interconnected 场站的损失数组。
+
+正式结果在乌镇1866：
+
+```text
+/work/home/aczlvkl1ac/project_climate_patchify/repos/analysis_of_global_pv_wind/
+  paper_figures/supplementary/lcoe_station_metrics/outputs/
+```
+
+本地交付副本：
+
+```text
+/data6/yanxiaokai/project_climate/globally_interconnected_10km_LCOE/results/BCSD_evaluation/
+```
+
+| 项目 | 当前结果 |
+|---|---|
+| 模式 | `CANESM5`、`MPI-ESM1-2-HR`、`MRI-ESM2-0`、`BCC-CSM2-MR` |
+| 场站SSP → 气候SSP | `ssp126 → ssp126`、`ssp245 → ssp245`、`ssp560 → ssp585` |
+| 组合范围 | 仅上述三组配对，**不是3 × 3气候/布局交叉实验**；第三条布局保留 `ssp560` 名称 |
+| 技术 | `wind`（陆风）、`solar`；全球汇总另含 `wind+solar` |
+| 容量与时间 | 2030/2040/2050累计快照分别用于2030–2039/2040–2049/2050–2059；快照不能再次累计相加 |
+| 结果规模 | 24个NPZ（3路径 × 4模式 × 2技术），每个含30年；全球逐年模式表1,080行 |
+| 完成与校验 | 612个计算单元完成；七项数值测试及24个档案汇总一致性检查通过，最大能量差3.815 × 10⁻⁶ MWh |
+
+2026-11-09正式计算已从1866成功读取第8节的适宜网格损失；第8节“1866尚不能读取”的说明是2026-10-28历史权限状态。
+
+### 目录与读取入口
+
+```text
+outputs/                         # 本地副本根目录名为 BCSD_evaluation/
+├── delivery_manifest.json       # 相对文件路径、大小、SHA256和代码版本
+├── provenance.json              # 场站输入、Loss清单链及CF索引来源
+├── summary_complete.json
+├── validation.json
+├── station_results/
+│   ├── manifest.json            # files[]：模型、双SSP、技术、日历、格点数、SHA256
+│   └── <station_ssp>/<model>/<tech>.npz
+└── source_data/
+    ├── global_annual_models.csv
+    ├── global_annual_ensemble.csv
+    ├── global_decadal_models.csv
+    ├── global_decadal_ensemble.csv
+    ├── capacity_coverage.csv
+    └── support_<station_ssp>_<tech>.csv.gz
+```
+
+读取前确认两个清单的 `status=COMPLETED`。`delivery_manifest.json` 的 `files[].path` 相对于结果根目录；`station_results/manifest.json` 的 `files[].path` 保留1866绝对路径。本地读取时按条目的 `station_ssp/model/tech` 定位副本，再核对同条目的SHA256，不直接打开该远程绝对路径。本产品不含单独发布的场站三小时CF或Extreme信号，不适用 `read_loss_stations.py`，也不能仅替换其 `--root`。
+
+### 逐场站字段、容量与缺测
+
+| NPZ字段 | 维度 | 含义 / 单位 |
+|---|---|---|
+| `years` | `(30,)` | 分析年份2030–2059 |
+| `grid_id` | `(N,)` | 原0.1°栅格唯一编号；同一技术内用于位置对齐，不能与原产品的 `station_id` 互换 |
+| `latitude`、`longitude` | `(N,)` | 选址网格中心经纬度 |
+| `source_latitude`、`source_longitude` | `(N,)` | 实际取样的BCSD格点坐标 |
+| `capacity_mw` | `(30, N)` | 完整场站目录容量，MW，包含未通过有效性筛选的装机 |
+| `mapped` | `(N,)` | 是否匹配到源网格 |
+| `common_support` | `(N,)` | 是否通过四模式、全部30年共同有效筛选 |
+| `expected_hours` | `(30,)` | 对应模式原生日历的全年小时数，不统一假定8760 |
+| `net_loss_mwh` | `(30, N)` | 事件并集 `all` 的带符号年度净损失，MWh/年 |
+| `normal_annual_mwh` | `(30, N)` | 全年正常基准电量，MWh/年 |
+| `generation_mwh` | `(30, N)` | 从原生CF完整积分的全年实际发电量，MWh/年 |
+
+这些电量数组已经乘过实际容量，不是1 MW参考值。单位装机净损失需用 `net_loss_mwh / capacity_mw`，单位为MWh/MW/年；负值表示事件相关增益。本次只交付事件并集的净损失，没有逐事件、正损失或持续时间数组。风电系数为1，不乘0.1。
+
+按原适宜性栅格行列匹配，同格有多个已发布BCSD点时选择距场站中心最近者，不跨格补点。共同有效集合按“场站SSP × 技术”固定，要求四模式、全部30年损失和正常基准有限、正常基准大于零、CF年度时间完整。未投运年份和被排除位置的电量均为NaN，需结合容量与 `common_support` 区分，不能填零。
+
+风光合计有效装机覆盖97.652%–98.496%；陆风93.954%–97.066%，光伏99.342%–99.484%。总量仅对有效集合求和，不外推至缺测装机。全球表的 `capacity_mw` 是有效容量，NPZ中的同名字段则保留完整目录容量；`capacity_coverage.csv` 分别列出目录、已映射和有效容量。
+
+全球单位装机损失为有效净损失之和除以有效容量之和；年度损失比例为100 × 有效净损失之和 / 同集合全年正常基准电量之和。`generation_mwh` 的全年实际电量与事件期 `actual_generation_mwh_all` 不同。风光合计先加分子、分母再求比；四模式等权平均，年代汇总取十个年度指标的均值。路径差异包含装机布局和气候影响，不能直接解释为纯气候效应。
+
+### 按清单读取单年场站损失
+
+以下示例可在1866仓库 `.venv` 下运行；本地使用时将 `root` 改为上述交付副本目录。NPZ按成员解压，年度切片不是NetCDF式惰性读取；全模式批量分析应按内存和读取量选择SLURM执行。
+
+```python
+import hashlib
+import json
+from pathlib import Path
+import numpy as np
+
+root = Path('/work/home/aczlvkl1ac/project_climate_patchify/repos/analysis_of_global_pv_wind/'
+            'paper_figures/supplementary/lcoe_station_metrics/outputs')
+delivery = json.loads((root / 'delivery_manifest.json').read_text())
+manifest = json.loads((root / 'station_results/manifest.json').read_text())
+assert delivery['status'] == manifest['status'] == 'COMPLETED'
+entry = next(e for e in manifest['files']
+             if e['model'] == 'CANESM5' and e['station_ssp'] == 'ssp560'
+             and e['climate_ssp'] == 'ssp585' and e['tech'] == 'wind')
+path = root / 'station_results' / entry['station_ssp'] / entry['model'] / (entry['tech'] + '.npz')
+assert hashlib.sha256(path.read_bytes()).hexdigest() == entry['sha256']
+
+with np.load(path, allow_pickle=False) as z:
+    y = int(np.flatnonzero(z['years'] == 2050)[0])
+    capacity = z['capacity_mw'][y]
+    net_loss = z['net_loss_mwh'][y]
+    valid = (capacity > 0) & z['common_support'] & np.isfinite(net_loss)
+    grid_id = z['grid_id'][valid]
+    unit_loss = net_loss[valid] / capacity[valid]  # MWh/MW/年，逐场站
+    global_unit_loss = net_loss[valid].sum() / capacity[valid].sum()
+    print(entry['station_ssp'], entry['climate_ssp'], entry['calendar'])
+    print('有效场站数:', valid.sum(), '全球单位装机净损失:', global_unit_loss)
+```
+
+源选址提交为 `e9eff0d0547de79090559ea3d7efc93912613ec6`；评价代码位于1866仓库的 `paper_figures/supplementary/lcoe_station_metrics/` 与 `scnet/lcoe_metrics/`，分支 `lcoe-station-metrics`、提交 `5494c8af4cf05e3410a29323e858ae13c4b9afa1`。交付副本包含 `analysis_code.patch`、`REPORT.md`、数值和图片校验记录。五类完整组图见[风电光伏数据](风电光伏数据.md#基于-lcoe-选址的损失与发电量)。
