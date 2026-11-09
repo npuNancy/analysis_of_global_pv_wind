@@ -2,7 +2,7 @@
   "status": "PASSED",
   "markdown_images": 19,
   "html_embedded_images": 19,
-  "original_embedded_images_unchanged": 16,
+  "original_embedded_images_unchanged": 11,
   "new_png_base64_identity": "PASSED",
   "all_md_html_image_matches": 19,
   "new_figure_pixels": [
@@ -24,7 +24,7 @@
   "source_event_files": 3672,
   "code_sha256": {
     "prepare_lcoe.py": "af86bdae943177e4ab187c75de5534a67a469d1ef6dfaa34ae11585d85523bd2",
-    "plot_lcoe.py": "946fac8c69f33406c15eb9a0534efaf86f77ae6c203ad366788047de4b678715"
+    "plot_lcoe.py": "f0a7486cc3e98bea25f06d34d9397613cc4dd3ded68213f0ded8126b1a8a1fb0"
   },
   "document_update_idempotence": "PASSED",
   "slurm": {
@@ -33,5 +33,10 @@
     "exit_code": "0:0",
     "elapsed": "00:21:21",
     "max_rss_kib": 1943700
-  }
+  },
+  "updated_lcoe_figures": 8,
+  "independent_y_panels": 24,
+  "y_intervals_per_panel": 5,
+  "y_ticks_per_panel": 6,
+  "source_annual_tables_and_fits_unchanged": "PASSED"
 }
