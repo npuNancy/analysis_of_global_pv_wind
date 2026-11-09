@@ -25,6 +25,12 @@ def atomic(path,text):
 
 def cycle(cfg,submit):
     root=cfg['root'];repo=cfg['repo'];owner=cfg['accounts'][0]['alias'];start=datetime.now(TZ)
+    previous=None
+    try:
+        old=json.loads((STATUS/'state.json').read_text())
+        stamp=next(line.removeprefix('Last checked: ') for line in (STATUS/'progress.md').read_text().splitlines() if line.startswith('Last checked: '))
+        previous=(datetime.fromisoformat(stamp),sum(v['state']=='SUCCEEDED' for v in old.values()))
+    except (OSError,ValueError,StopIteration):pass
     prefix='source '+shlex.quote(cfg['activate'])+'; cd '+shlex.quote(repo)+'; '
     gates=ssh(owner,'for f in prepared.json pilot_accepted.json pilot_accepted.storage_hold.json; do test ! -f '+shlex.quote(root+'/runtime')+'/"$f" || echo "$f"; done').splitlines()
     storage_hold='pilot_accepted.storage_hold.json' in gates
@@ -62,6 +68,11 @@ def cycle(cfg,submit):
     mean=sum(completed)/len(completed) if completed else 1800
     eta=math.ceil(remain/200)*max(900,mean)/3600 if remain else 0
     estimate=f'{eta:.1f}小时（已完成任务均值与200槽估算；排队/尾部任务另计）' if completed else '3–6小时（试运行前暂估）'
+    if previous and submit:
+        seconds=(start-previous[0]).total_seconds();newly_done=counts['SUCCEEDED']-previous[1]
+        if seconds>=120 and newly_done>=20:
+            minutes=remain*seconds/newly_done/60
+            estimate=f'{minutes:.0f}分钟（最近一轮完成速率；排队/尾部任务另计）'
     if storage_hold:estimate='存储恢复后'+estimate+'；等待存储方案确认的时间另计'
     lines=['# LCOE CF / Extreme进度','',f'Last checked: {start.isoformat()}','',f'检查：{dict(counts)}；账号活动作业合计{active}。',f'思考：预计剩余{estimate}。',
         '汇总：源文件只读；终态成功需Slurm退出码和任务完成回执。','执行：'+('存储配额已满，停止补交；只读检查，保留已完成分片，等待存储方案确认。' if storage_hold else '已按各账号全量活动数补足可用20槽。' if submit else '本轮仅观察，等待依赖验收。'),'',
