@@ -33,14 +33,16 @@ def active(user):return {line.split('|')[0]:line.split('|')[1] for line in comma
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--root',type=Path,required=True)
     p.add_argument('--submit',action='store_true');p.add_argument('--pilot',nargs='+');p.add_argument('--retry',nargs='*')
+    p.add_argument('--read-only',action='store_true')
     a=p.parse_args();root=a.root;cfg=read(root/'inputs/campaign.json');user=command(['id','-un'])
+    if a.read_only and (a.submit or a.retry):p.error('--read-only cannot submit or retry')
     account=next(x for x in cfg['accounts'] if x['username']==user)
     tasks=read(root/'runtime/tasks.json');byid={t['unit']:t for t in tasks};statepath=root/'runtime/state.json'
     globallock=root/'runtime/queue.lock';ownlock=root/'runtime'/('controller_'+user+'.lock')
     with locked(ownlock):
         with locked(globallock):
             state=read(statepath) if statepath.exists() else {t['unit']:dict(state='NOT_SUBMITTED',attempt=0) for t in tasks}
-            write(statepath,state)
+            if not a.read_only:write(statepath,state)
         observed=active(user)
         ours={k:v for k,v in state.items() if v.get('account')==user and v['state'] not in ['SUCCEEDED','FAILED','INCOMPLETE_OUTPUT','DETERMINISTIC_FAILURE']}
         ids=[v['job_id'] for v in ours.values() if v.get('job_id')]
@@ -75,7 +77,7 @@ def main():
                     if row['state'] not in ['FAILED','INCOMPLETE_OUTPUT'] or row['attempt']>=3:raise ValueError('Retry not eligible '+key)
                     row.setdefault('history',[]).append({k:v for k,v in row.items() if k!='history'})
                     row.update(state='NOT_SUBMITTED');row.pop('job_id',None)
-            write(statepath,state)
+            if not a.read_only:write(statepath,state)
         submitted=[]
         if a.submit:
             if not a.pilot and not (root/'runtime/pilot_accepted.json').exists():raise ValueError('Pilot acceptance required')
@@ -103,8 +105,10 @@ def main():
                         row.update(state='ACTIVE',scheduler_state='SUBMITTED',job_id=jid,attempt=row['attempt']+1,submitted_at=datetime.now().astimezone().isoformat())
                         write(statepath,state);acknowledged.add(jid);submitted.append(jid)
         with locked(globallock):state=read(statepath)
+        if a.read_only:state.update(updates)
         counts=Counter(v['state'] for v in state.values())
         result=dict(account=user,active=len(active(user)),submitted=submitted,counts=dict(counts),checked_at=datetime.now().astimezone().isoformat())
-        write(root/'runtime'/('account_'+user+'.json'),result)
+        if a.read_only:result['units']=updates
+        else:write(root/'runtime'/('account_'+user+'.json'),result)
         print(json.dumps(result))
 if __name__=='__main__':main()

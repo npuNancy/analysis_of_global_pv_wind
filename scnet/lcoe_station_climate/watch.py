@@ -26,7 +26,8 @@ def atomic(path,text):
 def cycle(cfg,submit):
     root=cfg['root'];repo=cfg['repo'];owner=cfg['accounts'][0]['alias'];start=datetime.now(TZ)
     prefix='source '+shlex.quote(cfg['activate'])+'; cd '+shlex.quote(repo)+'; '
-    gates=ssh(owner,'for f in prepared.json pilot_accepted.json; do test ! -f '+shlex.quote(root+'/runtime')+'/"$f" || echo "$f"; done').splitlines()
+    gates=ssh(owner,'for f in prepared.json pilot_accepted.json pilot_accepted.storage_hold.json; do test ! -f '+shlex.quote(root+'/runtime')+'/"$f" || echo "$f"; done').splitlines()
+    storage_hold='pilot_accepted.storage_hold.json' in gates
     STATUS.mkdir(parents=True,exist_ok=True)
     if 'prepared.json' not in gates:
         def inspect(account):
@@ -43,22 +44,25 @@ def cycle(cfg,submit):
         atomic(STATUS/'progress.md','\n'.join(lines)+'\n')
         print(start.isoformat(),'PREPARATION_PENDING','ETA 3–6小时 + 排队',flush=True)
         return False
-    submit=submit and 'pilot_accepted.json' in gates
+    submit=submit and 'pilot_accepted.json' in gates and not storage_hold
     def one(account):
         try:
-            out=ssh(account['alias'],prefix+'python -m scnet.lcoe_station_climate.control --root '+shlex.quote(root)+(' --submit' if submit else ''))
+            out=ssh(account['alias'],prefix+'python -m scnet.lcoe_station_climate.control --root '+shlex.quote(root)+(' --submit' if submit else '')+(' --read-only' if storage_hold else ''))
             return json.loads(out.strip().splitlines()[-1])
         except Exception as e:return {'account':account['username'],'error':str(e)}
     with ThreadPoolExecutor(max_workers=len(cfg['accounts'])) as pool:accounts=list(pool.map(one,cfg['accounts']))
     raw=ssh(owner,'cat '+shlex.quote(root+'/runtime/state.json'))
-    state=json.loads(raw);counts=Counter(v['state'] for v in state.values())
+    state=json.loads(raw)
+    for account in accounts:state.update(account.pop('units',{}))
+    counts=Counter(v['state'] for v in state.values())
     completed=[v.get('elapsed_seconds',0) for v in state.values() if v['state']=='SUCCEEDED' and v.get('elapsed_seconds',0)>0]
     remain=len(state)-counts['SUCCEEDED'];active=sum(a.get('active',0) for a in accounts)
     mean=sum(completed)/len(completed) if completed else 1800
     eta=math.ceil(remain/200)*max(900,mean)/3600 if remain else 0
     estimate=f'{eta:.1f}小时（已完成任务均值与200槽估算；排队/尾部任务另计）' if completed else '3–6小时（试运行前暂估）'
+    if storage_hold:estimate='存储恢复后'+estimate+'；等待存储方案确认的时间另计'
     lines=['# LCOE CF / Extreme进度','',f'Last checked: {start.isoformat()}','',f'检查：{dict(counts)}；账号活动作业合计{active}。',f'思考：预计剩余{estimate}。',
-        '汇总：源文件只读；终态成功需Slurm退出码和任务完成回执。','执行：'+('已按各账号全量活动数补足可用20槽。' if submit else '本轮仅观察，等待依赖验收。'),'',
+        '汇总：源文件只读；终态成功需Slurm退出码和任务完成回执。','执行：'+('存储配额已满，停止补交；只读检查，保留已完成分片，等待存储方案确认。' if storage_hold else '已按各账号全量活动数补足可用20槽。' if submit else '本轮仅观察，等待依赖验收。'),'',
         '| 账号 | 活动作业 | 新提交 | 异常 |','|---|---:|---:|---|']
     for a in accounts:lines.append('| '+a['account']+' | '+str(a.get('active','unknown'))+' | '+str(len(a.get('submitted',[])))+' | '+a.get('error','').replace('|','/').replace('\n',' ')+' |')
     lines+=['','| 单位 | 账号 | 作业 | 状态 | Slurm / 退出码 | 耗时秒 / MaxRSS | 尝试 | 证据 / 下一步 |','|---|---|---|---|---|---|---:|---|']

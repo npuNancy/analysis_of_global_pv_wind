@@ -108,5 +108,19 @@ class ExtractionTests(unittest.TestCase):
             self.assertEqual(submitted,['unit0','unit1'])
             state=json.loads((root/'runtime/state.json').read_text())
             self.assertEqual(state['unit2']['state'],'NOT_SUBMITTED')
+            before=(root/'runtime/state.json').read_bytes()
+            (root/'marker0').write_text('{"status":"COMPLETED"}')
+            def inspect(args):
+                if args[0]=='id':return 'a'
+                if args[0]=='squeue':return ''
+                if args[0]=='sacct':return '10001|COMPLETED|0:0|10|2048K'
+                raise AssertionError(args)
+            account_before=(root/'runtime/account_a.json').read_bytes()
+            with patch.object(control,'command',inspect),patch('sys.argv',['control','--root',str(root),'--read-only']),patch('builtins.print') as output:
+                control.main()
+            result=json.loads(output.call_args.args[0])
+            self.assertEqual(result['units']['unit0']['state'],'SUCCEEDED')
+            self.assertEqual((root/'runtime/state.json').read_bytes(),before)
+            self.assertEqual((root/'runtime/account_a.json').read_bytes(),account_before)
 
 if __name__=='__main__':unittest.main()
