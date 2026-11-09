@@ -1,0 +1,37 @@
+{
+  "status": "PASSED",
+  "markdown_images": 19,
+  "html_embedded_images": 19,
+  "original_embedded_images_unchanged": 16,
+  "new_png_base64_identity": "PASSED",
+  "all_md_html_image_matches": 19,
+  "new_figure_pixels": [
+    [
+      5789,
+      2127
+    ],
+    [
+      5789,
+      2127
+    ],
+    [
+      5789,
+      2127
+    ]
+  ],
+  "minimum_event_time_coverage": 1.0,
+  "job_id": "48713293",
+  "source_event_files": 3672,
+  "code_sha256": {
+    "prepare_lcoe.py": "af86bdae943177e4ab187c75de5534a67a469d1ef6dfaa34ae11585d85523bd2",
+    "plot_lcoe.py": "946fac8c69f33406c15eb9a0534efaf86f77ae6c203ad366788047de4b678715"
+  },
+  "document_update_idempotence": "PASSED",
+  "slurm": {
+    "job_id": "48713293",
+    "state": "COMPLETED",
+    "exit_code": "0:0",
+    "elapsed": "00:21:21",
+    "max_rss_kib": 1943700
+  }
+}

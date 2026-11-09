@@ -1,0 +1,160 @@
+"""Render paired LCOE triptychs and embed them in the Markdown/HTML inventory."""
+import base64
+import json
+import os
+from pathlib import Path
+import re
+
+import numpy as np
+import pandas as pd
+
+from paper_figures.common.plotting import configure, export_panel_png
+from paper_figures.config import ROOT, SSP_COLORS
+from paper_figures.supplementary.global_metric_trends.prepare_lcoe import OUT, DATA, PAIRS, require, sha
+
+TECHS = ["wind+solar", "wind", "solar"]
+NAMES = ["lcoe_station_capacity", "lcoe_station_exposure_total", "lcoe_station_exposure_mean"]
+TITLES = ["总装机量", "容量加权暴露总量", "容量加权年均暴露时长"]
+UNITS = ["TW", "MW·天/年", "天/年"]
+
+
+def draw(frame, name, metric, ylabel, capacity=False):
+    import matplotlib.pyplot as plt
+    from matplotlib.lines import Line2D
+    keys=["station_ssp","climate_ssp","tech","snapshot"]
+    require(not frame.duplicated(keys+["model"]).any(), "Duplicate display records")
+    display=frame.groupby(keys).value.agg(mean="mean",minimum="min",maximum="max",n_models="count").reset_index()
+    require(len(display)==27 and display.n_models.eq(1 if capacity else 4).all(),"Display matrix")
+    frame.to_csv(DATA/(name+"_models.csv"),index=False)
+    display.to_csv(DATA/(name+"_display.csv"),index=False)
+    configure()
+    plt.rcParams.update({"font.size":8})
+    fig,axes=plt.subplots(1,3,figsize=(240/25.4,85/25.4),sharey=True)
+    fig.subplots_adjust(left=.10,right=.985,bottom=.28,top=.78,wspace=.14)
+    for ax,tech,title in zip(axes,TECHS,["Wind + solar","Wind","Solar"]):
+        for (s,c),marker in zip(PAIRS.items(),["o","s","^"]):
+            g=display[display.tech.eq(tech)&display.station_ssp.eq(s)].sort_values("snapshot")
+            ax.plot(g.snapshot,g["mean"],color=SSP_COLORS[c],marker=marker,ms=3.5,lw=1.15)
+        ax.set_title(title,fontsize=9,pad=8)
+        ax.set_xticks([2030,2040,2050],["2030","2040","2050"] if capacity else ["2030s","2040s","2050s"])
+        ax.set_xlim(2028,2052)
+        ax.set_xlabel("Capacity snapshot" if capacity else "Decade")
+        ax.grid(axis="y",color=".9",lw=.45)
+        ax.ticklabel_format(axis="y",style="sci",scilimits=(-3,5),useMathText=True)
+        ax.tick_params(length=3,width=.7)
+    if capacity or name.endswith("_total"):
+        axes[0].set_ylim(bottom=0)
+    axes[0].set_ylabel(ylabel,labelpad=7)
+    fig.suptitle("LCOE global stations | "+metric,fontsize=10,y=.97)
+    handles=[Line2D([0],[0],color=SSP_COLORS[c],lw=1.5,marker=mk,ms=3.5,
+                   label=s.upper()+" / "+c.upper())
+             for (s,c),mk in zip(PAIRS.items(),["o","s","^"])]
+    fig.legend(handles=handles,loc="lower center",bbox_to_anchor=(.53,.075),ncol=3,fontsize=8)
+    fig.text(.53,.025,"Legend: station SSP / climate SSP. "+(
+        "Full catalogue capacity." if capacity else "Lines: four-GCM mean; exposure days = accumulated event hours / 24."),
+        ha="center",fontsize=6.7,color=".35")
+    qa=export_panel_png(fig,OUT/(name+".png"))
+    return dict(name=name,figure=qa,model_table=str(DATA/(name+"_models.csv")),
+                display_table=str(DATA/(name+"_display.csv")),
+                y_limits=[list(ax.get_ylim()) for ax in axes])
+
+
+def update_documents(coverage, minimum_time_coverage):
+    both=coverage[coverage.tech.eq("wind+solar")].capacity_fraction*100
+    pct=f"{both.min():.2f}%–{both.max():.2f}%"
+    prefix="../paper_figures/supplementary/global_metric_trends/outputs/"
+    section="""## 基于 LCOE 选址的装机量与极端事件暴露
+
+三张完整组图均为一行三列，依次为**风电＋光伏、陆上风电、光伏**，仅显示场站SSP／气候SSP配对路径：**126／126、245／245、560／585**。高排放路径的场站布局仍为SSP5-6.0，气候为SSP5-8.5。
+
+- **总装机量（TW）**：分别汇总2030、2040、2050年完整LCOE选址目录的总容量；三个年份为累计快照，不再次相加。
+- **容量加权暴露总量（MW·天/年）**：逐场站累计适用事件时间并集的暴露小时，除以24后乘以该年代容量，再全球求和。
+- **容量加权年均暴露时长（天/年）**：暴露总量除以相同有效场站的容量总量。风光合计先加总两种技术的容量加权分子、分母，再相除；不将两种技术的均值直接平均。
+- 暴露统计覆盖2030–2039、2040–2049、2050–2059，各窗口使用2030、2040、2050年容量快照。先计算单模式十年均值，再对四个气候模式等权平均；图中不绘制线性拟合或置信区间，模式最小／最大值保留在源数据表。
+- 风电使用5类、光伏使用6类正式事件的**时间并集**，不累加重叠事件。1天表示24小时累计暴露，不是发生事件的日历天数。保留原生日历，缺测不作无事件，也不外推缺失时段。
+- 沿用原文档场站暴露图的有效性口径：采用配对Loss产品的四模式、30年共同有效场站集合，并核验各站点每年事件有效时间至少99%。本批最低时间覆盖率为MINIMUM_TIME%；风光合计有效容量占完整目录的CAPACITY_RANGE。完整装机量图不作此筛选，暴露图也不放大至完整目录容量。
+
+数据入口为[BCSD数据指南第12节](BCSD_v2数据使用指南.md)中1959共享目录的Extreme正式索引；容量与共同有效集合按第11节配对Loss档案核对。配对路径差同时包含气候、部署与容量权重变化。
+
+新增代码与原图代码同目录：[数据汇总](../paper_figures/supplementary/global_metric_trends/prepare_lcoe.py)、[绘图及文档更新](../paper_figures/supplementary/global_metric_trends/plot_lcoe.py)，各有同名SLURM脚本。源数据为该目录outputs/source_data下的lcoe_station_capacity、lcoe_station_exposure_annual_models、lcoe_station_exposure_decadal_models及lcoe_station_exposure_coverage等CSV；输入索引摘要、时间完整性与覆盖校验记录在outputs/lcoe_exposure_validation.json。
+""".replace("MINIMUM_TIME",f"{minimum_time_coverage*100:.4f}").replace("CAPACITY_RANGE",pct)
+    for number,name,title,unit in zip(range(17,20),NAMES,TITLES,UNITS):
+        section+=f"\n### {number}. LCOE全球场站：{title}\n\n![LCOE全球场站：{title}（{unit}）]({prefix}{name}.png)\n"
+    md=ROOT/"document/风电光伏数据.md"
+    content=md.read_text().replace("数据来源：", "原始指标表来源：", 1)
+    if "| LCOE全球场站 |" not in content:
+        original=next(line for line in content.splitlines() if line.startswith("| 全球场站 |"))
+        content=content.replace(original,original+"\n"+original.replace("| 全球场站 |","| LCOE全球场站 |"),1)
+    start="<!-- LCOE_CAPACITY_EXPOSURE_START -->"
+    end="<!-- LCOE_CAPACITY_EXPOSURE_END -->"
+    block=start+"\n"+section.rstrip()+"\n"+end
+    if start in content:
+        content=re.sub(re.escape(start)+r".*?"+re.escape(end),lambda _:block,content,flags=re.S)
+    else:
+        content=content.rstrip()+"\n\n"+block+"\n"
+    md.write_text(content)
+    html=ROOT/"document/风电光伏数据.html"
+    content=html.read_text().replace("数据来源：", "原始指标表来源：", 1)
+    if "<td>LCOE全球场站</td>" not in content:
+        match=re.search(r"<tr>\s*<td>全球场站</td>.*?</tr>",content,re.S)
+        require(match is not None,"Original HTML inventory row missing")
+        row=match.group()
+        content=content[:match.end()]+"\n"+row.replace("<td>全球场站</td>","<td>LCOE全球场站</td>")+content[match.end():]
+    # Convert only the new prose; existing document markup and embedded figures stay byte-identical.
+    paragraphs=section.split("\n### 17.")[0].strip().split("\n\n")
+    import html as html_lib
+    def inline(text):
+        text=html_lib.escape(text)
+        text=re.sub(r"\*\*(.+?)\*\*",r"<strong>\1</strong>",text)
+        text=re.sub(r"\[([^]]+)\]\(([^)]+)\)",r'<a href="\2">\1</a>',text)
+        return text
+    body=[]
+    for paragraph in paragraphs:
+        if paragraph.startswith("## "):
+            body.append("<h2>"+inline(paragraph[3:])+"</h2>")
+        elif paragraph.startswith("- "):
+            body.append("<ul>"+"".join("<li>"+inline(line[2:])+"</li>" for line in paragraph.splitlines())+"</ul>")
+        else:
+            body.append("<p>"+inline(paragraph)+"</p>")
+    for number,name,title,unit in zip(range(17,20),NAMES,TITLES,UNITS):
+        encoded=base64.b64encode((OUT/(name+".png")).read_bytes()).decode()
+        caption=f"LCOE全球场站：{title}（{unit}）"
+        body.append(f'<h3>{number}. LCOE全球场站：{title}</h3>\n<figure>\n'
+                    f'  <img src="data:image/png;base64,{encoded}" alt="{caption}">\n'
+                    f'  <figcaption>{caption}</figcaption>\n</figure>')
+    block='<!-- LCOE_CAPACITY_EXPOSURE_START -->\n'+"\n\n".join(body)+'\n<!-- LCOE_CAPACITY_EXPOSURE_END -->'
+    if "<!-- LCOE_CAPACITY_EXPOSURE_START -->" in content:
+        content=re.sub(r"<!-- LCOE_CAPACITY_EXPOSURE_START -->.*?<!-- LCOE_CAPACITY_EXPOSURE_END -->",lambda _:block,content,flags=re.S)
+    else:
+        require(content.count("</body>")==1,"HTML closing body")
+        content=content.replace("</body>",block+"\n\n</body>")
+    html.write_text(content)
+
+
+def main():
+    os.environ.setdefault("MPLBACKEND","Agg")
+    os.environ.setdefault("MPLCONFIGDIR",str(OUT/".mplconfig"))
+    audit=json.loads((OUT/"lcoe_exposure_validation.json").read_text())
+    require(audit["status"]=="PASSED","Unvalidated exposure")
+    capacity=pd.read_csv(DATA/"lcoe_station_capacity.csv")
+    capacity["value"]=capacity.capacity_mw/1e6;capacity["model"]="catalogue"
+    exposure=pd.read_csv(DATA/"lcoe_station_exposure_decadal_models.csv")
+    coverage=pd.read_csv(DATA/"lcoe_station_exposure_coverage.csv")
+    results=[draw(capacity,NAMES[0],"Installed capacity","Installed capacity (TW)",True)]
+    for name,metric,ylabel,total in [
+        (NAMES[1],"Capacity-weighted exposure total","Exposure total (MW days yr⁻¹)",True),
+        (NAMES[2],"Capacity-weighted mean exposure","Exposure (days yr⁻¹)",False)]:
+        frame=exposure.copy()
+        frame["value"]=frame.capacity_event_hours/24/(1 if total else frame.capacity_mw)
+        results.append(draw(frame,name,metric,ylabel))
+    update_documents(coverage,audit["minimum_time_coverage"])
+    manifest=dict(status="PASSED",question="How do LCOE capacity and paired event exposure vary across pathways and decades?",
+                  archetype="quantitative grid",backend="Python/matplotlib",figures=results,
+                  statistics="Four-GCM equal mean after ten-year mean; no fit or significance test; capacity is deterministic",
+                  exposure_validation_sha256=sha(OUT/"lcoe_exposure_validation.json"))
+    (OUT/"lcoe_figure_manifest.json").write_text(json.dumps(manifest,indent=2)+"\n")
+    print("Rendered three triptychs and updated Markdown/HTML",flush=True)
+
+
+if __name__=="__main__":
+    main()

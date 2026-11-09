@@ -1,0 +1,125 @@
+{
+  "status": "PASSED",
+  "question": "How do LCOE capacity and paired event exposure vary across pathways and decades?",
+  "archetype": "quantitative grid",
+  "backend": "Python/matplotlib",
+  "figures": [
+    {
+      "name": "lcoe_station_capacity",
+      "figure": {
+        "path": "lcoe_station_capacity.png",
+        "image": {
+          "pixels": [
+            5789,
+            2127
+          ],
+          "dpi": [
+            599.9988,
+            599.9988
+          ]
+        },
+        "sha256": "452365c5beb73a885c4fa454eff4f4bd7ac4dcfa66443b27083a536b35776673",
+        "figure_fraction_bounds": null,
+        "text_bounds_check": "PASSED"
+      },
+      "model_table": "/work/home/aczlvkl1ac/project_climate_patchify/repos/analysis_of_global_pv_wind/paper_figures/supplementary/global_metric_trends/outputs/source_data/lcoe_station_capacity_models.csv",
+      "display_table": "/work/home/aczlvkl1ac/project_climate_patchify/repos/analysis_of_global_pv_wind/paper_figures/supplementary/global_metric_trends/outputs/source_data/lcoe_station_capacity_display.csv",
+      "y_limits": [
+        [
+          0.0,
+          15.49106897468766
+        ],
+        [
+          0.0,
+          15.49106897468766
+        ],
+        [
+          0.0,
+          15.49106897468766
+        ]
+      ]
+    },
+    {
+      "name": "lcoe_station_exposure_total",
+      "figure": {
+        "path": "lcoe_station_exposure_total.png",
+        "image": {
+          "pixels": [
+            5789,
+            2127
+          ],
+          "dpi": [
+            599.9988,
+            599.9988
+          ]
+        },
+        "sha256": "8981f2a81d5efb11e2c07316c66646129972c9506ccb37928e2324ff22b3152e",
+        "figure_fraction_bounds": null,
+        "text_bounds_check": "PASSED"
+      },
+      "model_table": "/work/home/aczlvkl1ac/project_climate_patchify/repos/analysis_of_global_pv_wind/paper_figures/supplementary/global_metric_trends/outputs/source_data/lcoe_station_exposure_total_models.csv",
+      "display_table": "/work/home/aczlvkl1ac/project_climate_patchify/repos/analysis_of_global_pv_wind/paper_figures/supplementary/global_metric_trends/outputs/source_data/lcoe_station_exposure_total_display.csv",
+      "y_limits": [
+        [
+          0.0,
+          434190590.83106565
+        ],
+        [
+          0.0,
+          434190590.83106565
+        ],
+        [
+          0.0,
+          434190590.83106565
+        ]
+      ]
+    },
+    {
+      "name": "lcoe_station_exposure_mean",
+      "figure": {
+        "path": "lcoe_station_exposure_mean.png",
+        "image": {
+          "pixels": [
+            5789,
+            2127
+          ],
+          "dpi": [
+            599.9988,
+            599.9988
+          ]
+        },
+        "sha256": "f00a63df17dbe82b08417b16c7201641a04d18ee9c18408e8ca4b433d87e75d6",
+        "figure_fraction_bounds": null,
+        "text_bounds_check": "PASSED"
+      },
+      "model_table": "/work/home/aczlvkl1ac/project_climate_patchify/repos/analysis_of_global_pv_wind/paper_figures/supplementary/global_metric_trends/outputs/source_data/lcoe_station_exposure_mean_models.csv",
+      "display_table": "/work/home/aczlvkl1ac/project_climate_patchify/repos/analysis_of_global_pv_wind/paper_figures/supplementary/global_metric_trends/outputs/source_data/lcoe_station_exposure_mean_display.csv",
+      "y_limits": [
+        [
+          22.415309634232642,
+          37.51629310523269
+        ],
+        [
+          22.415309634232642,
+          37.51629310523269
+        ],
+        [
+          22.415309634232642,
+          37.51629310523269
+        ]
+      ]
+    }
+  ],
+  "statistics": "Four-GCM equal mean after ten-year mean; no fit or significance test; capacity is deterministic",
+  "exposure_validation_sha256": "38eeda1f8a887a7931734bec3efe8de3cb485fb41cd87386d1c29aec97d8d91b",
+  "visual_inspection": {
+    "status": "PASSED",
+    "figures": 3,
+    "checks": [
+      "Three complete triptychs",
+      "Shared axes within each figure",
+      "Scenario pair labels and units readable",
+      "No title, legend or tick clipping"
+    ]
+  }
+}
