@@ -8,6 +8,8 @@
 
 运行位置和账号由 `scnet/lcoe_station_climate/campaign.json` 配置，任务合同见 `scnet/goal.md`。科学计算使用uv环境，提交前创建共享logs目录。生成器不提交作业：
 
+本批结果实体根为 `/work/home/acxujo26gv/lcoe_station_climate_storage`（1959）；配置中冻结的1775路径是兼容软链接。当前作业资源覆盖记录在 `runtime/resource_overrides.json`，常规4核、内存终止重试8核，均为单进程；重新生成对应脚本时须使用相同的 `--cpus` 参数。
+
 ```bash
 python -m scnet.create_lcoe_station_climate_jobs --stage prepare
 python -m scnet.create_lcoe_station_climate_jobs --stage run --dry-run

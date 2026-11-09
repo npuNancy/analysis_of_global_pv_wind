@@ -74,7 +74,7 @@ def main():
             for key in a.retry or []:
                 row=state[key]
                 if row.get('account')==user:
-                    if row['state'] not in ['FAILED','INCOMPLETE_OUTPUT'] or row['attempt']>=3:raise ValueError('Retry not eligible '+key)
+                    if row['state'] not in ['FAILED','INCOMPLETE_OUTPUT','SUBMISSION_FAILED'] or row['attempt']>=3:raise ValueError('Retry not eligible '+key)
                     row.setdefault('history',[]).append({k:v for k,v in row.items() if k!='history'})
                     row.update(state='NOT_SUBMITTED');row.pop('job_id',None)
             if not a.read_only:write(statepath,state)
@@ -85,7 +85,14 @@ def main():
                 acknowledged=set()
                 while True:
                     now_active=active(user)
-                    if len(set(now_active)|acknowledged)>=account['max_active']:break
+                    acknowledged.difference_update(now_active)
+                    if len(set(now_active)|acknowledged)>=account['max_active']:
+                        if acknowledged:
+                            rows=command(['sacct','-j',','.join(acknowledged),'-n','-P','--format=JobID,State']).splitlines()
+                            ended={r.split('|')[0] for r in rows if r.split('|')[1].split()[0] in ['COMPLETED','FAILED','CANCELLED','OUT_OF_MEMORY','TIMEOUT','NODE_FAIL']}
+                            if acknowledged & ended:
+                                acknowledged.difference_update(ended);continue
+                        break
                     with locked(globallock):
                         state=read(statepath)
                         eligible=[t for t in tasks if state[t['unit']]['state']=='NOT_SUBMITTED' and (not a.pilot or t['unit'] in a.pilot)]

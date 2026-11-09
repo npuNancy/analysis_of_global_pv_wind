@@ -5,7 +5,7 @@
 从已发布全球网格抽取LCOE场站CF与极端事件信号，保留源时间、日历、数值、缺测及事件定义。完成条件为完整交叉情景矩阵、各任务Slurm成功及完成回执、抽样源值比对、正式索引、覆盖报告、共享权限验证与指南更新。
 
 1. 核对原产品代码、正式索引与LCOE映射；冻结工作负载合同。
-2. 创建1775共享目录与ACL，十账号可写、1866及其他账号可读；部署干净代码与环境。
+2. 建立共享目录与ACL，十账号可写、1866及其他账号可读；结果实体集中1959，1775保留兼容入口。
 3. CF/Extreme真实试运行，验证源值、坐标、时间、容量语义并测量资源。
 4. 十账号执行批处理，整刻15分钟检查—思考—汇总—执行；补足可用20作业槽位，按剩余工作动态分配。
 5. 汇总验收并交付数据、清单、访问示例和数据指南。
@@ -23,12 +23,12 @@
 | 输出 | 每场站SSP/模式/气候/patch/技术独立NetCDF，CF 8块、Extreme 10块；容量快照与首次选中年为元数据，投运前不清空CF/信号 |
 | 完成 | sacct COMPLETED/0:0，加任务完成标记、输入/代码指纹和逐文件输出记录；源点抽样比对、时间坐标完整保留 |
 | 重启 | 已完成分片经身份与大小校验后复用；原子临时文件、排他任务锁；冲突文件不覆盖，失败需审查后有界重试 |
-| 资源 | 初始2核约7GB、单进程、原生库1线程；读取按时空chunk流式进行，依据试运行MaxRSS/用时调整 |
+| 资源 | 单进程、原生库1线程；初始2核约7GB，恢复批次常规4核约14GB，36个内存终止任务重试8核约28GB；实际覆盖记录见 `runtime/resource_overrides.json` |
 | 数据 | 准备后的catalogs、mappings、jobs、logs、runtime及outputs均在仓库外，原始NC不复制 |
 
 ## 部署与访问
 
-本地开发、测试、commit/push，1775通过HTTPS新建共享只读代码checkout；不改写既有1866分析checkout。共享结果根为 `/work/home/acsep06cn2/lcoe_station_climate_v1`，计算账号见campaign配置。文件所有权保留实际写入账号，默认ACL给十账号写权限、1866读权限，POSIX other为目录r-x/文件r--，供后续账号读取。家目录只要求祖先可遍历；不递归改变既有数据权限。
+本地开发、测试、commit/push，通过HTTPS部署独立共享代码checkout；不改写既有1866分析checkout。用户确认结果实体改存1959，根为 `/work/home/acxujo26gv/lcoe_station_climate_storage`。原入口 `/work/home/acsep06cn2/lcoe_station_climate_v1` 是指向该根的兼容软链接，冻结配置、任务和分片回执中的路径继续有效。代码、日志、索引和NetCDF均位于1959实体目录。计算账号见campaign配置。文件所有权保留实际写入账号，默认ACL给十账号写权限、1866读权限，POSIX other为目录r-x/文件r--，供后续账号读取。家目录只要求祖先可遍历；不递归改变既有数据权限。
 
 用户项目uv约定优先于技能conda模板：科学脚本激活已核对可访问的 `/work/home/aczlvkl1ac/project_climate_patchify/repos/analysis_of_global_pv_wind/.venv/bin/activate`。所有科学读取在SLURM节点；登录节点仅处理清单、作业、权限、Git和调度状态。无需新增依赖。
 

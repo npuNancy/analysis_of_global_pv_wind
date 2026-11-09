@@ -85,7 +85,7 @@ class ExtractionTests(unittest.TestCase):
             root=Path(d);(root/'inputs').mkdir();(root/'runtime').mkdir()
             accounts=[dict(username=u,max_active=20,submit_lock=str(root/(u+'.lock'))) for u in ['a','b']]
             (root/'inputs/campaign.json').write_text(json.dumps(dict(accounts=accounts)))
-            tasks=[dict(unit='unit'+str(i),n_union=10,marker=str(root/('marker'+str(i)))) for i in range(3)]
+            tasks=[dict(unit='unit'+str(i),n_union=10,marker=str(root/('marker'+str(i)))) for i in range(4)]
             (root/'runtime/tasks.json').write_text(json.dumps(tasks))
             (root/'runtime/pilot_accepted.json').write_text('{}')
             submitted=[]
@@ -93,6 +93,7 @@ class ExtractionTests(unittest.TestCase):
                 def command(args):
                     if args[0]=='id':return user
                     if args[0]=='squeue':return '\n'.join(f'{j}|RUNNING' for j in range(1,20))
+                    if args[0]=='sacct':return '\n'.join(j+('|COMPLETED' if j=='10001' else '|RUNNING') for j in args[2].split(','))
                     raise AssertionError(args)
                 def sbatch(args,**kwargs):
                     with (root/'runtime/queue.lock').open('a') as lock:
@@ -105,9 +106,9 @@ class ExtractionTests(unittest.TestCase):
                     return SimpleNamespace(returncode=0,stdout=str(10000+len(submitted)),stderr='')
                 with patch.object(control,'command',command),patch.object(control.subprocess,'run',sbatch),patch('sys.argv',['control','--root',str(root),'--submit']):
                     control.main()
-            self.assertEqual(submitted,['unit0','unit1'])
+            self.assertEqual(submitted,['unit0','unit1','unit2'])
             state=json.loads((root/'runtime/state.json').read_text())
-            self.assertEqual(state['unit2']['state'],'NOT_SUBMITTED')
+            self.assertEqual(state['unit3']['state'],'NOT_SUBMITTED')
             before=(root/'runtime/state.json').read_bytes()
             (root/'marker0').write_text('{"status":"COMPLETED"}')
             def inspect(args):
@@ -122,5 +123,13 @@ class ExtractionTests(unittest.TestCase):
             self.assertEqual(result['units']['unit0']['state'],'SUCCEEDED')
             self.assertEqual((root/'runtime/state.json').read_bytes(),before)
             self.assertEqual((root/'runtime/account_a.json').read_bytes(),account_before)
+            state['unit3'].update(state='SUBMISSION_FAILED',account='a',evidence='script unreadable')
+            (root/'runtime/state.json').write_text(json.dumps(state))
+            with patch.object(control,'command',inspect),patch('sys.argv',['control','--root',str(root),'--retry','unit3']):
+                control.main()
+            retried=json.loads((root/'runtime/state.json').read_text())['unit3']
+            self.assertEqual(retried['state'],'NOT_SUBMITTED')
+            self.assertEqual(retried['attempt'],0)
+            self.assertNotIn('job_id',retried)
 
 if __name__=='__main__':unittest.main()
