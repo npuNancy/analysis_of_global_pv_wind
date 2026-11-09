@@ -47,7 +47,9 @@ def cycle(cfg,submit):
     submit=submit and 'pilot_accepted.json' in gates and not storage_hold
     def one(account):
         try:
-            out=ssh(account['alias'],prefix+'python -m scnet.lcoe_station_climate.control --root '+shlex.quote(root)+(' --submit' if submit else '')+(' --read-only' if storage_hold else ''))
+            # A full result filesystem may also prevent updating its code checkout.
+            entry='python -c '+shlex.quote((HERE/'control.py').read_text()) if storage_hold else 'python -m scnet.lcoe_station_climate.control'
+            out=ssh(account['alias'],prefix+entry+' --root '+shlex.quote(root)+(' --submit' if submit else '')+(' --read-only' if storage_hold else ''))
             return json.loads(out.strip().splitlines()[-1])
         except Exception as e:return {'account':account['username'],'error':str(e)}
     with ThreadPoolExecutor(max_workers=len(cfg['accounts'])) as pool:accounts=list(pool.map(one,cfg['accounts']))
