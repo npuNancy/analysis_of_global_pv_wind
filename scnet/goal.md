@@ -1,18 +1,20 @@
-# LCOE 场站 CF / Extreme 运行目标
+# LCOE 场站气候与损失运行目标
 
-## 当前追加目标：Loss完整交叉矩阵
+## Loss完整交叉矩阵
 
 1. [x] 核对配对科学代码与已发布24个场站档案，固定原事件并集净损失口径。
 2. [x] 既有1866 outputs目录mv到1959共享根`loss/paired/`；旧路径为软链接，十账号可写、1866及其他账号可读。
 3. [x] 准备1224个非配对任务及两个控制；两组配对控制验证新场站CF积分与旧结果等价，风/光交叉任务试运行成功。
-4. [ ] 十账号执行，整刻15分钟监控并估计耗时，按全账号20作业上限补交。
-5. [ ] 验收九组、发布统一索引、更新指南及提交推送。
+4. [x] 十账号执行1226个任务，全部一次成功；整刻15分钟监控并估计耗时，按全账号20作业上限补交。
+5. [x] 验收九组、发布统一索引、更新指南及提交推送。
+
+2026-11-09交付完成：72个NPZ（24个迁入配对档案、48个新增档案），总1,520,242,718字节，年度全球表3,240行。最终汇总验收作业48706902为COMPLETED/0:0，峰值753952 KiB；全量档案哈希、矩阵、容量、缺测、数值汇总及公共权限均通过，最大汇总差3.814697265625e-06 MWh。1866已实际读取新旧档案并确认只读。正式入口为 `loss/runtime/authoritative_index.json` 和 `loss/runtime/completion.json`，相对于1959共享根；详见[数据指南第11节](../document/BCSD_v2数据使用指南.md#11-losslcoe场站净损失与发电量)。
 
 Loss合同：`python -m utils.lcoe_station_loss.pipeline --root ROOT --stage prepare/run/finalize`；独立单元为模式×场站SSP×气候SSP×技术×patch，全部30年在一个单元内。run指定`--unit`。输入为已发布适宜网格年度Loss、已验收场站CF与原配对空间映射；原结果与源文件不可覆盖。每单元原子NPZ和完成回执须同时匹配任务/代码指纹，Slurm COMPLETED/0:0才释放最终汇总。年度损失/正常基准读取及容量加权保持旧算法；四模式共同有效集合逐双SSP/技术计算，保留原生CF日历与缺测。输出72个正式NPZ，其中24个复用迁入结果、48个新增；最终逐文件校验哈希、形状、缺测、容量、汇总一致性及权限。
 
 新配置`scnet/lcoe_station_loss/campaign.json`，新生成器`scnet/create_lcoe_station_loss_jobs.py`。共享根`/work/home/acxujo26gv/lcoe_station_climate_storage/loss`，作业/日志/runtime均在此目录；本地状态为`scnet/lcoe_station_loss/completion_status/progress.md`。十账号、共享提交锁与uv环境沿用下文已核定规则。四个试运行作业48705282/48705284/48705287/48705290全部COMPLETED/0:0，峰值182724 KiB；正式run为1核约3.5GB单进程，finalize为2核约7GB单进程。冻结配置保留初始4核，重建脚本须应用 `runtime/resource_overrides.json` 的 `--cpus` 覆盖。失败最多重试两次，先查原因；生成器不提交，准备与真实试运行验收前不得批量提交。
 
-## 目标与阶段
+## CF / Extreme目标与阶段
 
 从已发布全球网格抽取LCOE场站CF与极端事件信号，保留源时间、日历、数值、缺测及事件定义。完成条件为完整交叉情景矩阵、各任务Slurm成功及完成回执、抽样源值比对、正式索引、覆盖报告、共享权限验证与指南更新。
 
