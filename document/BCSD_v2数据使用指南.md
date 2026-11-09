@@ -1,6 +1,6 @@
 # BCSD-v2 数据使用指南
 
-核对日期：原五类产品为2026-10-04；“全球适宜网格损失数据”为2026-10-28；新增“LCOE场站净损失与发电量”为2026-11-09。原五类数据集中在 **乌镇1872 / `scnet-wuzhen-1872` / `acjpoxgsdu`**，适宜网格损失集中在 **乌镇1775 / `scnet-wuzhen-1775` / `acsep06cn2`**，LCOE场站评价结果保存在 **乌镇1866 / `scnet-wuzhen-1866` / `aczlvkl1ac`**。本文描述结果及其完成索引；原五类产品的配套查询工具位于 [`utils/data_access`](../utils/data_access/)。
+核对日期：原五类产品为2026-10-04；“全球适宜网格损失数据”为2026-10-28；LCOE场站损失、发电量及新增CF/Extreme交叉情景数据为2026-11-09。原五类数据集中在 **乌镇1872 / `scnet-wuzhen-1872` / `acjpoxgsdu`**，适宜网格损失集中在 **乌镇1775 / `scnet-wuzhen-1775` / `acsep06cn2`**，LCOE场站损失与发电量保存在 **乌镇1866 / `scnet-wuzhen-1866` / `aczlvkl1ac`**，LCOE场站CF与Extreme保存在 **乌镇1959 / `scnet-wuzhen-1959` / `acxujo26gv`**。本文描述结果及其完成索引；原五类产品的配套查询工具位于 [`utils/data_access`](../utils/data_access/)。
 
 绘图分析使用 **乌镇1866 / `scnet-wuzhen-1866` / `aczlvkl1ac`**，工作目录为 `/work/home/aczlvkl1ac/project_climate_patchify/repos/analysis_of_global_pv_wind`。分析结果和日志写入1866的项目目录；源数据按下表的实际账号和路径只读访问。场站与地图分别读取该项目内的 `data/stations/`、`data/maps/natural_earth/` 副本。新增适宜网格损失的访问权限见第8节。
 
@@ -15,8 +15,10 @@
 | Loss：气候 SSP × 场站 SSP | 各容量快照下，逐站点、逐年、逐事件的发电损失及配套正常发电基线 | `/work/home/acjpoxgsdu/generation_loss_stations/loss_stations_v2/` | `runtime/completion.json` → receipt → task manifest |
 | Loss：全球适宜网格 | 适宜建设光伏或陆风的 BCSD 网格，固定1 MW参考容量的单位装机损失 | `/work/home/acsep06cn2/generation_loss_suitable_grid/suitable_grid/` | `runtime/completion.json` → `receipts[]` → unit manifest → `tiles[].files[]` |
 | Loss：LCOE场站配对情景（含全年发电量） | LCOE累计布局下，实际容量加权的逐格逐年净损失、正常基准与实际发电量；仅三组配对情景 | `/work/home/aczlvkl1ac/project_climate_patchify/repos/analysis_of_global_pv_wind/paper_figures/supplementary/lcoe_station_metrics/outputs/` | `delivery_manifest.json`；`station_results/manifest.json` → `files[]`，详见第11节 |
+| CF：LCOE气候SSP × 场站SSP | LCOE网格点的原生三小时容量因子，完整3 × 3交叉情景 | `/work/home/acxujo26gv/lcoe_station_climate_storage/` | `runtime/authoritative_index.json`，筛选 `product=cf`，详见第12节 |
+| Extreme：LCOE气候SSP × 场站SSP | 同一LCOE网格点的逐时刻极端事件信号，完整3 × 3交叉情景 | `/work/home/acxujo26gv/lcoe_station_climate_storage/` | `runtime/authoritative_index.json`，筛选 `product=extreme`，详见第12节 |
 
-原五类及全球适宜网格产品的上述目录均为运行根目录。第9节现有查询工具支持原五类产品，**其 `--root` 应传入根目录，不要追加 `outputs/`**；全球适宜网格损失按第8节读取。LCOE一行直接指向评价结果目录 `outputs/`，使用第11节的NPZ读取方式，不适用这些查询工具。原五类产品的稳定目录是以下实际运行目录的软链；全球适宜网格损失直接存放在 `suitable_grid/`，数据根目录不是软链。
+原五类及全球适宜网格产品的上述目录均为运行根目录。第9节现有查询工具支持原五类产品，**其 `--root` 应传入根目录，不要追加 `outputs/`**；全球适宜网格损失按第8节读取。LCOE损失一行直接指向评价结果目录 `outputs/`，使用第11节的NPZ读取方式；LCOE CF/Extreme使用第12节的NetCDF索引读取方式，两者均不适用原查询工具。原五类产品的稳定目录是以下实际运行目录的软链；全球适宜网格损失直接存放在 `suitable_grid/`，数据根目录不是软链。
 
 | 稳定目录名 | 实际目录 |
 |---|---|
@@ -32,7 +34,7 @@ Extreme 全球网格的发布文件已集中在上述 `/work/share/` 目录，`o
 
 ## 2. 共同索引维度
 
-本节描述原五类产品及全球适宜网格损失。原场站产品采用 globally_interconnected 布局；新增LCOE产品的情景命名、组合范围和网格ID单独见第11节，不套用本节的场站SSP归一规则或3384个任务计数。
+本节描述原五类产品及全球适宜网格损失。原场站产品采用 globally_interconnected 布局；新增LCOE产品的情景命名、组合范围和网格ID单独见第11、12节，不套用本节的场站SSP归一规则或3384个任务计数。
 
 | 维度 | 当前取值 / 解释 |
 |---|---|
@@ -639,3 +641,93 @@ with np.load(path, allow_pickle=False) as z:
 ```
 
 源选址提交为 `e9eff0d0547de79090559ea3d7efc93912613ec6`；评价代码位于1866仓库的 `paper_figures/supplementary/lcoe_station_metrics/` 与 `scnet/lcoe_metrics/`，分支 `lcoe-station-metrics`、提交 `5494c8af4cf05e3410a29323e858ae13c4b9afa1`。交付副本包含 `analysis_code.patch`、`REPORT.md`、数值和图片校验记录。五类完整组图见[风电光伏数据](风电光伏数据.md#基于-lcoe-选址的损失与发电量)。
+
+## 12. CF / Extreme：LCOE气候SSP × 场站SSP
+
+### 范围与共享入口
+
+本产品按第11节同一套LCOE选址及空间映射，从第3、5节的正式全球网格数据抽取场站序列。气候SSP与场站SSP独立交叉，源CF数值及极端事件定义不变。
+
+**发布状态：2026-11-09已完成并通过验收。** `authoritative_index.json`、`completion.json`、`final_acceptance.json` 均为 `status=COMPLETED`。汇总作业48696204与独立验收作业48696352均为Slurm `COMPLETED / 0:0`；完整矩阵、文件大小、分片时间连续性、场站覆盖、公共读取权限及CF/Extreme交叉组合样本读取通过。各分片抽取时均完成与源文件的直接抽样数值比对，1866另已实际读取索引、覆盖表及两类NetCDF文件。
+
+```text
+/work/home/acxujo26gv/lcoe_station_climate_storage/
+├── runtime/authoritative_index.json   # 最终产品、情景与文件索引
+├── runtime/completion.json            # 全批完成记录及索引SHA256
+├── runtime/final_acceptance.json      # 情景矩阵、覆盖、权限和样本读取验收
+├── catalogs/                         # 六组场站目录、容量覆盖及未映射清单
+├── inputs/provenance.json             # 布局、映射与源索引摘要
+└── outputs/<product>/<model>/climate_<climate_ssp>/station_<station_ssp>/<patch>/<tech>/
+    ├── cf_<start_year>-<end_year>.nc
+    └── signals_<start_year>-<end_year>.nc
+```
+
+结果实体集中在乌镇1959 / `acxujo26gv`。原入口 `/work/home/acsep06cn2/lcoe_station_climate_v1` 为指向此根目录的兼容软链接，既有任务及分片回执中的绝对路径仍可读取。十个计算账号通过ACL写入，文件保留实际写入账号的所有权；1866 / `aczlvkl1ac`有只读权限。目录的POSIX other权限为可读、可遍历，文件为可读，供同一共享文件系统上的其他账号访问。
+
+| 维度 | 内容 |
+|---|---|
+| 产品 | `cf`、`extreme` |
+| 模式 | `CANESM5`、`MPI-ESM1-2-HR`、`MRI-ESM2-0`、`BCC-CSM2-MR` |
+| 气候SSP | `ssp126`、`ssp245`、`ssp585` |
+| 场站SSP | `ssp126`、`ssp245`、`ssp560`；与气候组成完整3 × 3矩阵 |
+| 技术 | `wind`（陆风）、`solar` |
+| 时间 | 2015–2060，原生三小时时间轴、日历及时间偏移 |
+| 容量 | 2030、2040、2050累计快照，存为元数据 |
+
+一个计算单元汇集三种场站布局，源块读取一次后分别输出。正式文件按各源产品原有年份分块：CF每组8块，Extreme每组10块。正式索引以 `entries[]` 保存产品、模式、双SSP、patch和技术；有场站的组合为 `COMPLETED`，无场站的组合为 `EMPTY_NO_STATIONS`。从条目的 `artifacts[].path` 读取文件，其他字段含年份、站点数、时间长度、日历、变量名、大小、SHA256和源值比对记录。
+
+本批1,296个抽取单元全部成功。索引覆盖2产品 × 4模式 × 3气候SSP × 3场站SSP × 47分块 × 2技术，共6,768个组合，其中3,672个非空、3,096个合法空组合；正式NetCDF共33,048个（CF 14,688个，Extreme 18,360个），总大小573,418,849,501字节，约534.0 GiB。文件数量不包含目录、索引、日志及中断任务的隔离临时文件。
+
+### 场站、容量与缺测
+
+| 字段 | 维度 / 含义 |
+|---|---|
+| `wind_cf` / `solar_cf` | `(time, station)`，原始容量因子，单位1，未乘容量 |
+| `signal_*` | `(time, station)`，沿用第5节各技术的事件变量；原始编码0/1，缺测为−127 |
+| `station_id` | `(station,)`，`lcoe:<station_ssp>:<tech>:<grid_id>` |
+| `grid_id`、`lon`、`lat` | 原0.1°选址网格编号及网格中心 |
+| `source_grid_lon`、`source_grid_lat` | 实际抽样BCSD点坐标 |
+| `source_iy`、`source_ix`、`match_dist_km` | 源网格索引及匹配距离（km） |
+| `capacity_mw` | `(snapshot, station)`，三个累计容量快照，MW |
+| `snapshot_year` | `(snapshot,)`，2030、2040、2050 |
+| `activation_year` | `(station,)`，首次在三个快照中选中的年份 |
+| `mapping_status` | `(station,)`，输出文件内均为0，即matched |
+
+每个场站SSP按2050累计布局建立站点并集，容量为零的早期快照仍保留该点的资源与事件序列。全局属性 `activation_mask=off`：不屏蔽首次选中之前的时间。进行装机加权或运营期分析时，应自行选择相应容量快照；三个快照不能再次累加。完整序列延伸到2060年并不代表额外提供了2060年装机预测。
+
+位置沿用第11节同一适宜性栅格内的最近BCSD点，不跨格填补；本产品不应用损失分析的四模式、30年共同有效筛选。已映射但某时刻缺测的点保留原缺测值，不能视为CF零值或无极端事件。xarray默认解码后，事件缺测通常显示为NaN。
+
+三条路径的光伏目录全部映射成功。2050年陆风目录中，SSP126、SSP245、SSP560分别有43、27、25个网格未映射，不写入序列NetCDF。`catalogs/<station_ssp>_<tech>.csv.gz` 保留完整目录及映射状态，`coverage.csv` 按快照列出目录与已映射的站点数、容量，`unmapped_stations.csv.gz` 单列未映射记录。同一未映射点可在多个快照中出现。
+
+目录CSV的快照容量使用 `capacity_mw_2030`、`capacity_mw_2040`、`capacity_mw_2050`；其中保留的原始 `capacity_mw`、`snapshot` 等字段来自该点首次选中的源记录。`region_id`、`geographic_region_id` 等区域字段可按场站SSP、技术和 `grid_id` 与NetCDF关联。
+
+CF与Extreme各自保留源时间坐标；不同模式、技术或产品之间应按实际时间和 `grid_id` 对齐，不能按数组下标直接相配。`station_id` 包含场站SSP，跨布局比较同一地点时使用技术加 `grid_id`。第11节损失产品仍只有三组气候/布局配对，本节的3 × 3交叉序列不会自动扩展其损失结果。
+
+### 按正式索引读取
+
+以下示例读取一个交叉组合的小片段；源值抽取与全量分析在计算节点运行。原场站读取工具使用不同索引结构，本产品应使用此处的 `entries[].artifacts[]`，不能仅替换旧工具的根目录。
+
+```python
+import json
+from pathlib import Path
+import xarray as xr
+
+root = Path('/work/home/acxujo26gv/lcoe_station_climate_storage')
+done = json.loads((root / 'runtime/completion.json').read_text())
+index = json.loads((root / 'runtime/authoritative_index.json').read_text())
+acceptance = json.loads((root / 'runtime/final_acceptance.json').read_text())
+assert done['status'] == index['status'] == acceptance['status'] == 'COMPLETED'
+entry = next(e for e in index['entries']
+             if e['product'] == 'cf' and e['model'] == 'CANESM5'
+             and e['climate_scenario'] == 'ssp245'
+             and e['station_scenario'] == 'ssp126'
+             and e['tech'] == 'solar' and e['status'] == 'COMPLETED')
+artifact = next(a for a in entry['artifacts'] if a['years'][0] <= 2030 <= a['years'][1])
+with xr.open_dataset(artifact['path']) as ds:
+    small = ds.isel(station=slice(0, 5)).sel(time=slice('2030-01-01', '2030-01-03')).load()
+    snapshot = int((small.snapshot_year.values == 2030).nonzero()[0][0])
+    capacity = small.capacity_mw.isel(snapshot=snapshot)
+    print(small.station_id.values, capacity.values, small.solar_cf.values)
+```
+
+读取事件时选择 `product='extreme'`，主变量使用上表中的 `signal_*`。生产代码为 `utils/lcoe_station_climate/`，作业生成器为 `scnet/create_lcoe_station_climate_jobs.py`，运行合同及分阶段目标见 `scnet/goal.md`。
