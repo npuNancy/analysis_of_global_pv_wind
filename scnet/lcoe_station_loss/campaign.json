@@ -1,0 +1,106 @@
+{
+  "root": "/work/home/acxujo26gv/lcoe_station_climate_storage/loss",
+  "repo": "/work/home/acxujo26gv/lcoe_station_climate_storage/code",
+  "activate": "/work/home/aczlvkl1ac/project_climate_patchify/repos/analysis_of_global_pv_wind/.venv/bin/activate",
+  "accounts": [
+    {
+      "alias": "scnet-wuzhen-1775",
+      "username": "acsep06cn2",
+      "max_active": 20,
+      "submit_lock": "/work/home/acsep06cn2/.bcsd_submit.lock"
+    },
+    {
+      "alias": "scnet-wuzhen-1311",
+      "username": "acv2o7b0gn",
+      "max_active": 20,
+      "submit_lock": "/work/home/acv2o7b0gn/.bcsd_submit.lock"
+    },
+    {
+      "alias": "scnet-wuzhen-1331",
+      "username": "acbzycio4i",
+      "max_active": 20,
+      "submit_lock": "/work/home/acbzycio4i/.bcsd_submit.lock"
+    },
+    {
+      "alias": "scnet-wuzhen-1863",
+      "username": "ace4cjbrjf",
+      "max_active": 20,
+      "submit_lock": "/work/home/ace4cjbrjf/.bcsd_submit.lock"
+    },
+    {
+      "alias": "scnet-wuzhen-1892",
+      "username": "acmctdumnv",
+      "max_active": 20,
+      "submit_lock": "/work/home/acmctdumnv/.bcsd_submit.lock"
+    },
+    {
+      "alias": "scnet-wuzhen-1520",
+      "username": "acebblgpte",
+      "max_active": 20,
+      "submit_lock": "/work/home/acebblgpte/.bcsd_submit.lock"
+    },
+    {
+      "alias": "scnet-wuzhen-1870",
+      "username": "acjp7am6kd",
+      "max_active": 20,
+      "submit_lock": "/work/home/acjp7am6kd/.bcsd_submit.lock"
+    },
+    {
+      "alias": "scnet-wuzhen-1959",
+      "username": "acxujo26gv",
+      "max_active": 20,
+      "submit_lock": "/work/home/acxujo26gv/.bcsd_submit.lock"
+    },
+    {
+      "alias": "scnet-wuzhen-1752",
+      "username": "acavkyjhiz",
+      "max_active": 20,
+      "submit_lock": "/work/home/acavkyjhiz/.bcsd_submit.lock"
+    },
+    {
+      "alias": "scnet-wuzhen-1862",
+      "username": "acdnwyi34a",
+      "max_active": 20,
+      "submit_lock": "/work/home/acdnwyi34a/.bcsd_submit.lock"
+    }
+  ],
+  "models": [
+    "CANESM5",
+    "MPI-ESM1-2-HR",
+    "MRI-ESM2-0",
+    "BCC-CSM2-MR"
+  ],
+  "climate_ssps": [
+    "ssp126",
+    "ssp245",
+    "ssp585"
+  ],
+  "station_ssps": [
+    "ssp126",
+    "ssp245",
+    "ssp560"
+  ],
+  "techs": [
+    "wind",
+    "solar"
+  ],
+  "years": [
+    2030,
+    2059
+  ],
+  "snapshots": [
+    2030,
+    2040,
+    2050
+  ],
+  "cpus": 4,
+  "partition": "wzhctest",
+  "climate_root": "/work/home/acxujo26gv/lcoe_station_climate_storage",
+  "paired_root": "/work/home/acxujo26gv/lcoe_station_climate_storage/loss/paired",
+  "loss_root": "/work/home/acsep06cn2/generation_loss_suitable_grid/suitable_grid",
+  "paired": {
+    "ssp126": "ssp126",
+    "ssp245": "ssp245",
+    "ssp560": "ssp585"
+  }
+}
