@@ -26,6 +26,24 @@ def atomic(path,text):
 def cycle(cfg,submit):
     root=cfg['root'];repo=cfg['repo'];owner=cfg['accounts'][0]['alias'];start=datetime.now(TZ)
     prefix='source '+shlex.quote(cfg['activate'])+'; cd '+shlex.quote(repo)+'; '
+    gates=ssh(owner,'for f in prepared.json pilot_accepted.json; do test ! -f '+shlex.quote(root+'/runtime')+'/"$f" || echo "$f"; done').splitlines()
+    STATUS.mkdir(parents=True,exist_ok=True)
+    if 'prepared.json' not in gates:
+        def inspect(account):
+            out=ssh(account['alias'],'squeue -h -u '+shlex.quote(account['username'])+' -o '+shlex.quote('%i|%T|%R'))
+            return account['username'],out.splitlines()
+        with ThreadPoolExecutor(max_workers=len(cfg['accounts'])) as pool:facts=list(pool.map(inspect,cfg['accounts']))
+        lines=['# LCOE CF / Extreme进度','',f'Last checked: {start.isoformat()}','',
+            '检查：准备阶段尚未完成；已查询全部十账号。',
+            '思考：预计剩余3–6小时，加准备作业排队时间；暂无真实试运行速度。',
+            '汇总：数据准备和试运行是批量任务的前置依赖。',
+            '执行：监控准备作业，暂不提交依赖未满足的抽取任务。','',
+            '| 账号 | 活动作业 | 状态 / 原因 | 下一步 |','|---|---:|---|---|']
+        for user,rows in facts:lines.append('| '+user+' | '+str(len(rows))+' | '+'; '.join(rows).replace('|',' / ')+' | 等待准备完成 |')
+        atomic(STATUS/'progress.md','\n'.join(lines)+'\n')
+        print(start.isoformat(),'PREPARATION_PENDING','ETA 3–6小时 + 排队',flush=True)
+        return False
+    submit=submit and 'pilot_accepted.json' in gates
     def one(account):
         try:
             out=ssh(account['alias'],prefix+'python -m scnet.lcoe_station_climate.control --root '+shlex.quote(root)+(' --submit' if submit else ''))
