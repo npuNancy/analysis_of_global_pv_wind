@@ -41,16 +41,17 @@ class MetricTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as td:
             p=Path(td)/"cf.nc"; n=30*365*8
             with Dataset(p,"w") as ds:
+                for k,v in dict(model='test',climate_scenario='ssp245',station_scenario='ssp126',tech='solar',source_patch='test').items():setattr(ds,k,v)
                 ds.createDimension("time",n);ds.createDimension("station",2)
                 t=ds.createVariable("time","f8",("time",));t.units="hours since 2030-01-01 00:00:00";t.calendar="365_day";t[:]=np.arange(n)*3+1.5
                 ds.createVariable("source_grid_lat","f8",("station",))[:]=[5.,5.]
-                ds.createVariable("source_grid_lon","f8",("station",))[:]=[10.,10.1]
+                ds.createVariable("source_grid_lon","f8",("station",))[:]=[-350.,10.1]
                 ds.createVariable("grid_id","i8",("station",))[:]=[1,2]
                 v=ds.createVariable("solar_cf","f4",("time","station"),fill_value=-999,chunksizes=(240,2))
                 v[:]=.25;v[10,1]=-999
             mapping=dict(grid_id=np.array([1,2]),cf_lat_index=np.array([0,0]),cf_lon_index=np.array([0,1]),
                          source_lat=np.array([5.,5.]),source_lon=np.array([10.,10.1]))
-            task=dict(task_id="tiny",tech="solar",cf=[dict(path=str(p),years=[2030,2059],size_bytes=p.stat().st_size)])
+            task=dict(task_id="tiny",tech="solar",model='test',climate_ssp='ssp245',station_ssp='ssp126',patch='test',cf=[dict(path=str(p),years=[2030,2059],size_bytes=p.stat().st_size)])
             generation,counts,expected,cal=annual_cf(task,mapping)
             np.testing.assert_allclose(generation[:,0],2190)
             self.assertTrue(np.isnan(generation[0,1]))

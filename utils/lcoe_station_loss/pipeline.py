@@ -35,8 +35,17 @@ def annual_cf(task,mapping):
         with nc.Dataset(path) as ds:
             require(np.array_equal(ds['grid_id'][:],mapping['grid_id']),'CF grid order')
             for name,key in [('source_grid_lat','source_lat'),('source_grid_lon','source_lon')]:
-                require(np.allclose(ds[name][:],mapping[key],atol=1e-5,rtol=0),'CF source coordinate')
+                delta=np.asarray(ds[name][:])-mapping[key]
+                if key=='source_lon':delta=(delta+180)%360-180
+                require(np.all(np.abs(delta)<=1e-5),'CF source coordinate')
+            for attr,key in [('model','model'),('climate_scenario','climate_ssp'),('station_scenario','station_ssp'),('tech','tech'),('source_patch','patch')]:
+                require(ds.getncattr(attr)==task[key],'CF identity '+attr)
             var=ds[task['tech']+'_cf'];require(var.dimensions==('time','station'),'CF dimensions')
+            domain=np.ones(n,dtype=bool)
+            if 'source_file' in ds.ncattrs():
+                with nc.Dataset(ds.source_file) as source:
+                    if 'domain_mask' in source.variables:
+                        domain=np.asarray(source['domain_mask'][:])[mapping['cf_lat_index'],mapping['cf_lon_index']]==1
             t=ds['time'];cal=getattr(t,'calendar','standard')
             if calendar is None:calendar=cal
             require(calendar==cal,'Changing calendar')
@@ -52,7 +61,7 @@ def annual_cf(task,mapping):
             for begin in range(int(pos[0]),int(pos[-1])+1,240):
                 end=min(begin+240,int(pos[-1])+1)
                 values=np.ma.asarray(var[begin:end,:],dtype='f4').filled(np.nan)
-                valid=np.isfinite(values)
+                valid=np.isfinite(values)&domain[None,:]
                 require(np.all((values[valid]>=-1e-6)&(values[valid]<=1+1e-6)),'CF bounds')
                 for y in np.unique(yy[begin:end]):
                     take=yy[begin:end]==y
