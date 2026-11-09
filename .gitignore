@@ -235,3 +235,4 @@ __marimo__/
 # country_patch_mapping: build outputs
 utils/country_patch_mapping/generated/
 /paper_figures/analysis/analysis_*/
+/scnet/lcoe_station_climate/completion_status/
