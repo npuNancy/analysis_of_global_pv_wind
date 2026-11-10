@@ -192,6 +192,7 @@ def finalize(root):
     schema=root/'station_results/manifest.json'
     write_json(schema,dict(status='COMPLETED',schema='gem-lcoe-annual-v1',fields=fields,
         station_semantics='One technology in one 0.1-degree cell; capacities aggregated within that cell',
+        common_support_criteria='All years and models: finite net loss, finite positive normal annual energy, complete CF, at least 99% valid event timesteps',
         capacity_timing='Year-end historical stock applied to the full year; fixed 2025 stock in 2026-2029; decadal LCOE snapshots thereafter',
         event_semantics='Union of selected events; missingness retained; signed net loss',
         generation_semantics='Annual climate-driven estimate, not observed generation; no intra-year commissioning adjustment',
@@ -204,7 +205,7 @@ def finalize(root):
     write_json(index,dict(status='COMPLETED',schema='gem-lcoe-climate-v1',entries=entries,annual_archives=archives,
         native_files=sum(len(e['artifacts']) for e in entries),total_bytes=sum(f['size_bytes'] for f in files),
         annual_schema=dict(path=str(schema),sha256=sha(schema)),provenance=provenance,
-        summaries={p.name:str(p) for p in data.glob('*.csv')}))
+        summaries={p.name:dict(path=str(p),size_bytes=p.stat().st_size,sha256=sha(p)) for p in data.glob('*.csv')}))
     write_json(root/'runtime/completion.json',dict(status='COMPLETED',index_sha256=sha(index),annual_archives=len(archives),
         annual_model_rows=len(frame),ensemble_rows=len(ensemble),job_id=os.environ.get('SLURM_JOB_ID'),
         historical_window=[2015,2025],transition_window=[2026,2029],future_windows=[[2030,2039],[2040,2049],[2050,2059]]))
