@@ -196,11 +196,12 @@ def extract_block(root,task,record,mapping,identity):
             dst.createVariable('activation_year','i4',('station',))[:]=mapping[scenario+'_activation']
             dst.createVariable('snapshot_year','i4',('snapshot',))[:]=task['snapshots']
             cap=dst.createVariable('capacity_mw','f8',('snapshot','station'));cap[:]=mapping[scenario+'_capacity'];cap.units='MW'
+            if task.get('siting_commit')=='95c9ecf':cap.capacity_basis='MWp/DC' if task['tech']=='solar' else 'MW'
             attrs={k:src.getncattr(k) for k in src.ncattrs() if k not in ['_NCProperties','identity']}
             attrs.update(Conventions='CF-1.9',featureType='timeSeries',schema='lcoe-station-climate-v1',
                 model=task['model'],climate_scenario=task['climate_ssp'],station_scenario=scenario,tech=task['tech'],
                 source_patch=task['patch'],source_file=record['path'],source_identity=record.get('identity') or '',
-                identity=identity,activation_mask='off',mapping_method='frozen_LCOE_loss_same_raster_cell',
+                identity=identity,activation_mask='off',mapping_method=task.get('mapping_method','frozen_LCOE_loss_same_raster_cell'),
                 capacity_note='Snapshot metadata only; not multiplied into CF or event flags.')
             dst.setncatts(attrs)
             for varname in names:
