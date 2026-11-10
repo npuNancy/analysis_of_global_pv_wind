@@ -178,9 +178,32 @@ def finalize(root):
         path=Path(artifact['path']);require(path.stat().st_size==artifact['size_bytes'],'Published size mismatch')
         require(path.stat().st_mode & 0o004,'Result is not publicly readable')
     require(len(archives)==98,'Expected 98 station annual archives')
+    fields={key:dict(dimensions=['year','station'],units='MWh') for key in ENERGY}
+    fields.update({key:dict(dimensions=['year','station'],units='hours') for key in ['event_hours','loss_event_hours','loss_hours']})
+    fields.update({key:dict(dimensions=['year','station'],units='samples') for key in ['cf_valid_count','signal_valid_count','loss_valid_count']})
+    fields.update(cf_mean=dict(dimensions=['year','station'],units='1'),
+        capacity_mw=dict(dimensions=['year','station'],units='MWp/DC for solar; MW for wind',semantics='full catalogue capacity, including excluded locations'),
+        years=dict(dimensions=['year'],units='calendar year'),expected_hours=dict(dimensions=['year'],units='hours'),
+        grid_id=dict(dimensions=['station'],semantics='row * 3600 + column in the corrected 0.1-degree raster'),
+        common_support=dict(dimensions=['station'],semantics='valid across all models and years of this phase/pathway/technology'),
+        mapped=dict(dimensions=['station'],semantics='present in native climate mapping'))
+    for key in ['latitude','longitude','source_latitude','source_longitude']:
+        fields[key]=dict(dimensions=['station'],units='degrees',semantics='source sampling point' if key.startswith('source_') else 'station raster centre')
+    schema=root/'station_results/manifest.json'
+    write_json(schema,dict(status='COMPLETED',schema='gem-lcoe-annual-v1',fields=fields,
+        station_semantics='One technology in one 0.1-degree cell; capacities aggregated within that cell',
+        capacity_timing='Year-end historical stock applied to the full year; fixed 2025 stock in 2026-2029; decadal LCOE snapshots thereafter',
+        event_semantics='Union of selected events; missingness retained; signed net loss',
+        generation_semantics='Annual climate-driven estimate, not observed generation; no intra-year commissioning adjustment',
+        native_cadence_hours=dict(historical=1,transition=3,future=3)))
+    provenance={}
+    for name in ['station_provenance.json','reference_code_manifest.json','windpowerlib_manifest.json','requests_dependencies_manifest.json']:
+        path=root/'inputs'/name
+        provenance[name]=dict(path=str(path),sha256=sha(path))
     index=root/'runtime/authoritative_index.json'
     write_json(index,dict(status='COMPLETED',schema='gem-lcoe-climate-v1',entries=entries,annual_archives=archives,
         native_files=sum(len(e['artifacts']) for e in entries),total_bytes=sum(f['size_bytes'] for f in files),
+        annual_schema=dict(path=str(schema),sha256=sha(schema)),provenance=provenance,
         summaries={p.name:str(p) for p in data.glob('*.csv')}))
     write_json(root/'runtime/completion.json',dict(status='COMPLETED',index_sha256=sha(index),annual_archives=len(archives),
         annual_model_rows=len(frame),ensemble_rows=len(ensemble),job_id=os.environ.get('SLURM_JOB_ID'),
