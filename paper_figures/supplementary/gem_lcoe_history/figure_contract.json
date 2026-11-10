@@ -20,5 +20,6 @@
   "weights": "Capacity weighted; common valid support within phase, technology and pathway across years and models",
   "uncertainty": "Four-model min/max in source tables; no confidence interval or significance claim",
   "connection": "Future lines start at historical 2025 endpoint; no shift of computed future values",
-  "exports": "9 full PNGs and 27 independent panels, 600 dpi"
+  "exports": "9 full PNGs and 27 independent panels, 600 dpi",
+  "generation_interpretation": "Annual climate-driven estimate using each year-end capacity for the full year; no intra-year commissioning adjustment"
 }
