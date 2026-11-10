@@ -1,0 +1,24 @@
+{
+  "question": "新实际装机与LCOE部署路径下，全球风光发电、损失和极端暴露如何随年变化？",
+  "backend": "Python/matplotlib",
+  "panels": [
+    "a Wind + solar",
+    "b Wind",
+    "c Solar PV"
+  ],
+  "years": [
+    2015,
+    2059
+  ],
+  "history": "ERA5-Land, annual historical_snapshot capacity, 2015-2025",
+  "future": "Four-GCM mean; 2026-2029 fixed GEM2025; 2030-2059 cumulative LCOE snapshots",
+  "paired_paths": {
+    "ssp126": "ssp126",
+    "ssp245": "ssp245",
+    "ssp560": "ssp585"
+  },
+  "weights": "Capacity weighted; common valid support within phase, technology and pathway across years and models",
+  "uncertainty": "Four-model min/max in source tables; no confidence interval or significance claim",
+  "connection": "Future lines start at historical 2025 endpoint; no shift of computed future values",
+  "exports": "9 full PNGs and 27 independent panels, 600 dpi"
+}
