@@ -45,6 +45,7 @@ cd {shlex.quote(cfg['repo'])}
 '''
             if path.exists() and path.read_text()!=body:raise FileExistsError(path)
             path.write_text(body)
+            path.chmod(0o644);path.parent.chmod(0o755)
     print(json.dumps(dict(jobs=len(jobs),module=a.module,cpus=a.cpus or cfg['cpus'],dry_run=a.dry_run)))
 
 
