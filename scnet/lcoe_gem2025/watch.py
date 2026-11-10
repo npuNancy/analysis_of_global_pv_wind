@@ -73,11 +73,12 @@ def cycle(cfg,submit):
     with ThreadPoolExecutor(max_workers=10) as pool:accounts=list(pool.map(account,cfg['accounts']))
     after=snapshot(cfg);stamp=datetime.now(ZoneInfo('Asia/Shanghai')).isoformat();STATUS.mkdir(parents=True,exist_ok=True)
     lines=['# GEM 场站气候计算进度','',f'Last checked: {stamp}','',
-        '提交前持账号共享锁并重查全账号活动作业；每账号上限20。发现失败的阶段暂停补交，已运行单元继续完成。','',
+        '提交前持账号共享锁并重查全账号活动作业；每账号上限20。发现失败的阶段暂停补交，已运行单元继续完成。',
+        'ACTIVE为各单元上次核对或提交时的状态；补交期间结束的作业在下一轮更新，因此跨阶段ACTIVE之和不是实时并发数。','',
         '| 阶段 | 状态计数 | 下一步 |','|---|---|---|']
     counts={phase:dict(Counter(v['state'] for v in item['state'].values())) for phase,item in after.items()}
     for phase,count in counts.items():
-        action='检查失败证据' if any(k in BAD for k in count) else '计算并补交' if after[phase]['accepted'] else '等待首批验收'
+        action='已完成' if set(count)=={'SUCCEEDED'} else '检查失败证据' if any(k in BAD for k in count) else '计算并补交' if after[phase]['accepted'] else '等待首批验收'
         lines.append(f'| {phase} | {count} | {action} |')
     estimates=[]
     for phase,item in after.items():
