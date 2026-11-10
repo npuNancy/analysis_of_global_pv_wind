@@ -65,6 +65,13 @@ def panel(ax,data,tech,label,letter,metric):
             fits.append(dict(metric=name,tech=tech,climate_ssp=climate,station_ssp=station,start=2030,end=2059,
                              slope_per_year=float(slope),intercept_at_2030=float(intercept)))
     ticks=independent_y_ticks(ax,intervals=5)
+    if ticks['lower']<0<=ticks['data_minimum']:
+        needed=ticks['data_maximum']*1.06/5
+        power=10.**np.floor(np.log10(needed))
+        step=next(f*power for f in (1.,1.25,1.5,2.,2.5,3.,4.,5.,6.,8.,10.) if f*power>=needed)
+        values=np.arange(6)*step
+        ax.set_yticks(values);ax.set_ylim(0,float(values[-1]))
+        ticks.update(lower=0.,upper=float(values[-1]),step=float(step),ticks=values.tolist())
     ax.axvline(2025,color='.7',lw=.55,ls=':',zorder=0)
     ax.set_xlim(2014,2060);ax.set_xticks([2015,2025,2035,2045,2055]);ax.set_xlabel('Year')
     ax.set_ylabel(ylabel,labelpad=4);ax.set_title(label,pad=9,fontsize=8.5)
