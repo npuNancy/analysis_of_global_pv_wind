@@ -13,7 +13,7 @@ from zoneinfo import ZoneInfo
 
 HERE=Path(__file__).resolve().parent
 STATUS=HERE/'completion_status'
-PHASES=['historical','loss_transition','loss_future','era5_met','transition','future']
+PHASES=['publish','historical','loss_transition','loss_future','era5_met','transition','future']
 BAD={'FAILED','INCOMPLETE_OUTPUT','DETERMINISTIC_FAILURE','SUBMISSION_FAILED','UNKNOWN'}
 
 
@@ -65,7 +65,7 @@ def cycle(cfg,submit):
                 has_pending=any(v['state']=='NOT_SUBMITTED' for v in data['state'].values())
                 if not (can_submit and has_pending):continue
                 command=prefix+'python -m scnet.lcoe_station_climate.control --root '+shlex.quote(cfg['root']+'/'+phase)
-                if can_submit:command+=' --submit'
+                if can_submit:command+=' --submit --max-submit 20'
                 out=json.loads(ssh(a['alias'],command).strip().splitlines()[-1]);out['phase']=phase
                 results.append(out);active=out['active']
             return dict(account=a['username'],results=results,errors=errors)

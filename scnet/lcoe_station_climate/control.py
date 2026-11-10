@@ -33,7 +33,7 @@ def active(user):return {line.split('|')[0]:line.split('|')[1] for line in comma
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--root',type=Path,required=True)
     p.add_argument('--submit',action='store_true');p.add_argument('--pilot',nargs='+');p.add_argument('--retry',nargs='*')
-    p.add_argument('--read-only',action='store_true')
+    p.add_argument('--read-only',action='store_true');p.add_argument('--max-submit',type=int)
     a=p.parse_args();root=a.root;cfg=read(root/'inputs/campaign.json');user=command(['id','-un'])
     if a.read_only and (a.submit or a.retry):p.error('--read-only cannot submit or retry')
     account=next(x for x in cfg['accounts'] if x['username']==user)
@@ -84,6 +84,7 @@ def main():
             with locked(account['submit_lock']):
                 acknowledged=set()
                 while True:
+                    if a.max_submit is not None and len(submitted)>=a.max_submit:break
                     now_active=active(user)
                     acknowledged.difference_update(now_active)
                     if len(set(now_active)|acknowledged)>=account['max_active']:
