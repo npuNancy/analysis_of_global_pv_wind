@@ -104,7 +104,7 @@ def cycle(cfg,submit):
         if a['errors']:print(a['account'],a['errors'],flush=True)
     for result in observations:
         if result.get('error'):print(result,flush=True)
-    return all(all(v['state']=='SUCCEEDED' for v in p['state'].values()) for p in after.values())
+    return set(PHASES).issubset(after) and all(all(v['state']=='SUCCEEDED' for v in p['state'].values()) for p in after.values())
 
 
 def np_mean(values):return sum(values)/max(1,len(values))
