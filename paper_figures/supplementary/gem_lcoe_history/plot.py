@@ -91,18 +91,35 @@ def report(out):
       f'- 完整索引：{ROOT}/runtime/authoritative_index.json；验收：{ROOT}/runtime/completion.json。',
       f'- 原生CF/Extreme：{ROOT}/historical/outputs、{ROOT}/transition/outputs、{ROOT}/future/outputs。',
       f'- 逐站年度数组：{ROOT}/station_results；98个NPZ，包括坐标、容量、覆盖标记、CF、暴露、损失和全年发电。',
+      f'- 年度字段、单位和容量口径：{ROOT}/station_results/manifest.json；各条记录代表一种技术的一个0.1°网格。',
       f'- 完整交叉路径年度CSV：{ROOT}/source_data/global_annual_models.csv；模式汇总：global_annual_ensemble.csv；覆盖：capacity_coverage.csv。',
       f'- 绘图源表：[plot_series.csv]({rel}source_data/plot_series.csv)；拟合：[linear_fits.csv]({rel}source_data/linear_fits.csv)。','',
       '## 计算与展示口径','',
       '- 使用纠正后的0.1°网格编号按同一格匹配ERA5/BCSD源点，不跨格补点。场站网格中心与实际取样点坐标分别保存；原生CF/Extreme不套用投运掩膜，年度指标显式使用当年容量。',
       '- 历史使用ERA5-Land逐小时数据；BCSD保留模式原生三小时日历。光伏装机为MWp/DC，风电为MW；风电能量不乘0.1。全年发电量由全年CF积分。',
       '- 历史每年以当年年末装机容量固定用于全年计算，未按年内投运月份折算；发电量是气候驱动的模型估算，不是实测发电统计。',
+      '- 未来布局的原生CF/Extreme按原产品范围保留2015—2060；其年度评价采用2030—2059。历史年度评价另用ERA5及逐年实际装机。',
       '- 历史Loss沿用南北分析的固定全历史期、按月和小时且排除事件并集的正常CF基线方法，本轮窗口为2015—2025。过渡期窗口为2026—2029（中心2027）；未来分别为2030—2039、2040—2049、2050—2059。低资源事件基准期另为2015—2024。',
       '- 历史累计辐射、降水按ERA5-Land重置规则差分为小时量；按valid_time归年。Loss分别用12×24与12×8月—小时基线。历史末尾低资源居中窗口不足的时间保持缺测。',
       '- 损失为事件并集下的带符号净损失；单位装机量先汇总能量再除相同有效集合的容量。净损失比例的分母为全年正常基准电量；暴露不重复累加重叠事件。',
       '- 各阶段、路径、技术内使用跨年份及四模式共同有效站点；缺测不作零。总装机图显示完整目录容量，其余图显示有效集合指标，容量覆盖单独保留。阶段间有效支持可能不同。',
       '- 黑线为2015—2025；彩线为2026—2059四模式均值。场站/气候配对为126/126、245/245、560/585，完整三乘三交叉数据均保存。曲线差同时包含气候与部署变化。',
       '- 每条彩线从黑线2025端点接出，未平移未来数值。虚线仅拟合2030—2059。四模式最小值和最大值保存在源表，不解释为置信区间。各子图Y轴独立，均为5个间隔。','',
+      '## 读取年度场站结果','',
+      '```python','import json','from pathlib import Path','import numpy as np',
+      f'root = Path({str(ROOT)!r})',
+      'index = json.loads((root / "runtime/authoritative_index.json").read_text())',
+      'entry = next(e for e in index["annual_archives"]',
+      '             if e["phase"] == "future" and e["station_ssp"] == "ssp560"',
+      '             and e["climate_ssp"] == "ssp245" and e["model"] == "CANESM5" and e["tech"] == "wind")',
+      'with np.load(entry["path"], allow_pickle=False) as z:',
+      '    i = int(np.flatnonzero(z["years"] == 2050)[0])',
+      '    capacity = z["capacity_mw"][i]',
+      '    loss = z["net_loss_mwh"][i]',
+      '    valid = z["common_support"] & (capacity > 0) & np.isfinite(loss)',
+      '    unit_loss = loss[valid].sum() / capacity[valid].sum()  # MWh/MW/year',
+      '```','',
+      '原生NetCDF通过同一索引的entries筛选phase、product、model、climate_scenario、station_scenario和tech，再读取artifacts中的path；空组合标记EMPTY_NO_STATIONS。','',
       '## 图件','']
     for name,key,scale,ylabel,title,fit in METRICS:
         lines += [f'### {title}','',f'![{title}]({rel}{name}.png)','',
@@ -113,7 +130,11 @@ def main():
     check_protected();completion=read(ROOT/'runtime/completion.json')
     if completion['status']!='COMPLETED' or digest(ROOT/'runtime/authoritative_index.json')!=completion['index_sha256']:
         raise ValueError('Dataset is not accepted')
-    source=ROOT/'source_data/global_annual_ensemble.csv';data=select(pd.read_csv(source))
+    index=read(ROOT/'runtime/authoritative_index.json')
+    record=index['summaries']['global_annual_ensemble.csv'];source=Path(record['path'])
+    if source.stat().st_size!=record['size_bytes'] or digest(source)!=record['sha256']:
+        raise ValueError('Published summary changed')
+    data=select(pd.read_csv(source))
     out=HERE/'outputs';(out/'source_data').mkdir(parents=True,exist_ok=True)
     data.to_csv(out/'source_data/plot_series.csv',index=False)
     configure();plt.rcParams.update({'font.size':8,'axes.labelsize':8})
