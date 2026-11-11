@@ -26,7 +26,7 @@
 
 图件共17张组图和51张独立子图，均为600 dpi PNG；其中固定2025装机对照族为8张组图、24张子图。全部完成目视检查。本地同路径副本的图像SHA256与1866正式图件一致。固定装机族2026—2029的重加权结果与正式逐模式汇总逐值核对一致。验收记录见[figure_validation.json](../paper_figures/supplementary/gem_lcoe_history/outputs/figure_validation.json)。
 
-原有 document/BCSD_v2数据使用指南.md、document/风电光伏数据.md、document/风电光伏数据.html 的SHA256保持不变。
+LCOE-2025数据入口、字段与读取示例已汇总至[BCSD-v2数据使用指南第13节](BCSD_v2数据使用指南.md#lcoe-2025)；统一风格图件见[风电光伏数据](风电光伏数据.html)。
 
 ## 计算与展示口径
 
@@ -65,7 +65,7 @@ with np.load(entry["path"], allow_pickle=False) as z:
 
 原生NetCDF通过同一索引的entries筛选phase、product、model、climate_scenario、station_scenario和tech，再读取artifacts中的path；空组合标记EMPTY_NO_STATIONS。
 
-## 图件
+## 全球场站-LCOE-2025
 
 ### 总净损失
 
@@ -121,7 +121,7 @@ with np.load(entry["path"], allow_pickle=False) as z:
 
 独立子图：[a wind+solar](../paper_figures/supplementary/gem_lcoe_history/outputs/station_cf_a.png)；[b wind](../paper_figures/supplementary/gem_lcoe_history/outputs/station_cf_b.png)；[c solar](../paper_figures/supplementary/gem_lcoe_history/outputs/station_cf_c.png)。
 
-## 固定2025装机对照图
+## 固定2025装机
 
 黑线与上图族相同；彩线为2026—2059四模式均值，装机固定为2025年末GEM目录容量，仅气候路径变化，每条彩线仍从黑线2025端点接出。
 

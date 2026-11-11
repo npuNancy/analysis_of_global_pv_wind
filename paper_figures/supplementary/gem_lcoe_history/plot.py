@@ -196,7 +196,7 @@ def report(out):
       '| 历史 | 2015—2025 | 33 | 95.63%—98.09% |','| 过渡 | 2026—2029 | 144 | 97.18%—97.95% |','| 未来 | 2030—2059 | 3240 | 96.04%—99.45% |','',
       '覆盖范围综合各年份、路径及技术。通过年份与容量匹配、模式数量、CF范围、事件能量关系、文件完整性及读取权限核对。','',
       '图件共17张组图和51张独立子图，均为600 dpi PNG；其中固定2025装机对照族为8张组图、24张子图。全部完成目视检查。本地同路径副本的图像SHA256与1866正式图件一致。固定装机族2026—2029的重加权结果与正式逐模式汇总逐值核对一致。验收记录见[figure_validation.json](%sfigure_validation.json)。'%rel,'',
-      '原有 document/BCSD_v2数据使用指南.md、document/风电光伏数据.md、document/风电光伏数据.html 的SHA256保持不变。','',
+      'LCOE-2025数据入口、字段与读取示例已汇总至[BCSD-v2数据使用指南第13节](BCSD_v2数据使用指南.md#lcoe-2025)；统一风格图件见[风电光伏数据](风电光伏数据.html)。','',
       '## 计算与展示口径','',
       '- 使用纠正后的0.1°网格编号按同一格匹配ERA5/BCSD源点，不跨格补点。场站网格中心与实际取样点坐标分别保存；原生CF/Extreme不套用投运掩膜，年度指标显式使用当年容量。',
       '- 历史使用ERA5-Land逐小时数据；BCSD保留模式原生三小时日历。光伏装机为MWp/DC，风电为MW；风电能量不乘0.1。全年发电量由全年CF积分。',
@@ -226,11 +226,11 @@ def report(out):
       '    unit_loss = loss[valid].sum() / capacity[valid].sum()  # MWh/MW/year',
       '```','',
       '原生NetCDF通过同一索引的entries筛选phase、product、model、climate_scenario、station_scenario和tech，再读取artifacts中的path；空组合标记EMPTY_NO_STATIONS。','',
-      '## 图件','']
+      '## 全球场站-LCOE-2025','']
     for name,key,scale,ylabel,title in METRICS:
         lines += [f'### {title}','',f'![{title}]({rel}{name}.png)','',
           '独立子图：'+'；'.join(f'[{letter} {tech}]({rel}{name}_{letter}.png)' for letter,(tech,_) in zip('abc',TECHS))+'。','']
-    lines += ['## 固定2025装机对照图','',
+    lines += ['## 固定2025装机','',
       '黑线与上图族相同；彩线为2026—2059四模式均值，装机固定为2025年末GEM目录容量，仅气候路径变化，每条彩线仍从黑线2025端点接出。','']
     for name,key,scale,ylabel,title in FIXED_METRICS:
         lines += [f'### {title}','',f'![{title}]({rel}{name}.png)','',

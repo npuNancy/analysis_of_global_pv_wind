@@ -67,3 +67,13 @@ OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 python -m paper_figur
 Preparation requests 8 Slurm cores / 28 GB and starts four worker processes. The plotting entry point also updates the top inventory row and updates all eight LCOE figures and appends the three capacity/exposure figures to `document/风电光伏数据.md` and `.html`; Markdown links PNG files, while HTML embeds the same PNG bytes as base64. Only complete triptychs are exported. Existing inventory figures are preserved.
 
 Outputs: `lcoe_station_capacity.png`, `lcoe_station_exposure_total.png`, `lcoe_station_exposure_mean.png`; source tables are `outputs/source_data/lcoe_*.csv`. `lcoe_exposure_validation.json` records calendar/coverage/conservation checks and indexed input hashes; `lcoe_figure_manifest.json` records figure sizes, text bounds and output hashes. Full source metadata and patch summaries remain in the remote output directory.
+
+## LCOE-2025 history and fixed 2025 capacity
+
+`plot_gem2025.py` renders the nine LCOE-2025 and eight fixed-capacity metrics using the same 240 × 85 mm triptych style as `plot_lcoe.py`. Each complete PNG has three separate panel PNGs (105 × 100 mm), all at 600 dpi. Historical annual GEM/ERA5-Land values are black; future climate metrics are the unchanged four-model annual means and start at the historical 2025 endpoint. Capacity is the deterministic full-catalogue stock and uses station SSP126/245/560 labels. These two families have no fitted trend lines. Source CSVs retain models and ensemble ranges.
+
+The script reads the accepted GEM climate index, verifies summary and annual-archive hashes, reconstructs the fixed-capacity weights and compares all displayed values with the accepted `gem_lcoe_history` sources. Run `bash paper_figures/supplementary/global_metric_trends/plot_gem2025.sh` from the 1866 repository; this uses two allocated cores / 7 GB and one process. Outputs have the `gem2025_` prefix and are indexed in `outputs/gem2025_figure_manifest.json`.
+
+After rendering, run `python -m paper_figures.supplementary.global_metric_trends.update_gem2025_documents` in the repository environment. It inserts both families into the HTML capacity, exposure, loss and generation sections, embeds PNG bytes, and regenerates Markdown from the same HTML content. CF belongs to the generation section. The fixed-capacity heading under capacity describes the constant 2025 stock; that family contains eight metrics in the source report. The original 19 figures remain in the inventory.
+
+Data dimensions, field units, loss windows and reading examples are documented in section 13 of `document/BCSD_v2数据使用指南.md`.

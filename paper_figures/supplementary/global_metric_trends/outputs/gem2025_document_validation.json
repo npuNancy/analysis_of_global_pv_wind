@@ -1,0 +1,13 @@
+{
+  "status": "PASSED",
+  "html_figures": 36,
+  "markdown_figures": 36,
+  "new_triptychs": 17,
+  "independent_panels": 51,
+  "anchors": 68,
+  "documents": {
+    "风电光伏数据.html": "ce29d8c17c09b7afe4a08390b3c64a931e729f3b25d2cc0429c458b67899ca7e",
+    "风电光伏数据.md": "d150187410857fd6f57ec3b921c80cef614821828566ee7daec8815d29d8fcf7",
+    "BCSD_v2数据使用指南.md": "6de64dd16632031a1fd16fc460fb2a6c0dd01b5a1bf9a9ecefcf63f7674f9709"
+  }
+}

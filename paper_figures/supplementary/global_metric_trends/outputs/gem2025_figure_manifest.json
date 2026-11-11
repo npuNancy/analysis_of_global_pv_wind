@@ -1,0 +1,2224 @@
+{
+  "status": "PASSED",
+  "visual_review": "PASSED",
+  "source_index": "/work/home/acxujo26gv/lcoe_gem2025_climate_storage/runtime/authoritative_index.json",
+  "index_sha256": "ad410d892490395583039c17b9761d3c5ee1b377092d12fb9947731e21edfb90",
+  "source_summaries": {
+    "capacity_coverage.csv": {
+      "path": "/work/home/acxujo26gv/lcoe_gem2025_climate_storage/source_data/capacity_coverage.csv",
+      "size_bytes": 467794,
+      "sha256": "8a1be27530c7ed7035c1095c5e9750db639a8874eccd0c7cc01620b0967abf34"
+    },
+    "global_annual_models.csv": {
+      "path": "/work/home/acxujo26gv/lcoe_gem2025_climate_storage/source_data/global_annual_models.csv",
+      "size_bytes": 1295572,
+      "sha256": "40b0654ccb26940717171c1fa1a3fa61a63f1e1b4b3119730a0e9dc94d38959a"
+    },
+    "global_annual_ensemble.csv": {
+      "path": "/work/home/acxujo26gv/lcoe_gem2025_climate_storage/source_data/global_annual_ensemble.csv",
+      "size_bytes": 863469,
+      "sha256": "ebc387c23fb4416ea173f0ca13273e8d7fe1e1e017d42d43b47b8ec4023f9a92"
+    }
+  },
+  "original_series_comparison": "PASSED",
+  "fixed_transition_crosscheck_rows": 96,
+  "sources": {
+    "gem2025_models.csv": {
+      "path": "/work/home/aczlvkl1ac/project_climate_patchify/repos/analysis_of_global_pv_wind/paper_figures/supplementary/global_metric_trends/outputs/source_data/gem2025_models.csv",
+      "rows": 1257,
+      "sha256": "4bb053fbc3ddbd6737f05bb717f4a7cdcee1534360b09581ae1fa983f5478de8"
+    },
+    "gem2025_display.csv": {
+      "path": "/work/home/aczlvkl1ac/project_climate_patchify/repos/analysis_of_global_pv_wind/paper_figures/supplementary/global_metric_trends/outputs/source_data/gem2025_display.csv",
+      "rows": 339,
+      "sha256": "80f080ce352dbc5ef8a6f63dbf100c6d00e61785d6cc6ee37bbcb5b021a4c639"
+    },
+    "gem2025_fixed_models.csv": {
+      "path": "/work/home/aczlvkl1ac/project_climate_patchify/repos/analysis_of_global_pv_wind/paper_figures/supplementary/global_metric_trends/outputs/source_data/gem2025_fixed_models.csv",
+      "rows": 1224,
+      "sha256": "fb0b5ad34cf14b8ff31cfb90ce66137ab09641580d04659b80c64f21935aac8d"
+    },
+    "gem2025_fixed_ensemble.csv": {
+      "path": "/work/home/aczlvkl1ac/project_climate_patchify/repos/analysis_of_global_pv_wind/paper_figures/supplementary/global_metric_trends/outputs/source_data/gem2025_fixed_ensemble.csv",
+      "rows": 306,
+      "sha256": "d3512a3d5ff738ab01313a7aec71334e725dceb6a1155606662175d5b6dfa001"
+    },
+    "gem2025_fixed_display.csv": {
+      "path": "/work/home/aczlvkl1ac/project_climate_patchify/repos/analysis_of_global_pv_wind/paper_figures/supplementary/global_metric_trends/outputs/source_data/gem2025_fixed_display.csv",
+      "rows": 339,
+      "sha256": "4c18f2ac43a7e0a313363cd631ae5ae18f53379a41332eee71d8b8677efe59d5"
+    }
+  },
+  "figures": [
+    {
+      "name": "gem2025_station_total_loss",
+      "metric": "station_total_loss",
+      "title": "总净损失",
+      "family": "lcoe2025",
+      "field": "net_loss_mwh_mean",
+      "scale": 1.0,
+      "complete": {
+        "path": "gem2025_station_total_loss.png",
+        "image": {
+          "pixels": [
+            5789,
+            2127
+          ],
+          "dpi": [
+            599.9988,
+            599.9988
+          ]
+        },
+        "sha256": "834ec4e26d8192ab40474a55d59be082592bf4851036f97fabfb00b5f6ca03f6",
+        "figure_fraction_bounds": null,
+        "text_bounds_check": "PASSED"
+      },
+      "panels": [
+        {
+          "path": "gem2025_station_total_loss_a.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "bf9cbf5d9172c1a62f18c6af4730a6eef3679c0232c81635b3eb175acbfc627d",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "gem2025_station_total_loss_b.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "8bfa1fae535e6bc7123da712af40607aab5a10e33cb8d3cae934a96dec53b33f",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "gem2025_station_total_loss_c.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "ca101c114496c7fdf0880cc9952d9e7fffd2f77631f8c87abd696f383ce053d4",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        }
+      ],
+      "axes": [
+        {
+          "tech": "wind+solar",
+          "lower": 0.0,
+          "upper": 2000000000.0,
+          "step": 400000000.0,
+          "intervals": 5,
+          "ticks": [
+            0.0,
+            400000000.0,
+            800000000.0,
+            1200000000.0,
+            1600000000.0,
+            2000000000.0
+          ],
+          "data_minimum": 56167545.70192864,
+          "data_maximum": 1570177471.730272
+        },
+        {
+          "tech": "wind",
+          "lower": 0.0,
+          "upper": 1000000000.0,
+          "step": 200000000.0,
+          "intervals": 5,
+          "ticks": [
+            0.0,
+            200000000.0,
+            400000000.0,
+            600000000.0,
+            800000000.0,
+            1000000000.0
+          ],
+          "data_minimum": 47198900.19986455,
+          "data_maximum": 855128843.7589962
+        },
+        {
+          "tech": "solar",
+          "lower": 0.0,
+          "upper": 1000000000.0,
+          "step": 200000000.0,
+          "intervals": 5,
+          "ticks": [
+            0.0,
+            200000000.0,
+            400000000.0,
+            600000000.0,
+            800000000.0,
+            1000000000.0
+          ],
+          "data_minimum": 8968645.502064085,
+          "data_maximum": 734200422.1238717
+        }
+      ]
+    },
+    {
+      "name": "gem2025_station_unit_loss",
+      "metric": "station_unit_loss",
+      "title": "单位装机净损失",
+      "family": "lcoe2025",
+      "field": "unit_loss_mwh_per_mw_mean",
+      "scale": 1.0,
+      "complete": {
+        "path": "gem2025_station_unit_loss.png",
+        "image": {
+          "pixels": [
+            5789,
+            2127
+          ],
+          "dpi": [
+            599.9988,
+            599.9988
+          ]
+        },
+        "sha256": "584a79edbbfebab20edf65b9c4b995cbbf0b165652b8ccc13788b706af367c9e",
+        "figure_fraction_bounds": null,
+        "text_bounds_check": "PASSED"
+      },
+      "panels": [
+        {
+          "path": "gem2025_station_unit_loss_a.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "871adc2afc351ee4dae57a4177accff7cdcd91a4231930b81dfcc6a77fcfb335",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "gem2025_station_unit_loss_b.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "2e527bb7453225ac0e2137f4f0ffd0359cd4774619485163dd8b288eae42d2d4",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "gem2025_station_unit_loss_c.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "8f959cee57c61616c78e5ad68a0b2e175baa6664ad9fe42c2572166b130b3671",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        }
+      ],
+      "axes": [
+        {
+          "tech": "wind+solar",
+          "lower": 87.5,
+          "upper": 150.0,
+          "step": 12.5,
+          "intervals": 5,
+          "ticks": [
+            87.5,
+            100.0,
+            112.5,
+            125.0,
+            137.5,
+            150.0
+          ],
+          "data_minimum": 92.22032112864692,
+          "data_maximum": 134.15517257838562
+        },
+        {
+          "tech": "wind",
+          "lower": 100.0,
+          "upper": 200.0,
+          "step": 20.0,
+          "intervals": 5,
+          "ticks": [
+            100.0,
+            120.0,
+            140.0,
+            160.0,
+            180.0,
+            200.0
+          ],
+          "data_minimum": 114.29163102486764,
+          "data_maximum": 179.89655791508082
+        },
+        {
+          "tech": "solar",
+          "lower": 64.0,
+          "upper": 104.0,
+          "step": 8.0,
+          "intervals": 5,
+          "ticks": [
+            64.0,
+            72.0,
+            80.0,
+            88.0,
+            96.0,
+            104.0
+          ],
+          "data_minimum": 67.94599358803326,
+          "data_maximum": 96.3681811669956
+        }
+      ]
+    },
+    {
+      "name": "gem2025_station_loss_fraction",
+      "metric": "station_loss_fraction",
+      "title": "净损失占正常基准电量比例",
+      "family": "lcoe2025",
+      "field": "loss_fraction_pct_mean",
+      "scale": 1.0,
+      "complete": {
+        "path": "gem2025_station_loss_fraction.png",
+        "image": {
+          "pixels": [
+            5789,
+            2127
+          ],
+          "dpi": [
+            599.9988,
+            599.9988
+          ]
+        },
+        "sha256": "a1c362dbcd4ff8003606a35b7931be833c88c6de39106eb76447f5ac4ce12133",
+        "figure_fraction_bounds": null,
+        "text_bounds_check": "PASSED"
+      },
+      "panels": [
+        {
+          "path": "gem2025_station_loss_fraction_a.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "59f16186d3fe456d2046f68e965e03c8d7c82ac12e2ec7054d816a7609560956",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "gem2025_station_loss_fraction_b.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "b8311a8a8c14460afe470016f36a0381a6cd9f9e806929ab7b8f0b67c051382e",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "gem2025_station_loss_fraction_c.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "05ec449d8c15d4f0476d439ebcba0e8eb61dd9ab56525d76272680b2c9ca9767",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        }
+      ],
+      "axes": [
+        {
+          "tech": "wind+solar",
+          "lower": 3.2,
+          "upper": 7.2,
+          "step": 0.8,
+          "intervals": 5,
+          "ticks": [
+            3.2,
+            4.0,
+            4.800000000000001,
+            5.6000000000000005,
+            6.4,
+            7.2
+          ],
+          "data_minimum": 4.105818580997664,
+          "data_maximum": 6.650861390390573
+        },
+        {
+          "tech": "wind",
+          "lower": 5.5,
+          "upper": 8.0,
+          "step": 0.5,
+          "intervals": 5,
+          "ticks": [
+            5.5,
+            6.0,
+            6.5,
+            7.0,
+            7.5,
+            8.0
+          ],
+          "data_minimum": 5.891054063123462,
+          "data_maximum": 7.708277200080367
+        },
+        {
+          "tech": "solar",
+          "lower": 3.0,
+          "upper": 5.5,
+          "step": 0.5,
+          "intervals": 5,
+          "ticks": [
+            3.0,
+            3.5,
+            4.0,
+            4.5,
+            5.0,
+            5.5
+          ],
+          "data_minimum": 3.1310009137885992,
+          "data_maximum": 5.073935319758971
+        }
+      ]
+    },
+    {
+      "name": "gem2025_station_total_generation",
+      "metric": "station_total_generation",
+      "title": "全年总发电量",
+      "family": "lcoe2025",
+      "field": "generation_mwh_mean",
+      "scale": 1e-09,
+      "complete": {
+        "path": "gem2025_station_total_generation.png",
+        "image": {
+          "pixels": [
+            5789,
+            2127
+          ],
+          "dpi": [
+            599.9988,
+            599.9988
+          ]
+        },
+        "sha256": "f2c183e068903af289ba7f4c38aadefe5d437399b1c38ad7c7b1bc0b4e8819a5",
+        "figure_fraction_bounds": null,
+        "text_bounds_check": "PASSED"
+      },
+      "panels": [
+        {
+          "path": "gem2025_station_total_generation_a.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "6cf5f0bf56bcfda83e4f54a8098ade2b130a1bc7e1998aee77e05738acf43c94",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "gem2025_station_total_generation_b.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "b0b4afab3f6c69c66141afcbd5eb3624e7bc95ec3fd497a10af31c677a418410",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "gem2025_station_total_generation_c.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "ca9959ae762df5d963263d850d7f193ba966d6b5aff3993071e977ae57d45a7e",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        }
+      ],
+      "axes": [
+        {
+          "tech": "wind+solar",
+          "lower": 0.0,
+          "upper": 40.0,
+          "step": 8.0,
+          "intervals": 5,
+          "ticks": [
+            0.0,
+            8.0,
+            16.0,
+            24.0,
+            32.0,
+            40.0
+          ],
+          "data_minimum": 0.7903668941537321,
+          "data_maximum": 31.26220549219453
+        },
+        {
+          "tech": "wind",
+          "lower": 0.0,
+          "upper": 12.5,
+          "step": 2.5,
+          "intervals": 5,
+          "ticks": [
+            0.0,
+            2.5,
+            5.0,
+            7.5,
+            10.0,
+            12.5
+          ],
+          "data_minimum": 0.6224935352583312,
+          "data_maximum": 10.453694208242661
+        },
+        {
+          "tech": "solar",
+          "lower": 0.0,
+          "upper": 25.0,
+          "step": 5.0,
+          "intervals": 5,
+          "ticks": [
+            0.0,
+            5.0,
+            10.0,
+            15.0,
+            20.0,
+            25.0
+          ],
+          "data_minimum": 0.16787335889540084,
+          "data_maximum": 20.808511283951862
+        }
+      ]
+    },
+    {
+      "name": "gem2025_station_unit_generation",
+      "metric": "station_unit_generation",
+      "title": "单位装机全年发电量",
+      "family": "lcoe2025",
+      "field": "unit_generation_mwh_per_mw_mean",
+      "scale": 1.0,
+      "complete": {
+        "path": "gem2025_station_unit_generation.png",
+        "image": {
+          "pixels": [
+            5789,
+            2127
+          ],
+          "dpi": [
+            599.9988,
+            599.9988
+          ]
+        },
+        "sha256": "3e1f593671375c9fc9d7797d43c72d8d8839f711afb2716129f0e8b213c8736f",
+        "figure_fraction_bounds": null,
+        "text_bounds_check": "PASSED"
+      },
+      "panels": [
+        {
+          "path": "gem2025_station_unit_generation_a.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "0e61c1cfa29653b54545953a0db11f55bc08f85818112d007c1fabb18bb5bec7",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "gem2025_station_unit_generation_b.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "9b10aee442793891f0ab8cea64ce2d10f705d190b3fc46e97f1bfda7630c2576",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "gem2025_station_unit_generation_c.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "f1ce95818a0bc018ff33ae28f737e0641f58cd5f1935863ffc6d4a557442f497",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        }
+      ],
+      "axes": [
+        {
+          "tech": "wind+solar",
+          "lower": 1650.0,
+          "upper": 2400.0,
+          "step": 150.0,
+          "intervals": 5,
+          "ticks": [
+            1650.0,
+            1800.0,
+            1950.0,
+            2100.0,
+            2250.0,
+            2400.0
+          ],
+          "data_minimum": 1766.7828856559445,
+          "data_maximum": 2229.0570659401783
+        },
+        {
+          "tech": "wind",
+          "lower": 1500.0,
+          "upper": 2750.0,
+          "step": 250.0,
+          "intervals": 5,
+          "ticks": [
+            1500.0,
+            1750.0,
+            2000.0,
+            2250.0,
+            2500.0,
+            2750.0
+          ],
+          "data_minimum": 1646.8631183026866,
+          "data_maximum": 2433.790528829864
+        },
+        {
+          "tech": "solar",
+          "lower": 1625.0,
+          "upper": 2250.0,
+          "step": 125.0,
+          "intervals": 5,
+          "ticks": [
+            1625.0,
+            1750.0,
+            1875.0,
+            2000.0,
+            2125.0,
+            2250.0
+          ],
+          "data_minimum": 1776.1321947808383,
+          "data_maximum": 2194.8612299186066
+        }
+      ]
+    },
+    {
+      "name": "gem2025_station_capacity",
+      "metric": "station_capacity",
+      "title": "完整目录装机容量",
+      "family": "lcoe2025",
+      "field": "catalogue_capacity_mw_mean",
+      "scale": 1e-06,
+      "complete": {
+        "path": "gem2025_station_capacity.png",
+        "image": {
+          "pixels": [
+            5789,
+            2127
+          ],
+          "dpi": [
+            599.9988,
+            599.9988
+          ]
+        },
+        "sha256": "f46dce8e8e3e3443264a3c635458217c8700186156719fb62344b4c2ee56bcd0",
+        "figure_fraction_bounds": null,
+        "text_bounds_check": "PASSED"
+      },
+      "panels": [
+        {
+          "path": "gem2025_station_capacity_a.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "b0b0567122b8ee0d374bb029deb2063a6cc31858d328a8024415d0ad174f29fd",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "gem2025_station_capacity_b.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "8b38a58997f3771ae4e9737b0104a8690481564e7d9f892581172593f6aa3fc2",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "gem2025_station_capacity_c.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "c5db7f9018a2863df86bc2839f296841558a6b37d02c636c1d3cc10f57b3f43a",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        }
+      ],
+      "axes": [
+        {
+          "tech": "wind+solar",
+          "lower": 0.0,
+          "upper": 20.0,
+          "step": 4.0,
+          "intervals": 5,
+          "ticks": [
+            0.0,
+            4.0,
+            8.0,
+            12.0,
+            16.0,
+            20.0
+          ],
+          "data_minimum": 0.43642278974658555,
+          "data_maximum": 15.56942880415835
+        },
+        {
+          "tech": "wind",
+          "lower": 0.0,
+          "upper": 7.5,
+          "step": 1.5,
+          "intervals": 5,
+          "ticks": [
+            0.0,
+            1.5,
+            3.0,
+            4.5,
+            6.0,
+            7.5
+          ],
+          "data_minimum": 0.3405048,
+          "data_maximum": 5.9280159003269475
+        },
+        {
+          "tech": "solar",
+          "lower": 0.0,
+          "upper": 12.5,
+          "step": 2.5,
+          "intervals": 5,
+          "ticks": [
+            0.0,
+            2.5,
+            5.0,
+            7.5,
+            10.0,
+            12.5
+          ],
+          "data_minimum": 0.0959179897465856,
+          "data_maximum": 9.641412903831405
+        }
+      ]
+    },
+    {
+      "name": "gem2025_station_exposure_total",
+      "metric": "station_exposure_total",
+      "title": "装机加权暴露总量",
+      "family": "lcoe2025",
+      "field": "exposure_mw_days_mean",
+      "scale": 1.0,
+      "complete": {
+        "path": "gem2025_station_exposure_total.png",
+        "image": {
+          "pixels": [
+            5789,
+            2127
+          ],
+          "dpi": [
+            599.9988,
+            599.9988
+          ]
+        },
+        "sha256": "84da371da7e4caabdbe54c2ae81cac8f2aad6a6d280f7580e18fe30c269b1e5f",
+        "figure_fraction_bounds": null,
+        "text_bounds_check": "PASSED"
+      },
+      "panels": [
+        {
+          "path": "gem2025_station_exposure_total_a.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "7771a9cb3f8f42ce17ada6b39d972e79392d7dd8e97894775c9c923e6bb66333",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "gem2025_station_exposure_total_b.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "5b75baa4e69e1a6fd58fa16133d70a56a43d7a511bd8c79217503354bfa1ad3d",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "gem2025_station_exposure_total_c.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "586ed0e075abcee268e2425d6fa35c2feb2510f0fba1835d8c3ed934ddaf8fe9",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        }
+      ],
+      "axes": [
+        {
+          "tech": "wind+solar",
+          "lower": 0.0,
+          "upper": 500000000.0,
+          "step": 100000000.0,
+          "intervals": 5,
+          "ticks": [
+            0.0,
+            100000000.0,
+            200000000.0,
+            300000000.0,
+            400000000.0,
+            500000000.0
+          ],
+          "data_minimum": 12313871.064086994,
+          "data_maximum": 452783633.7407473
+        },
+        {
+          "tech": "wind",
+          "lower": 0.0,
+          "upper": 250000000.0,
+          "step": 50000000.0,
+          "intervals": 5,
+          "ticks": [
+            0.0,
+            50000000.0,
+            100000000.0,
+            150000000.0,
+            200000000.0,
+            250000000.0
+          ],
+          "data_minimum": 8803641.7125,
+          "data_maximum": 215952437.41921487
+        },
+        {
+          "tech": "solar",
+          "lower": 0.0,
+          "upper": 300000000.0,
+          "step": 60000000.0,
+          "intervals": 5,
+          "ticks": [
+            0.0,
+            60000000.0,
+            120000000.0,
+            180000000.0,
+            240000000.0,
+            300000000.0
+          ],
+          "data_minimum": 3510229.351586994,
+          "data_maximum": 237014783.45900056
+        }
+      ]
+    },
+    {
+      "name": "gem2025_station_exposure_mean",
+      "metric": "station_exposure_mean",
+      "title": "装机加权平均暴露时长",
+      "family": "lcoe2025",
+      "field": "exposure_days_mean",
+      "scale": 1.0,
+      "complete": {
+        "path": "gem2025_station_exposure_mean.png",
+        "image": {
+          "pixels": [
+            5789,
+            2127
+          ],
+          "dpi": [
+            599.9988,
+            599.9988
+          ]
+        },
+        "sha256": "5ccfae6384f7ae76e9d83225b5cb21dac81af1a3d821f38200e7894b1ed1b647",
+        "figure_fraction_bounds": null,
+        "text_bounds_check": "PASSED"
+      },
+      "panels": [
+        {
+          "path": "gem2025_station_exposure_mean_a.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "66cdfe35b9771bba5129115764d375aea07bac41fa0f4193faf204040016ac11",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "gem2025_station_exposure_mean_b.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "680a32a0042935db7ed8a620ffff3292d0c0d286789986f7e6054ad0e5b97877",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "gem2025_station_exposure_mean_c.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "ff925991dc365596cfd0881daba8f3b2a94d6ab7615f15b1b455604d6427502a",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        }
+      ],
+      "axes": [
+        {
+          "tech": "wind+solar",
+          "lower": 26.0,
+          "upper": 36.0,
+          "step": 2.0,
+          "intervals": 5,
+          "ticks": [
+            26.0,
+            28.0,
+            30.0,
+            32.0,
+            34.0,
+            36.0
+          ],
+          "data_minimum": 26.631257346047448,
+          "data_maximum": 33.95372830479095
+        },
+        {
+          "tech": "wind",
+          "lower": 20.0,
+          "upper": 40.0,
+          "step": 4.0,
+          "intervals": 5,
+          "ticks": [
+            20.0,
+            24.0,
+            28.0,
+            32.0,
+            36.0,
+            40.0
+          ],
+          "data_minimum": 24.26668018455291,
+          "data_maximum": 37.15222776001204
+        },
+        {
+          "tech": "solar",
+          "lower": 20.0,
+          "upper": 45.0,
+          "step": 5.0,
+          "intervals": 5,
+          "ticks": [
+            20.0,
+            25.0,
+            30.0,
+            35.0,
+            40.0,
+            45.0
+          ],
+          "data_minimum": 23.310064661111767,
+          "data_maximum": 41.2230209598496
+        }
+      ]
+    },
+    {
+      "name": "gem2025_station_cf",
+      "metric": "station_cf",
+      "title": "容量加权全年平均CF",
+      "family": "lcoe2025",
+      "field": "cf_mean_mean",
+      "scale": 1.0,
+      "complete": {
+        "path": "gem2025_station_cf.png",
+        "image": {
+          "pixels": [
+            5789,
+            2127
+          ],
+          "dpi": [
+            599.9988,
+            599.9988
+          ]
+        },
+        "sha256": "b12a390001dd14ba795205403d03456ececd2658fc41c0f928f7a94aef66e9ce",
+        "figure_fraction_bounds": null,
+        "text_bounds_check": "PASSED"
+      },
+      "panels": [
+        {
+          "path": "gem2025_station_cf_a.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "c70a1a8b83303a477d657785ecb83ee1234ab44524f4858062829177dd6f4b10",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "gem2025_station_cf_b.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "c91fe7dc2b51eec5971eb499b144e818f4812da4d13a6d2dddbc782068195e81",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "gem2025_station_cf_c.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "fefc62613dea63bca38e22caafe96d57935385a931a97345e41d045f2d16b5ea",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        }
+      ],
+      "axes": [
+        {
+          "tech": "wind+solar",
+          "lower": 0.195,
+          "upper": 0.27,
+          "step": 0.015,
+          "intervals": 5,
+          "ticks": [
+            0.195,
+            0.21,
+            0.22499999999999998,
+            0.24,
+            0.255,
+            0.27
+          ],
+          "data_minimum": 0.2016875440246512,
+          "data_maximum": 0.2544585691712532
+        },
+        {
+          "tech": "wind",
+          "lower": 0.17500000000000002,
+          "upper": 0.30000000000000004,
+          "step": 0.025,
+          "intervals": 5,
+          "ticks": [
+            0.17500000000000002,
+            0.2,
+            0.225,
+            0.25,
+            0.275,
+            0.30000000000000004
+          ],
+          "data_minimum": 0.1879980728656035,
+          "data_maximum": 0.277829969044505
+        },
+        {
+          "tech": "solar",
+          "lower": 0.195,
+          "upper": 0.27,
+          "step": 0.015,
+          "intervals": 5,
+          "ticks": [
+            0.195,
+            0.21,
+            0.22499999999999998,
+            0.24,
+            0.255,
+            0.27
+          ],
+          "data_minimum": 0.2025073101877735,
+          "data_maximum": 0.2505200867882526
+        }
+      ]
+    },
+    {
+      "name": "gem2025_station_fixed_total_loss",
+      "metric": "station_fixed_total_loss",
+      "title": "总净损失（固定2025装机）",
+      "family": "fixed2025",
+      "field": "net_loss_mwh_mean",
+      "scale": 1.0,
+      "complete": {
+        "path": "gem2025_station_fixed_total_loss.png",
+        "image": {
+          "pixels": [
+            5789,
+            2127
+          ],
+          "dpi": [
+            599.9988,
+            599.9988
+          ]
+        },
+        "sha256": "6c22c3e4915682ca8a60e87a61ccecad24bc33f35c4dae69f628a516e9960ff1",
+        "figure_fraction_bounds": null,
+        "text_bounds_check": "PASSED"
+      },
+      "panels": [
+        {
+          "path": "gem2025_station_fixed_total_loss_a.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "6683a7ffc1002c64fb79215edcb5799351e1a0fc68574a1e271bb542d7fff2f1",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "gem2025_station_fixed_total_loss_b.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "2c981d45dcd014fc76fbc645f9f56ce9fafcc63cbc0845084723449cc12841ac",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "gem2025_station_fixed_total_loss_c.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "b45d9db05e7e8976b37e7a2f025ce7706082ff8bc69c50f4b9959a2118f8a22f",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        }
+      ],
+      "axes": [
+        {
+          "tech": "wind+solar",
+          "lower": 0.0,
+          "upper": 300000000.0,
+          "step": 60000000.0,
+          "intervals": 5,
+          "ticks": [
+            0.0,
+            60000000.0,
+            120000000.0,
+            180000000.0,
+            240000000.0,
+            300000000.0
+          ],
+          "data_minimum": 56167545.70192864,
+          "data_maximum": 242322638.21114913
+        },
+        {
+          "tech": "wind",
+          "lower": 40000000.0,
+          "upper": 140000000.0,
+          "step": 20000000.0,
+          "intervals": 5,
+          "ticks": [
+            40000000.0,
+            60000000.0,
+            80000000.0,
+            100000000.0,
+            120000000.0,
+            140000000.0
+          ],
+          "data_minimum": 47198900.19986455,
+          "data_maximum": 126889489.8624168
+        },
+        {
+          "tech": "solar",
+          "lower": 0.0,
+          "upper": 150000000.0,
+          "step": 30000000.0,
+          "intervals": 5,
+          "ticks": [
+            0.0,
+            30000000.0,
+            60000000.0,
+            90000000.0,
+            120000000.0,
+            150000000.0
+          ],
+          "data_minimum": 8968645.502064085,
+          "data_maximum": 120307048.96233629
+        }
+      ]
+    },
+    {
+      "name": "gem2025_station_fixed_unit_loss",
+      "metric": "station_fixed_unit_loss",
+      "title": "单位装机净损失（固定2025装机）",
+      "family": "fixed2025",
+      "field": "unit_loss_mwh_per_mw_mean",
+      "scale": 1.0,
+      "complete": {
+        "path": "gem2025_station_fixed_unit_loss.png",
+        "image": {
+          "pixels": [
+            5789,
+            2127
+          ],
+          "dpi": [
+            599.9988,
+            599.9988
+          ]
+        },
+        "sha256": "2bb4ea74d661b4a5f54912b525a3c5a12a1796b32bd6a43936920f6e7d55ada3",
+        "figure_fraction_bounds": null,
+        "text_bounds_check": "PASSED"
+      },
+      "panels": [
+        {
+          "path": "gem2025_station_fixed_unit_loss_a.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "7358bf8fb417175f0b0430180ea301daec4805c582c151acdf90e53288d6d5bf",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "gem2025_station_fixed_unit_loss_b.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "32967836f78969c58eab5bd466b508fa605410df10c05f2a5552f4fee4c98be6",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "gem2025_station_fixed_unit_loss_c.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "436f71eed453087d0d9dbed5bd9e9f2972a1314f3ee3703bd42da952210d8d4f",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        }
+      ],
+      "axes": [
+        {
+          "tech": "wind+solar",
+          "lower": 90.0,
+          "upper": 140.0,
+          "step": 10.0,
+          "intervals": 5,
+          "ticks": [
+            90.0,
+            100.0,
+            110.0,
+            120.0,
+            130.0,
+            140.0
+          ],
+          "data_minimum": 95.50281583713544,
+          "data_maximum": 134.15517257838562
+        },
+        {
+          "tech": "wind",
+          "lower": 100.0,
+          "upper": 150.0,
+          "step": 10.0,
+          "intervals": 5,
+          "ticks": [
+            100.0,
+            110.0,
+            120.0,
+            130.0,
+            140.0,
+            150.0
+          ],
+          "data_minimum": 111.37718964065952,
+          "data_maximum": 144.9555378447636
+        },
+        {
+          "tech": "solar",
+          "lower": 75.0,
+          "upper": 100.0,
+          "step": 5.0,
+          "intervals": 5,
+          "ticks": [
+            75.0,
+            80.0,
+            85.0,
+            90.0,
+            95.0,
+            100.0
+          ],
+          "data_minimum": 78.83816072706081,
+          "data_maximum": 96.3681811669956
+        }
+      ]
+    },
+    {
+      "name": "gem2025_station_fixed_loss_fraction",
+      "metric": "station_fixed_loss_fraction",
+      "title": "净损失占正常基准电量比例（固定2025装机）",
+      "family": "fixed2025",
+      "field": "loss_fraction_pct_mean",
+      "scale": 1.0,
+      "complete": {
+        "path": "gem2025_station_fixed_loss_fraction.png",
+        "image": {
+          "pixels": [
+            5789,
+            2127
+          ],
+          "dpi": [
+            599.9988,
+            599.9988
+          ]
+        },
+        "sha256": "a4dd89410e08436038e2525d8caafbc85b32747528762a1c72d61c3328948316",
+        "figure_fraction_bounds": null,
+        "text_bounds_check": "PASSED"
+      },
+      "panels": [
+        {
+          "path": "gem2025_station_fixed_loss_fraction_a.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "33b0057af21a648fd2805025e1e5505dc44aced86347549eb7070afacebf0f26",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "gem2025_station_fixed_loss_fraction_b.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "4288b18f0969e12a4467bfe5c4da97b4098df7112087508a6667a91351672258",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "gem2025_station_fixed_loss_fraction_c.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "0a616fbddfe415301d3d8cd91b8c8e55876d5e78c8a488da6a73f3484b7f589e",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        }
+      ],
+      "axes": [
+        {
+          "tech": "wind+solar",
+          "lower": 4.800000000000001,
+          "upper": 6.800000000000001,
+          "step": 0.4,
+          "intervals": 5,
+          "ticks": [
+            4.800000000000001,
+            5.2,
+            5.6000000000000005,
+            6.0,
+            6.4,
+            6.800000000000001
+          ],
+          "data_minimum": 4.991916155875439,
+          "data_maximum": 6.650861390390573
+        },
+        {
+          "tech": "wind",
+          "lower": 5.5,
+          "upper": 8.0,
+          "step": 0.5,
+          "intervals": 5,
+          "ticks": [
+            5.5,
+            6.0,
+            6.5,
+            7.0,
+            7.5,
+            8.0
+          ],
+          "data_minimum": 5.891054063123462,
+          "data_maximum": 7.609774640602499
+        },
+        {
+          "tech": "solar",
+          "lower": 4.0,
+          "upper": 5.25,
+          "step": 0.25,
+          "intervals": 5,
+          "ticks": [
+            4.0,
+            4.25,
+            4.5,
+            4.75,
+            5.0,
+            5.25
+          ],
+          "data_minimum": 4.077929245165855,
+          "data_maximum": 5.073935319758971
+        }
+      ]
+    },
+    {
+      "name": "gem2025_station_fixed_total_generation",
+      "metric": "station_fixed_total_generation",
+      "title": "全年总发电量（固定2025装机）",
+      "family": "fixed2025",
+      "field": "generation_mwh_mean",
+      "scale": 1e-09,
+      "complete": {
+        "path": "gem2025_station_fixed_total_generation.png",
+        "image": {
+          "pixels": [
+            5789,
+            2127
+          ],
+          "dpi": [
+            599.9988,
+            599.9988
+          ]
+        },
+        "sha256": "2609bb5f30f179eb1113fd37845c6987e8a6c0f8233a51b42e2aac4db6d9eba9",
+        "figure_fraction_bounds": null,
+        "text_bounds_check": "PASSED"
+      },
+      "panels": [
+        {
+          "path": "gem2025_station_fixed_total_generation_a.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "47022b96368c8c77a4283db2601b6eb0770b7bbd1185961989f47e0e8da597d3",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "gem2025_station_fixed_total_generation_b.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "e646f0d6e6d6e0f7e26a9761e12ad47c6cbeb7ee9efde7423388a53974f48194",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "gem2025_station_fixed_total_generation_c.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "990b2ed894e39e797dc954c92a92dfbafd286faa96e5a018e10570722e479b37",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        }
+      ],
+      "axes": [
+        {
+          "tech": "wind+solar",
+          "lower": 0.0,
+          "upper": 5.0,
+          "step": 1.0,
+          "intervals": 5,
+          "ticks": [
+            0.0,
+            1.0,
+            2.0,
+            3.0,
+            4.0,
+            5.0
+          ],
+          "data_minimum": 0.7903668941537321,
+          "data_maximum": 4.045857856971816
+        },
+        {
+          "tech": "wind",
+          "lower": 0.30000000000000004,
+          "upper": 1.8000000000000003,
+          "step": 0.30000000000000004,
+          "intervals": 5,
+          "ticks": [
+            0.30000000000000004,
+            0.6000000000000001,
+            0.9000000000000001,
+            1.2000000000000002,
+            1.5000000000000002,
+            1.8000000000000003
+          ],
+          "data_minimum": 0.6224935352583312,
+          "data_maximum": 1.7249494075095073
+        },
+        {
+          "tech": "solar",
+          "lower": 0.0,
+          "upper": 3.0000000000000004,
+          "step": 0.6000000000000001,
+          "intervals": 5,
+          "ticks": [
+            0.0,
+            0.6000000000000001,
+            1.2000000000000002,
+            1.8000000000000003,
+            2.4000000000000004,
+            3.0000000000000004
+          ],
+          "data_minimum": 0.16787335889540084,
+          "data_maximum": 2.4505803427354373
+        }
+      ]
+    },
+    {
+      "name": "gem2025_station_fixed_unit_generation",
+      "metric": "station_fixed_unit_generation",
+      "title": "单位装机全年发电量（固定2025装机）",
+      "family": "fixed2025",
+      "field": "unit_generation_mwh_per_mw_mean",
+      "scale": 1.0,
+      "complete": {
+        "path": "gem2025_station_fixed_unit_generation.png",
+        "image": {
+          "pixels": [
+            5789,
+            2127
+          ],
+          "dpi": [
+            599.9988,
+            599.9988
+          ]
+        },
+        "sha256": "46850b0b77318498d2bd8a54c0e53eaa8f489d8c39d514f3fe5a9dde154d29d0",
+        "figure_fraction_bounds": null,
+        "text_bounds_check": "PASSED"
+      },
+      "panels": [
+        {
+          "path": "gem2025_station_fixed_unit_generation_a.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "b571395065b4f01f7bbd3f0aa548f6fe5a0441ad8330822eb73a965f8636fba1",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "gem2025_station_fixed_unit_generation_b.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "d76534aebd46701d2f8ed8293c1faf01b49291534f6f0f1a4c6c02645bcdedd2",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "gem2025_station_fixed_unit_generation_c.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "22307ce39461658932ed69c95a61c852f53c2ad8ab1c8b813a9b15d524b3d9eb",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        }
+      ],
+      "axes": [
+        {
+          "tech": "wind+solar",
+          "lower": 1720.0,
+          "upper": 1920.0,
+          "step": 40.0,
+          "intervals": 5,
+          "ticks": [
+            1720.0,
+            1760.0,
+            1800.0,
+            1840.0,
+            1880.0,
+            1920.0
+          ],
+          "data_minimum": 1766.694275796613,
+          "data_maximum": 1887.7771097232708
+        },
+        {
+          "tech": "wind",
+          "lower": 1500.0,
+          "upper": 2000.0,
+          "step": 100.0,
+          "intervals": 5,
+          "ticks": [
+            1500.0,
+            1600.0,
+            1700.0,
+            1800.0,
+            1900.0,
+            2000.0
+          ],
+          "data_minimum": 1608.945075487299,
+          "data_maximum": 1921.7010206812945
+        },
+        {
+          "tech": "solar",
+          "lower": 1750.0,
+          "upper": 2000.0,
+          "step": 50.0,
+          "intervals": 5,
+          "ticks": [
+            1750.0,
+            1800.0,
+            1850.0,
+            1900.0,
+            1950.0,
+            2000.0
+          ],
+          "data_minimum": 1776.1321947808383,
+          "data_maximum": 1953.9310667953705
+        }
+      ]
+    },
+    {
+      "name": "gem2025_station_fixed_exposure_total",
+      "metric": "station_fixed_exposure_total",
+      "title": "装机加权暴露总量（固定2025装机）",
+      "family": "fixed2025",
+      "field": "exposure_mw_days_mean",
+      "scale": 1.0,
+      "complete": {
+        "path": "gem2025_station_fixed_exposure_total.png",
+        "image": {
+          "pixels": [
+            5789,
+            2127
+          ],
+          "dpi": [
+            599.9988,
+            599.9988
+          ]
+        },
+        "sha256": "88704bdf0f6b412f88b4066b43123b94e0768d80e197111ad07439b049afdbde",
+        "figure_fraction_bounds": null,
+        "text_bounds_check": "PASSED"
+      },
+      "panels": [
+        {
+          "path": "gem2025_station_fixed_exposure_total_a.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "2975d61fec71ec331d29d5edf22a7f33e5cb5ba362fa5d5c2e22de062480da97",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "gem2025_station_fixed_exposure_total_b.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "8ad46d5523591107cbdceae4f50c9f773d81a70c2dc79e467257b2f11d6d2599",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "gem2025_station_fixed_exposure_total_c.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "7ba60a3015380e09409be8ac927dc47c338020993dfb6b92cb931b473a1c5a80",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        }
+      ],
+      "axes": [
+        {
+          "tech": "wind+solar",
+          "lower": 0.0,
+          "upper": 100000000.0,
+          "step": 20000000.0,
+          "intervals": 5,
+          "ticks": [
+            0.0,
+            20000000.0,
+            40000000.0,
+            60000000.0,
+            80000000.0,
+            100000000.0
+          ],
+          "data_minimum": 12313871.064086994,
+          "data_maximum": 73946178.71462342
+        },
+        {
+          "tech": "wind",
+          "lower": 6000000.0,
+          "upper": 36000000.0,
+          "step": 6000000.0,
+          "intervals": 5,
+          "ticks": [
+            6000000.0,
+            12000000.0,
+            18000000.0,
+            24000000.0,
+            30000000.0,
+            36000000.0
+          ],
+          "data_minimum": 8803641.7125,
+          "data_maximum": 31525593.825
+        },
+        {
+          "tech": "solar",
+          "lower": 0.0,
+          "upper": 62500000.0,
+          "step": 12500000.0,
+          "intervals": 5,
+          "ticks": [
+            0.0,
+            12500000.0,
+            25000000.0,
+            37500000.0,
+            50000000.0,
+            62500000.0
+          ],
+          "data_minimum": 3510229.351586994,
+          "data_maximum": 47608959.23219691
+        }
+      ]
+    },
+    {
+      "name": "gem2025_station_fixed_exposure_mean",
+      "metric": "station_fixed_exposure_mean",
+      "title": "装机加权平均暴露时长（固定2025装机）",
+      "family": "fixed2025",
+      "field": "exposure_days_mean",
+      "scale": 1.0,
+      "complete": {
+        "path": "gem2025_station_fixed_exposure_mean.png",
+        "image": {
+          "pixels": [
+            5789,
+            2127
+          ],
+          "dpi": [
+            599.9988,
+            599.9988
+          ]
+        },
+        "sha256": "4ee3d607601a80814b6fa6c4a64ae655b53d64d2efa3482bc0e2c897b4cda4b4",
+        "figure_fraction_bounds": null,
+        "text_bounds_check": "PASSED"
+      },
+      "panels": [
+        {
+          "path": "gem2025_station_fixed_exposure_mean_a.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "3b41c493535d7ca436d3042097dc6b649f58a34d5e7a78e10bb8cd885d2fabac",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "gem2025_station_fixed_exposure_mean_b.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "41f41a634b8c03415dd5723d568c0d8008cc1bdaf109ab0a0943083f86b7ec01",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "gem2025_station_fixed_exposure_mean_c.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "b39bdb632f572e19073aa52085f2e06ac50ab6b754bc7fe640be8b31aef5f658",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        }
+      ],
+      "axes": [
+        {
+          "tech": "wind+solar",
+          "lower": 27.0,
+          "upper": 34.5,
+          "step": 1.5,
+          "intervals": 5,
+          "ticks": [
+            27.0,
+            28.5,
+            30.0,
+            31.5,
+            33.0,
+            34.5
+          ],
+          "data_minimum": 28.813505829700567,
+          "data_maximum": 33.95372830479095
+        },
+        {
+          "tech": "wind",
+          "lower": 22.5,
+          "upper": 35.0,
+          "step": 2.5,
+          "intervals": 5,
+          "ticks": [
+            22.5,
+            25.0,
+            27.5,
+            30.0,
+            32.5,
+            35.0
+          ],
+          "data_minimum": 24.26668018455291,
+          "data_maximum": 33.29708533736996
+        },
+        {
+          "tech": "solar",
+          "lower": 27.0,
+          "upper": 42.0,
+          "step": 3.0,
+          "intervals": 5,
+          "ticks": [
+            27.0,
+            30.0,
+            33.0,
+            36.0,
+            39.0,
+            42.0
+          ],
+          "data_minimum": 30.394993522740656,
+          "data_maximum": 41.2230209598496
+        }
+      ]
+    },
+    {
+      "name": "gem2025_station_fixed_cf",
+      "metric": "station_fixed_cf",
+      "title": "容量加权全年平均CF（固定2025装机）",
+      "family": "fixed2025",
+      "field": "cf_mean_mean",
+      "scale": 1.0,
+      "complete": {
+        "path": "gem2025_station_fixed_cf.png",
+        "image": {
+          "pixels": [
+            5789,
+            2127
+          ],
+          "dpi": [
+            599.9988,
+            599.9988
+          ]
+        },
+        "sha256": "72b69ecb4dd91ab20db7e06f5d25a3220d39c0536d3ecb00ccadef0335e2a342",
+        "figure_fraction_bounds": null,
+        "text_bounds_check": "PASSED"
+      },
+      "panels": [
+        {
+          "path": "gem2025_station_fixed_cf_a.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "3a9a50e217001dbbff22045ed62471378f36f08ffdb2defbb27abcf807e32216",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "gem2025_station_fixed_cf_b.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "8fc447dfba6c5fd2dd456fae1a5066cc432edcd86e833b68e485be65a031d1d8",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "gem2025_station_fixed_cf_c.png",
+          "image": {
+            "pixels": [
+              2600,
+              2482
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "7522164804e22d5d9090a8a94a54307152e6a71e9cf4911c13a1a0dde48d2157",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        }
+      ],
+      "axes": [
+        {
+          "tech": "wind+solar",
+          "lower": 0.2,
+          "upper": 0.22,
+          "step": 0.004,
+          "intervals": 5,
+          "ticks": [
+            0.2,
+            0.20400000000000001,
+            0.20800000000000002,
+            0.212,
+            0.216,
+            0.22
+          ],
+          "data_minimum": 0.2016774287439056,
+          "data_maximum": 0.2154996700597341
+        },
+        {
+          "tech": "wind",
+          "lower": 0.18,
+          "upper": 0.23,
+          "step": 0.01,
+          "intervals": 5,
+          "ticks": [
+            0.18,
+            0.19,
+            0.2,
+            0.21,
+            0.22,
+            0.23
+          ],
+          "data_minimum": 0.1834162399709883,
+          "data_maximum": 0.2192916826519762
+        },
+        {
+          "tech": "solar",
+          "lower": 0.2,
+          "upper": 0.225,
+          "step": 0.005,
+          "intervals": 5,
+          "ticks": [
+            0.2,
+            0.20500000000000002,
+            0.21,
+            0.215,
+            0.22,
+            0.225
+          ],
+          "data_minimum": 0.2025073101877735,
+          "data_maximum": 0.22278471167664657
+        }
+      ]
+    }
+  ],
+  "full_figures": 17,
+  "independent_panels": 51,
+  "visual_review_scope": "All 17 complete PNGs and 51 independent panels reviewed using 17 contact sheets; labels, clipping, units, scenario colours, five y-axis intervals and 2025 joins checked.",
+  "rendering_job": {
+    "job_id": 48849264,
+    "state": "COMPLETED",
+    "exit_code": "0:0",
+    "allocated_cpus": 2,
+    "peak_rss_kib": 1011284
+  },
+  "capacity_annotation": "Catalogue capacity uses Historical GEM and station SSP1-2.6/2-4.5/5-6.0; weather-derived metrics use climate SSP1-2.6/2-4.5/5-8.5."
+}

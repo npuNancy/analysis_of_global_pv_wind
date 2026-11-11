@@ -1,0 +1,56 @@
+{
+  "scientific_question": "How do annual generation, event exposure and net losses evolve for GEM historical assets, LCOE-2025 cumulative deployment and fixed 2025 assets?",
+  "archetype": "quantitative grid",
+  "backend": "Python / matplotlib",
+  "panels": [
+    "wind+solar",
+    "wind",
+    "solar"
+  ],
+  "historical": {
+    "years": [
+      2015,
+      2025
+    ],
+    "climate": "ERA5-Land",
+    "stations": "historical_snapshot",
+    "color": "black"
+  },
+  "future": {
+    "years": [
+      2026,
+      2059
+    ],
+    "statistic": "equal mean of four climate models",
+    "station_climate_pairs": [
+      [
+        "ssp126",
+        "ssp126"
+      ],
+      [
+        "ssp245",
+        "ssp245"
+      ],
+      [
+        "ssp560",
+        "ssp585"
+      ]
+    ]
+  },
+  "fixed_capacity": "2025 GEM grid capacities; fixed valid cohort for 2026-2059",
+  "temporal_display": "Annual values; future lines start at the historical 2025 endpoint; no shift or trend fitting",
+  "y_axes": "Independent padded ranges, exactly five equal intervals; preserve net-loss signs",
+  "style_source": "global_metric_trends/plot_lcoe.py",
+  "dimensions_mm": [
+    240,
+    85
+  ],
+  "independent_panel_dimensions_mm": [
+    105,
+    100
+  ],
+  "export": "17 complete and 51 independent panel PNGs, 600 dpi",
+  "comparison": "All plotted values must match the accepted gem_lcoe_history figure source tables",
+  "uncertainty": "Model minimum/maximum retained in CSVs; not confidence intervals.",
+  "capacity": "Deterministic full-catalogue stock; Historical GEM and station SSP126/245/560 labels."
+}
