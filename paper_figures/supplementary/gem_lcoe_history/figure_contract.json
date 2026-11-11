@@ -20,6 +20,13 @@
   "weights": "Capacity weighted; common valid support within phase, technology and pathway across years and models",
   "uncertainty": "Four-model min/max in source tables; no confidence interval or significance claim",
   "connection": "Future lines start at historical 2025 endpoint; no shift of computed future values",
-  "exports": "9 full PNGs and 27 independent panels, 600 dpi",
+  "exports": "17 full PNGs and 51 independent panels, 600 dpi",
+  "fixed_capacity_family": {
+    "question": "固定2025年装机后，不同气候SSP路径下损失、发电量、极端暴露和CF如何变化？",
+    "metrics": "Same as the main family except installed capacity; loss, generation, exposure, CF",
+    "capacity": "2025 year-end GEM catalogue capacity for 2026-2059, identical to the transition phase",
+    "future_support": "Per-station values from the paired station-SSP future archives at grids overlapping GEM2025 (all GEM grids are inside every LCOE layout); unit energies divided by archive capacity and re-weighted at fixed capacity",
+    "valid_support": "Intersection of transition and future common support, fixed across 2026-2059 within each pathway, model and technology"
+  },
   "generation_interpretation": "Annual climate-driven estimate using each year-end capacity for the full year; no intra-year commissioning adjustment"
 }
