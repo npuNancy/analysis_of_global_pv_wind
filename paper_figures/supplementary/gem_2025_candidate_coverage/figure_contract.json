@@ -1,0 +1,51 @@
+{
+  "question": "Where do the retained 2025 GEM solar PV and onshore/unknown wind phases fall inside or outside the original 0.1-degree LCOE candidate cache?",
+  "claim": "Candidate-cache membership and observed installation location are different spatial objects; quantify their overlap without treating outside-cache sites as proven unsuitable.",
+  "archetype": "quantitative grid",
+  "backend": "Python / matplotlib / Cartopy",
+  "projection": "PlateCarree",
+  "panels": {
+    "a": "Solar PV: 70,196 source phases",
+    "b": "Onshore and unknown-type wind: 17,759 source phases"
+  },
+  "data": "GEM February 2026 release; operating with known start year <= 2025. Exclude all offshore wind phases.",
+  "membership": "Containing WGS84 0.1-degree raster cell ID in the original deduplicated cache/<technology>/child_lin_idx.npy; use LCOE.prepare_baseline.grid_indices.",
+  "weighting": "One equal-size point per source project phase, plotted at original coordinates. No jitter, aggregation, capacity weighting or subsampling.",
+  "capacity_basis": "Solar MWp/DC using accepted GEM conversion; wind MW. Capacity does not affect position or point size.",
+  "design": {
+    "size_mm": [
+      183,
+      174
+    ],
+    "dpi": 600,
+    "extent": [
+      -180,
+      180,
+      -60,
+      85
+    ],
+    "inside_color": "#0072B2",
+    "outside_color": "#D55E00",
+    "points_order": "deterministic shuffled order to avoid a category always covering the other"
+  },
+  "export": [
+    "gem_2025_candidate_coverage.png",
+    "gem_2025_candidate_coverage_a.png",
+    "gem_2025_candidate_coverage_b.png"
+  ],
+  "source_data": [
+    "source_data/stations_2025_candidate_membership.csv",
+    "source_data/coverage_summary.csv",
+    "data_audit.json"
+  ],
+  "checks": [
+    "Reproduce quoted inside/outside counts",
+    "Preserve phase IDs and coordinates",
+    "Exclude offshore in every output",
+    "Independent raster-transform membership check",
+    "All source points within map extent",
+    "Candidate input SHA256 and duplicate-record counts",
+    "Inspect full and both independent PNGs"
+  ],
+  "interpretation": "Membership in the original child cache alone does not identify why a cell is absent. Land filters, climate validity and grid mapping require separate diagnostics. No additional 1-degree parent capacity threshold is imposed in this map."
+}
