@@ -259,7 +259,7 @@ def main():
     configure();plt.rcParams.update({'font.size':8,'axes.labelsize':8})
     artifacts=[];axes_info={}
     render_family(data,METRICS,'2015-2025: annual GEM / ERA5-Land; future: four-GCM mean.',out,artifacts,axes_info)
-    render_family(fixed_display,FIXED_METRICS,'2015-2025: annual GEM / ERA5-Land; 2026-2059: capacity fixed at 2025; four-GCM mean.',out,artifacts,axes_info)
+    render_family(fixed_display,FIXED_METRICS,'2015-2025: ERA5-Land; future: fixed 2025 capacity, four-GCM mean.',out,artifacts,axes_info)
     report(out);check_protected()
     (out/'figure_validation.json').write_text(json.dumps(dict(status='NUMERIC_AND_EXPORT_PASSED',visual_review='PENDING',
         source=str(sources['global_annual_ensemble.csv']),source_sha256=digest(sources['global_annual_ensemble.csv']),completion=completion,
