@@ -1,6 +1,6 @@
 # GEM逐年实际场站与LCOE未来场站气候评价
 
-2015—2025采用GEM逐年回溯场站（historical_snapshot，允许退出和容量变化）；2026—2029固定2025装机；2030—2059采用新的累计LCOE布局。仅含陆上及类型未知风电。
+2015—2025采用GEM逐年回溯场站（historical_snapshot，允许退出和容量变化）；2026—2029固定2025装机；2030—2059采用新的累计LCOE布局。仅含陆上及类型未知风电。另附固定2025装机的对照图族，分离气候路径与布局变化。
 
 ## 数据目录
 
@@ -10,7 +10,7 @@
 - 逐站年度数组：/work/home/acxujo26gv/lcoe_gem2025_climate_storage/station_results；98个NPZ，包括坐标、容量、覆盖标记、CF、暴露、损失和全年发电。
 - 年度字段、单位和容量口径：/work/home/acxujo26gv/lcoe_gem2025_climate_storage/station_results/manifest.json；各条记录代表一种技术的一个0.1°网格。
 - 完整交叉路径年度CSV：/work/home/acxujo26gv/lcoe_gem2025_climate_storage/source_data/global_annual_models.csv；模式汇总：global_annual_ensemble.csv；覆盖：capacity_coverage.csv。
-- 绘图源表：[plot_series.csv](../paper_figures/supplementary/gem_lcoe_history/outputs/source_data/plot_series.csv)；拟合：[linear_fits.csv](../paper_figures/supplementary/gem_lcoe_history/outputs/source_data/linear_fits.csv)。
+- 绘图源表：[plot_series.csv](../paper_figures/supplementary/gem_lcoe_history/outputs/source_data/plot_series.csv)；固定装机逐模式表：[fixed_capacity_models.csv](../paper_figures/supplementary/gem_lcoe_history/outputs/source_data/fixed_capacity_models.csv)；固定装机模式汇总：[fixed_capacity_ensemble.csv](../paper_figures/supplementary/gem_lcoe_history/outputs/source_data/fixed_capacity_ensemble.csv)。
 
 ## 验收记录
 
@@ -24,7 +24,7 @@
 
 覆盖范围综合各年份、路径及技术。通过年份与容量匹配、模式数量、CF范围、事件能量关系、文件完整性及读取权限核对。
 
-图件共9张组图和27张独立子图，均为600 dpi PNG；全部完成目视检查。本地同路径副本的图像SHA256与1866正式图件一致。验收记录见[figure_validation.json](../paper_figures/supplementary/gem_lcoe_history/outputs/figure_validation.json)。
+图件共17张组图和51张独立子图，均为600 dpi PNG；其中固定2025装机对照族为8张组图、24张子图。全部完成目视检查。本地同路径副本的图像SHA256与1866正式图件一致。固定装机族2026—2029的重加权结果与正式逐模式汇总逐值核对一致。验收记录见[figure_validation.json](../paper_figures/supplementary/gem_lcoe_history/outputs/figure_validation.json)。
 
 原有 document/BCSD_v2数据使用指南.md、document/风电光伏数据.md、document/风电光伏数据.html 的SHA256保持不变。
 
@@ -39,7 +39,10 @@
 - 损失为事件并集下的带符号净损失；单位装机量先汇总能量再除相同有效集合的容量。净损失比例的分母为全年正常基准电量；暴露不重复累加重叠事件。
 - 各阶段、路径、技术内使用跨年份及四模式共同有效站点；缺测不作零。总装机图显示完整目录容量，其余图显示有效集合指标，容量覆盖单独保留。阶段间有效支持可能不同。
 - 黑线为2015—2025；彩线为2026—2059四模式均值。场站/气候配对为126/126、245/245、560/585，完整三乘三交叉数据均保存。曲线差同时包含气候与部署变化。
-- 每条彩线从黑线2025端点接出，未平移未来数值。虚线仅拟合2030—2059。四模式最小值和最大值保存在源表，不解释为置信区间。各子图Y轴独立，均为5个间隔。
+- 每条彩线从黑线2025端点接出，未平移未来数值。四模式最小值和最大值保存在源表，不解释为置信区间。各子图Y轴独立，均为5个间隔。
+- 固定装机对照族：2026—2059装机固定为2025年末GEM目录容量，与过渡期口径一致；其年际变化只反映气候路径与模式差异，用于与同时包含部署变化的曲线对照。
+- 固定族2030—2059逐站数值取自配对场站SSP的未来年度档案中与GEM2025重合的格点；全部GEM2025格点均包含于三套LCOE累计布局，且重合格点逐站数值跨场站SSP一致。单位装机电量由逐站年度数组除以档案当年容量还原，再按固定2025容量加权。
+- 固定族有效站点为过渡期与未来档案共同支持集的交集，在每条路径、模式、技术内跨2026—2059全部年份固定，装机加权分母恒定。
 
 ## 读取年度场站结果
 
@@ -117,4 +120,56 @@ with np.load(entry["path"], allow_pickle=False) as z:
 ![容量加权全年平均CF](../paper_figures/supplementary/gem_lcoe_history/outputs/station_cf.png)
 
 独立子图：[a wind+solar](../paper_figures/supplementary/gem_lcoe_history/outputs/station_cf_a.png)；[b wind](../paper_figures/supplementary/gem_lcoe_history/outputs/station_cf_b.png)；[c solar](../paper_figures/supplementary/gem_lcoe_history/outputs/station_cf_c.png)。
+
+## 固定2025装机对照图
+
+黑线与上图族相同；彩线为2026—2059四模式均值，装机固定为2025年末GEM目录容量，仅气候路径变化，每条彩线仍从黑线2025端点接出。
+
+### 总净损失（固定2025装机）
+
+![总净损失（固定2025装机）](../paper_figures/supplementary/gem_lcoe_history/outputs/station_fixed_total_loss.png)
+
+独立子图：[a wind+solar](../paper_figures/supplementary/gem_lcoe_history/outputs/station_fixed_total_loss_a.png)；[b wind](../paper_figures/supplementary/gem_lcoe_history/outputs/station_fixed_total_loss_b.png)；[c solar](../paper_figures/supplementary/gem_lcoe_history/outputs/station_fixed_total_loss_c.png)。
+
+### 单位装机净损失（固定2025装机）
+
+![单位装机净损失（固定2025装机）](../paper_figures/supplementary/gem_lcoe_history/outputs/station_fixed_unit_loss.png)
+
+独立子图：[a wind+solar](../paper_figures/supplementary/gem_lcoe_history/outputs/station_fixed_unit_loss_a.png)；[b wind](../paper_figures/supplementary/gem_lcoe_history/outputs/station_fixed_unit_loss_b.png)；[c solar](../paper_figures/supplementary/gem_lcoe_history/outputs/station_fixed_unit_loss_c.png)。
+
+### 净损失占正常基准电量比例（固定2025装机）
+
+![净损失占正常基准电量比例（固定2025装机）](../paper_figures/supplementary/gem_lcoe_history/outputs/station_fixed_loss_fraction.png)
+
+独立子图：[a wind+solar](../paper_figures/supplementary/gem_lcoe_history/outputs/station_fixed_loss_fraction_a.png)；[b wind](../paper_figures/supplementary/gem_lcoe_history/outputs/station_fixed_loss_fraction_b.png)；[c solar](../paper_figures/supplementary/gem_lcoe_history/outputs/station_fixed_loss_fraction_c.png)。
+
+### 全年总发电量（固定2025装机）
+
+![全年总发电量（固定2025装机）](../paper_figures/supplementary/gem_lcoe_history/outputs/station_fixed_total_generation.png)
+
+独立子图：[a wind+solar](../paper_figures/supplementary/gem_lcoe_history/outputs/station_fixed_total_generation_a.png)；[b wind](../paper_figures/supplementary/gem_lcoe_history/outputs/station_fixed_total_generation_b.png)；[c solar](../paper_figures/supplementary/gem_lcoe_history/outputs/station_fixed_total_generation_c.png)。
+
+### 单位装机全年发电量（固定2025装机）
+
+![单位装机全年发电量（固定2025装机）](../paper_figures/supplementary/gem_lcoe_history/outputs/station_fixed_unit_generation.png)
+
+独立子图：[a wind+solar](../paper_figures/supplementary/gem_lcoe_history/outputs/station_fixed_unit_generation_a.png)；[b wind](../paper_figures/supplementary/gem_lcoe_history/outputs/station_fixed_unit_generation_b.png)；[c solar](../paper_figures/supplementary/gem_lcoe_history/outputs/station_fixed_unit_generation_c.png)。
+
+### 装机加权暴露总量（固定2025装机）
+
+![装机加权暴露总量（固定2025装机）](../paper_figures/supplementary/gem_lcoe_history/outputs/station_fixed_exposure_total.png)
+
+独立子图：[a wind+solar](../paper_figures/supplementary/gem_lcoe_history/outputs/station_fixed_exposure_total_a.png)；[b wind](../paper_figures/supplementary/gem_lcoe_history/outputs/station_fixed_exposure_total_b.png)；[c solar](../paper_figures/supplementary/gem_lcoe_history/outputs/station_fixed_exposure_total_c.png)。
+
+### 装机加权平均暴露时长（固定2025装机）
+
+![装机加权平均暴露时长（固定2025装机）](../paper_figures/supplementary/gem_lcoe_history/outputs/station_fixed_exposure_mean.png)
+
+独立子图：[a wind+solar](../paper_figures/supplementary/gem_lcoe_history/outputs/station_fixed_exposure_mean_a.png)；[b wind](../paper_figures/supplementary/gem_lcoe_history/outputs/station_fixed_exposure_mean_b.png)；[c solar](../paper_figures/supplementary/gem_lcoe_history/outputs/station_fixed_exposure_mean_c.png)。
+
+### 容量加权全年平均CF（固定2025装机）
+
+![容量加权全年平均CF（固定2025装机）](../paper_figures/supplementary/gem_lcoe_history/outputs/station_fixed_cf.png)
+
+独立子图：[a wind+solar](../paper_figures/supplementary/gem_lcoe_history/outputs/station_fixed_cf_a.png)；[b wind](../paper_figures/supplementary/gem_lcoe_history/outputs/station_fixed_cf_b.png)；[c solar](../paper_figures/supplementary/gem_lcoe_history/outputs/station_fixed_cf_c.png)。
 
