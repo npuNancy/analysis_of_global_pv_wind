@@ -165,14 +165,16 @@ def main():
                          '<a href="BCSD_v2数据使用指南.md#lcoe-2025">数据指南第13节</a>。</p>\n')
             else:
                 if category == "capacity":
-                    body += ("<p>2015—2025为逐年GEM实际装机；2026—2029固定2025装机，"
-                             "2030—2059使用累计LCOE布局。容量直接汇总完整场站目录，"
+                    body += ("<p>2015—2025各有一个逐年GEM实际装机点；未来只取2030、2040、2050"
+                             "三个累计容量快照，并按时间连接。容量直接汇总完整场站目录，"
                              "三条彩线对应场站SSP1-2.6、SSP2-4.5、SSP5-6.0。</p>\n")
+                elif family == "lcoe2025":
+                    body += ("<p>2015—2025为ERA5-Land与逐年GEM装机；未来只画2030s、2040s、2050s"
+                             "三个点，分别覆盖2030—2039、2040—2049、2050—2059。先对每个模式的"
+                             "年度指标取十年均值，再对四模式等权平均，并从历史2025点接出。</p>\n")
                 else:
                     body += ("<p>2015—2025为ERA5-Land与逐年GEM装机；2026—2059为四模式均值。"
-                             + ("2026—2029固定2025装机，2030—2059使用累计LCOE布局。"
-                                if family == "lcoe2025" else "2026—2059始终固定2025位置和容量。")
-                             + "</p>\n")
+                             "2026—2059始终固定2025位置和容量。</p>\n")
                 body += "\n".join(figure(r, label) for r in selected)
             sections.append(body)
         pattern = r'(<section[^>]*aria-labelledby="' + category + r'"[^>]*>)(.*?)(</section>)'
@@ -196,7 +198,7 @@ def main():
     rows = []
     for family, label in FAMILIES:
         for record in [r for r in records if r["family"] == family]:
-            suffix = "fixed_" if family == "fixed2025" else ""
+            suffix = "fixed_" if family == "fixed2025" else "period_"
             rows.append("<tr><td>"+label+"</td><td>"+record["title"].replace("（固定2025装机）", "")+
                         '</td><td><a href="'+PREFIX+record["name"]+'.png">PNG</a></td>'
                         '<td><a href="'+PREFIX+"source_data/gem2025_"+suffix+'models.csv">CSV</a></td>'
@@ -204,7 +206,7 @@ def main():
     table = ('<h3 id="gem2025-results">LCOE-2025与固定2025装机结果路径</h3>\n'
              '<p>正式CF、Extreme、Loss与全年发电量入口见'
              '<a href="BCSD_v2数据使用指南.md#lcoe-2025">数据指南第13节</a>。'
-             '固定装机逐模式表保存2026—2059，历史段见LCOE-2025逐模式表。</p>'
+             'LCOE-2025图表保存历史逐年值及未来三个年代值；固定装机表仍逐年保存2026—2059，历史段见LCOE-2025表。</p>'
              '<div class="table-scroll"><table><thead><tr><th>口径</th><th>指标</th>'
              '<th>完整图</th><th>逐模式结果</th><th>绘图均值</th></tr></thead><tbody>'
              + "\n".join(rows) + "</tbody></table></div>")
@@ -214,17 +216,16 @@ def main():
 <p>两组新增图使用GEM 2026年2月版场站数据与修正后的适宜性格点；仅保留陆上及类型未知风电，光伏容量为MWp/DC。历史采用允许退出与容量变化的historical_snapshot逐年资料。2025只代表2025年。</p>
 <ul class="defs">
 <li>2015—2025黑线：ERA5-Land逐小时气候与当年年末实际装机。容量按全年应用，未按年内投运月份折算；发电量是气候驱动估算。</li>
-<li>全球场站-LCOE-2025彩线：2026—2029固定2025装机；2030—2059使用2030、2040、2050累计快照。场站/气候配对为126/126、245/245、560/585。三条气候路径分别按四模式等权平均。</li>
+<li>全球场站-LCOE-2025彩线：装机容量只取2030、2040、2050累计快照；其余指标只显示2030s、2040s、2050s三个十年均值。先对每个模式内的10个年度指标取平均，再对四模式等权平均；损失占比等比值也按年度指标平均。场站/气候配对为126/126、245/245、560/585。逐年原始结果仍保留在源表。</li>
 <li>固定2025装机彩线：2026—2059全部采用GEM2025位置与容量；未来逐站能量先除以档案当年容量，再乘2025容量。过渡与未来档案的共同支持集交集在各路径内跨年固定。</li>
 <li>装机容量图直接汇总完整场站目录，使用场站SSP标签；其他指标使用共同有效场站，并对四个气候模式等权平均。</li>
-<li>两组图各自的彩线从历史2025端点接出；2026—2059数值未平移。逐年画线，不添加趋势拟合。模式最小/最大值保留在源表，不作为置信区间。</li>
+<li>两组图各自的彩线从历史2025端点接出，数值不平移，不添加趋势拟合。LCOE-2025图连接未来三个年代点；固定2025装机图保持2026—2059逐年曲线。模式最小/最大值保留在源表，不作为置信区间。</li>
 <li>Loss正常CF分别按2015—2025、2026—2029及三个未来十年窗口，在各气候路径内排除事件并集后估计。净损失衡量相对同期正常状态的事件偏离，保留符号；风电能量不乘0.1。</li>
 <li>暴露按每种技术的事件时间并集去重。风光合计先加总容量加权分子、分母，再求比值；CF为有效容量加权全年平均，全年发电量保留各模式原生日历。</li>
 <li>各面板纵轴独立，均为5个等距间隔、6个刻度。原图的1×3布局、字体、SSP配色、浅灰水平网格线与底部图例延续使用；子图从左至右为风光合计、风电、光伏。</li>
 <li>共新增17张完整组图和51张独立子图，均为600 dpi PNG。完整图以base64嵌入HTML，Markdown及独立子图通过相对路径引用相同PNG。</li>
 </ul>
-<p>正式数据及读取示例：<a href="BCSD_v2数据使用指南.md#lcoe-2025">数据指南第13节</a>；
-原始评价报告：<a href="GEM场站历史与LCOE未来气候评价.md">GEM场站历史与LCOE未来气候评价</a>。</p>
+<p>正式数据及读取示例：<a href="BCSD_v2数据使用指南.md#lcoe-2025">数据指南第13节</a>。</p>
 <p>同目录代码：<a href="../paper_figures/supplementary/global_metric_trends/plot_gem2025.py">两组图绘制</a>、
 <a href="../paper_figures/supplementary/global_metric_trends/update_gem2025_documents.py">HTML与Markdown整理</a>，各有同名SLURM脚本。
 <a href="../paper_figures/supplementary/global_metric_trends/outputs/gem2025_figure_manifest.json">图件、源表与数值一致性记录</a>。</p>"""
@@ -275,16 +276,6 @@ def main():
         raise ValueError("Markdown image structure")
     html_path.write_text(html)
     md_path.write_text(text)
-    original = DOC/"GEM场站历史与LCOE未来气候评价.md"
-    generator = ROOT/"paper_figures/supplementary/gem_lcoe_history/plot.py"
-    old = "原有 document/BCSD_v2数据使用指南.md、document/风电光伏数据.md、document/风电光伏数据.html 的SHA256保持不变。"
-    new = ("LCOE-2025数据入口、字段与读取示例已汇总至[BCSD-v2数据使用指南第13节]"
-           "(BCSD_v2数据使用指南.md#lcoe-2025)；统一风格图件见[风电光伏数据](风电光伏数据.html)。")
-    for path in (original, generator):
-        content = path.read_text().replace(old, new)
-        content = content.replace("## 固定2025装机对照图", "## 固定2025装机")
-        content = content.replace("## 图件", "## 全球场站-LCOE-2025")
-        path.write_text(content)
     protected = ROOT/"paper_figures/supplementary/gem_lcoe_history/protected_document_hashes.json"
     names = json.loads(protected.read_text())
     protected.write_text(json.dumps({name: sha(ROOT/name) for name in names},

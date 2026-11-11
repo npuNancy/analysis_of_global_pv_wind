@@ -21,7 +21,7 @@
       2026,
       2059
     ],
-    "statistic": "equal mean of four climate models",
+    "statistic": "LCOE-2025: four-model mean after per-model decade means; capacity uses snapshots. Fixed 2025: annual.",
     "station_climate_pairs": [
       [
         "ssp126",
@@ -38,7 +38,12 @@
     ]
   },
   "fixed_capacity": "2025 GEM grid capacities; fixed valid cohort for 2026-2059",
-  "temporal_display": "Annual values; future lines start at the historical 2025 endpoint; no shift or trend fitting",
+  "temporal_display": {
+    "lcoe2025_history": "Annual points for 2015-2025.",
+    "lcoe2025_capacity": "Only the 2030, 2040 and 2050 catalogue snapshots, connected to historical 2025.",
+    "lcoe2025_weather_metrics": "Only 2030-2039, 2040-2049 and 2050-2059 means; first average ten years within each model, then equally average four models. Join to historical 2025.",
+    "fixed2025": "Existing annual 2015-2059 figures remain unchanged."
+  },
   "y_axes": "Independent padded ranges, exactly five equal intervals; preserve net-loss signs",
   "style_source": "global_metric_trends/plot_lcoe.py",
   "dimensions_mm": [
@@ -50,7 +55,7 @@
     100
   ],
   "export": "17 complete and 51 independent panel PNGs, 600 dpi",
-  "comparison": "All plotted values must match the accepted gem_lcoe_history figure source tables",
+  "comparison": "Annual source values unchanged; future display points equal the independently reproducible per-model decadal aggregation. Capacity is deterministic.",
   "uncertainty": "Model minimum/maximum retained in CSVs; not confidence intervals.",
   "capacity": "Deterministic full-catalogue stock; Historical GEM and station SSP126/245/560 labels."
 }

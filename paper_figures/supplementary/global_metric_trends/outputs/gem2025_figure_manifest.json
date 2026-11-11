@@ -47,6 +47,16 @@
       "path": "/work/home/aczlvkl1ac/project_climate_patchify/repos/analysis_of_global_pv_wind/paper_figures/supplementary/global_metric_trends/outputs/source_data/gem2025_fixed_display.csv",
       "rows": 339,
       "sha256": "4c18f2ac43a7e0a313363cd631ae5ae18f53379a41332eee71d8b8677efe59d5"
+    },
+    "gem2025_period_models.csv": {
+      "path": "/work/home/aczlvkl1ac/project_climate_patchify/repos/analysis_of_global_pv_wind/paper_figures/supplementary/global_metric_trends/outputs/source_data/gem2025_period_models.csv",
+      "rows": 141,
+      "sha256": "6eba13cc9c5c56364fc8a373c265e92dabf6e5e69ad316ff3b19d8097e6d18c0"
+    },
+    "gem2025_period_display.csv": {
+      "path": "/work/home/aczlvkl1ac/project_climate_patchify/repos/analysis_of_global_pv_wind/paper_figures/supplementary/global_metric_trends/outputs/source_data/gem2025_period_display.csv",
+      "rows": 60,
+      "sha256": "00d13c752f3e9983589f14c28d38b2de86b050d0fddfd5d02b18b4d784bc5ba7"
     }
   },
   "figures": [
@@ -69,7 +79,7 @@
             599.9988
           ]
         },
-        "sha256": "834ec4e26d8192ab40474a55d59be082592bf4851036f97fabfb00b5f6ca03f6",
+        "sha256": "4fa1bf6b256e301aa3e7340d450e23d83226ac060a1403e80f99a88b14fa12fc",
         "figure_fraction_bounds": null,
         "text_bounds_check": "PASSED"
       },
@@ -86,7 +96,7 @@
               599.9988
             ]
           },
-          "sha256": "bf9cbf5d9172c1a62f18c6af4730a6eef3679c0232c81635b3eb175acbfc627d",
+          "sha256": "9f1b2b8cb1168db07ce85af94f0990b8c233a1db65e47981c97b7bcc1a21716c",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         },
@@ -102,7 +112,7 @@
               599.9988
             ]
           },
-          "sha256": "8bfa1fae535e6bc7123da712af40607aab5a10e33cb8d3cae934a96dec53b33f",
+          "sha256": "2a3e9ecaa3e34b138f2f679d66af86399476e2b4b35a6ec68339816bda9401f1",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         },
@@ -118,7 +128,7 @@
               599.9988
             ]
           },
-          "sha256": "ca101c114496c7fdf0880cc9952d9e7fffd2f77631f8c87abd696f383ce053d4",
+          "sha256": "b334f1f128a18a2190929b654f46ad3d3b526c6f57e01c63b4556d77b6632a67",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         }
@@ -139,7 +149,7 @@
             2000000000.0
           ],
           "data_minimum": 56167545.70192864,
-          "data_maximum": 1570177471.730272
+          "data_maximum": 1502004702.6925316
         },
         {
           "tech": "wind",
@@ -156,24 +166,24 @@
             1000000000.0
           ],
           "data_minimum": 47198900.19986455,
-          "data_maximum": 855128843.7589962
+          "data_maximum": 805027287.2861997
         },
         {
           "tech": "solar",
           "lower": 0.0,
-          "upper": 1000000000.0,
-          "step": 200000000.0,
+          "upper": 750000000.0,
+          "step": 150000000.0,
           "intervals": 5,
           "ticks": [
             0.0,
-            200000000.0,
-            400000000.0,
+            150000000.0,
+            300000000.0,
+            450000000.0,
             600000000.0,
-            800000000.0,
-            1000000000.0
+            750000000.0
           ],
           "data_minimum": 8968645.502064085,
-          "data_maximum": 734200422.1238717
+          "data_maximum": 696977415.4063318
         }
       ]
     },
@@ -196,7 +206,7 @@
             599.9988
           ]
         },
-        "sha256": "584a79edbbfebab20edf65b9c4b995cbbf0b165652b8ccc13788b706af367c9e",
+        "sha256": "ee9fe12f1ed14ef911fed1c02c7b0b80cb160e63625333ecf458fad9637a0c8f",
         "figure_fraction_bounds": null,
         "text_bounds_check": "PASSED"
       },
@@ -213,7 +223,7 @@
               599.9988
             ]
           },
-          "sha256": "871adc2afc351ee4dae57a4177accff7cdcd91a4231930b81dfcc6a77fcfb335",
+          "sha256": "c0281b982af5e4b4ab7adce97068ca864ecd418ab599e1cab4f393cf3c0565a8",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         },
@@ -229,7 +239,7 @@
               599.9988
             ]
           },
-          "sha256": "2e527bb7453225ac0e2137f4f0ffd0359cd4774619485163dd8b288eae42d2d4",
+          "sha256": "dca7d9640e8630ca4b389be2f9f76cadb1d200b5187286ffac56f7ece86f99f6",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         },
@@ -245,7 +255,7 @@
               599.9988
             ]
           },
-          "sha256": "8f959cee57c61616c78e5ad68a0b2e175baa6664ad9fe42c2572166b130b3671",
+          "sha256": "4d7ecf5a81e39b27af9a0245aefc364b8b0f9422763fed7fe826ec5f282608d8",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         }
@@ -253,37 +263,37 @@
       "axes": [
         {
           "tech": "wind+solar",
-          "lower": 87.5,
-          "upper": 150.0,
-          "step": 12.5,
+          "lower": 90.0,
+          "upper": 140.0,
+          "step": 10.0,
           "intervals": 5,
           "ticks": [
-            87.5,
+            90.0,
             100.0,
-            112.5,
-            125.0,
-            137.5,
-            150.0
+            110.0,
+            120.0,
+            130.0,
+            140.0
           ],
-          "data_minimum": 92.22032112864692,
+          "data_minimum": 97.19602572009508,
           "data_maximum": 134.15517257838562
         },
         {
           "tech": "wind",
-          "lower": 100.0,
-          "upper": 200.0,
-          "step": 20.0,
+          "lower": 112.5,
+          "upper": 175.0,
+          "step": 12.5,
           "intervals": 5,
           "ticks": [
-            100.0,
-            120.0,
-            140.0,
-            160.0,
-            180.0,
-            200.0
+            112.5,
+            125.0,
+            137.5,
+            150.0,
+            162.5,
+            175.0
           ],
-          "data_minimum": 114.29163102486764,
-          "data_maximum": 179.89655791508082
+          "data_minimum": 116.503457641009,
+          "data_maximum": 170.75479641800405
         },
         {
           "tech": "solar",
@@ -299,7 +309,7 @@
             96.0,
             104.0
           ],
-          "data_minimum": 67.94599358803326,
+          "data_minimum": 72.69188870890206,
           "data_maximum": 96.3681811669956
         }
       ]
@@ -323,7 +333,7 @@
             599.9988
           ]
         },
-        "sha256": "a1c362dbcd4ff8003606a35b7931be833c88c6de39106eb76447f5ac4ce12133",
+        "sha256": "5e3079d18840c06e70348b903cbcf3625eaff77e8b3c02fea213ecc20cf7a88d",
         "figure_fraction_bounds": null,
         "text_bounds_check": "PASSED"
       },
@@ -340,7 +350,7 @@
               599.9988
             ]
           },
-          "sha256": "59f16186d3fe456d2046f68e965e03c8d7c82ac12e2ec7054d816a7609560956",
+          "sha256": "b0273b2bde07c4dfd0f269c1d82156573e4587acf63a3504d1bf1341eb5889d0",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         },
@@ -356,7 +366,7 @@
               599.9988
             ]
           },
-          "sha256": "b8311a8a8c14460afe470016f36a0381a6cd9f9e806929ab7b8f0b67c051382e",
+          "sha256": "5a891b899c65225027f1880dea34c9ef729a2afc1f6ae325cb12d42405c89be8",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         },
@@ -372,7 +382,7 @@
               599.9988
             ]
           },
-          "sha256": "05ec449d8c15d4f0476d439ebcba0e8eb61dd9ab56525d76272680b2c9ca9767",
+          "sha256": "7d3abf9be12dfb361a320f3e08f159cd4227397a6ff2e392e93d9168948f8c48",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         }
@@ -392,25 +402,25 @@
             6.4,
             7.2
           ],
-          "data_minimum": 4.105818580997664,
+          "data_minimum": 4.204539525462637,
           "data_maximum": 6.650861390390573
         },
         {
           "tech": "wind",
-          "lower": 5.5,
-          "upper": 8.0,
-          "step": 0.5,
+          "lower": 5.6000000000000005,
+          "upper": 7.6000000000000005,
+          "step": 0.4,
           "intervals": 5,
           "ticks": [
-            5.5,
+            5.6000000000000005,
             6.0,
-            6.5,
-            7.0,
-            7.5,
-            8.0
+            6.4,
+            6.800000000000001,
+            7.2,
+            7.6000000000000005
           ],
           "data_minimum": 5.891054063123462,
-          "data_maximum": 7.708277200080367
+          "data_maximum": 7.259304103481178
         },
         {
           "tech": "solar",
@@ -426,7 +436,7 @@
             5.0,
             5.5
           ],
-          "data_minimum": 3.1310009137885992,
+          "data_minimum": 3.2544660260177913,
           "data_maximum": 5.073935319758971
         }
       ]
@@ -450,7 +460,7 @@
             599.9988
           ]
         },
-        "sha256": "f2c183e068903af289ba7f4c38aadefe5d437399b1c38ad7c7b1bc0b4e8819a5",
+        "sha256": "c374948d3ebacc56e559978b019df05871427fcbbf7cacd37a48bdd3fd57c1f9",
         "figure_fraction_bounds": null,
         "text_bounds_check": "PASSED"
       },
@@ -467,7 +477,7 @@
               599.9988
             ]
           },
-          "sha256": "6cf5f0bf56bcfda83e4f54a8098ade2b130a1bc7e1998aee77e05738acf43c94",
+          "sha256": "84f6c4a8cdab6d2f86a91951f150837e80edf35b6f10bb32c0a58dcdf65bd10f",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         },
@@ -483,7 +493,7 @@
               599.9988
             ]
           },
-          "sha256": "b0b4afab3f6c69c66141afcbd5eb3624e7bc95ec3fd497a10af31c677a418410",
+          "sha256": "3b10ebb91118906d5c0e3413985ee79e72664bca5bb912e2f79a9703ad0bb95d",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         },
@@ -499,7 +509,7 @@
               599.9988
             ]
           },
-          "sha256": "ca9959ae762df5d963263d850d7f193ba966d6b5aff3993071e977ae57d45a7e",
+          "sha256": "0c2db4321507748d12fa6b0d02b03708db516a629d7c040d670ec4f14989fc93",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         }
@@ -520,7 +530,7 @@
             40.0
           ],
           "data_minimum": 0.7903668941537321,
-          "data_maximum": 31.26220549219453
+          "data_maximum": 31.055431695284128
         },
         {
           "tech": "wind",
@@ -537,7 +547,7 @@
             12.5
           ],
           "data_minimum": 0.6224935352583312,
-          "data_maximum": 10.453694208242661
+          "data_maximum": 10.340138455825004
         },
         {
           "tech": "solar",
@@ -554,7 +564,7 @@
             25.0
           ],
           "data_minimum": 0.16787335889540084,
-          "data_maximum": 20.808511283951862
+          "data_maximum": 20.715293239459122
         }
       ]
     },
@@ -577,7 +587,7 @@
             599.9988
           ]
         },
-        "sha256": "3e1f593671375c9fc9d7797d43c72d8d8839f711afb2716129f0e8b213c8736f",
+        "sha256": "587e3047acf8135f07e4831a2dd5a01569ceb97a978c3f8a0ecfdce829ad69a1",
         "figure_fraction_bounds": null,
         "text_bounds_check": "PASSED"
       },
@@ -594,7 +604,7 @@
               599.9988
             ]
           },
-          "sha256": "0e61c1cfa29653b54545953a0db11f55bc08f85818112d007c1fabb18bb5bec7",
+          "sha256": "46c69630cc517560be2ad535ba153e5f4904c394b21c09b9011c04a51602c7f1",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         },
@@ -610,7 +620,7 @@
               599.9988
             ]
           },
-          "sha256": "9b10aee442793891f0ab8cea64ce2d10f705d190b3fc46e97f1bfda7630c2576",
+          "sha256": "c7dc0c86dd84fc0771577ec616bea57ce915ecf4e4ce1c0b8bd4f1ce19c887ae",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         },
@@ -626,7 +636,7 @@
               599.9988
             ]
           },
-          "sha256": "f1ce95818a0bc018ff33ae28f737e0641f58cd5f1935863ffc6d4a557442f497",
+          "sha256": "5bd8c754fc5d189fe4ec32412bbac91486cfdecd6d87c1ac41172c22ba71ba80",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         }
@@ -634,37 +644,37 @@
       "axes": [
         {
           "tech": "wind+solar",
-          "lower": 1650.0,
-          "upper": 2400.0,
-          "step": 150.0,
+          "lower": 1750.0,
+          "upper": 2375.0,
+          "step": 125.0,
           "intervals": 5,
           "ticks": [
-            1650.0,
-            1800.0,
-            1950.0,
-            2100.0,
+            1750.0,
+            1875.0,
+            2000.0,
+            2125.0,
             2250.0,
-            2400.0
+            2375.0
           ],
-          "data_minimum": 1766.7828856559445,
-          "data_maximum": 2229.0570659401783
+          "data_minimum": 1794.1156735876968,
+          "data_maximum": 2219.113947389402
         },
         {
           "tech": "wind",
-          "lower": 1500.0,
-          "upper": 2750.0,
-          "step": 250.0,
+          "lower": 1600.0,
+          "upper": 2600.0,
+          "step": 200.0,
           "intervals": 5,
           "ticks": [
-            1500.0,
-            1750.0,
+            1600.0,
+            1800.0,
             2000.0,
-            2250.0,
-            2500.0,
-            2750.0
+            2200.0,
+            2400.0,
+            2600.0
           ],
-          "data_minimum": 1646.8631183026866,
-          "data_maximum": 2433.790528829864
+          "data_minimum": 1778.9064275997298,
+          "data_maximum": 2394.1240082790073
         },
         {
           "tech": "solar",
@@ -681,7 +691,7 @@
             2250.0
           ],
           "data_minimum": 1776.1321947808383,
-          "data_maximum": 2194.8612299186066
+          "data_maximum": 2185.8416532604433
         }
       ]
     },
@@ -704,7 +714,7 @@
             599.9988
           ]
         },
-        "sha256": "f46dce8e8e3e3443264a3c635458217c8700186156719fb62344b4c2ee56bcd0",
+        "sha256": "01ee95ebfc5fb9f921567f60368535eab425ffd69fec887761949b1846511cd2",
         "figure_fraction_bounds": null,
         "text_bounds_check": "PASSED"
       },
@@ -721,7 +731,7 @@
               599.9988
             ]
           },
-          "sha256": "b0b0567122b8ee0d374bb029deb2063a6cc31858d328a8024415d0ad174f29fd",
+          "sha256": "a23c75efc0bdb654deaa4c00024827b9a0c0d3d61c189bf75ff771a838177e6d",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         },
@@ -737,7 +747,7 @@
               599.9988
             ]
           },
-          "sha256": "8b38a58997f3771ae4e9737b0104a8690481564e7d9f892581172593f6aa3fc2",
+          "sha256": "5b21254ea73a1427ce2e6acdbca5af69426971dd0dd7ea6f4bbf00d271d5f5b9",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         },
@@ -753,7 +763,7 @@
               599.9988
             ]
           },
-          "sha256": "c5db7f9018a2863df86bc2839f296841558a6b37d02c636c1d3cc10f57b3f43a",
+          "sha256": "0f4083c91405c4f3459817b5e072f6eab2f78a48e9b8e397ee06a3c083cc3604",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         }
@@ -831,7 +841,7 @@
             599.9988
           ]
         },
-        "sha256": "84da371da7e4caabdbe54c2ae81cac8f2aad6a6d280f7580e18fe30c269b1e5f",
+        "sha256": "b5eddcd669da39dec0f03607a8b7383ae37dcb7895cd3ce0f8598f51999af767",
         "figure_fraction_bounds": null,
         "text_bounds_check": "PASSED"
       },
@@ -848,7 +858,7 @@
               599.9988
             ]
           },
-          "sha256": "7771a9cb3f8f42ce17ada6b39d972e79392d7dd8e97894775c9c923e6bb66333",
+          "sha256": "6d091f811fddc6840a3d0936772134911c0f99bc9fde07fdfec7960df925aa91",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         },
@@ -864,7 +874,7 @@
               599.9988
             ]
           },
-          "sha256": "5b75baa4e69e1a6fd58fa16133d70a56a43d7a511bd8c79217503354bfa1ad3d",
+          "sha256": "ff67636961d2e2a2db653ff4e765b88c23a46d993359edb2af2be8786a65bbd3",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         },
@@ -880,7 +890,7 @@
               599.9988
             ]
           },
-          "sha256": "586ed0e075abcee268e2425d6fa35c2feb2510f0fba1835d8c3ed934ddaf8fe9",
+          "sha256": "5c3ee686b19ceafc23ec98324a29d5329cb1b39ad8cb20b77bb2da04cfd008af",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         }
@@ -901,7 +911,7 @@
             500000000.0
           ],
           "data_minimum": 12313871.064086994,
-          "data_maximum": 452783633.7407473
+          "data_maximum": 438914766.97146577
         },
         {
           "tech": "wind",
@@ -918,24 +928,24 @@
             250000000.0
           ],
           "data_minimum": 8803641.7125,
-          "data_maximum": 215952437.41921487
+          "data_maximum": 209146574.17691517
         },
         {
           "tech": "solar",
           "lower": 0.0,
-          "upper": 300000000.0,
-          "step": 60000000.0,
+          "upper": 250000000.0,
+          "step": 50000000.0,
           "intervals": 5,
           "ticks": [
             0.0,
-            60000000.0,
-            120000000.0,
-            180000000.0,
-            240000000.0,
-            300000000.0
+            50000000.0,
+            100000000.0,
+            150000000.0,
+            200000000.0,
+            250000000.0
           ],
           "data_minimum": 3510229.351586994,
-          "data_maximum": 237014783.45900056
+          "data_maximum": 229768192.7945506
         }
       ]
     },
@@ -958,7 +968,7 @@
             599.9988
           ]
         },
-        "sha256": "5ccfae6384f7ae76e9d83225b5cb21dac81af1a3d821f38200e7894b1ed1b647",
+        "sha256": "837cb29ac907a05d15649f8105c6c217922b5bbd275d06ea5627659c1cd3045d",
         "figure_fraction_bounds": null,
         "text_bounds_check": "PASSED"
       },
@@ -975,7 +985,7 @@
               599.9988
             ]
           },
-          "sha256": "66cdfe35b9771bba5129115764d375aea07bac41fa0f4193faf204040016ac11",
+          "sha256": "cde2f43a26431d9b48dde946bac950d62d1d984ffe9adca56dbbb557196ec351",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         },
@@ -991,7 +1001,7 @@
               599.9988
             ]
           },
-          "sha256": "680a32a0042935db7ed8a620ffff3292d0c0d286789986f7e6054ad0e5b97877",
+          "sha256": "8eb66489d44ec99bc4e9f43435c6c2ca983cea32a35bdb6f67827a4660b7c827",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         },
@@ -1007,7 +1017,7 @@
               599.9988
             ]
           },
-          "sha256": "ff925991dc365596cfd0881daba8f3b2a94d6ab7615f15b1b455604d6427502a",
+          "sha256": "6d92696cb0716555de6d9da348122af9d0cf936173f726aa8595a6c915c65a7a",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         }
@@ -1027,7 +1037,7 @@
             34.0,
             36.0
           ],
-          "data_minimum": 26.631257346047448,
+          "data_minimum": 27.137429742442635,
           "data_maximum": 33.95372830479095
         },
         {
@@ -1045,7 +1055,7 @@
             40.0
           ],
           "data_minimum": 24.26668018455291,
-          "data_maximum": 37.15222776001204
+          "data_maximum": 35.98135428294836
         },
         {
           "tech": "solar",
@@ -1061,7 +1071,7 @@
             40.0,
             45.0
           ],
-          "data_minimum": 23.310064661111767,
+          "data_minimum": 23.963881081756053,
           "data_maximum": 41.2230209598496
         }
       ]
@@ -1085,7 +1095,7 @@
             599.9988
           ]
         },
-        "sha256": "b12a390001dd14ba795205403d03456ececd2658fc41c0f928f7a94aef66e9ce",
+        "sha256": "424dfbe47a6f7dde8860d776907f02786e8a53f8c82165b5cdc37e1e2ddf51e5",
         "figure_fraction_bounds": null,
         "text_bounds_check": "PASSED"
       },
@@ -1102,7 +1112,7 @@
               599.9988
             ]
           },
-          "sha256": "c70a1a8b83303a477d657785ecb83ee1234ab44524f4858062829177dd6f4b10",
+          "sha256": "cd6cf1ce1a4f0faec9137ef5096af58e0e39b411bf54cca9f6320f3f6a0c0afd",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         },
@@ -1118,7 +1128,7 @@
               599.9988
             ]
           },
-          "sha256": "c91fe7dc2b51eec5971eb499b144e818f4812da4d13a6d2dddbc782068195e81",
+          "sha256": "73d1b9b44f16af143d9a5c7e56574e16378a0e4e0fec95a52ed759f1374a18b3",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         },
@@ -1134,7 +1144,7 @@
               599.9988
             ]
           },
-          "sha256": "fefc62613dea63bca38e22caafe96d57935385a931a97345e41d045f2d16b5ea",
+          "sha256": "f7704adc29387f3cc73660f3f262e95cd3a2dfb88e717945c577148b4952a0f5",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         }
@@ -1142,37 +1152,37 @@
       "axes": [
         {
           "tech": "wind+solar",
-          "lower": 0.195,
-          "upper": 0.27,
-          "step": 0.015,
+          "lower": 0.2,
+          "upper": 0.2625,
+          "step": 0.0125,
           "intervals": 5,
           "ticks": [
-            0.195,
-            0.21,
-            0.22499999999999998,
-            0.24,
-            0.255,
-            0.27
+            0.2,
+            0.21250000000000002,
+            0.225,
+            0.23750000000000002,
+            0.25,
+            0.2625
           ],
-          "data_minimum": 0.2016875440246512,
-          "data_maximum": 0.2544585691712532
+          "data_minimum": 0.2042481413465046,
+          "data_maximum": 0.2532543029892509
         },
         {
           "tech": "wind",
-          "lower": 0.17500000000000002,
-          "upper": 0.30000000000000004,
-          "step": 0.025,
+          "lower": 0.18,
+          "upper": 0.28,
+          "step": 0.02,
           "intervals": 5,
           "ticks": [
-            0.17500000000000002,
+            0.18,
             0.2,
-            0.225,
-            0.25,
-            0.275,
-            0.30000000000000004
+            0.22,
+            0.24,
+            0.26,
+            0.28
           ],
-          "data_minimum": 0.1879980728656035,
-          "data_maximum": 0.277829969044505
+          "data_minimum": 0.2030160211923948,
+          "data_maximum": 0.2732278559243444
         },
         {
           "tech": "solar",
@@ -1189,7 +1199,7 @@
             0.27
           ],
           "data_minimum": 0.2025073101877735,
-          "data_maximum": 0.2505200867882526
+          "data_maximum": 0.24942204656542583
         }
       ]
     },
@@ -2212,7 +2222,7 @@
   ],
   "full_figures": 17,
   "independent_panels": 51,
-  "visual_review_scope": "All 17 complete PNGs and 51 independent panels reviewed using 17 contact sheets; labels, clipping, units, scenario colours, five y-axis intervals and 2025 joins checked.",
+  "visual_review_scope": "All 9 updated LCOE-2025 complete PNGs and 27 independent panels reviewed using 9 contact sheets; labels, units, clipping, legend spacing, scenario markers, five y-axis intervals and 2025 connections checked. All 32 fixed-capacity PNGs remain byte-identical to the accepted figures.",
   "rendering_job": {
     "job_id": 48849264,
     "state": "COMPLETED",
@@ -2220,5 +2230,29 @@
     "allocated_cpus": 2,
     "peak_rss_kib": 1011284
   },
-  "capacity_annotation": "Catalogue capacity uses Historical GEM and station SSP1-2.6/2-4.5/5-6.0; weather-derived metrics use climate SSP1-2.6/2-4.5/5-8.5."
+  "capacity_annotation": "Catalogue capacity uses Historical GEM and station SSP1-2.6/2-4.5/5-6.0; weather-derived metrics use climate SSP1-2.6/2-4.5/5-8.5.",
+  "decadal_aggregation": {
+    "status": "PASSED",
+    "historical_years": [
+      2015,
+      2025
+    ],
+    "future_decades": [
+      2030,
+      2040,
+      2050
+    ],
+    "model_rows": 141,
+    "display_rows": 60,
+    "method": "Ten-year mean within each model, then equal four-model mean; catalogue capacity uses snapshots.",
+    "fixed_pngs_unchanged": 32,
+    "checked_metric_statistics": 1620
+  },
+  "decadal_render": {
+    "execution": "scnet-wuzhen-1866 login node; existing small CSV summaries",
+    "command": "python paper_figures/supplementary/global_metric_trends/plot_gem2025.py --lcoe-only",
+    "status": "PASSED",
+    "complete_figures": 9,
+    "independent_panels": 27
+  }
 }
