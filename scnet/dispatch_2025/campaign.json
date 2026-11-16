@@ -1,0 +1,70 @@
+{
+  "name": "全球场站-dispatch-2025",
+  "root": "/work/home/acxujo26gv/dispatch_2025_climate_storage",
+  "repo": "/work/home/acxujo26gv/dispatch_2025_climate_storage/code",
+  "activate": "/work/home/acxujo26gv/dispatch_2025_climate_storage/code/.venv/bin/activate",
+  "accounts": [
+    {
+      "alias": "scnet-wuzhen-1892",
+      "username": "acmctdumnv",
+      "max_active": 20,
+      "submit_lock": "/work/home/acmctdumnv/.bcsd_submit.lock",
+      "climate_ssps": [
+        "ssp126"
+      ]
+    },
+    {
+      "alias": "scnet-wuzhen-1520",
+      "username": "acebblgpte",
+      "max_active": 20,
+      "submit_lock": "/work/home/acebblgpte/.bcsd_submit.lock",
+      "climate_ssps": [
+        "ssp245"
+      ]
+    }
+  ],
+  "models": [
+    "CANESM5",
+    "MPI-ESM1-2-HR",
+    "MRI-ESM2-0",
+    "BCC-CSM2-MR"
+  ],
+  "climate_ssps": [
+    "ssp126",
+    "ssp245"
+  ],
+  "station_ssps": [
+    "ssp126",
+    "ssp245"
+  ],
+  "techs": [
+    "wind",
+    "solar"
+  ],
+  "years": [
+    2030,
+    2059
+  ],
+  "snapshots": [
+    2030,
+    2040,
+    2050
+  ],
+  "products": [
+    "cf",
+    "extreme"
+  ],
+  "cf_root": "/work/home/acjpoxgsdu/cf_grid/cf_grid_v2",
+  "extreme_root": "/work/home/acjpoxgsdu/extreme_grid/extreme_grid_v2",
+  "cpus": 4,
+  "time_chunk": 240,
+  "partition": "wzhctest",
+  "station_prefix": "dispatch2025",
+  "mapping_method": "same_corrected_0.1_degree_raster_cell",
+  "siting_commit": "69a467e2bbd6400c51c96b1defc807ee62fa027e",
+  "capacity_basis": {
+    "wind": "MW",
+    "solar": "MWp/DC"
+  },
+  "source_campaign": "capacity_recovery_20261113T222351/MPI-ESM1-2-HR"
+}
