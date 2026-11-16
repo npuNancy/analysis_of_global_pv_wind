@@ -96,6 +96,27 @@
     h1 { font-size: 1.45em; }
     figure { padding: 8px; }
   }
+
+  :root { --sticky-offset: 112px; }
+  main h2, main h3, main h4 { scroll-margin-top: var(--sticky-offset); }
+  .reading-context {
+    position: fixed; top: 0; left: var(--sidebar-width); right: 0; z-index: 9;
+    background: #fff; border-bottom: 1px solid var(--border);
+    box-shadow: 0 3px 8px #1f293312;
+  }
+  .reading-context[hidden] { display: none; }
+  .reading-context-inner { max-width: 1150px; margin: auto; padding: 8px 24px; }
+  .reading-context a { display: block; width: fit-content; font-weight: 600; }
+  .reading-context-category { font-size: .9em; color: var(--muted); }
+  .reading-context-scope { font-size: 1.05em; }
+  .reading-context-scope[hidden] { display: none; }
+  .sidebar-collapsed .reading-context { left: var(--sidebar-rail); }
+  @media (max-width: 900px) {
+    .reading-context { left: var(--sidebar-rail); }
+    .reading-context-inner { padding: 8px 16px; }
+  }
+  @media print { .reading-context { display: none; } }
+
 </style>
 </head>
 <body>
@@ -904,6 +925,62 @@
     }
   });
   narrowScreen.addEventListener('change', (event) => setSidebarExpanded(!event.matches));
+
+  // Keep the current section and scope visible while reading its figures.
+  const readingContext = document.createElement('nav');
+  readingContext.className = 'reading-context';
+  readingContext.setAttribute('aria-label', '当前阅读位置');
+  readingContext.hidden = true;
+  readingContext.innerHTML = '<div class="reading-context-inner">' +
+    '<a class="reading-context-category"></a><a class="reading-context-scope"></a></div>';
+  document.querySelector('.page').prepend(readingContext);
+  const categoryLink = readingContext.querySelector('.reading-context-category');
+  const scopeLink = readingContext.querySelector('.reading-context-scope');
+  const readingHeadings = [...document.querySelectorAll('main h2, main h3')];
+  readingHeadings.forEach((heading, index) => {
+    if (!heading.id) heading.id = 'reading-heading-' + index;
+  });
+  let readingFrame = 0;
+  function updateReadingContext() {
+    readingFrame = 0;
+    const threshold = parseFloat(getComputedStyle(document.documentElement)
+      .getPropertyValue('--sticky-offset')) + 1;
+    let category = null;
+    let scope = null;
+    for (const heading of readingHeadings) {
+      if (heading.getBoundingClientRect().top > threshold) break;
+      if (heading.tagName === 'H2') {
+        category = heading;
+        scope = null;
+      } else if (category) {
+        scope = heading;
+      }
+    }
+    readingContext.hidden = !category;
+    for (const [link, heading] of [[categoryLink, category], [scopeLink, scope]]) {
+      link.hidden = !heading;
+      if (heading && link.getAttribute('href') !== '#' + heading.id) {
+        link.textContent = heading.textContent;
+        link.setAttribute('href', '#' + heading.id);
+      }
+    }
+  }
+  function scheduleReadingContext() {
+    if (!readingFrame) readingFrame = requestAnimationFrame(updateReadingContext);
+  }
+  window.addEventListener('scroll', scheduleReadingContext, { passive: true });
+  window.addEventListener('resize', scheduleReadingContext);
+  window.addEventListener('hashchange', scheduleReadingContext);
+  window.addEventListener('load', scheduleReadingContext);
+  new ResizeObserver(() => {
+    if (!readingContext.hidden) {
+      document.documentElement.style.setProperty('--sticky-offset',
+        Math.max(112, readingContext.offsetHeight + 16) + 'px');
+    }
+    scheduleReadingContext();
+  }).observe(readingContext);
+  scheduleReadingContext();
+
 </script>
 </body>
 </html>
