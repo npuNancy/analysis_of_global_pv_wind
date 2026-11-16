@@ -1,6 +1,11 @@
 # LCOE 场站气候与损失运行目标
 
-## 当前任务：GEM 历史与新 LCOE 布局
+## 已完成任务：全球场站-dispatch-2025
+
+2026-11-16完成新布局评价，见 [dispatch-2025验收记录](dispatch_2025/goal.md)。共享根为 `/work/home/acxujo26gv/dispatch_2025_climate_storage`；已交付四GCM、完整两气候×两场站SSP、2030—2059的CF、Extreme、逐事件Loss和全年发电量，以及8张三面板图和24张独立PNG。1866及1870读取验收通过；独立报告位于 `document/全球场站-dispatch-2025气候评价.md`，三个指定原文档SHA256不变。
+
+## GEM 历史与新 LCOE 布局
+
 
 2026-11-11启动的新任务按 [GEM 场站运行合同](lcoe_gem2025/goal.md) 执行；共享根为 `/work/home/acxujo26gv/lcoe_gem2025_climate_storage`。下列2026-11-09交付记录继续对应旧布局，不作为新任务完成证据。
 

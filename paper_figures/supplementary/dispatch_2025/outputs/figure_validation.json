@@ -1,0 +1,79 @@
+{
+  "status": "COMPLETED",
+  "checked_at": "2026-11-15T23:09:22.130482+00:00",
+  "source_index_sha256": "5552bcf1cf4d8427ff6f42aac0b71356309f7b347d40cef1f940e81e163f0e42",
+  "manifest_sha256": "c04fa575ec8e433b6f7acb0066c8283d6cb60cb44e760279ef1b54785fa81cdb",
+  "figures": [
+    {
+      "name": "capacity",
+      "display_rows": 18,
+      "model_rows": 18,
+      "pngs": 4,
+      "data_and_export": "PASSED",
+      "visual_review": "PASSED"
+    },
+    {
+      "name": "exposure_total",
+      "display_rows": 18,
+      "model_rows": 72,
+      "pngs": 4,
+      "data_and_export": "PASSED",
+      "visual_review": "PASSED"
+    },
+    {
+      "name": "exposure_mean",
+      "display_rows": 18,
+      "model_rows": 72,
+      "pngs": 4,
+      "data_and_export": "PASSED",
+      "visual_review": "PASSED"
+    },
+    {
+      "name": "total_loss",
+      "display_rows": 180,
+      "model_rows": 720,
+      "pngs": 4,
+      "data_and_export": "PASSED",
+      "visual_review": "PASSED"
+    },
+    {
+      "name": "unit_loss",
+      "display_rows": 180,
+      "model_rows": 720,
+      "pngs": 4,
+      "data_and_export": "PASSED",
+      "visual_review": "PASSED"
+    },
+    {
+      "name": "loss_fraction",
+      "display_rows": 180,
+      "model_rows": 720,
+      "pngs": 4,
+      "data_and_export": "PASSED",
+      "visual_review": "PASSED"
+    },
+    {
+      "name": "total_generation",
+      "display_rows": 180,
+      "model_rows": 720,
+      "pngs": 4,
+      "data_and_export": "PASSED",
+      "visual_review": "PASSED"
+    },
+    {
+      "name": "unit_generation",
+      "display_rows": 180,
+      "model_rows": 720,
+      "pngs": 4,
+      "data_and_export": "PASSED",
+      "visual_review": "PASSED"
+    }
+  ],
+  "pngs": 32,
+  "dpi": 600,
+  "trend_fits": 30,
+  "visual_review": "PASSED",
+  "visual_checked_at": "2026-11-15T23:10:58.646142+00:00",
+  "visual_review_scope": "All eight final contact sheets: each complete triptych and its three standalone panels; checked titles, panel letters, axis labels, legends, shading, ranges, and cropping.",
+  "plot_sha256": "37d92acf706a0a5466abd6374df755bf2595fb65ab34784f11a570bf60be2bae"
+}
