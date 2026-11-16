@@ -1,0 +1,43 @@
+{
+  "status": "PASSED",
+  "figures": 8,
+  "independent_panels": 24,
+  "linear_fits": 30,
+  "years": [
+    2030,
+    2059
+  ],
+  "paired_annual_rows": 720,
+  "capacity_coverage": [
+    0.9726496927433156,
+    0.9975517711232011
+  ],
+  "checks": [
+    "formal index and summary hashes",
+    "complete 4-model future matrix",
+    "wind+solar additive totals",
+    "source metric ratios",
+    "catalogue capacity agreement",
+    "missing SSP NaN matrices",
+    "3 scenario curve objects per panel",
+    "mean and fit bounds",
+    "600 dpi PNG and text bounds",
+    "full/panel axis equality",
+    "HTML idempotency",
+    "complete SSP585 interface fixture",
+    "incomplete SSP585 rejected",
+    "Markdown and data guide unchanged",
+    "all 32 PNGs visually inspected",
+    "all 44 HTML figure numbers and links",
+    "existing GEM updater preserves added dispatch-2025 figures"
+  ],
+  "html": {
+    "path": "document/风电光伏数据.html",
+    "sha256": "9b1bfaff5baf5a1a7127bf5dc21f653354cf54b4d03fc050e7e7ef0ff0dc1896",
+    "embedded_figures": 44,
+    "added_figures": 8,
+    "existing_images_preserved": true,
+    "unique_anchors": true
+  },
+  "visual_review": "dispatch2025_visual_review.json"
+}

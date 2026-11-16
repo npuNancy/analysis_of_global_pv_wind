@@ -1,0 +1,34 @@
+{
+  "question": "How do paired dispatch-2025 future capacity, exposure, loss and generation evolve?",
+  "backend": "Python/matplotlib",
+  "archetype": "quantitative grid",
+  "years": [
+    2030,
+    2059
+  ],
+  "layout": "wind+solar, wind, solar; 1 row x 3 columns",
+  "reference": "plot.py station figures",
+  "dimensions_mm": [
+    240,
+    85
+  ],
+  "scenarios": [
+    "ssp126",
+    "ssp245",
+    "ssp585"
+  ],
+  "available_scenarios": [
+    "ssp126",
+    "ssp245"
+  ],
+  "pending": "NaN source rows; empty colored Line2D and pending legend; no fitted values",
+  "centre": "4-model equal mean; capacity is deterministic catalogue total",
+  "spread": "model min/max retained in source CSV, no uncertainty band",
+  "fit": "one descriptive 2030–2059 OLS per available annual pathway and panel",
+  "export": "8 complete + 24 independent PNG, 600 dpi",
+  "risks": [
+    "paired paths include deployment and climate changes",
+    "signed net loss denominator is annual normal baseline generation",
+    "intensities use common-support capacity, capacity plot uses full catalogue"
+  ]
+}

@@ -1,0 +1,1554 @@
+{
+  "status": "PASSED",
+  "name": "全球场站-dispatch-2025",
+  "provenance": {
+    "root": "/work/home/acxujo26gv/dispatch_2025_climate_storage",
+    "index_sha256": "5552bcf1cf4d8427ff6f42aac0b71356309f7b347d40cef1f940e81e163f0e42",
+    "completion_sha256": "eee678bce879bb1ebe8dcc4c89c9631d9ca431e6ff1acf8b8319f8bac33b5b4b",
+    "summaries": [
+      {
+        "path": "/work/home/acxujo26gv/dispatch_2025_climate_storage/source_data/global_annual_models.csv",
+        "sha256": "8317b87d56e4ee111837c11e895966de99b92b66de7f3ea63df1f3732e112c1b",
+        "rows": 1440
+      },
+      {
+        "path": "/work/home/acxujo26gv/dispatch_2025_climate_storage/source_data/catalogue_capacity.csv",
+        "sha256": "83175877b1ef0bae56a97a38732ea70e110ca25be7f3c602766ac2f6128cf82a",
+        "rows": 12
+      }
+    ]
+  },
+  "available_scenarios": [
+    "ssp126",
+    "ssp245"
+  ],
+  "pending_scenarios": [
+    "ssp585"
+  ],
+  "figures": [
+    {
+      "name": "dispatch2025_station_capacity",
+      "category": "capacity",
+      "metric": "capacity",
+      "title": "总装机容量",
+      "unit": "TW",
+      "annual": false,
+      "independent_y": false,
+      "axes": [
+        {
+          "tech": "wind+solar",
+          "limits": [
+            0.2785946986654715,
+            16.268392637928805
+          ],
+          "ticks": [
+            0.0,
+            2.0,
+            4.0,
+            6.0,
+            8.0,
+            10.0,
+            12.0,
+            14.0,
+            16.0,
+            18.0
+          ],
+          "scenario_points": {
+            "ssp126": 3,
+            "ssp245": 3,
+            "ssp585": 0
+          }
+        },
+        {
+          "tech": "wind",
+          "limits": [
+            0.2785946986654715,
+            16.268392637928805
+          ],
+          "ticks": [
+            0.0,
+            2.0,
+            4.0,
+            6.0,
+            8.0,
+            10.0,
+            12.0,
+            14.0,
+            16.0,
+            18.0
+          ],
+          "scenario_points": {
+            "ssp126": 3,
+            "ssp245": 3,
+            "ssp585": 0
+          }
+        },
+        {
+          "tech": "solar",
+          "limits": [
+            0.2785946986654715,
+            16.268392637928805
+          ],
+          "ticks": [
+            0.0,
+            2.0,
+            4.0,
+            6.0,
+            8.0,
+            10.0,
+            12.0,
+            14.0,
+            16.0,
+            18.0
+          ],
+          "scenario_points": {
+            "ssp126": 3,
+            "ssp245": 3,
+            "ssp585": 0
+          }
+        }
+      ],
+      "complete": {
+        "path": "dispatch2025_station_capacity.png",
+        "image": {
+          "pixels": [
+            5789,
+            2127
+          ],
+          "dpi": [
+            599.9988,
+            599.9988
+          ]
+        },
+        "sha256": "363c1cfdcccc2dfbcad138363d3a118e052f4c628b29a38aa7d05cdcd2c64551",
+        "figure_fraction_bounds": null,
+        "text_bounds_check": "PASSED"
+      },
+      "panels": [
+        {
+          "path": "dispatch2025_station_capacity_a.png",
+          "image": {
+            "pixels": [
+              2718,
+              2127
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "ffd83087dc0d994441045b8cc73c70c4c09d3e085815af0b55e632756e7ed3c4",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "dispatch2025_station_capacity_b.png",
+          "image": {
+            "pixels": [
+              2718,
+              2127
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "718cbf231f2b243e8697164e6b28689e0c337140484bd1cc3335515b20e3635a",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "dispatch2025_station_capacity_c.png",
+          "image": {
+            "pixels": [
+              2718,
+              2127
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "f3f955637bfa6e5c1027e05458d699502fa0dec00f6d227ff13852b649ef5bf7",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        }
+      ],
+      "linear_fits": [],
+      "model_table": "source_data/dispatch2025_station_capacity_models.csv",
+      "display_table": "source_data/dispatch2025_station_capacity_display.csv"
+    },
+    {
+      "name": "dispatch2025_station_exposure_total",
+      "category": "exposure",
+      "metric": "exposure_total",
+      "title": "装机容量加权暴露总量",
+      "unit": "MW days/year",
+      "annual": false,
+      "independent_y": false,
+      "axes": [
+        {
+          "tech": "wind+solar",
+          "limits": [
+            1194255.5543424264,
+            644221887.4761437
+          ],
+          "ticks": [
+            0.0,
+            100000000.0,
+            200000000.0,
+            300000000.0,
+            400000000.0,
+            500000000.0,
+            600000000.0,
+            700000000.0
+          ],
+          "scenario_points": {
+            "ssp126": 3,
+            "ssp245": 3,
+            "ssp585": 0
+          }
+        },
+        {
+          "tech": "wind",
+          "limits": [
+            1194255.5543424264,
+            644221887.4761437
+          ],
+          "ticks": [
+            0.0,
+            100000000.0,
+            200000000.0,
+            300000000.0,
+            400000000.0,
+            500000000.0,
+            600000000.0,
+            700000000.0
+          ],
+          "scenario_points": {
+            "ssp126": 3,
+            "ssp245": 3,
+            "ssp585": 0
+          }
+        },
+        {
+          "tech": "solar",
+          "limits": [
+            1194255.5543424264,
+            644221887.4761437
+          ],
+          "ticks": [
+            0.0,
+            100000000.0,
+            200000000.0,
+            300000000.0,
+            400000000.0,
+            500000000.0,
+            600000000.0,
+            700000000.0
+          ],
+          "scenario_points": {
+            "ssp126": 3,
+            "ssp245": 3,
+            "ssp585": 0
+          }
+        }
+      ],
+      "complete": {
+        "path": "dispatch2025_station_exposure_total.png",
+        "image": {
+          "pixels": [
+            5789,
+            2127
+          ],
+          "dpi": [
+            599.9988,
+            599.9988
+          ]
+        },
+        "sha256": "5afe6bd099e28753eab844662f9e02b27e4cd4c2251cf0f9c3d79a5d0d1c3a52",
+        "figure_fraction_bounds": null,
+        "text_bounds_check": "PASSED"
+      },
+      "panels": [
+        {
+          "path": "dispatch2025_station_exposure_total_a.png",
+          "image": {
+            "pixels": [
+              2718,
+              2127
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "53aa321d97bc4ff2ff3bdfde828db455b12a7b366346b750cd0c1477a7df3b7c",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "dispatch2025_station_exposure_total_b.png",
+          "image": {
+            "pixels": [
+              2718,
+              2127
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "75803a4b09cc120585ed254b95518d28cc7a6aaabe8e3e95b8b004d29ba7e196",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "dispatch2025_station_exposure_total_c.png",
+          "image": {
+            "pixels": [
+              2718,
+              2127
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "f5209e0740d55dd827f159e589ddfce0b78d64aed84dfd4f0ff04bcf2fbc48c3",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        }
+      ],
+      "linear_fits": [],
+      "model_table": "source_data/dispatch2025_station_exposure_total_models.csv",
+      "display_table": "source_data/dispatch2025_station_exposure_total_display.csv"
+    },
+    {
+      "name": "dispatch2025_station_exposure_mean",
+      "category": "exposure",
+      "metric": "exposure_mean",
+      "title": "装机容量加权年均暴露时长",
+      "unit": "days/year",
+      "annual": false,
+      "independent_y": false,
+      "axes": [
+        {
+          "tech": "wind+solar",
+          "limits": [
+            28.252197766452646,
+            42.51386379351859
+          ],
+          "ticks": [
+            28.0,
+            30.0,
+            32.0,
+            34.0,
+            36.0,
+            38.0,
+            40.0,
+            42.0,
+            44.0
+          ],
+          "scenario_points": {
+            "ssp126": 3,
+            "ssp245": 3,
+            "ssp585": 0
+          }
+        },
+        {
+          "tech": "wind",
+          "limits": [
+            28.252197766452646,
+            42.51386379351859
+          ],
+          "ticks": [
+            28.0,
+            30.0,
+            32.0,
+            34.0,
+            36.0,
+            38.0,
+            40.0,
+            42.0,
+            44.0
+          ],
+          "scenario_points": {
+            "ssp126": 3,
+            "ssp245": 3,
+            "ssp585": 0
+          }
+        },
+        {
+          "tech": "solar",
+          "limits": [
+            28.252197766452646,
+            42.51386379351859
+          ],
+          "ticks": [
+            28.0,
+            30.0,
+            32.0,
+            34.0,
+            36.0,
+            38.0,
+            40.0,
+            42.0,
+            44.0
+          ],
+          "scenario_points": {
+            "ssp126": 3,
+            "ssp245": 3,
+            "ssp585": 0
+          }
+        }
+      ],
+      "complete": {
+        "path": "dispatch2025_station_exposure_mean.png",
+        "image": {
+          "pixels": [
+            5789,
+            2127
+          ],
+          "dpi": [
+            599.9988,
+            599.9988
+          ]
+        },
+        "sha256": "0c50ea1c45010cf97e05c59955c702214f65929eb362d4b1760366d2985ccfe4",
+        "figure_fraction_bounds": null,
+        "text_bounds_check": "PASSED"
+      },
+      "panels": [
+        {
+          "path": "dispatch2025_station_exposure_mean_a.png",
+          "image": {
+            "pixels": [
+              2718,
+              2127
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "db9933a3395100039ae450308b1c8678af2b435a1b79dfa13591273e00654bc6",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "dispatch2025_station_exposure_mean_b.png",
+          "image": {
+            "pixels": [
+              2718,
+              2127
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "0aad8296771341942a771928b01d2b6b3d38c32d109d56a04f943eeac061c57c",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "dispatch2025_station_exposure_mean_c.png",
+          "image": {
+            "pixels": [
+              2718,
+              2127
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "dde78dc9a57f4b14edf3381bd339a763eb1a87a9d552b9451a0a58f69898b9c4",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        }
+      ],
+      "linear_fits": [],
+      "model_table": "source_data/dispatch2025_station_exposure_mean_models.csv",
+      "display_table": "source_data/dispatch2025_station_exposure_mean_display.csv"
+    },
+    {
+      "name": "dispatch2025_station_total_loss",
+      "category": "loss",
+      "metric": "total_loss",
+      "title": "总净损失",
+      "unit": "MWh/year",
+      "annual": true,
+      "independent_y": false,
+      "axes": [
+        {
+          "tech": "wind+solar",
+          "limits": [
+            -216541645.15601456,
+            1755976499.595282
+          ],
+          "ticks": [
+            -250000000.0,
+            0.0,
+            250000000.0,
+            500000000.0,
+            750000000.0,
+            1000000000.0,
+            1250000000.0,
+            1500000000.0,
+            1750000000.0,
+            2000000000.0
+          ],
+          "scenario_points": {
+            "ssp126": 30,
+            "ssp245": 30,
+            "ssp585": 0
+          }
+        },
+        {
+          "tech": "wind",
+          "limits": [
+            -216541645.15601456,
+            1755976499.595282
+          ],
+          "ticks": [
+            -250000000.0,
+            0.0,
+            250000000.0,
+            500000000.0,
+            750000000.0,
+            1000000000.0,
+            1250000000.0,
+            1500000000.0,
+            1750000000.0,
+            2000000000.0
+          ],
+          "scenario_points": {
+            "ssp126": 30,
+            "ssp245": 30,
+            "ssp585": 0
+          }
+        },
+        {
+          "tech": "solar",
+          "limits": [
+            -216541645.15601456,
+            1755976499.595282
+          ],
+          "ticks": [
+            -250000000.0,
+            0.0,
+            250000000.0,
+            500000000.0,
+            750000000.0,
+            1000000000.0,
+            1250000000.0,
+            1500000000.0,
+            1750000000.0,
+            2000000000.0
+          ],
+          "scenario_points": {
+            "ssp126": 30,
+            "ssp245": 30,
+            "ssp585": 0
+          }
+        }
+      ],
+      "complete": {
+        "path": "dispatch2025_station_total_loss.png",
+        "image": {
+          "pixels": [
+            5789,
+            2127
+          ],
+          "dpi": [
+            599.9988,
+            599.9988
+          ]
+        },
+        "sha256": "e68a47315321cfb4f5814b6080e52cb92950403c7326c1965041c8cb9afae88e",
+        "figure_fraction_bounds": null,
+        "text_bounds_check": "PASSED"
+      },
+      "panels": [
+        {
+          "path": "dispatch2025_station_total_loss_a.png",
+          "image": {
+            "pixels": [
+              2718,
+              2127
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "48b414a21def8b7ad66d80f61e2d904648c1288b78d70c2f013f967e7449270c",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "dispatch2025_station_total_loss_b.png",
+          "image": {
+            "pixels": [
+              2718,
+              2127
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "b43f9604fc809a994375c57e45da854ec43b8693afac2dcd3431268915830de2",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "dispatch2025_station_total_loss_c.png",
+          "image": {
+            "pixels": [
+              2718,
+              2127
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "9cea001fd2bdc391e1f5222f86bdc3f21d077214c94fe799ad17731e470e94f4",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        }
+      ],
+      "linear_fits": [
+        {
+          "figure": "dispatch2025_station_total_loss",
+          "tech": "wind+solar",
+          "climate_ssp": "ssp126",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": 57981779.09720941,
+          "fitted_value_2030": -15155009.894304214,
+          "r_squared": 0.8423085529194952
+        },
+        {
+          "figure": "dispatch2025_station_total_loss",
+          "tech": "wind+solar",
+          "climate_ssp": "ssp245",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": 17282681.222922556,
+          "fitted_value_2030": 183439581.09439015,
+          "r_squared": 0.8812602088896522
+        },
+        {
+          "figure": "dispatch2025_station_total_loss",
+          "tech": "wind",
+          "climate_ssp": "ssp126",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": 54060547.152356,
+          "fitted_value_2030": -126881729.48550107,
+          "r_squared": 0.8324233403292444
+        },
+        {
+          "figure": "dispatch2025_station_total_loss",
+          "tech": "wind",
+          "climate_ssp": "ssp245",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": 15134166.963458251,
+          "fitted_value_2030": 68360429.23596177,
+          "r_squared": 0.8831511203580098
+        },
+        {
+          "figure": "dispatch2025_station_total_loss",
+          "tech": "solar",
+          "climate_ssp": "ssp126",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": 3921231.944853399,
+          "fitted_value_2030": 111726719.59119697,
+          "r_squared": 0.8027133331407476
+        },
+        {
+          "figure": "dispatch2025_station_total_loss",
+          "tech": "solar",
+          "climate_ssp": "ssp245",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": 2148514.2594643,
+          "fitted_value_2030": 115079151.85842842,
+          "r_squared": 0.8397041389371245
+        }
+      ],
+      "model_table": "source_data/dispatch2025_station_total_loss_models.csv",
+      "display_table": "source_data/dispatch2025_station_total_loss_display.csv"
+    },
+    {
+      "name": "dispatch2025_station_unit_loss",
+      "category": "loss",
+      "metric": "unit_loss",
+      "title": "单位装机净损失",
+      "unit": "MWh/MW/year",
+      "annual": true,
+      "independent_y": true,
+      "axes": [
+        {
+          "tech": "wind+solar",
+          "limits": [
+            90.0,
+            120.0
+          ],
+          "ticks": [
+            90.0,
+            96.0,
+            102.0,
+            108.0,
+            114.0,
+            120.0
+          ],
+          "scenario_points": {
+            "ssp126": 30,
+            "ssp245": 30,
+            "ssp585": 0
+          }
+        },
+        {
+          "tech": "wind",
+          "limits": [
+            87.5,
+            150.0
+          ],
+          "ticks": [
+            87.5,
+            100.0,
+            112.5,
+            125.0,
+            137.5,
+            150.0
+          ],
+          "scenario_points": {
+            "ssp126": 30,
+            "ssp245": 30,
+            "ssp585": 0
+          }
+        },
+        {
+          "tech": "solar",
+          "limits": [
+            70.0,
+            95.0
+          ],
+          "ticks": [
+            70.0,
+            75.0,
+            80.0,
+            85.0,
+            90.0,
+            95.0
+          ],
+          "scenario_points": {
+            "ssp126": 30,
+            "ssp245": 30,
+            "ssp585": 0
+          }
+        }
+      ],
+      "complete": {
+        "path": "dispatch2025_station_unit_loss.png",
+        "image": {
+          "pixels": [
+            5789,
+            2127
+          ],
+          "dpi": [
+            599.9988,
+            599.9988
+          ]
+        },
+        "sha256": "bbd86f522ca7fb941ca9bac6bf7d6d8a23de5731b8acbb47c99c780cc178fa2b",
+        "figure_fraction_bounds": null,
+        "text_bounds_check": "PASSED"
+      },
+      "panels": [
+        {
+          "path": "dispatch2025_station_unit_loss_a.png",
+          "image": {
+            "pixels": [
+              2718,
+              2127
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "63cc3b863b402dc4b491bff5be0b04c9c20c7b5a95194e33ef72bbc42ee836b3",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "dispatch2025_station_unit_loss_b.png",
+          "image": {
+            "pixels": [
+              2718,
+              2127
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "91f29248ea503774cb548e8a19f33f2a67f84221695199ad3ee8948c689d3714",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "dispatch2025_station_unit_loss_c.png",
+          "image": {
+            "pixels": [
+              2718,
+              2127
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "11de9ea389b56fac94a6f53a4b4ecf3f005aed152b3bfd6e7df8b21d703e2c0d",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        }
+      ],
+      "linear_fits": [
+        {
+          "figure": "dispatch2025_station_unit_loss",
+          "tech": "wind+solar",
+          "climate_ssp": "ssp126",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": -0.32625531372180466,
+          "fitted_value_2030": 111.20535001396127,
+          "r_squared": 0.2891476797394332
+        },
+        {
+          "figure": "dispatch2025_station_unit_loss",
+          "tech": "wind+solar",
+          "climate_ssp": "ssp245",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": -0.1368013494228725,
+          "fitted_value_2030": 107.22523277838762,
+          "r_squared": 0.12081198730023746
+        },
+        {
+          "figure": "dispatch2025_station_unit_loss",
+          "tech": "wind",
+          "climate_ssp": "ssp126",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": -1.2119882130288901,
+          "fitted_value_2030": 138.641525613036,
+          "r_squared": 0.7441679085234705
+        },
+        {
+          "figure": "dispatch2025_station_unit_loss",
+          "tech": "wind",
+          "climate_ssp": "ssp245",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": -0.7483996414113019,
+          "fitted_value_2030": 134.3868867619399,
+          "r_squared": 0.6528563387257136
+        },
+        {
+          "figure": "dispatch2025_station_unit_loss",
+          "tech": "solar",
+          "climate_ssp": "ssp126",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": -0.4351782033519641,
+          "fitted_value_2030": 90.67140979794799,
+          "r_squared": 0.8131299264528271
+        },
+        {
+          "figure": "dispatch2025_station_unit_loss",
+          "tech": "solar",
+          "climate_ssp": "ssp245",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": -0.31664399662667647,
+          "fitted_value_2030": 89.05688075820558,
+          "r_squared": 0.6203990928751204
+        }
+      ],
+      "model_table": "source_data/dispatch2025_station_unit_loss_models.csv",
+      "display_table": "source_data/dispatch2025_station_unit_loss_display.csv"
+    },
+    {
+      "name": "dispatch2025_station_loss_fraction",
+      "category": "loss",
+      "metric": "loss_fraction",
+      "title": "年净损失占全年正常基准电量比例",
+      "unit": "%",
+      "annual": true,
+      "independent_y": true,
+      "axes": [
+        {
+          "tech": "wind+solar",
+          "limits": [
+            4.75,
+            7.5
+          ],
+          "ticks": [
+            4.75,
+            5.0,
+            5.25,
+            5.5,
+            5.75,
+            6.0,
+            6.25,
+            6.5,
+            6.75,
+            7.0,
+            7.25,
+            7.5
+          ],
+          "scenario_points": {
+            "ssp126": 30,
+            "ssp245": 30,
+            "ssp585": 0
+          }
+        },
+        {
+          "tech": "wind",
+          "limits": [
+            6.25,
+            8.5
+          ],
+          "ticks": [
+            6.25,
+            6.5,
+            6.75,
+            7.0,
+            7.25,
+            7.5,
+            7.75,
+            8.0,
+            8.25,
+            8.5
+          ],
+          "scenario_points": {
+            "ssp126": 30,
+            "ssp245": 30,
+            "ssp585": 0
+          }
+        },
+        {
+          "tech": "solar",
+          "limits": [
+            3.5,
+            4.75
+          ],
+          "ticks": [
+            3.5,
+            3.75,
+            4.0,
+            4.25,
+            4.5,
+            4.75
+          ],
+          "scenario_points": {
+            "ssp126": 30,
+            "ssp245": 30,
+            "ssp585": 0
+          }
+        }
+      ],
+      "complete": {
+        "path": "dispatch2025_station_loss_fraction.png",
+        "image": {
+          "pixels": [
+            5789,
+            2127
+          ],
+          "dpi": [
+            599.9988,
+            599.9988
+          ]
+        },
+        "sha256": "4ed0a1f151b87262c13bf8aeb606c1add003857c780d7aafe99b20dd6150b2bd",
+        "figure_fraction_bounds": null,
+        "text_bounds_check": "PASSED"
+      },
+      "panels": [
+        {
+          "path": "dispatch2025_station_loss_fraction_a.png",
+          "image": {
+            "pixels": [
+              2718,
+              2127
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "ffcd3b5647d5b5e0fe2b09544dac31b7b2f1c42deb11b886d5adcf9caceacfcd",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "dispatch2025_station_loss_fraction_b.png",
+          "image": {
+            "pixels": [
+              2718,
+              2127
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "7767e6da965842eb1bd35ee1a86555434fe3b37b822f080cd2ebfa949b47ae84",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "dispatch2025_station_loss_fraction_c.png",
+          "image": {
+            "pixels": [
+              2718,
+              2127
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "12aab2167e6db33e67c4091990ea3c04174fff76c5933a576e9889fef432a157",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        }
+      ],
+      "linear_fits": [
+        {
+          "figure": "dispatch2025_station_loss_fraction",
+          "tech": "wind+solar",
+          "climate_ssp": "ssp126",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": 0.061267906801896775,
+          "fitted_value_2030": 5.283521080894513,
+          "r_squared": 0.7693235945346683
+        },
+        {
+          "figure": "dispatch2025_station_loss_fraction",
+          "tech": "wind+solar",
+          "climate_ssp": "ssp245",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": 0.02598722181450214,
+          "fitted_value_2030": 5.3384587200115545,
+          "r_squared": 0.7230981960289844
+        },
+        {
+          "figure": "dispatch2025_station_loss_fraction",
+          "tech": "wind",
+          "climate_ssp": "ssp126",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": 0.03591597591748426,
+          "fitted_value_2030": 6.989401165947976,
+          "r_squared": 0.5481887800783309
+        },
+        {
+          "figure": "dispatch2025_station_loss_fraction",
+          "tech": "wind",
+          "climate_ssp": "ssp245",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": 0.020987029373544186,
+          "fitted_value_2030": 6.88619620082226,
+          "r_squared": 0.5434574555599567
+        },
+        {
+          "figure": "dispatch2025_station_loss_fraction",
+          "tech": "solar",
+          "climate_ssp": "ssp126",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": -0.0286369511312604,
+          "fitted_value_2030": 4.498395202767494,
+          "r_squared": 0.8415488668529548
+        },
+        {
+          "figure": "dispatch2025_station_loss_fraction",
+          "tech": "solar",
+          "climate_ssp": "ssp245",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": -0.020881231095921236,
+          "fitted_value_2030": 4.475219283807105,
+          "r_squared": 0.7334344477377972
+        }
+      ],
+      "model_table": "source_data/dispatch2025_station_loss_fraction_models.csv",
+      "display_table": "source_data/dispatch2025_station_loss_fraction_display.csv"
+    },
+    {
+      "name": "dispatch2025_station_total_generation",
+      "category": "generation",
+      "metric": "total_generation",
+      "title": "总发电量",
+      "unit": "PWh/year",
+      "annual": true,
+      "independent_y": false,
+      "axes": [
+        {
+          "tech": "wind+solar",
+          "limits": [
+            -2.497101734785467,
+            24.002639839652588
+          ],
+          "ticks": [
+            -5.0,
+            0.0,
+            5.0,
+            10.0,
+            15.0,
+            20.0,
+            25.0
+          ],
+          "scenario_points": {
+            "ssp126": 30,
+            "ssp245": 30,
+            "ssp585": 0
+          }
+        },
+        {
+          "tech": "wind",
+          "limits": [
+            -2.497101734785467,
+            24.002639839652588
+          ],
+          "ticks": [
+            -5.0,
+            0.0,
+            5.0,
+            10.0,
+            15.0,
+            20.0,
+            25.0
+          ],
+          "scenario_points": {
+            "ssp126": 30,
+            "ssp245": 30,
+            "ssp585": 0
+          }
+        },
+        {
+          "tech": "solar",
+          "limits": [
+            -2.497101734785467,
+            24.002639839652588
+          ],
+          "ticks": [
+            -5.0,
+            0.0,
+            5.0,
+            10.0,
+            15.0,
+            20.0,
+            25.0
+          ],
+          "scenario_points": {
+            "ssp126": 30,
+            "ssp245": 30,
+            "ssp585": 0
+          }
+        }
+      ],
+      "complete": {
+        "path": "dispatch2025_station_total_generation.png",
+        "image": {
+          "pixels": [
+            5789,
+            2127
+          ],
+          "dpi": [
+            599.9988,
+            599.9988
+          ]
+        },
+        "sha256": "c8d3c6257f2fb1601a70084e48b6084d9ee3fbef97a2163b72029bf710601b59",
+        "figure_fraction_bounds": null,
+        "text_bounds_check": "PASSED"
+      },
+      "panels": [
+        {
+          "path": "dispatch2025_station_total_generation_a.png",
+          "image": {
+            "pixels": [
+              2718,
+              2127
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "135a8f421a343ecc02ffa782c28ffb55f884e3f85d79a6ba75825633b0e723cd",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "dispatch2025_station_total_generation_b.png",
+          "image": {
+            "pixels": [
+              2718,
+              2127
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "7ddbbbe26adad634c69999067de9f1cc6a612982f05ecd13ee32c06ef9f814a2",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "dispatch2025_station_total_generation_c.png",
+          "image": {
+            "pixels": [
+              2718,
+              2127
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "a5c99538e945e4cfe25b7465dbbd703bf5a28542a7ac7a7f35c446aa81f9132d",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        }
+      ],
+      "linear_fits": [
+        {
+          "figure": "dispatch2025_station_total_generation",
+          "tech": "wind+solar",
+          "climate_ssp": "ssp126",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": 0.7515443834472905,
+          "fitted_value_2030": 1.0033190117521609,
+          "r_squared": 0.8712727417816011
+        },
+        {
+          "figure": "dispatch2025_station_total_generation",
+          "tech": "wind+solar",
+          "climate_ssp": "ssp245",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": 0.25302802362855586,
+          "fitted_value_2030": 3.4037974407878453,
+          "r_squared": 0.8856315537030536
+        },
+        {
+          "figure": "dispatch2025_station_total_generation",
+          "tech": "wind",
+          "climate_ssp": "ssp126",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": 0.6320255420357016,
+          "fitted_value_2030": -1.2925680268564643,
+          "r_squared": 0.8497663921928359
+        },
+        {
+          "figure": "dispatch2025_station_total_generation",
+          "tech": "wind",
+          "climate_ssp": "ssp245",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": 0.18560901859106024,
+          "fitted_value_2030": 0.9983123589094202,
+          "r_squared": 0.8831508385357616
+        },
+        {
+          "figure": "dispatch2025_station_total_generation",
+          "tech": "solar",
+          "climate_ssp": "ssp126",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": 0.11951884141158896,
+          "fitted_value_2030": 2.295887038608626,
+          "r_squared": 0.8587113849919317
+        },
+        {
+          "figure": "dispatch2025_station_total_generation",
+          "tech": "solar",
+          "climate_ssp": "ssp245",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": 0.06741900503749561,
+          "fitted_value_2030": 2.4054850818784246,
+          "r_squared": 0.8916711906349506
+        }
+      ],
+      "model_table": "source_data/dispatch2025_station_total_generation_models.csv",
+      "display_table": "source_data/dispatch2025_station_total_generation_display.csv"
+    },
+    {
+      "name": "dispatch2025_station_unit_generation",
+      "category": "generation",
+      "metric": "unit_generation",
+      "title": "单位装机发电量",
+      "unit": "MWh/MW/year",
+      "annual": true,
+      "independent_y": true,
+      "axes": [
+        {
+          "tech": "wind+solar",
+          "limits": [
+            1200.0,
+            2100.0
+          ],
+          "ticks": [
+            1200.0,
+            1300.0,
+            1400.0,
+            1500.0,
+            1600.0,
+            1700.0,
+            1800.0,
+            1900.0,
+            2000.0,
+            2100.0
+          ],
+          "scenario_points": {
+            "ssp126": 30,
+            "ssp245": 30,
+            "ssp585": 0
+          }
+        },
+        {
+          "tech": "wind",
+          "limits": [
+            1100.0,
+            1900.0
+          ],
+          "ticks": [
+            1100.0,
+            1200.0,
+            1300.0,
+            1400.0,
+            1500.0,
+            1600.0,
+            1700.0,
+            1800.0,
+            1900.0
+          ],
+          "scenario_points": {
+            "ssp126": 30,
+            "ssp245": 30,
+            "ssp585": 0
+          }
+        },
+        {
+          "tech": "solar",
+          "limits": [
+            1875.0,
+            2075.0
+          ],
+          "ticks": [
+            1875.0,
+            1900.0,
+            1925.0,
+            1950.0,
+            1975.0,
+            2000.0,
+            2025.0,
+            2050.0,
+            2075.0
+          ],
+          "scenario_points": {
+            "ssp126": 30,
+            "ssp245": 30,
+            "ssp585": 0
+          }
+        }
+      ],
+      "complete": {
+        "path": "dispatch2025_station_unit_generation.png",
+        "image": {
+          "pixels": [
+            5789,
+            2127
+          ],
+          "dpi": [
+            599.9988,
+            599.9988
+          ]
+        },
+        "sha256": "b68264b1204a0bfdff178a964b8acd06a783fe1f613465ca0546f9f1fa6549d2",
+        "figure_fraction_bounds": null,
+        "text_bounds_check": "PASSED"
+      },
+      "panels": [
+        {
+          "path": "dispatch2025_station_unit_generation_a.png",
+          "image": {
+            "pixels": [
+              2718,
+              2127
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "0c2562bf22d211ed7ddaadd4ba01d0441a39f94e14b1aa0062a6cbc1faf4a8d2",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "dispatch2025_station_unit_generation_b.png",
+          "image": {
+            "pixels": [
+              2718,
+              2127
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "a8f590b9e89f260178cdcaa0904e519c430827eb3894ec71ce85421cef60ade7",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        },
+        {
+          "path": "dispatch2025_station_unit_generation_c.png",
+          "image": {
+            "pixels": [
+              2718,
+              2127
+            ],
+            "dpi": [
+              599.9988,
+              599.9988
+            ]
+          },
+          "sha256": "0aa27eea351f45c99c273952c71801e08824006c1504961567285abaeec4a938",
+          "figure_fraction_bounds": null,
+          "text_bounds_check": "PASSED"
+        }
+      ],
+      "linear_fits": [
+        {
+          "figure": "dispatch2025_station_unit_generation",
+          "tech": "wind+solar",
+          "climate_ssp": "ssp126",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": -21.317727162692904,
+          "fitted_value_2030": 1952.0570437014967,
+          "r_squared": 0.811852388061935
+        },
+        {
+          "figure": "dispatch2025_station_unit_generation",
+          "tech": "wind+solar",
+          "climate_ssp": "ssp245",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": -10.201356836716004,
+          "fitted_value_2030": 1891.0341575464236,
+          "r_squared": 0.7957715175665048
+        },
+        {
+          "figure": "dispatch2025_station_unit_generation",
+          "tech": "wind",
+          "climate_ssp": "ssp126",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": -22.340529349450357,
+          "fitted_value_2030": 1834.275944404232,
+          "r_squared": 0.8485016178606032
+        },
+        {
+          "figure": "dispatch2025_station_unit_generation",
+          "tech": "wind",
+          "climate_ssp": "ssp245",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": -14.17463479941278,
+          "fitted_value_2030": 1811.9789170717759,
+          "r_squared": 0.8164135771535417
+        },
+        {
+          "figure": "dispatch2025_station_unit_generation",
+          "tech": "solar",
+          "climate_ssp": "ssp126",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": 4.321100566340588,
+          "fitted_value_2030": 1919.6825329629505,
+          "r_squared": 0.7916756581461002
+        },
+        {
+          "figure": "dispatch2025_station_unit_generation",
+          "tech": "solar",
+          "climate_ssp": "ssp245",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": 2.961041927098587,
+          "fitted_value_2030": 1896.0092388145376,
+          "r_squared": 0.8871441579841148
+        }
+      ],
+      "model_table": "source_data/dispatch2025_station_unit_generation_models.csv",
+      "display_table": "source_data/dispatch2025_station_unit_generation_display.csv"
+    }
+  ],
+  "visual_review": "dispatch2025_visual_review.json",
+  "code": {
+    "plot_dispatch2025.py": "a9ea03b5ca378a29dcfa59c45d9343c90add7526e6875c555476a72f5a030e7c",
+    "plot_dispatch2025.sh": "0d2defd4e105be2756bf82dd342505229d0e2151e258e9fca7c3f583d548b7c4",
+    "plot.py": "a76e3f284955fad404fcbfa3f76879066dd272e4e229aa5e1402c708950641a7",
+    "plotting.py": "9c173efd9b6278e0bab5ca20ce966936ac8b5bf213ad18b785a77533ea25ff00"
+  }
+}

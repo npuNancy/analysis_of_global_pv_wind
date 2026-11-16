@@ -134,6 +134,7 @@ def main():
     html = html_path.read_text()
     html = re.sub(r"\n?<!-- GEM2025:(\w+) BEGIN -->.*?<!-- GEM2025:\1 END -->\n?",
                   "\n", html, flags=re.S)
+    original_figures = len(re.findall(r"<h4\b", html))
     # Map pre-existing embedded figures to the same PNGs linked by Markdown.
     image_sources = {}
     for url in re.findall(r"!\[[^]]*\]\(([^)]+)\)", md_path.read_text()):
@@ -258,8 +259,9 @@ def main():
     parser.feed(re.search(r"<main>(.*?)</main>", html, re.S)[1])
     nodes = parser.root
     images = descendants(nodes, "img")
-    if len(images) != 36 or count != 36:
-        raise ValueError("Expected 19 original and 17 new figures")
+    expected_figures = original_figures + len(records)
+    if len(images) != expected_figures or count != expected_figures:
+        raise ValueError(f"Expected {original_figures} existing and {len(records)} GEM figures")
     for node in images:
         raw = base64.b64decode(node.attrs["src"].split(",", 1)[1])
         if hashlib.sha256(raw).hexdigest() != sha(DOC/node.attrs["data-source"]):
@@ -272,7 +274,7 @@ def main():
             raise ValueError("Missing HTML anchor " + anchor)
     text = re.sub(r"\n[ \t]*\n(?:[ \t]*\n)+", "\n\n", markdown(nodes)).strip()+"\n"
     text = re.sub(r"(?m)[ \t]+$", "", text)
-    if len(re.findall(r"!\[", text)) != 36 or "data:image" in text:
+    if len(re.findall(r"!\[", text)) != expected_figures or "data:image" in text:
         raise ValueError("Markdown image structure")
     html_path.write_text(html)
     md_path.write_text(text)
@@ -280,7 +282,7 @@ def main():
     names = json.loads(protected.read_text())
     protected.write_text(json.dumps({name: sha(ROOT/name) for name in names},
                                    ensure_ascii=False, indent=2)+"\n")
-    validation = dict(status="PASSED", html_figures=len(images), markdown_figures=36,
+    validation = dict(status="PASSED", html_figures=len(images), markdown_figures=expected_figures,
                       new_triptychs=17, independent_panels=51, anchors=len(ids),
                       documents={p.name: sha(p) for p in (html_path, md_path, DOC/"BCSD_v2数据使用指南.md")})
     (OUT/"gem2025_document_validation.json").write_text(json.dumps(validation, ensure_ascii=False, indent=2)+"\n")

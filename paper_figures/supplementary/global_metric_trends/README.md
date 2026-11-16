@@ -79,3 +79,34 @@ After rendering, run `python -m paper_figures.supplementary.global_metric_trends
 Data dimensions, field units, loss windows and reading examples are documented in section 13 of `document/BCSD_v2数据使用指南.md`.
 
 To refresh only LCOE-2025 from the existing small annual CSVs, run `python -m paper_figures.supplementary.global_metric_trends.plot_gem2025 --lcoe-only` in the 1866 repository environment, then run the document updater. This reads summary tables and can run on the login node. The `gem2025_period_models.csv` and `gem2025_period_display.csv` tables record each displayed period; the original annual tables remain available.
+
+## Dispatch-2025 inventory figures
+
+`plot_dispatch2025.py` adds the eight future dispatch-2025 metrics to
+`document/风电光伏数据.html`. It uses the same panel order, colours, axis rules,
+decadal points and annual OLS fits as the original dispatch figures in `plot.py`.
+The data span 2030–2059. SSP126/245 are available; SSP585 has NaN source rows,
+an empty curve object and a labelled legend entry until accepted data arrive.
+
+The default input is `/work/home/acxujo26gv/dispatch_2025_climate_storage`.
+The script verifies its completion/index hashes and reads only the small annual
+model and catalogue-capacity CSVs. Run on the 1866 login node:
+
+```bash
+source .venv/bin/activate
+export PYTHONUTF8=1
+python -m paper_figures.supplementary.global_metric_trends.plot_dispatch2025
+```
+
+An accepted input root containing the same schema, including a complete paired
+SSP585 pathway when available, can be supplied with `--root`.
+The companion `plot_dispatch2025.sh` uses `wzhctest`, one core / 3.5 GB and
+repository logs; `bash` submits it after creating the log directory.
+
+Outputs are eight `dispatch2025_station_*.png` triptychs, their `_a/_b/_c` panels
+(600 dpi), matching model/display/fit CSVs, and the
+`dispatch2025_figure_manifest.json`, `dispatch2025_figure_contract.json` and
+`dispatch2025_validation.json` records. All tables use the future paired paths;
+capacity is the full catalogue total, while exposure/loss/generation intensities
+use common-support capacity. HTML updates preserve existing images and anchors,
+insert the new figures into the four metric sections, and refresh figure numbers.
