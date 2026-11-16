@@ -73,7 +73,7 @@ def prepare(root,config_path):
         require((np.diff(wide.to_numpy(),axis=1)>=-1e-7).all(),'Noncumulative capacity')
         f=g.sort_values(['grid_id','snapshot']).drop_duplicates('grid_id').copy()
         for year in cfg['snapshots']:f[f'capacity_mw_{year}']=f.grid_id.map(wide[year])
-        f['station_id']=[f'lcoe:{scenario}:{tech}:{int(i)}' for i in f.grid_id]
+        f['station_id']=[f'{cfg.get("station_prefix", "lcoe")}:{scenario}:{tech}:{int(i)}' for i in f.grid_id]
         f['activation_year']=[next(y for y in cfg['snapshots'] if wide.loc[i,y]>0) for i in f.grid_id]
         path=root/'catalogs'/f'{scenario}_{tech}.csv.gz';f.to_csv(path,index=False)
         for year in cfg['snapshots']:
@@ -106,6 +106,8 @@ def prepare(root,config_path):
         unit='_'.join(key)
         task=dict(unit=unit,product=product,model=model,climate_ssp=climate,tech=tech,patch=patch,
                   mapping=mappings[(tech,patch)],sources=rows,years=cfg['years'],snapshots=cfg['snapshots'],time_chunk=cfg['time_chunk'])
+        for field in ['station_prefix','mapping_method','siting_commit','capacity_basis']:
+            if field in cfg:task[field]=cfg[field]
         for r in task['sources']:
             st=Path(r['path']).stat();r['size_bytes']=st.st_size;r['mtime_ns']=st.st_mtime_ns
         path=root/'runtime/tasks'/(unit+'.json');write_json(path,task)
@@ -116,7 +118,7 @@ def prepare(root,config_path):
     catalogue[catalogue.mapping_status.ne('MATCHED')].to_csv(root/'catalogs/unmapped_stations.csv.gz',index=False)
     write_json(root/'inputs/provenance.json',dict(stations=sources,loss_mapping_sha256=sha(mapping_path),
         cf_index_sha256=sha(root/'inputs/cf_index.json'),extreme_index_sha256=sha(root/'inputs/extreme_index.json'),
-        siting_commit='e9eff0d0547de79090559ea3d7efc93912613ec6',mapping='same original raster cell; frozen nearest released BCSD point from LCOE loss evaluation'))
+        siting_commit=cfg.get('siting_commit','e9eff0d0547de79090559ea3d7efc93912613ec6'),mapping=cfg.get('mapping_method','same original raster cell; frozen nearest released BCSD point from LCOE loss evaluation')))
     write_json(root/'runtime/prepared.json',dict(status='COMPLETED',units=len(tasks),tasks_sha256=sha(root/'runtime/tasks.json'),
         catalogue_rows=len(catalogue),mapping_count=len(mapping),activation_mask='off',common_loss_support_filter=False))
     print('Prepared',len(tasks),'units',flush=True)
@@ -184,7 +186,7 @@ def extract_block(root,task,record,mapping,identity):
             tv=dst.createVariable('time',src['time'].dtype,('time',),fill_value=False)
             tv.setncatts({k:v for k,v in src['time'].__dict__.items() if k!='_FillValue'});tv[:]=times[first:last]
             dst.createVariable('station','i4',('station',))[:]=np.arange(n)
-            sid=dst.createVariable('station_id',str,('station',));sid[:]=np.array([f'lcoe:{scenario}:{task["tech"]}:{g}' for g in mapping['grid_id'][pos]],dtype=object);sid.cf_role='timeseries_id'
+            sid=dst.createVariable('station_id',str,('station',));sid[:]=np.array([f'{task.get("station_prefix", "lcoe")}:{scenario}:{task["tech"]}:{g}' for g in mapping['grid_id'][pos]],dtype=object);sid.cf_role='timeseries_id'
             for name2,key,dtype in [('grid_id','grid_id','i8'),('lat','latitude','f8'),('lon','longitude','f8'),
                     ('source_grid_lat','source_lat','f8'),('source_grid_lon','source_lon','f8'),('source_iy','cf_lat_index','i4'),('source_ix','cf_lon_index','i4'),('match_dist_km','distance_km','f8')]:
                 dst.createVariable(name2,dtype,('station',))[:]=mapping[key][pos]
@@ -196,9 +198,10 @@ def extract_block(root,task,record,mapping,identity):
             dst.createVariable('activation_year','i4',('station',))[:]=mapping[scenario+'_activation']
             dst.createVariable('snapshot_year','i4',('snapshot',))[:]=task['snapshots']
             cap=dst.createVariable('capacity_mw','f8',('snapshot','station'));cap[:]=mapping[scenario+'_capacity'];cap.units='MW'
+            if 'capacity_basis' in task:cap.capacity_basis=task['capacity_basis'][task['tech']]
             if task.get('siting_commit')=='95c9ecf':cap.capacity_basis='MWp/DC' if task['tech']=='solar' else 'MW'
             attrs={k:src.getncattr(k) for k in src.ncattrs() if k not in ['_NCProperties','identity']}
-            attrs.update(Conventions='CF-1.9',featureType='timeSeries',schema='lcoe-station-climate-v1',
+            attrs.update(Conventions='CF-1.9',featureType='timeSeries',schema=task.get('station_prefix','lcoe')+'-station-climate-v1',
                 model=task['model'],climate_scenario=task['climate_ssp'],station_scenario=scenario,tech=task['tech'],
                 source_patch=task['patch'],source_file=record['path'],source_identity=record.get('identity') or '',
                 identity=identity,activation_mask='off',mapping_method=task.get('mapping_method','frozen_LCOE_loss_same_raster_cell'),
@@ -292,7 +295,7 @@ def finalize(root):
                 require(abs((first_date-last_date).total_seconds()-10800)<1e-3,'Native time discontinuity')
         index.append(dict(zip(['product','model','climate_scenario','station_scenario','patch','tech'],key),
             status='COMPLETED' if artifacts else 'EMPTY_NO_STATIONS',artifacts=artifacts))
-    write_json(root/'runtime/authoritative_index.json',dict(schema='lcoe-station-climate-v1',status='COMPLETED',
+    write_json(root/'runtime/authoritative_index.json',dict(schema=task.get('station_prefix','lcoe')+'-station-climate-v1',status='COMPLETED',
         combination_count=len(index),file_count=len(files),years=cfg['years'],entries=index,
         activation_mask='off',capacity_snapshots=cfg['snapshots'],source_provenance=str(root/'inputs/provenance.json')))
     write_json(root/'runtime/completion.json',dict(status='COMPLETED',units=len(tasks),files=len(files),

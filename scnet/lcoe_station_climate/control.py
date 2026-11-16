@@ -96,13 +96,13 @@ def main():
                         break
                     with locked(globallock):
                         state=read(statepath)
-                        eligible=[t for t in tasks if state[t['unit']]['state']=='NOT_SUBMITTED' and (not a.pilot or t['unit'] in a.pilot)]
+                        eligible=[t for t in tasks if state[t['unit']]['state']=='NOT_SUBMITTED' and (not a.pilot or t['unit'] in a.pilot) and (not account.get('climate_ssps') or t['climate_ssp'] in account['climate_ssps'])]
                         if not eligible:break
                         # Largest remaining station groups first to reduce a long tail.
                         eligible.sort(key=lambda t:(-t['n_union'],t['unit']))
                         t=eligible[0];key=t['unit'];row=state[key]
                         row.update(state='SUBMITTING',account=user);write(statepath,state)
-                    proc=subprocess.run(['sbatch','--parsable',str(root/'jobs'/(key+'.sh'))],text=True,capture_output=True,timeout=90)
+                    proc=subprocess.run(['sbatch','--parsable',str(Path(cfg.get('job_dir',root/'jobs'))/(key+'.sh'))],text=True,capture_output=True,timeout=90)
                     with locked(globallock):
                         state=read(statepath);row=state[key]
                         if row['state']!='SUBMITTING' or row['account']!=user:raise RuntimeError('Submission claim changed '+key)

@@ -60,6 +60,39 @@ class ExtractionTests(unittest.TestCase):
                 self.assertEqual(ds['signal_icing'][2,0],-127)
                 self.assertEqual(set(np.unique(ds['signal_icing'][:])),{-127,0,1})
 
+    def test_campaign_station_identity_and_capacity_basis(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d);task,record,mapping=self.fixture(root,'cf')
+            task.update(station_prefix='dispatch2025',capacity_basis={'wind':'MW'})
+            result=p.extract_block(root,task,record,mapping,'identity')
+            with nc.Dataset(result['outputs'][0]['path']) as ds:
+                self.assertEqual(ds.schema,'dispatch2025-station-climate-v1')
+                self.assertTrue(str(ds['station_id'][0]).startswith('dispatch2025:ssp126:wind:'))
+                self.assertEqual(ds['capacity_mw'].capacity_basis,'MW')
+
+    def test_climate_account_routing(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d);(root/'inputs').mkdir();(root/'runtime').mkdir()
+            account=dict(username='a',max_active=20,submit_lock=str(root/'a.lock'),climate_ssps=['ssp126'])
+            (root/'inputs/campaign.json').write_text(json.dumps(dict(accounts=[account])))
+            tasks=[dict(unit='other',climate_ssp='ssp245',n_union=100,marker=str(root/'other')),
+                   dict(unit='ours',climate_ssp='ssp126',n_union=10,marker=str(root/'ours'))]
+            (root/'runtime/tasks.json').write_text(json.dumps(tasks))
+            (root/'runtime/pilot_accepted.json').write_text('{}')
+            def command(args):
+                if args[0]=='id':return 'a'
+                if args[0]=='squeue':return ''
+                raise AssertionError(args)
+            calls=[]
+            def sbatch(args,**kwargs):
+                calls.append(Path(args[-1]).stem)
+                return SimpleNamespace(returncode=0,stdout='10001',stderr='')
+            with patch.object(control,'command',command),patch.object(control.subprocess,'run',sbatch),patch('sys.argv',['control','--root',str(root),'--submit']):
+                control.main()
+            self.assertEqual(calls,['ours'])
+            state=json.loads((root/'runtime/state.json').read_text())
+            self.assertEqual(state['other']['state'],'NOT_SUBMITTED')
+
     def test_coordinates_reject_different_grid(self):
         with tempfile.TemporaryDirectory() as d:
             root=Path(d);task,record,mapping=self.fixture(root,'cf');mapping['source_lat'][0]+=1
