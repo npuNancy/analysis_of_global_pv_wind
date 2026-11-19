@@ -1,6 +1,6 @@
 # BCSD-v2 数据使用指南
 
-核对日期：原五类产品为2026-10-04；“全球适宜网格损失数据”为2026-10-28；LCOE场站损失、发电量及新增CF/Extreme交叉情景数据为2026-11-09；LCOE-2025历史、过渡和未来评价为2026-11-11。原五类数据集中在 **乌镇1872 / `scnet-wuzhen-1872` / `acjpoxgsdu`**，适宜网格损失集中在 **乌镇1775 / `scnet-wuzhen-1775` / `acsep06cn2`**，LCOE场站损失、发电量、CF与Extreme均保存在 **乌镇1959 / `scnet-wuzhen-1959` / `acxujo26gv`**。本文描述结果及其完成索引；原五类产品的配套查询工具位于 [`utils/data_access`](../utils/data_access/)。
+核对日期：原五类产品为2026-10-04；“全球适宜网格损失数据”为2026-10-28；LCOE场站损失、发电量及新增CF/Extreme交叉情景数据为2026-11-09；LCOE-2025历史、过渡和未来评价为2026-11-11；dispatch-2025完整三情景评价为2026-11-18。原五类数据集中在 **乌镇1872 / `scnet-wuzhen-1872` / `acjpoxgsdu`**，适宜网格损失集中在 **乌镇1775 / `scnet-wuzhen-1775` / `acsep06cn2`**，LCOE场站损失、发电量、CF与Extreme均保存在 **乌镇1959 / `scnet-wuzhen-1959` / `acxujo26gv`**。本文描述结果及其完成索引；原五类产品的配套查询工具位于 [`utils/data_access`](../utils/data_access/)。
 
 绘图分析使用 **乌镇1866 / `scnet-wuzhen-1866` / `aczlvkl1ac`**，工作目录为 `/work/home/aczlvkl1ac/project_climate_patchify/repos/analysis_of_global_pv_wind`。分析结果和日志写入1866的项目目录；源数据按下表的实际账号和路径只读访问。场站与地图分别读取该项目内的 `data/stations/`、`data/maps/natural_earth/` 副本。新增适宜网格损失的访问权限见第8节。
 
@@ -17,6 +17,7 @@
 | Loss：LCOE气候SSP × 场站SSP（含全年发电量） | LCOE累计布局下，逐格逐年净损失、正常基准与实际发电量；3 × 3交叉情景 | `/work/home/acxujo26gv/lcoe_station_climate_storage/loss/` | `runtime/authoritative_index.json` → `files[]`；完成状态与读取方式见第11节 |
 | CF：LCOE气候SSP × 场站SSP | LCOE网格点的原生三小时容量因子，完整3 × 3交叉情景 | `/work/home/acxujo26gv/lcoe_station_climate_storage/` | `runtime/authoritative_index.json`，筛选 `product=cf`，详见第12节 |
 | Extreme：LCOE气候SSP × 场站SSP | 同一LCOE网格点的逐时刻极端事件信号，完整3 × 3交叉情景 | `/work/home/acxujo26gv/lcoe_station_climate_storage/` | `runtime/authoritative_index.json`，筛选 `product=extreme`，详见第12节 |
+| CF / Extreme / Loss / 全年发电量：dispatch-2025 | GEM2025初始化的dispatch布局，2030—2059完整3×3评价 | `/work/home/acxujo26gv/dispatch_2025_climate_storage/ssp585/` | `runtime/authoritative_index.json`；[第14节](#dispatch-2025) |
 | CF：LCOE-2025及GEM逐年历史 | 新LCOE累计布局的3×3交叉CF、ERA5历史及固定2025过渡期 | `/work/home/acxujo26gv/lcoe_gem2025_climate_storage/` | `runtime/authoritative_index.json` → `entries[]`，筛选 `product=cf`；第13节 |
 | Extreme：LCOE-2025及GEM逐年历史 | 同一批站点的原生事件信号 | 同上 | 同上，筛选 `product=extreme`；第13节 |
 | Loss、全年发电量与年度CF：LCOE-2025及GEM逐年历史 | 2015—2059分阶段逐站年度指标与完整交叉矩阵 | 同上 | `runtime/authoritative_index.json` → `annual_archives[]/summaries`；第13节 |
@@ -924,3 +925,78 @@ python -m paper_figures.supplementary.global_metric_trends.update_gem2025_docume
 ```
 
 绘图会读取年度档案重建固定容量汇总，使用SLURM的2核/7 GB、单进程执行；原始CF、事件及年度损失产品不在此步骤重算。文档整理只处理已有小表和PNG，可在登录节点执行。
+
+<a id="dispatch-2025"></a>
+
+## 14. 全球场站-dispatch-2025
+
+### 布局、范围与正式入口
+
+采用GEM2025存量初始化的dispatch布局，选址使用MPI-ESM1-2-HR；气候评价保留4个GCM。场站来自 `capacity_recovery_20261113T222351/MPI-ESM1-2-HR` 的九份0.1°容量快照CSV。气候与场站两轴均为 `ssp126/ssp245/ssp585`，完整3×3交叉组合；这里的场站SSP585是已验收的新布局，不沿用原dispatch的SSP560归一规则。
+
+正式统一读取根为 **乌镇1959 / `acxujo26gv`**：
+
+```text
+/work/home/acxujo26gv/dispatch_2025_climate_storage/ssp585/
+├── runtime/authoritative_index.json  # 完整九组合，包含旧四组合的绝对路径
+├── runtime/completion.json           # COMPLETED与索引SHA256
+├── runtime/final_goal_audit.json      # 完整目标验收
+├── inputs/stations/                  # 九份0.1°布局、1°校验表及来源manifest
+├── inputs/upstream_acceptance.json   # SSP585选址与上游验收身份
+├── future/catalogs/                 # 完整场站目录、映射与覆盖
+├── future/outputs/                  # 新增五组合CF与Extreme
+├── loss_future/outputs/             # 新增五组合逐事件Loss
+├── station_results/future/          # 新增40份年度NPZ
+├── source_data/                     # 完整九组合的全球汇总
+└── report/                          # 独立报告、32张PNG、23份源表及脚本
+```
+
+原四组合仍保存在 `/work/home/acxujo26gv/dispatch_2025_climate_storage/`，新索引显式引用旧、新文件。读取完整数据应使用上面的 `ssp585/runtime/authoritative_index.json`，不能只扫描新增根或改写索引内绝对路径。2026-11-18最终验收作业49290002为COMPLETED/0:0；1866与1775实测可读不可写。各计算账号1892、1520、1870向新增共享根写入。
+
+| 项目 | 完整发布范围 |
+|---|---|
+| 模式 | CANESM5、MPI-ESM1-2-HR、MRI-ESM2-0、BCC-CSM2-MR |
+| 技术 | wind、solar；全球汇总另含wind+solar |
+| 年份 | 原生序列和年度评价均为2030—2059；不含历史及2026—2029过渡期 |
+| 容量 | 2030/2040/2050总容量快照分别用于对应十年；光伏MWp/DC、风电MW |
+| 原生产品 | 36,720份CF/Extreme NetCDF、3,060份逐事件年度Loss NetCDF |
+| 年度档案 | 72份完整目录NPZ；四模式×九组合×两技术 |
+| 全球汇总 | 3,240行逐模式、810行集合记录；均含风光合计 |
+
+### 变量、容量和有效支持
+
+`entries[]`按 `product、model、climate_scenario、station_scenario、tech、patch` 筛选CF/Extreme，从 `artifacts[].path` 读取；`loss_files[]`与 `annual_archives[]`使用 `climate_ssp、station_ssp` 字段。`summaries`给出四份CSV的路径和SHA256：`global_annual_models.csv`、`global_annual_ensemble.csv`、`capacity_coverage.csv`、`catalogue_capacity.csv`。年度字段与单位以索引 `annual_schema.path` 指向的清单为准。
+
+CF保留原生三小时时间轴和模式日历，不乘容量；Extreme保留0/1/缺测编码。场站按0.1°格映射至BCSD采样点，格点中心与源采样点坐标分别保存。CF/Extreme不施加投运掩膜；年度能量使用对应十年实际容量，风电能量不乘0.1。文件名沿用源分片名，实际范围以索引和时间轴为准。
+
+Loss保留逐事件及时间并集 `all`：`net_generation_loss_mwh_<event>`是带符号净损失，`generation_loss_mwh_<event>`是正损失；二者不可混用。`all_generation_mwh`是全年CF积分电量。正常CF在三个十年窗口内排除事件并集后按月—小时估计，保存12×8槽位的 `cf_normal` 和 `baseline_count`；Extreme低资源异常另用2015—2024基准。
+
+年度NPZ包含 `years、grid_id、capacity_mw、generation_mwh、net_loss_mwh、positive_loss_mwh、normal_annual_mwh、event_hours、common_support` 等字段。电量已乘实际容量，不再乘一次。单位装机净损失为同一有效集合的净损失总量除以容量总量；损失占比以同集合的全年正常基准电量为分母。事件暴露只要求事件标记已知，损失有效时段还要求CF与正常CF有效。
+
+原生Loss保留映射站点的年度指标及缺测。年度汇总在每个气候SSP×场站SSP×技术内取跨四模式、30年的共同有效集合：全年CF完整、事件标记有效比例至少99%、净损失有限、全年正常基准电量为正。目录容量包含未映射及无效站点；缺测不填零，不向未覆盖容量外推。风光合计先合并分子分母再求比，四模式等权汇总。
+
+### 读取示例与图件
+
+```python
+import hashlib
+import json
+from pathlib import Path
+import numpy as np
+
+root = Path('/work/home/acxujo26gv/dispatch_2025_climate_storage/ssp585')
+p = root / 'runtime/authoritative_index.json'
+index = json.loads(p.read_text())
+done = json.loads((root / 'runtime/completion.json').read_text())
+assert index['status'] == done['status'] == 'COMPLETED'
+assert hashlib.sha256(p.read_bytes()).hexdigest() == done['index_sha256']
+entry = next(a for a in index['annual_archives']
+             if a['model'] == 'CANESM5' and a['tech'] == 'wind'
+             and a['climate_ssp'] == 'ssp585' and a['station_ssp'] == 'ssp585')
+with np.load(entry['path'], allow_pickle=False) as z:
+    iy = int(np.flatnonzero(z['years'] == 2050)[0])
+    cap, loss = z['capacity_mw'][iy], z['net_loss_mwh'][iy]
+    valid = z['common_support'] & (cap > 0) & np.isfinite(loss)
+    unit_loss = loss[valid].sum() / cap[valid].sum()
+```
+
+该产品使用自身索引结构，不适用原五类数据的查询工具。完整方法、覆盖率和图件见[全球场站-dispatch-2025气候评价](全球场站-dispatch-2025气候评价.md)。绘图目录为 [`paper_figures/supplementary/dispatch_2025`](../paper_figures/supplementary/dispatch_2025/)：8张三面板图、24张独立PNG（600 dpi）、23份源表、45条OLS趋势拟合。图件展示126/126、245/245、585/585三条配对路径；路径差异同时包含气候与部署变化，完整九组合从正式索引读取。
