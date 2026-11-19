@@ -85,10 +85,10 @@ To refresh only LCOE-2025 from the existing small annual CSVs, run `python -m pa
 `plot_dispatch2025.py` adds the eight future dispatch-2025 metrics to
 `document/风电光伏数据.html`. It uses the same panel order, colours, axis rules,
 decadal points and annual OLS fits as the original dispatch figures in `plot.py`.
-The data span 2030–2059. SSP126/245 are available; SSP585 has NaN source rows,
-an empty curve object and a labelled legend entry until accepted data arrive.
+The data span 2030–2059. The accepted SSP126/245/585 paired pathways are plotted
+with four-model means and full-period annual fits.
 
-The default input is `/work/home/acxujo26gv/dispatch_2025_climate_storage`.
+The default input is `/work/home/acxujo26gv/dispatch_2025_climate_storage/ssp585`.
 The script verifies its completion/index hashes and reads only the small annual
 model and catalogue-capacity CSVs. Run on the 1866 login node:
 

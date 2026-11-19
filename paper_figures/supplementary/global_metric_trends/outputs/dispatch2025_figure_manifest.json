@@ -2,29 +2,28 @@
   "status": "PASSED",
   "name": "全球场站-dispatch-2025",
   "provenance": {
-    "root": "/work/home/acxujo26gv/dispatch_2025_climate_storage",
-    "index_sha256": "5552bcf1cf4d8427ff6f42aac0b71356309f7b347d40cef1f940e81e163f0e42",
-    "completion_sha256": "eee678bce879bb1ebe8dcc4c89c9631d9ca431e6ff1acf8b8319f8bac33b5b4b",
+    "root": "/work/home/acxujo26gv/dispatch_2025_climate_storage/ssp585",
+    "index_sha256": "72a3f95fa73459df028cb255f0f6c6966513f79075dc743d8569444863ab59f0",
+    "completion_sha256": "bddae07c9d6a70b6a06908ee9f4f19e386f97bce15b4a89e7baf6ce0c120a85b",
     "summaries": [
       {
-        "path": "/work/home/acxujo26gv/dispatch_2025_climate_storage/source_data/global_annual_models.csv",
-        "sha256": "8317b87d56e4ee111837c11e895966de99b92b66de7f3ea63df1f3732e112c1b",
-        "rows": 1440
+        "path": "/work/home/acxujo26gv/dispatch_2025_climate_storage/ssp585/source_data/global_annual_models.csv",
+        "sha256": "70df614a153864b1f8add549ba8111ea1e18640ae1a40acfe8a834eeecc39ea2",
+        "rows": 3240
       },
       {
-        "path": "/work/home/acxujo26gv/dispatch_2025_climate_storage/source_data/catalogue_capacity.csv",
-        "sha256": "83175877b1ef0bae56a97a38732ea70e110ca25be7f3c602766ac2f6128cf82a",
-        "rows": 12
+        "path": "/work/home/acxujo26gv/dispatch_2025_climate_storage/ssp585/source_data/catalogue_capacity.csv",
+        "sha256": "55b8c6896dfc08f7859553246f0f8529cf421534cf1d2b3d8b640ed95413adbf",
+        "rows": 18
       }
     ]
   },
   "available_scenarios": [
     "ssp126",
-    "ssp245"
-  ],
-  "pending_scenarios": [
+    "ssp245",
     "ssp585"
   ],
+  "pending_scenarios": [],
   "figures": [
     {
       "name": "dispatch2025_station_capacity",
@@ -38,73 +37,67 @@
         {
           "tech": "wind+solar",
           "limits": [
-            0.2785946986654715,
-            16.268392637928805
+            0.24593109296552185,
+            16.269948047724043
           ],
           "ticks": [
             0.0,
-            2.0,
-            4.0,
-            6.0,
-            8.0,
+            2.5,
+            5.0,
+            7.5,
             10.0,
-            12.0,
-            14.0,
-            16.0,
-            18.0
+            12.5,
+            15.0,
+            17.5
           ],
           "scenario_points": {
             "ssp126": 3,
             "ssp245": 3,
-            "ssp585": 0
+            "ssp585": 3
           }
         },
         {
           "tech": "wind",
           "limits": [
-            0.2785946986654715,
-            16.268392637928805
+            0.24593109296552185,
+            16.269948047724043
           ],
           "ticks": [
             0.0,
-            2.0,
-            4.0,
-            6.0,
-            8.0,
+            2.5,
+            5.0,
+            7.5,
             10.0,
-            12.0,
-            14.0,
-            16.0,
-            18.0
+            12.5,
+            15.0,
+            17.5
           ],
           "scenario_points": {
             "ssp126": 3,
             "ssp245": 3,
-            "ssp585": 0
+            "ssp585": 3
           }
         },
         {
           "tech": "solar",
           "limits": [
-            0.2785946986654715,
-            16.268392637928805
+            0.24593109296552185,
+            16.269948047724043
           ],
           "ticks": [
             0.0,
-            2.0,
-            4.0,
-            6.0,
-            8.0,
+            2.5,
+            5.0,
+            7.5,
             10.0,
-            12.0,
-            14.0,
-            16.0,
-            18.0
+            12.5,
+            15.0,
+            17.5
           ],
           "scenario_points": {
             "ssp126": 3,
             "ssp245": 3,
-            "ssp585": 0
+            "ssp585": 3
           }
         }
       ],
@@ -120,7 +113,7 @@
             599.9988
           ]
         },
-        "sha256": "363c1cfdcccc2dfbcad138363d3a118e052f4c628b29a38aa7d05cdcd2c64551",
+        "sha256": "79b81cdf6a15cc5ba8c1969cef749faacf65b86a5f5864de8dee84049b1b6854",
         "figure_fraction_bounds": null,
         "text_bounds_check": "PASSED"
       },
@@ -137,7 +130,7 @@
               599.9988
             ]
           },
-          "sha256": "ffd83087dc0d994441045b8cc73c70c4c09d3e085815af0b55e632756e7ed3c4",
+          "sha256": "3b5dec511944570fa61b9460033d2a176e9b1199e9da1e2e34322e898b9d5072",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         },
@@ -153,7 +146,7 @@
               599.9988
             ]
           },
-          "sha256": "718cbf231f2b243e8697164e6b28689e0c337140484bd1cc3335515b20e3635a",
+          "sha256": "df904b1f43c31cfff4449d59c85247e1369d5633eaf1c24e852c5a51a3e26ed1",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         },
@@ -169,7 +162,7 @@
               599.9988
             ]
           },
-          "sha256": "f3f955637bfa6e5c1027e05458d699502fa0dec00f6d227ff13852b649ef5bf7",
+          "sha256": "e9360b6eebc145e93a03844da2a101d0f2b280b6dc70095ffdd30a49cba9e7e8",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         }
@@ -190,10 +183,11 @@
         {
           "tech": "wind+solar",
           "limits": [
-            1194255.5543424264,
-            644221887.4761437
+            -766464.5932306498,
+            644315255.1022186
           ],
           "ticks": [
+            -100000000.0,
             0.0,
             100000000.0,
             200000000.0,
@@ -206,16 +200,17 @@
           "scenario_points": {
             "ssp126": 3,
             "ssp245": 3,
-            "ssp585": 0
+            "ssp585": 3
           }
         },
         {
           "tech": "wind",
           "limits": [
-            1194255.5543424264,
-            644221887.4761437
+            -766464.5932306498,
+            644315255.1022186
           ],
           "ticks": [
+            -100000000.0,
             0.0,
             100000000.0,
             200000000.0,
@@ -228,16 +223,17 @@
           "scenario_points": {
             "ssp126": 3,
             "ssp245": 3,
-            "ssp585": 0
+            "ssp585": 3
           }
         },
         {
           "tech": "solar",
           "limits": [
-            1194255.5543424264,
-            644221887.4761437
+            -766464.5932306498,
+            644315255.1022186
           ],
           "ticks": [
+            -100000000.0,
             0.0,
             100000000.0,
             200000000.0,
@@ -250,7 +246,7 @@
           "scenario_points": {
             "ssp126": 3,
             "ssp245": 3,
-            "ssp585": 0
+            "ssp585": 3
           }
         }
       ],
@@ -266,7 +262,7 @@
             599.9988
           ]
         },
-        "sha256": "5afe6bd099e28753eab844662f9e02b27e4cd4c2251cf0f9c3d79a5d0d1c3a52",
+        "sha256": "64231d8cf6cec3020fee9b2719f19b73265de50e3178ccefe097e93ce8bdcb64",
         "figure_fraction_bounds": null,
         "text_bounds_check": "PASSED"
       },
@@ -283,7 +279,7 @@
               599.9988
             ]
           },
-          "sha256": "53aa321d97bc4ff2ff3bdfde828db455b12a7b366346b750cd0c1477a7df3b7c",
+          "sha256": "edd24a24ac675c0bc996787a3884bb455561d74e8a7899844782c494d7c1f033",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         },
@@ -299,7 +295,7 @@
               599.9988
             ]
           },
-          "sha256": "75803a4b09cc120585ed254b95518d28cc7a6aaabe8e3e95b8b004d29ba7e196",
+          "sha256": "af729c839f7db57c13a1b169b7bf1532ae2373b34e5655aed83d1808546304cd",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         },
@@ -315,7 +311,7 @@
               599.9988
             ]
           },
-          "sha256": "f5209e0740d55dd827f159e589ddfce0b78d64aed84dfd4f0ff04bcf2fbc48c3",
+          "sha256": "25b50495475bed161417ec68e41e5d4be6478ef057b04bae3437e414fb3482ad",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         }
@@ -353,7 +349,7 @@
           "scenario_points": {
             "ssp126": 3,
             "ssp245": 3,
-            "ssp585": 0
+            "ssp585": 3
           }
         },
         {
@@ -376,7 +372,7 @@
           "scenario_points": {
             "ssp126": 3,
             "ssp245": 3,
-            "ssp585": 0
+            "ssp585": 3
           }
         },
         {
@@ -399,7 +395,7 @@
           "scenario_points": {
             "ssp126": 3,
             "ssp245": 3,
-            "ssp585": 0
+            "ssp585": 3
           }
         }
       ],
@@ -415,7 +411,7 @@
             599.9988
           ]
         },
-        "sha256": "0c50ea1c45010cf97e05c59955c702214f65929eb362d4b1760366d2985ccfe4",
+        "sha256": "d10ce233dc934110940593d53935552022c5dd6bb0ceb2665677bd61954418d3",
         "figure_fraction_bounds": null,
         "text_bounds_check": "PASSED"
       },
@@ -432,7 +428,7 @@
               599.9988
             ]
           },
-          "sha256": "db9933a3395100039ae450308b1c8678af2b435a1b79dfa13591273e00654bc6",
+          "sha256": "fe668727e2201ac4b81cf63f1e40f31b7ddfca80657767ce4ddf773273197aee",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         },
@@ -448,7 +444,7 @@
               599.9988
             ]
           },
-          "sha256": "0aad8296771341942a771928b01d2b6b3d38c32d109d56a04f943eeac061c57c",
+          "sha256": "d877debcfe79c4962336553cf8127478cf30e4ffdeaf51a03d1a28f8e16c7972",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         },
@@ -464,7 +460,7 @@
               599.9988
             ]
           },
-          "sha256": "dde78dc9a57f4b14edf3381bd339a763eb1a87a9d552b9451a0a58f69898b9c4",
+          "sha256": "33f3a4f92f6a8b55635b2f92c05ffbfd2eeef00c15ebf1b80e792677ecb4b367",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         }
@@ -503,7 +499,7 @@
           "scenario_points": {
             "ssp126": 30,
             "ssp245": 30,
-            "ssp585": 0
+            "ssp585": 30
           }
         },
         {
@@ -527,7 +523,7 @@
           "scenario_points": {
             "ssp126": 30,
             "ssp245": 30,
-            "ssp585": 0
+            "ssp585": 30
           }
         },
         {
@@ -551,7 +547,7 @@
           "scenario_points": {
             "ssp126": 30,
             "ssp245": 30,
-            "ssp585": 0
+            "ssp585": 30
           }
         }
       ],
@@ -567,7 +563,7 @@
             599.9988
           ]
         },
-        "sha256": "e68a47315321cfb4f5814b6080e52cb92950403c7326c1965041c8cb9afae88e",
+        "sha256": "80de96e6bb845b788a4c30c3941fd68a75452885724dc224dffc30ef87cdde95",
         "figure_fraction_bounds": null,
         "text_bounds_check": "PASSED"
       },
@@ -584,7 +580,7 @@
               599.9988
             ]
           },
-          "sha256": "48b414a21def8b7ad66d80f61e2d904648c1288b78d70c2f013f967e7449270c",
+          "sha256": "c9864eda5cb4a71dc208f3a763b193289818fab6969f9ce294ce5103f300b0c8",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         },
@@ -600,7 +596,7 @@
               599.9988
             ]
           },
-          "sha256": "b43f9604fc809a994375c57e45da854ec43b8693afac2dcd3431268915830de2",
+          "sha256": "fdf857f7bc0cc6ef3ae327475fedfc630ff84ea6090c839c28a80977ea874d6e",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         },
@@ -616,7 +612,7 @@
               599.9988
             ]
           },
-          "sha256": "9cea001fd2bdc391e1f5222f86bdc3f21d077214c94fe799ad17731e470e94f4",
+          "sha256": "b660941b5b6ca80204c8e9e22363724bda785c0cd5c13e28ab9b248f157fa657",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         }
@@ -646,6 +642,17 @@
         },
         {
           "figure": "dispatch2025_station_total_loss",
+          "tech": "wind+solar",
+          "climate_ssp": "ssp585",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": 557796.0664304884,
+          "fitted_value_2030": 226356271.03780174,
+          "r_squared": 0.28267455204071157
+        },
+        {
+          "figure": "dispatch2025_station_total_loss",
           "tech": "wind",
           "climate_ssp": "ssp126",
           "start": 2030,
@@ -668,6 +675,17 @@
         },
         {
           "figure": "dispatch2025_station_total_loss",
+          "tech": "wind",
+          "climate_ssp": "ssp585",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": 688443.0299445493,
+          "fitted_value_2030": 112572190.8560217,
+          "r_squared": 0.5563457191153238
+        },
+        {
+          "figure": "dispatch2025_station_total_loss",
           "tech": "solar",
           "climate_ssp": "ssp126",
           "start": 2030,
@@ -687,6 +705,17 @@
           "slope_per_year": 2148514.2594643,
           "fitted_value_2030": 115079151.85842842,
           "r_squared": 0.8397041389371245
+        },
+        {
+          "figure": "dispatch2025_station_total_loss",
+          "tech": "solar",
+          "climate_ssp": "ssp585",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": -130646.96351406115,
+          "fitted_value_2030": 113784080.18178001,
+          "r_squared": 0.09101063209974647
         }
       ],
       "model_table": "source_data/dispatch2025_station_total_loss_models.csv",
@@ -718,7 +747,7 @@
           "scenario_points": {
             "ssp126": 30,
             "ssp245": 30,
-            "ssp585": 0
+            "ssp585": 30
           }
         },
         {
@@ -738,27 +767,27 @@
           "scenario_points": {
             "ssp126": 30,
             "ssp245": 30,
-            "ssp585": 0
+            "ssp585": 30
           }
         },
         {
           "tech": "solar",
           "limits": [
-            70.0,
-            95.0
+            72.0,
+            102.0
           ],
           "ticks": [
-            70.0,
-            75.0,
-            80.0,
-            85.0,
+            72.0,
+            78.0,
+            84.0,
             90.0,
-            95.0
+            96.0,
+            102.0
           ],
           "scenario_points": {
             "ssp126": 30,
             "ssp245": 30,
-            "ssp585": 0
+            "ssp585": 30
           }
         }
       ],
@@ -774,7 +803,7 @@
             599.9988
           ]
         },
-        "sha256": "bbd86f522ca7fb941ca9bac6bf7d6d8a23de5731b8acbb47c99c780cc178fa2b",
+        "sha256": "8d3bc273efface98ac3868c4b192649847c11433169c8d8d0a54dc75467c3a61",
         "figure_fraction_bounds": null,
         "text_bounds_check": "PASSED"
       },
@@ -791,7 +820,7 @@
               599.9988
             ]
           },
-          "sha256": "63cc3b863b402dc4b491bff5be0b04c9c20c7b5a95194e33ef72bbc42ee836b3",
+          "sha256": "680be0b1b8fb5a5ce3b9cb2ec0443657567fd56b0538dd8d521e50f43fe819c2",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         },
@@ -807,7 +836,7 @@
               599.9988
             ]
           },
-          "sha256": "91f29248ea503774cb548e8a19f33f2a67f84221695199ad3ee8948c689d3714",
+          "sha256": "326528730a55b68648ace9b91c3a7a041ca7290384d418cafb65f1d456dfd7b5",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         },
@@ -823,7 +852,7 @@
               599.9988
             ]
           },
-          "sha256": "11de9ea389b56fac94a6f53a4b4ecf3f005aed152b3bfd6e7df8b21d703e2c0d",
+          "sha256": "aabe16970b38e69398ccde88927dfccb8e0608fe88cc78cef3981157f6c48b6a",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         }
@@ -853,6 +882,17 @@
         },
         {
           "figure": "dispatch2025_station_unit_loss",
+          "tech": "wind+solar",
+          "climate_ssp": "ssp585",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": -0.16866588046722772,
+          "fitted_value_2030": 105.57270574499495,
+          "r_squared": 0.28252758868671135
+        },
+        {
+          "figure": "dispatch2025_station_unit_loss",
           "tech": "wind",
           "climate_ssp": "ssp126",
           "start": 2030,
@@ -875,6 +915,17 @@
         },
         {
           "figure": "dispatch2025_station_unit_loss",
+          "tech": "wind",
+          "climate_ssp": "ssp585",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": -0.15580021282191955,
+          "fitted_value_2030": 124.61455189253354,
+          "r_squared": 0.13585303878653665
+        },
+        {
+          "figure": "dispatch2025_station_unit_loss",
           "tech": "solar",
           "climate_ssp": "ssp126",
           "start": 2030,
@@ -894,6 +945,17 @@
           "slope_per_year": -0.31664399662667647,
           "fitted_value_2030": 89.05688075820558,
           "r_squared": 0.6203990928751204
+        },
+        {
+          "figure": "dispatch2025_station_unit_loss",
+          "tech": "solar",
+          "climate_ssp": "ssp585",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": -0.25492819003214073,
+          "fitted_value_2030": 91.69472683534607,
+          "r_squared": 0.4206413231824234
         }
       ],
       "model_table": "source_data/dispatch2025_station_unit_loss_models.csv",
@@ -931,7 +993,7 @@
           "scenario_points": {
             "ssp126": 30,
             "ssp245": 30,
-            "ssp585": 0
+            "ssp585": 30
           }
         },
         {
@@ -955,14 +1017,14 @@
           "scenario_points": {
             "ssp126": 30,
             "ssp245": 30,
-            "ssp585": 0
+            "ssp585": 30
           }
         },
         {
           "tech": "solar",
           "limits": [
             3.5,
-            4.75
+            5.0
           ],
           "ticks": [
             3.5,
@@ -970,12 +1032,13 @@
             4.0,
             4.25,
             4.5,
-            4.75
+            4.75,
+            5.0
           ],
           "scenario_points": {
             "ssp126": 30,
             "ssp245": 30,
-            "ssp585": 0
+            "ssp585": 30
           }
         }
       ],
@@ -991,7 +1054,7 @@
             599.9988
           ]
         },
-        "sha256": "4ed0a1f151b87262c13bf8aeb606c1add003857c780d7aafe99b20dd6150b2bd",
+        "sha256": "6bf628ed4832bf7ae035b27cb9afc8adf9bcf2855f046713d6d83797cdcef9e7",
         "figure_fraction_bounds": null,
         "text_bounds_check": "PASSED"
       },
@@ -1008,7 +1071,7 @@
               599.9988
             ]
           },
-          "sha256": "ffcd3b5647d5b5e0fe2b09544dac31b7b2f1c42deb11b886d5adcf9caceacfcd",
+          "sha256": "8752008807c4f262e2a80d893f5affb30aace72c5847bb3cb1880579d53424b5",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         },
@@ -1024,7 +1087,7 @@
               599.9988
             ]
           },
-          "sha256": "7767e6da965842eb1bd35ee1a86555434fe3b37b822f080cd2ebfa949b47ae84",
+          "sha256": "83bb127238e39a61d94e03dd7f8175a32c15c20120a45d0a9b01ca33e8a9d933",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         },
@@ -1040,7 +1103,7 @@
               599.9988
             ]
           },
-          "sha256": "12aab2167e6db33e67c4091990ea3c04174fff76c5933a576e9889fef432a157",
+          "sha256": "084e96975368223b1df591b8e035496e411229fa9add1f6d9fea6e8d1f5c48e1",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         }
@@ -1053,8 +1116,8 @@
           "start": 2030,
           "end": 2059,
           "n_years": 30,
-          "slope_per_year": 0.061267906801896775,
-          "fitted_value_2030": 5.283521080894513,
+          "slope_per_year": 0.06126790680189682,
+          "fitted_value_2030": 5.283521080894512,
           "r_squared": 0.7693235945346683
         },
         {
@@ -1067,6 +1130,17 @@
           "slope_per_year": 0.02598722181450214,
           "fitted_value_2030": 5.3384587200115545,
           "r_squared": 0.7230981960289844
+        },
+        {
+          "figure": "dispatch2025_station_loss_fraction",
+          "tech": "wind+solar",
+          "climate_ssp": "ssp585",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": -0.0076870878333437824,
+          "fitted_value_2030": 5.570957318178912,
+          "r_squared": 0.22257431925664573
         },
         {
           "figure": "dispatch2025_station_loss_fraction",
@@ -1092,6 +1166,17 @@
         },
         {
           "figure": "dispatch2025_station_loss_fraction",
+          "tech": "wind",
+          "climate_ssp": "ssp585",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": -0.003383037578448732,
+          "fitted_value_2030": 6.861483403018935,
+          "r_squared": 0.024042321314779347
+        },
+        {
+          "figure": "dispatch2025_station_loss_fraction",
           "tech": "solar",
           "climate_ssp": "ssp126",
           "start": 2030,
@@ -1111,6 +1196,17 @@
           "slope_per_year": -0.020881231095921236,
           "fitted_value_2030": 4.475219283807105,
           "r_squared": 0.7334344477377972
+        },
+        {
+          "figure": "dispatch2025_station_loss_fraction",
+          "tech": "solar",
+          "climate_ssp": "ssp585",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": -0.014522272519106667,
+          "fitted_value_2030": 4.701992784927013,
+          "r_squared": 0.4688749861597744
         }
       ],
       "model_table": "source_data/dispatch2025_station_loss_fraction_models.csv",
@@ -1143,7 +1239,7 @@
           "scenario_points": {
             "ssp126": 30,
             "ssp245": 30,
-            "ssp585": 0
+            "ssp585": 30
           }
         },
         {
@@ -1164,7 +1260,7 @@
           "scenario_points": {
             "ssp126": 30,
             "ssp245": 30,
-            "ssp585": 0
+            "ssp585": 30
           }
         },
         {
@@ -1185,7 +1281,7 @@
           "scenario_points": {
             "ssp126": 30,
             "ssp245": 30,
-            "ssp585": 0
+            "ssp585": 30
           }
         }
       ],
@@ -1201,7 +1297,7 @@
             599.9988
           ]
         },
-        "sha256": "c8d3c6257f2fb1601a70084e48b6084d9ee3fbef97a2163b72029bf710601b59",
+        "sha256": "1943e80940e3bac68cd7ba4e0caae2b8e75f9c3a7e1c9c8c7508929e03867cff",
         "figure_fraction_bounds": null,
         "text_bounds_check": "PASSED"
       },
@@ -1218,7 +1314,7 @@
               599.9988
             ]
           },
-          "sha256": "135a8f421a343ecc02ffa782c28ffb55f884e3f85d79a6ba75825633b0e723cd",
+          "sha256": "d203900493e4f0efa1c38852ef4f0f5fe1bc46987c0b500fbfc21e602fc857f7",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         },
@@ -1234,7 +1330,7 @@
               599.9988
             ]
           },
-          "sha256": "7ddbbbe26adad634c69999067de9f1cc6a612982f05ecd13ee32c06ef9f814a2",
+          "sha256": "ebd9c14781a29f5900b635fc7f8435b530b36aac6ca2498bbb62e943a5a07ce2",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         },
@@ -1250,7 +1346,7 @@
               599.9988
             ]
           },
-          "sha256": "a5c99538e945e4cfe25b7465dbbd703bf5a28542a7ac7a7f35c446aa81f9132d",
+          "sha256": "1548611d22b92a4e523578e545e987a50e88a31a970baceed69b54d65fd82de6",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         }
@@ -1280,6 +1376,17 @@
         },
         {
           "figure": "dispatch2025_station_total_generation",
+          "tech": "wind+solar",
+          "climate_ssp": "ssp585",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": 0.015668547511345166,
+          "fitted_value_2030": 3.8323343132081584,
+          "r_squared": 0.6854598896934858
+        },
+        {
+          "figure": "dispatch2025_station_total_generation",
           "tech": "wind",
           "climate_ssp": "ssp126",
           "start": 2030,
@@ -1302,6 +1409,17 @@
         },
         {
           "figure": "dispatch2025_station_total_generation",
+          "tech": "wind",
+          "climate_ssp": "ssp585",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": 0.010441305777091426,
+          "fitted_value_2030": 1.5294526452493762,
+          "r_squared": 0.6581413811305636
+        },
+        {
+          "figure": "dispatch2025_station_total_generation",
           "tech": "solar",
           "climate_ssp": "ssp126",
           "start": 2030,
@@ -1321,6 +1439,17 @@
           "slope_per_year": 0.06741900503749561,
           "fitted_value_2030": 2.4054850818784246,
           "r_squared": 0.8916711906349506
+        },
+        {
+          "figure": "dispatch2025_station_total_generation",
+          "tech": "solar",
+          "climate_ssp": "ssp585",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": 0.005227241734253742,
+          "fitted_value_2030": 2.302881667958782,
+          "r_squared": 0.7189132871759154
         }
       ],
       "model_table": "source_data/dispatch2025_station_total_generation_models.csv",
@@ -1356,7 +1485,7 @@
           "scenario_points": {
             "ssp126": 30,
             "ssp245": 30,
-            "ssp585": 0
+            "ssp585": 30
           }
         },
         {
@@ -1379,16 +1508,18 @@
           "scenario_points": {
             "ssp126": 30,
             "ssp245": 30,
-            "ssp585": 0
+            "ssp585": 30
           }
         },
         {
           "tech": "solar",
           "limits": [
-            1875.0,
+            1825.0,
             2075.0
           ],
           "ticks": [
+            1825.0,
+            1850.0,
             1875.0,
             1900.0,
             1925.0,
@@ -1402,7 +1533,7 @@
           "scenario_points": {
             "ssp126": 30,
             "ssp245": 30,
-            "ssp585": 0
+            "ssp585": 30
           }
         }
       ],
@@ -1418,7 +1549,7 @@
             599.9988
           ]
         },
-        "sha256": "b68264b1204a0bfdff178a964b8acd06a783fe1f613465ca0546f9f1fa6549d2",
+        "sha256": "78b33eabb92b24a60718d6a2ed94a827e0dc76fb2b5521eee54adb44e744fca0",
         "figure_fraction_bounds": null,
         "text_bounds_check": "PASSED"
       },
@@ -1435,7 +1566,7 @@
               599.9988
             ]
           },
-          "sha256": "0c2562bf22d211ed7ddaadd4ba01d0441a39f94e14b1aa0062a6cbc1faf4a8d2",
+          "sha256": "c245cd040cbd89d8d93fd351ce05082ffe1c939da17fdc211385390c322f7171",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         },
@@ -1451,7 +1582,7 @@
               599.9988
             ]
           },
-          "sha256": "a8f590b9e89f260178cdcaa0904e519c430827eb3894ec71ce85421cef60ade7",
+          "sha256": "93ae22176c738235c694621d2e5007745411a9178c47e15af05ab891ca021396",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         },
@@ -1467,7 +1598,7 @@
               599.9988
             ]
           },
-          "sha256": "0aa27eea351f45c99c273952c71801e08824006c1504961567285abaeec4a938",
+          "sha256": "1971e34f7c103d574e73438875de847846c4edcf8094bc317d56c561abe93d64",
           "figure_fraction_bounds": null,
           "text_bounds_check": "PASSED"
         }
@@ -1497,6 +1628,17 @@
         },
         {
           "figure": "dispatch2025_station_unit_generation",
+          "tech": "wind+solar",
+          "climate_ssp": "ssp585",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": -0.2835693886536346,
+          "fitted_value_2030": 1789.108669622191,
+          "r_squared": 0.04346170366120983
+        },
+        {
+          "figure": "dispatch2025_station_unit_generation",
           "tech": "wind",
           "climate_ssp": "ssp126",
           "start": 2030,
@@ -1519,6 +1661,17 @@
         },
         {
           "figure": "dispatch2025_station_unit_generation",
+          "tech": "wind",
+          "climate_ssp": "ssp585",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": -1.164863075412245,
+          "fitted_value_2030": 1694.2956626523999,
+          "r_squared": 0.20630007108522608
+        },
+        {
+          "figure": "dispatch2025_station_unit_generation",
           "tech": "solar",
           "climate_ssp": "ssp126",
           "start": 2030,
@@ -1538,6 +1691,17 @@
           "slope_per_year": 2.961041927098587,
           "fitted_value_2030": 1896.0092388145376,
           "r_squared": 0.8871441579841148
+        },
+        {
+          "figure": "dispatch2025_station_unit_generation",
+          "tech": "solar",
+          "climate_ssp": "ssp585",
+          "start": 2030,
+          "end": 2059,
+          "n_years": 30,
+          "slope_per_year": 0.8543408508927801,
+          "fitted_value_2030": 1857.6045109026988,
+          "r_squared": 0.3879033803956691
         }
       ],
       "model_table": "source_data/dispatch2025_station_unit_generation_models.csv",
@@ -1546,7 +1710,7 @@
   ],
   "visual_review": "dispatch2025_visual_review.json",
   "code": {
-    "plot_dispatch2025.py": "a9ea03b5ca378a29dcfa59c45d9343c90add7526e6875c555476a72f5a030e7c",
+    "plot_dispatch2025.py": "f132473feae0cae41a44e5716eb8c551606f68964761277994e174411425e4d4",
     "plot_dispatch2025.sh": "0d2defd4e105be2756bf82dd342505229d0e2151e258e9fca7c3f583d548b7c4",
     "plot.py": "a76e3f284955fad404fcbfa3f76879066dd272e4e229aa5e1402c708950641a7",
     "plotting.py": "9c173efd9b6278e0bab5ca20ce966936ac8b5bf213ad18b785a77533ea25ff00"

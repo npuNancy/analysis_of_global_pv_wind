@@ -2,14 +2,14 @@
   "status": "PASSED",
   "figures": 8,
   "independent_panels": 24,
-  "linear_fits": 30,
+  "linear_fits": 45,
   "years": [
     2030,
     2059
   ],
-  "paired_annual_rows": 720,
+  "paired_annual_rows": 1080,
   "capacity_coverage": [
-    0.9726496927433156,
+    0.9717764271722492,
     0.9975517711232011
   ],
   "checks": [
@@ -23,17 +23,17 @@
     "mean and fit bounds",
     "600 dpi PNG and text bounds",
     "full/panel axis equality",
-    "HTML idempotency",
-    "complete SSP585 interface fixture",
-    "incomplete SSP585 rejected",
-    "Markdown and data guide unchanged",
+    "SSP126/245 model and display values unchanged",
+    "all three SSP paths finite",
+    "45 fits including 15 SSP585 fits",
+    "sticky scroll CSS and JavaScript unchanged",
+    "HTML update idempotent",
     "all 32 PNGs visually inspected",
-    "all 44 HTML figure numbers and links",
-    "existing GEM updater preserves added dispatch-2025 figures"
+    "Markdown captions synchronized"
   ],
   "html": {
     "path": "document/风电光伏数据.html",
-    "sha256": "9b1bfaff5baf5a1a7127bf5dc21f653354cf54b4d03fc050e7e7ef0ff0dc1896",
+    "sha256": "b507a089ce4a33e1a08590424b5bc6154a51ce53afa3783f910a45eb7748e1ce",
     "embedded_figures": 44,
     "added_figures": 8,
     "existing_images_preserved": true,

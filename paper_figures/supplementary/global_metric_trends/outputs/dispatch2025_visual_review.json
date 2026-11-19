@@ -38,12 +38,11 @@
     "dispatch2025_station_unit_generation_c.png"
   ],
   "checks": [
-    "original dispatch three-panel layout and SSP colours retained",
-    "titles, axes, units and legends legible with no overlap or clipping",
-    "all data and full-period fit lines contained in axes",
-    "SSP585 pending legend visible; no invented values or fit",
-    "future years/decades only",
-    "independent panel scales equal the corresponding complete panel"
+    "SSP126/245/585 curves and legends present",
+    "SSP585 red curves and annual fits visible",
+    "titles, axes and legends readable without clipping",
+    "full and independent panel axis ranges agree",
+    "original dispatch style retained; future periods only"
   ],
-  "findings": "No visual corrections required"
+  "findings": "All 32 PNGs visually inspected; no corrections required."
 }

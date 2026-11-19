@@ -19,7 +19,8 @@
   ],
   "available_scenarios": [
     "ssp126",
-    "ssp245"
+    "ssp245",
+    "ssp585"
   ],
   "pending": "NaN source rows; empty colored Line2D and pending legend; no fitted values",
   "centre": "4-model equal mean; capacity is deterministic catalogue total",

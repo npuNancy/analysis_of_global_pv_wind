@@ -19,7 +19,7 @@ from paper_figures.supplementary.global_metric_trends.plot import TECHS, LABELS,
 HERE = Path(__file__).resolve().parent
 OUT = HERE / "outputs"
 DATA = OUT / "source_data"
-DEFAULT_ROOT = Path("/work/home/acxujo26gv/dispatch_2025_climate_storage")
+DEFAULT_ROOT = Path("/work/home/acxujo26gv/dispatch_2025_climate_storage/ssp585")
 PREFIX = "dispatch2025_station_"
 URL = "../paper_figures/supplementary/global_metric_trends/"
 CATEGORIES = {"capacity": "装机量", "exposure": "极端事件（暴露时长）",
