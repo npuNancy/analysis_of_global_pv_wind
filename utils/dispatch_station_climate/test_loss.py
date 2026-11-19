@@ -38,6 +38,52 @@ class EventLossTests(unittest.TestCase):
         self.assertEqual(metric_units("net_generation_loss_per_mw_all"),"MWh MW-1")
         self.assertEqual(metric_units("net_generation_loss_mwh_all"),"MWh")
 
+class CapacityValidationTests(unittest.TestCase):
+    def test_accepted_cellwise_rounding_and_corruption(self):
+        import pandas as pd
+        from scnet.dispatch_2025.prepare import validate_capacity
+        parent=pd.DataFrame(dict(grid_id=np.arange(100),capacity_mw=np.full(100,40.)))
+        child=pd.DataFrame(dict(grid_id=np.arange(100)*10,capacity_mw=np.full(100,39.9995)))
+        check=dict(capacity_gw=4.,parent_child_max_error_tw=5e-10)
+        result=validate_capacity(child,parent,check)
+        self.assertAlmostEqual(result["capacity_01deg_mw"],3999.95)
+        bad=child.copy();bad.loc[0,"capacity_mw"]-=.1
+        with self.assertRaisesRegex(ValueError,"parent-child"):
+            validate_capacity(bad,parent,check)
+        bad=parent.copy();bad.loc[0,"capacity_mw"]+=.1
+        with self.assertRaisesRegex(ValueError,"parent capacity"):
+            validate_capacity(child,bad,check)
+
+
+class ReuseReleaseTests(unittest.TestCase):
+    def test_reuse_requires_accepted_hash_and_disjoint_complete_pairs(self):
+        from utils.dispatch_station_climate.publish import reuse_release
+        from utils.lcoe_station_climate.pipeline import sha,write_json
+        with tempfile.TemporaryDirectory() as directory:
+            base=Path(directory);path=base/"runtime/authoritative_index.json"
+            cfg=dict(models=["model"],years=[2030,2059],climate_ssps=["ssp126","ssp585"],
+                     station_ssps=["ssp126","ssp585"],
+                     station_ssps_by_climate={"ssp126":["ssp585"],"ssp585":["ssp126","ssp585"]})
+            index=dict(status="COMPLETED",models=cfg["models"],years=cfg["years"],
+                       climate_ssps=["ssp126"],station_ssps=["ssp126"],
+                       provenance={},annual_archives=[],summaries={})
+            write_json(path,index)
+            cfg["reuse_index"]=dict(path=str(path),sha256=sha(path))
+            write_json(base/"runtime/completion.json",dict(status="COMPLETED",index_sha256=sha(path)))
+            write_json(base/"inputs/code_manifest.json",{})
+            for stage in ["future","loss_future","publish"]:
+                write_json(base/stage/"runtime/tasks.json",[])
+                write_json(base/stage/"runtime/state.json",{})
+            self.assertEqual(reuse_release(cfg),index)
+            cfg["station_ssps_by_climate"]["ssp126"]=["ssp126","ssp585"]
+            with self.assertRaisesRegex(ValueError,"partition"):
+                reuse_release(cfg)
+            cfg["station_ssps_by_climate"]["ssp126"]=["ssp585"]
+            write_json(path,{**index,"status":"FAILED"})
+            with self.assertRaisesRegex(ValueError,"hash"):
+                reuse_release(cfg)
+
+
 class NativeArchiveTests(unittest.TestCase):
     def test_native_archive_units_baseline_generation_and_resume(self):
         from utils.dispatch_station_climate.loss import run

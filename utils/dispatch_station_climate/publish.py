@@ -11,7 +11,7 @@ import pandas as pd
 
 from utils.gem_station_climate import publish as common
 from .loss import task_identity
-from utils.lcoe_station_climate.pipeline import read, write_json, sha, require, fingerprint
+from utils.lcoe_station_climate.pipeline import read, write_json, sha, require, fingerprint, scenario_pairs
 
 ROOT = Path("/work/home/acxujo26gv/dispatch_2025_climate_storage")
 
@@ -37,7 +37,7 @@ def prepare(root):
         task["calendar"] = done["calendar"]
         inputs.append(task)
     tasks=[]
-    for scenario,climate,tech in itertools.product(cfg["station_ssps"],cfg["climate_ssps"],cfg["techs"]):
+    for (climate,scenario),tech in itertools.product(scenario_pairs(cfg),cfg["techs"]):
         unit="_".join(["future",scenario,climate,tech])
         selected=[t for t in inputs if t["station_ssp"]==scenario and t["climate_ssp"]==climate and t["tech"]==tech]
         require({t["model"] for t in selected}==set(cfg["models"]),"Incomplete model group")
@@ -135,9 +135,48 @@ def validate_annual_archive(artifact, catalogue, cfg):
         require(required<=set(z.files),"Annual archive fields")
 
 
+def reuse_release(cfg):
+    source=cfg.get("reuse_index")
+    if not source:
+        return None
+    require(sha(source["path"])==source["sha256"],"Reused index hash mismatch")
+    base=Path(source["path"]).parents[1]
+    index=read(source["path"])
+    done=read(base/"runtime/completion.json")
+    require(index["status"]==done["status"]=="COMPLETED" and
+            done["index_sha256"]==source["sha256"],"Reused release is not accepted")
+    for name in ["years","models"]:
+        require(index[name]==cfg[name],"Reused release dimension mismatch: "+name)
+    previous=set(itertools.product(index["climate_ssps"],index["station_ssps"]))
+    selected=set(scenario_pairs(cfg))
+    expected=set(itertools.product(cfg["climate_ssps"],cfg["station_ssps"]))
+    require(not previous & selected and previous | selected==expected,
+            "Reused and new pairs must partition the complete matrix")
+    for meta in index["provenance"].values():
+        require(sha(meta["path"])==meta["sha256"],"Reused provenance changed")
+    frozen=read(base/"inputs/code_manifest.json")
+    for name,digest in frozen.items():
+        require(sha(base/"code"/name)==digest,"Reused frozen code changed: "+name)
+    for stage in ["future","loss_future","publish"]:
+        for _ in accepted_tasks(base,stage):
+            pass
+    for artifact in index["annual_archives"]:
+        require(sha(artifact["path"])==artifact["sha256"],"Reused annual archive hash mismatch")
+    for meta in index["summaries"].values():
+        require(sha(meta["path"])==meta["sha256"],"Reused summary changed")
+    return index
+
+
 def finalize(root):
     cfg=read(root/"inputs/campaign.json")
+    reused=reuse_release(cfg)
+    selected=set(scenario_pairs(cfg))
     grouped={};native_loss=[];catalogues={}
+    if reused:
+        for entry in reused["entries"]:
+            key=tuple(entry[k] for k in ["product","model","climate_scenario","station_scenario","tech","patch"])
+            grouped[key]=list(entry["artifacts"])
+        native_loss.extend(reused["loss_files"])
     for scenario,tech in itertools.product(cfg["station_ssps"],cfg["techs"]):
         path=root/"future/catalogs"/f"{scenario}_{tech}.csv.gz"
         frame=pd.read_csv(path)
@@ -150,6 +189,8 @@ def finalize(root):
                 "Extraction fingerprint mismatch")
         for artifact in done["outputs"]:
             require(artifact["source_comparison"]=="PASSED","Extraction comparison missing")
+            require((artifact["climate_scenario"],artifact["station_scenario"]) in selected,
+                    "Extraction contains an unselected pair")
             key=tuple(artifact[k] for k in ["product","model","climate_scenario","station_scenario","tech","patch"])
             grouped.setdefault(key,[]).append(artifact)
     patches=sorted({r["patch"] for r in read(root/"future/inputs/cf_index.json")["entries"]})
@@ -172,10 +213,12 @@ def finalize(root):
     expected_loss={(model,climate,scenario,tech,patch) for model,climate,scenario,tech,patch
         in itertools.product(cfg["models"],cfg["climate_ssps"],cfg["station_ssps"],cfg["techs"],patches)
         if ((catalogues[scenario,tech].mapping_status=="MATCHED") & (catalogues[scenario,tech].patch==patch)).any()}
-    seen_loss=set()
+    seen_loss={tuple(a[k] for k in ["model","climate_ssp","station_ssp","tech","patch"]) for a in native_loss}
+    require(len(seen_loss)==len(native_loss),"Duplicate reused loss unit")
     for entry,task,done in accepted_tasks(root,"loss_future"):
         require(done["identity"]==task_identity(Path(entry["path"]),root/"inputs/reference_code"),"Loss code/reference fingerprint mismatch")
         key=tuple(task[k] for k in ["model","climate_ssp","station_ssp","tech","patch"])
+        require((task["climate_ssp"],task["station_ssp"]) in selected,"Loss contains an unselected pair")
         require(key not in seen_loss,"Duplicate loss unit");seen_loss.add(key)
         artifact=next(a for a in done["outputs"] if a["product"]=="loss")
         validate_native_loss(artifact,task,done,catalogues[task["station_ssp"],task["tech"]],cfg)
@@ -183,8 +226,13 @@ def finalize(root):
                                 **artifact,receipt=dict(path=entry["marker"],sha256=sha(entry["marker"])),calendar=done["calendar"]))
     require(seen_loss==expected_loss,"Incomplete annual loss matrix")
     archives=[];frames=[]
+    if reused:
+        archives.extend(reused["annual_archives"])
+        previous=pd.read_csv(reused["summaries"]["global_annual_models.csv"]["path"])
+        frames.append(previous[previous.tech.isin(cfg["techs"])].copy())
     for entry,task,done in accepted_tasks(root,"publish"):
         require(done["code_sha256"]==sha(common.__file__),"Annual publication code mismatch")
+        require((task["climate_ssp"],task["station_ssp"]) in selected,"Publication contains an unselected pair")
         archives.extend(done["outputs"])
         require(sha(done["summary"]["path"])==done["summary"]["sha256"],"Summary hash mismatch")
         frames.append(pd.read_csv(done["summary"]["path"]))
@@ -212,6 +260,14 @@ def finalize(root):
     expected=set(itertools.product(cfg["models"],cfg["climate_ssps"],cfg["station_ssps"],["wind","solar","wind+solar"],range(cfg["years"][0],cfg["years"][1]+1)))
     require(not frame.duplicated(keycols).any() and set(frame[keycols].itertuples(index=False,name=None))==expected,"Annual global matrix mismatch")
     require(np.isfinite(frame[numeric+["cf_mean","unit_loss_mwh_per_mw"]].to_numpy()).all(),"Nonfinite global metrics")
+    if reused:
+        comparison=frame.merge(previous[keycols],on=keycols,validate="one_to_one")
+        columns=keycols+numeric+["cf_mean","unit_loss_mwh_per_mw","loss_fraction_pct",
+                                 "unit_generation_mwh_per_mw","exposure_days","capacity_coverage"]
+        pd.testing.assert_frame_equal(
+            comparison[columns].sort_values(keycols).reset_index(drop=True),
+            previous[columns].sort_values(keycols).reset_index(drop=True),
+            check_exact=False,rtol=1e-12,atol=1e-7)
     np.testing.assert_allclose(frame.net_loss_mwh,frame.event_normal_mwh-frame.event_actual_mwh,rtol=2e-6,atol=.2)
     require(frame.capacity_coverage.between(0,1.000001).all() and frame.cf_mean.between(0,1).all(),"Global bounds")
     data=root/"source_data";data.mkdir(exist_ok=True)
@@ -251,7 +307,7 @@ def finalize(root):
     artifacts=[a for e in entries for a in e["artifacts"]]+archives+native_loss
     write_json(index,dict(status="COMPLETED",schema="dispatch2025-climate-v1",name=cfg["name"],
         years=cfg["years"],models=cfg["models"],climate_ssps=cfg["climate_ssps"],station_ssps=cfg["station_ssps"],
-        entries=entries,annual_archives=archives,loss_files=native_loss,native_files=sum(len(e["artifacts"]) for e in entries),
+        reused_release=cfg.get("reuse_index"),entries=entries,annual_archives=archives,loss_files=native_loss,native_files=sum(len(e["artifacts"]) for e in entries),
         total_bytes=sum(a["size_bytes"] for a in artifacts),annual_schema=dict(path=str(schema),sha256=sha(schema)),
         provenance={p.name:dict(path=str(p),sha256=sha(p)) for p in (root/"inputs").glob("*.json")},
         summaries={p.name:dict(path=str(p),sha256=sha(p),size_bytes=p.stat().st_size) for p in data.glob("*.csv")}))

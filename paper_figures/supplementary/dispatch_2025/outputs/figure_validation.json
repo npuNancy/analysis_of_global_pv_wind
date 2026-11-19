@@ -1,69 +1,69 @@
 {
   "status": "COMPLETED",
-  "checked_at": "2026-11-15T23:09:22.130482+00:00",
-  "source_index_sha256": "5552bcf1cf4d8427ff6f42aac0b71356309f7b347d40cef1f940e81e163f0e42",
-  "manifest_sha256": "c04fa575ec8e433b6f7acb0066c8283d6cb60cb44e760279ef1b54785fa81cdb",
+  "checked_at": "2026-11-18T02:06:06.813031+00:00",
+  "source_index_sha256": "72a3f95fa73459df028cb255f0f6c6966513f79075dc743d8569444863ab59f0",
+  "manifest_sha256": "838e89b245209125f6ec795d28a6df99f5c9034cb91742f8f3c9baf490ffa6df",
   "figures": [
     {
       "name": "capacity",
-      "display_rows": 18,
-      "model_rows": 18,
+      "display_rows": 27,
+      "model_rows": 27,
       "pngs": 4,
       "data_and_export": "PASSED",
       "visual_review": "PASSED"
     },
     {
       "name": "exposure_total",
-      "display_rows": 18,
-      "model_rows": 72,
+      "display_rows": 27,
+      "model_rows": 108,
       "pngs": 4,
       "data_and_export": "PASSED",
       "visual_review": "PASSED"
     },
     {
       "name": "exposure_mean",
-      "display_rows": 18,
-      "model_rows": 72,
+      "display_rows": 27,
+      "model_rows": 108,
       "pngs": 4,
       "data_and_export": "PASSED",
       "visual_review": "PASSED"
     },
     {
       "name": "total_loss",
-      "display_rows": 180,
-      "model_rows": 720,
+      "display_rows": 270,
+      "model_rows": 1080,
       "pngs": 4,
       "data_and_export": "PASSED",
       "visual_review": "PASSED"
     },
     {
       "name": "unit_loss",
-      "display_rows": 180,
-      "model_rows": 720,
+      "display_rows": 270,
+      "model_rows": 1080,
       "pngs": 4,
       "data_and_export": "PASSED",
       "visual_review": "PASSED"
     },
     {
       "name": "loss_fraction",
-      "display_rows": 180,
-      "model_rows": 720,
+      "display_rows": 270,
+      "model_rows": 1080,
       "pngs": 4,
       "data_and_export": "PASSED",
       "visual_review": "PASSED"
     },
     {
       "name": "total_generation",
-      "display_rows": 180,
-      "model_rows": 720,
+      "display_rows": 270,
+      "model_rows": 1080,
       "pngs": 4,
       "data_and_export": "PASSED",
       "visual_review": "PASSED"
     },
     {
       "name": "unit_generation",
-      "display_rows": 180,
-      "model_rows": 720,
+      "display_rows": 270,
+      "model_rows": 1080,
       "pngs": 4,
       "data_and_export": "PASSED",
       "visual_review": "PASSED"
@@ -71,9 +71,19 @@
   ],
   "pngs": 32,
   "dpi": 600,
-  "trend_fits": 30,
+  "trend_fits": 45,
   "visual_review": "PASSED",
-  "visual_checked_at": "2026-11-15T23:10:58.646142+00:00",
-  "visual_review_scope": "All eight final contact sheets: each complete triptych and its three standalone panels; checked titles, panel letters, axis labels, legends, shading, ranges, and cropping.",
-  "plot_sha256": "37d92acf706a0a5466abd6374df755bf2595fb65ab34784f11a570bf60be2bae"
+  "plot_sha256": "7514d48cb1636e6bb2ffc84fc9a066b941f05da88c046d9baefcf729d6f184ae",
+  "visual_review_evidence": {
+    "checked_at": "2026-11-18T02:06:58.403693+00:00",
+    "reviewed_pngs": 32,
+    "method": "Inspected eight contact boards containing all triptychs and standalone panels; reinspected corrected nine independent-axis panels.",
+    "checks": [
+      "No clipped titles, axes or tick labels",
+      "Legends and footnotes separated",
+      "Scenario colors and shading distinguishable",
+      "Standalone panels match triptych axes"
+    ],
+    "correction": "Raised standalone independent-axis legends to separate three-line footnotes."
+  }
 }

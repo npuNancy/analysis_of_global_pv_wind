@@ -93,6 +93,65 @@ class ExtractionTests(unittest.TestCase):
             state=json.loads((root/'runtime/state.json').read_text())
             self.assertEqual(state['other']['state'],'NOT_SUBMITTED')
 
+    def test_incremental_selection_and_single_station_output(self):
+        cfg=dict(climate_ssps=["ssp126","ssp585"],station_ssps=["ssp126","ssp560"],
+                 station_ssps_by_climate={"ssp126":["ssp560"],"ssp585":["ssp126","ssp560"]})
+        self.assertEqual(set(p.scenario_pairs(cfg)),
+                         {("ssp126","ssp560"),("ssp585","ssp126"),("ssp585","ssp560")})
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d);task,record,mapping=self.fixture(root,"cf")
+            task["mapping"]["station_ssps"]=["ssp560"]
+            task["siting_commits"]={"ssp560":"accepted-commit"}
+            result=p.extract_block(root,task,record,mapping,"incremental")
+            self.assertEqual(len(result["outputs"]),1)
+            self.assertEqual(result["outputs"][0]["station_scenario"],"ssp560")
+            with nc.Dataset(result["outputs"][0]["path"]) as ds:
+                self.assertEqual(ds.siting_commit,"accepted-commit")
+                self.assertEqual(ds["grid_id"][:].tolist(),[10,30])
+        for selection in [{"ssp126":["ssp560"]},
+                          {"ssp126":["bad"],"ssp585":["ssp560"]},
+                          {"ssp126":["ssp560","ssp560"],"ssp585":["ssp560"]}]:
+            with self.assertRaises(ValueError):
+                p.scenario_pairs({**cfg,"station_ssps_by_climate":selection})
+
+    def test_prepare_selected_matrix_and_mapping_count(self):
+        import pandas as pd
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d)
+            for folder in ["inputs","catalogs","mappings","runtime/tasks"]:
+                (root/folder).mkdir(parents=True,exist_ok=True)
+            cfg=dict(root=str(root),station_ssps=["ssp126","ssp585"],climate_ssps=["ssp126","ssp585"],
+                     station_ssps_by_climate={"ssp126":["ssp585"],"ssp585":["ssp126","ssp585"]},
+                     snapshots=[2030,2040,2050],years=[2030,2059],time_chunk=240,
+                     models=["model"],products=["cf","extreme"],techs=["wind"])
+            p.write_json(root/"inputs/campaign.json",cfg)
+            for scenario,grid in [("ssp126",10),("ssp585",20)]:
+                path=root/"inputs/stations"/scenario;path.mkdir(parents=True)
+                for year in cfg["snapshots"]:
+                    pd.DataFrame([dict(scenario=scenario,technology="wind",year=year,grid_id=grid,
+                        latitude=1.,longitude=2.,capacity_mw=1.)]).to_csv(path/f"stations_01deg_{year}.csv",index=False)
+            pd.DataFrame([dict(tech="wind",grid_id=g,latitude=1.,longitude=2.,patch="R01C01",
+                mapping_status="MATCHED",cf_lat_index=0,cf_lon_index=i,source_lat=1.,source_lon=2.,
+                distance_km=0.) for i,g in enumerate([10,20])]).to_csv(root/"inputs/loss_mapping.csv.gz",index=False)
+            source=root/"source";source.write_text("source metadata fixture")
+            records={}
+            for product in cfg["products"]:
+                p.write_json(root/"inputs"/(product+"_index.json"),{})
+                for climate in cfg["climate_ssps"]:
+                    records[product,"model",climate,"wind","R01C01"]=[
+                        dict(path=str(source),start_year=2030,end_year=2059)]
+            with patch.object(p,"source_records",return_value=records):
+                p.prepare(root,root/"inputs/campaign.json")
+            prepared=p.read(root/"runtime/prepared.json")
+            self.assertEqual(prepared["units"],4)
+            self.assertEqual(prepared["mapping_count"],2)
+            pairs=set()
+            for item in p.read(root/"runtime/tasks.json"):
+                task=p.read(item["path"])
+                pairs.update((task["climate_ssp"],s) for s in task["mapping"]["station_ssps"])
+                self.assertEqual(task["mapping"]["n_union"],2)
+            self.assertEqual(pairs,set(p.scenario_pairs(cfg)))
+
     def test_coordinates_reject_different_grid(self):
         with tempfile.TemporaryDirectory() as d:
             root=Path(d);task,record,mapping=self.fixture(root,'cf');mapping['source_lat'][0]+=1

@@ -13,6 +13,22 @@ from utils.lcoe_station_climate import pipeline
 ROOT = Path("/work/home/acxujo26gv/dispatch_2025_climate_storage")
 
 
+def validate_capacity(stations, parents, check):
+    pipeline.require(np.isclose(parents.capacity_mw.sum()/1000,check["capacity_gw"],
+                                rtol=1e-9,atol=1e-6),"Accepted parent capacity mismatch")
+    grid=stations.grid_id.to_numpy()
+    parent_ids=(grid//3600//10)*360+grid%3600//10
+    child_sum=pd.Series(stations.capacity_mw.to_numpy(),index=parent_ids).groupby(level=0).sum()
+    parent_sum=parents.set_index("grid_id").capacity_mw
+    indices=child_sum.index.union(parent_sum.index)
+    error=float((child_sum.reindex(indices,fill_value=0)-parent_sum.reindex(indices,fill_value=0)).abs().max())
+    bound=check["parent_child_max_error_tw"]*1e6
+    pipeline.require(error<=bound+1e-6,"Accepted parent-child capacity mismatch")
+    return dict(capacity_01deg_mw=float(stations.capacity_mw.sum()),
+                capacity_1deg_mw=float(parents.capacity_mw.sum()),
+                parent_child_max_error_mw=error,accepted_parent_child_max_error_mw=bound)
+
+
 def prepare(root, config):
     cfg = pipeline.read(config)
     pipeline.require(str(root) == cfg["root"], "Campaign root mismatch")
@@ -42,20 +58,27 @@ def prepare(root, config):
             row, col = f.grid_id.to_numpy() // 3600, f.grid_id.to_numpy() % 3600
             pipeline.require(np.allclose(f.latitude, 89.95 - row / 10, atol=1e-8)
                              and np.allclose(f.longitude, -179.95 + col / 10, atol=1e-8), "Grid identity mismatch")
+            parent_path=path.with_name(f"stations_1deg_{year}.csv")
+            parent_sha=next(v for k,v in check.items() if k.endswith(f"/{scenario}/gem_2025/{parent_path.name}"))
+            pipeline.require(pipeline.sha(parent_path)==parent_sha,"Parent siting input hash mismatch")
+            parent=pd.read_csv(parent_path)
+            pipeline.require(not parent.duplicated(["technology","grid_id"]).any(),"Duplicate parent grids")
+            capacity_checks={}
             for tech in cfg["techs"]:
                 units = set(f.loc[f.technology.eq(tech), "capacity_unit"])
                 pipeline.require(units == ({"MWp"} if tech == "solar" else {"MW"}), "Capacity units")
-                accepted = next(c["capacity_gw"] for c in manifest["case"]["native_capacity_validation"]["checks"]
+                accepted = next(c for c in manifest["case"]["native_capacity_validation"]["checks"]
                                 if c["year"] == year and c["technology"] == tech)
-                pipeline.require(np.isclose(f.loc[f.technology.eq(tech), "capacity_mw"].sum()/1000,
-                                            accepted, rtol=1e-9, atol=1e-6), "Accepted capacity mismatch")
+                capacity_checks[tech]=validate_capacity(f[f.technology.eq(tech)],
+                                                       parent[parent.technology.eq(tech)],accepted)
             f["scenario"] = scenario
             dest = target / "inputs/stations" / scenario / path.name
             dest.parent.mkdir(parents=True, exist_ok=True)
             f.to_csv(dest, index=False)
             frames.append(f)
             provenance.append(dict(path=str(path), sha256=digest, manifest_sha256=pipeline.sha(root/"inputs/stations"/scenario/"manifest.json"),
-                                   scenario=scenario, year=year, rows=len(f), capacity_mw=f.groupby("technology").capacity_mw.sum().to_dict()))
+                                   scenario=scenario, year=year, rows=len(f), capacity_mw=f.groupby("technology").capacity_mw.sum().to_dict(),
+                                   parent_path=str(parent_path),parent_sha256=parent_sha,capacity_checks=capacity_checks))
     cat = pd.concat(frames, ignore_index=True)
     refs = read_cf_grid.find_records(root=cfg["cf_root"], model=cfg["models"][0],
                                     climate_scenario=cfg["climate_ssps"][0], tech="wind", years=(2030,2030))
@@ -77,6 +100,23 @@ def prepare(root, config):
     pipeline.write_json(root/"inputs/station_provenance.json", provenance)
     pipeline.write_json(target/"inputs/campaign.json", stage_cfg)
     pipeline.prepare(target, target/"inputs/campaign.json")
+    if cfg.get("reuse_index"):
+        source=cfg["reuse_index"]
+        pipeline.require(pipeline.sha(source["path"])==source["sha256"],"Reused release changed")
+        base=Path(source["path"]).parents[1]
+        old_cfg=pipeline.read(base/"inputs/campaign.json")
+        for scenario in old_cfg["station_ssps"]:
+            for tech in cfg["techs"]:
+                columns=["grid_id","mapping_status","patch","cf_lat_index","cf_lon_index",
+                         "source_lat","source_lon"]+[f"capacity_mw_{y}" for y in cfg["snapshots"]]
+                previous=pd.read_csv(base/"future/catalogs"/f"{scenario}_{tech}.csv.gz")
+                current=pd.read_csv(target/"catalogs"/f"{scenario}_{tech}.csv.gz")
+                pd.testing.assert_frame_equal(
+                    previous[columns].sort_values("grid_id").reset_index(drop=True),
+                    current[columns].sort_values("grid_id").reset_index(drop=True),
+                    check_exact=False,rtol=1e-12,atol=1e-7)
+        pipeline.write_json(root/"runtime/reuse_catalogues.json",
+                            dict(status="COMPLETED",source=source,checks="Station IDs, mapping and all capacity snapshots"))
     pipeline.write_json(root/"runtime/prepared.json", dict(status="COMPLETED", stations=provenance,
         mapping_sha256=pipeline.sha(target/"inputs/loss_mapping.csv.gz"), code_sha256=pipeline.sha(__file__)))
     print(pd.read_csv(target/"catalogs/coverage.csv").to_string(index=False), flush=True)

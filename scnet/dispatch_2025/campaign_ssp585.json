@@ -1,0 +1,104 @@
+{
+  "name": "全球场站-dispatch-2025",
+  "root": "/work/home/acxujo26gv/dispatch_2025_climate_storage/ssp585",
+  "repo": "/work/home/acxujo26gv/dispatch_2025_climate_storage/ssp585/code",
+  "activate": "/work/home/acxujo26gv/dispatch_2025_climate_storage/ssp585/code/.venv/bin/activate",
+  "accounts": [
+    {
+      "alias": "scnet-wuzhen-1892",
+      "username": "acmctdumnv",
+      "max_active": 20,
+      "submit_lock": "/work/home/acmctdumnv/.bcsd_submit.lock",
+      "climate_ssps": [
+        "ssp126"
+      ]
+    },
+    {
+      "alias": "scnet-wuzhen-1520",
+      "username": "acebblgpte",
+      "max_active": 20,
+      "submit_lock": "/work/home/acebblgpte/.bcsd_submit.lock",
+      "climate_ssps": [
+        "ssp245"
+      ]
+    },
+    {
+      "alias": "scnet-wuzhen-1870",
+      "username": "acjp7am6kd",
+      "max_active": 20,
+      "submit_lock": "/work/home/acjp7am6kd/.bcsd_submit.lock",
+      "climate_ssps": [
+        "ssp585"
+      ]
+    }
+  ],
+  "models": [
+    "CANESM5",
+    "MPI-ESM1-2-HR",
+    "MRI-ESM2-0",
+    "BCC-CSM2-MR"
+  ],
+  "climate_ssps": [
+    "ssp126",
+    "ssp245",
+    "ssp585"
+  ],
+  "station_ssps": [
+    "ssp126",
+    "ssp245",
+    "ssp585"
+  ],
+  "techs": [
+    "wind",
+    "solar"
+  ],
+  "years": [
+    2030,
+    2059
+  ],
+  "snapshots": [
+    2030,
+    2040,
+    2050
+  ],
+  "products": [
+    "cf",
+    "extreme"
+  ],
+  "cf_root": "/work/home/acjpoxgsdu/cf_grid/cf_grid_v2",
+  "extreme_root": "/work/home/acjpoxgsdu/extreme_grid/extreme_grid_v2",
+  "cpus": 4,
+  "time_chunk": 240,
+  "partition": "wzhctest",
+  "station_prefix": "dispatch2025",
+  "mapping_method": "same_corrected_0.1_degree_raster_cell",
+  "siting_commit": "69a467e2bbd6400c51c96b1defc807ee62fa027e",
+  "capacity_basis": {
+    "wind": "MW",
+    "solar": "MWp/DC"
+  },
+  "source_campaign": "capacity_recovery_20261113T222351/MPI-ESM1-2-HR",
+  "station_ssps_by_climate": {
+    "ssp126": [
+      "ssp585"
+    ],
+    "ssp245": [
+      "ssp585"
+    ],
+    "ssp585": [
+      "ssp126",
+      "ssp245",
+      "ssp585"
+    ]
+  },
+  "reuse_index": {
+    "path": "/work/home/acxujo26gv/dispatch_2025_climate_storage/runtime/authoritative_index.json",
+    "sha256": "5552bcf1cf4d8427ff6f42aac0b71356309f7b347d40cef1f940e81e163f0e42"
+  },
+  "status_subdir": "ssp585",
+  "siting_commits": {
+    "ssp126": "69a467e2bbd6400c51c96b1defc807ee62fa027e",
+    "ssp245": "69a467e2bbd6400c51c96b1defc807ee62fa027e",
+    "ssp585": "a4d5a253c78b50f875d896abb4d5d26ea5a55e1b"
+  }
+}

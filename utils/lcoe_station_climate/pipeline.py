@@ -33,6 +33,21 @@ def require(value,message):
     if not value: raise ValueError(message)
 
 
+def scenario_pairs(config):
+    climates=config["climate_ssps"];stations=config["station_ssps"]
+    selection=config.get("station_ssps_by_climate")
+    if selection is None:
+        return list(itertools.product(climates,stations))
+    require(set(selection)==set(climates),"Climate selection does not match campaign")
+    pairs=[]
+    for climate in climates:
+        chosen=selection[climate]
+        require(isinstance(chosen,list) and chosen and len(chosen)==len(set(chosen))
+                and set(chosen)<=set(stations),"Invalid station scenario selection")
+        pairs.extend((climate,station) for station in chosen)
+    return pairs
+
+
 def source_records(root,config):
     from utils.data_access import read_cf_grid,read_extreme_grid
     result={}
@@ -96,17 +111,21 @@ def prepare(root,config_path):
                 require(set(old.files)==set(array) and all(np.array_equal(old[k],v) for k,v in array.items()),'Mapping conflict')
         else:np.savez_compressed(path,**array)
         mappings[(tech,patch)]=dict(path=str(path),sha256=sha(path),station_ssps=sorted(by_scenario),n_union=len(union))
+    pairs=set(scenario_pairs(cfg))
     tasks=[]
     for key,rows in sorted(records.items()):
         product,model,climate,tech,patch=key
         if (tech,patch) not in mappings:continue
+        task_mapping=dict(mappings[(tech,patch)])
+        task_mapping["station_ssps"]=[s for s in task_mapping["station_ssps"] if (climate,s) in pairs]
+        if not task_mapping["station_ssps"]:continue
         rows=sorted(rows,key=lambda r:r['start_year'])
         require(rows[0]['start_year']<=cfg['years'][0] and rows[-1]['end_year']>=cfg['years'][1],'Incomplete indexed years')
         require(all(a['end_year']+1==b['start_year'] for a,b in zip(rows,rows[1:])),'Source block gaps')
         unit='_'.join(key)
         task=dict(unit=unit,product=product,model=model,climate_ssp=climate,tech=tech,patch=patch,
-                  mapping=mappings[(tech,patch)],sources=rows,years=cfg['years'],snapshots=cfg['snapshots'],time_chunk=cfg['time_chunk'])
-        for field in ['station_prefix','mapping_method','siting_commit','capacity_basis']:
+                  mapping=task_mapping,sources=rows,years=cfg['years'],snapshots=cfg['snapshots'],time_chunk=cfg['time_chunk'])
+        for field in ['station_prefix','mapping_method','siting_commit','siting_commits','capacity_basis']:
             if field in cfg:task[field]=cfg[field]
         for r in task['sources']:
             st=Path(r['path']).stat();r['size_bytes']=st.st_size;r['mtime_ns']=st.st_mtime_ns
@@ -204,6 +223,7 @@ def extract_block(root,task,record,mapping,identity):
             attrs.update(Conventions='CF-1.9',featureType='timeSeries',schema=task.get('station_prefix','lcoe')+'-station-climate-v1',
                 model=task['model'],climate_scenario=task['climate_ssp'],station_scenario=scenario,tech=task['tech'],
                 source_patch=task['patch'],source_file=record['path'],source_identity=record.get('identity') or '',
+                siting_commit=task.get('siting_commits',{}).get(scenario,task.get('siting_commit','')),
                 identity=identity,activation_mask='off',mapping_method=task.get('mapping_method','frozen_LCOE_loss_same_raster_cell'),
                 capacity_note='Snapshot metadata only; not multiplied into CF or event flags.')
             dst.setncatts(attrs)

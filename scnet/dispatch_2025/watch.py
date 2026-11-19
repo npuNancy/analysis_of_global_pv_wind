@@ -1,4 +1,4 @@
-"""Poll dispatch jobs and refill the two climate-specific account queues."""
+"""Poll dispatch jobs and refill the climate-specific account queues."""
 import argparse
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
@@ -56,8 +56,8 @@ def cycle(cfg, phase, submit, pilot):
         observations=list(pool.map(account,cfg["accounts"]))
     after=snapshot(cfg,phase)
     stamp=datetime.now(ZoneInfo("Asia/Shanghai")).isoformat()
-    status=HERE/"completion_status"
-    status.mkdir(exist_ok=True)
+    status=HERE/"completion_status"/cfg.get("status_subdir","")
+    status.mkdir(parents=True,exist_ok=True)
     counts=dict(Counter(s["state"] for s in after["state"].values()))
     lines=["# 全球场站-dispatch-2025 运行进度","",f"Last checked: {stamp}","",
            f"阶段：{phase}；状态：{counts}。每账号所有项目活动作业上限20，按气候SSP分配。","",
@@ -91,12 +91,18 @@ def main():
     p.add_argument("--pilot",action="store_true")
     p.add_argument("--watch",action="store_true")
     p.add_argument("--interval",type=int,default=60)
+    p.add_argument("--hourly",action="store_true",help="Check at each full hour, starting with the next full hour")
     a=p.parse_args();cfg=json.loads(a.config.read_text())
     while True:
+        if a.hourly:
+            next_check=(int(time.time())//3600+1)*3600
+            print("NEXT_CHECK",datetime.fromtimestamp(next_check,ZoneInfo("Asia/Shanghai")).isoformat(),flush=True)
+            time.sleep(max(0,next_check-time.time()))
         try:done=cycle(cfg,a.phase,a.submit,a.pilot)
         except Exception as exc:print("MONITOR_ERROR",repr(exc),flush=True);done=False
         if not a.watch or done:break
-        for _ in range(max(1,a.interval)//5):time.sleep(5)
+        if not a.hourly:
+            for _ in range(max(1,a.interval)//5):time.sleep(5)
 
 if __name__=="__main__":
     main()

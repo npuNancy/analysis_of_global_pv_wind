@@ -1,34 +1,40 @@
 # 全球场站-dispatch-2025 气候评价
 
-已完成：4个GCM × 2气候SSP × 2场站SSP × 2技术，2030—2059的CF、Extreme、逐事件Loss和全年发电量均已发布。正式数据包含16,320份CF/Extreme分片、1,360份年度逐事件NetCDF和32份完整目录年度NPZ；8张三面板图及24张独立子图全部通过数值、导出和视觉检查。
+已完成：4个GCM × 3气候SSP × 3场站SSP × 2技术，2030—2059的CF、Extreme、逐事件Loss和全年发电量均已发布。统一索引包含36,720份CF/Extreme分片、3,060份年度逐事件NetCDF和72份完整目录年度NPZ；8张三面板图及24张独立子图展示SSP126、SSP245、SSP585三条配对路径，全部通过数值、导出和视觉检查。
 
 ## 范围与输入
 
-方案名称为 **全球场站-dispatch-2025**。场站来自选址项目的 `results/campaign_runs/capacity_recovery_20261113T222351/MPI-ESM1-2-HR`，使用 SSP126、SSP245 下的六份 `stations_01deg_2030/2040/2050.csv`。原始文件及各路径的验收 manifest 保留于共享根的 `inputs/stations/`，准备作业核对了六份 CSV 的 SHA256、坐标、技术、单位和容量。
+方案名称为 **全球场站-dispatch-2025**。场站来自选址项目的 `results/campaign_runs/capacity_recovery_20261113T222351/MPI-ESM1-2-HR`，使用 SSP126、SSP245、SSP585 下的九份 `stations_01deg_2030/2040/2050.csv`。原始文件及各路径的验收 manifest 保留于新增共享根的 `inputs/stations/`。准备阶段核对九份0.1° CSV及九份1°父格校验表的SHA256，按上游记录的逐父格误差限检查聚合容量；计算保留0.1° CSV原值。
 
-布局采用 GEM2025 存量初始化，在 MPI-ESM1-2-HR 未来单年 CF 下优化。气候评价保留四个 GCM：CANESM5、MPI-ESM1-2-HR、MRI-ESM2-0、BCC-CSM2-MR；每个 GCM 均包含两气候 SSP × 两场站 SSP 的完整交叉组合。两技术为风电与光伏；时间仅为2030—2059。2030、2040、2050装机快照分别用于对应完整十年，容量为总量。
+布局采用 GEM2025 存量初始化，在 MPI-ESM1-2-HR 未来单年 CF 下优化。气候评价保留四个 GCM：CANESM5、MPI-ESM1-2-HR、MRI-ESM2-0、BCC-CSM2-MR；每个 GCM 均包含三气候 SSP × 三场站 SSP 的完整交叉组合。两技术为风电与光伏；时间仅为2030—2059。2030、2040、2050装机快照分别用于对应完整十年，容量为总量。
+
+SSP585选址来自作业 `49177195`，正式验收来自作业 `49197708`；manifest的 `case.code_commit=a4d5a253c78b50f875d896abb4d5d26ea5a55e1b` 记录验收版本。三个年代的弃电率上限分别为0.5、0.522、0.5；验收确认场站容量未改变。上游完整验收及其文件哈希保留于 `inputs/upstream_acceptance.json`。
 
 光伏容量为 MWp/DC，风电为 MW；风电发电量与损失不缩放。场站 ID 包含方案、场站SSP、技术及0.1°网格ID。不同场站SSP不能直接按行号或站点ID合并。
 
 ## 共享位置与权限
 
-结果根：
+统一读取根：
+
+`/work/home/acxujo26gv/dispatch_2025_climate_storage/ssp585/`
 
 ```text
-/work/home/acxujo26gv/dispatch_2025_climate_storage/
-├── inputs/                         # 原始布局、参考核、代码与来源清单
-├── future/                         # 原生三小时 CF 与 Extreme、目录及映射
-├── loss_future/                    # 分块、双SSP、逐事件年度损失和基线
-├── station_results/future/         # 完整场站目录的年度汇总档案
-├── source_data/                    # 全球逐模式与集合汇总CSV
-├── report/                         # 独立报告、图件、源表和对应脚本副本
+ssp585/
+├── inputs/                         # 九份布局、父格校验表、来源与代码清单
+├── future/                         # 新增五组合的原生CF / Extreme、目录及映射
+├── loss_future/                    # 新增五组合的逐事件年度损失和基线
+├── station_results/future/         # 新增40份完整目录年度档案
+├── source_data/                    # 完整九组合的全球逐模式与集合汇总CSV
+├── report/                         # 更新后的独立报告、图件、源表和脚本副本
 ├── runtime/authoritative_index.json
 └── runtime/completion.json
 ```
 
-共享报告入口为 `report/document/全球场站-dispatch-2025气候评价.md`，包含全部图件、绘图源表、验收记录和对应脚本副本；科学计算使用结果根下的 `code/` 冻结代码。
+统一索引同时引用原四组合和新增五组合。原结果继续保存在 `/work/home/acxujo26gv/dispatch_2025_climate_storage/`；新增根物理保存20,400份CF/Extreme分片、1,700份年度Loss NetCDF和40份年度NPZ。应从新索引按绝对路径读取完整矩阵。
 
-1959保存结果。1892写入气候SSP126，1520写入气候SSP245，两个账号均使用默认ACL直接写入同一共享根。1866及其他账号可读不可写；已用1866和1870读取正式索引、四份汇总CSV及两技术的CF、Extreme、Loss、年度NPZ代表文件，并确认这些账号没有写权限。新建目录默认给其他用户遍历和读取权限，文件默认可读；不依赖逐个追加读取账号ACL。
+共享报告入口为新增根的 `report/document/全球场站-dispatch-2025气候评价.md`，包含全部图件、绘图源表、验收记录和对应脚本副本；本轮科学计算使用新增根 `code/` 下的冻结代码。
+
+1959保存结果。1892执行气候SSP126，1520执行SSP245，1870执行SSP585，均写入新增共享根。1866及其他账号可读不可写；已用1866和1775读取正式索引、四份汇总CSV及原发布、新发布两技术的CF、Extreme、Loss、年度NPZ代表文件，并确认没有写权限。新建目录默认给其他用户遍历和读取权限，文件默认可读。
 
 正式使用时，先检查 `runtime/completion.json` 和 `runtime/authoritative_index.json` 均为 `COMPLETED`，并核对索引SHA256。计算过程中出现的分片不等于整套数据已经发布。
 
@@ -66,9 +72,9 @@
 
 波动、相对损失、强度和归一化等原生指标同时保留。各事件可能重叠，不能相加替代 `all`。
 
-`annual_archives[]` 提供32份完整站点年度NPZ，按模式、双SSP和技术定位，保存 `grid_id`、容量、全年发电、净损失、CF、事件小时数及 `common_support`。32份档案的模式、双SSP、技术、站点目录和容量快照均已通过最终校验。
+`annual_archives[]` 提供72份完整站点年度NPZ，按模式、双SSP和技术定位，保存 `grid_id`、容量、全年发电、净损失、CF、事件小时数及 `common_support`。72份档案的模式、双SSP、技术、站点目录和容量快照均已通过最终校验。
 
-`summaries` 提供全球汇总CSV及SHA256。`global_annual_models.csv` 为1,440行（含风光合并），`global_annual_ensemble.csv` 为360行；完整情景、年份、技术和模式矩阵已通过校验。`capacity_coverage.csv` 保存完整、映射及有效容量，`catalogue_capacity.csv` 保存三个年代的目录容量。
+`summaries` 提供全球汇总CSV及SHA256。`global_annual_models.csv` 为3,240行（含风光合并），`global_annual_ensemble.csv` 为810行；完整情景、年份、技术和模式矩阵已通过校验。`capacity_coverage.csv` 保存完整、映射及有效容量，`catalogue_capacity.csv` 保存三个年代的目录容量。
 
 ## 汇总覆盖
 
@@ -80,10 +86,20 @@
 | SSP126 | SSP126 | 风电 | 97.26–99.76% | 10,390–100,200 |
 | SSP126 | SSP245 | 光伏 | 98.15–98.77% | 32,516–99,981 |
 | SSP126 | SSP245 | 风电 | 97.27–99.32% | 10,536–68,975 |
+| SSP126 | SSP585 | 光伏 | 97.95–98.03% | 29,110–78,041 |
+| SSP126 | SSP585 | 风电 | 97.18–97.56% | 10,008–54,844 |
 | SSP245 | SSP126 | 光伏 | 98.04–98.99% | 30,743–109,043 |
 | SSP245 | SSP126 | 风电 | 97.26–99.76% | 10,390–100,200 |
 | SSP245 | SSP245 | 光伏 | 98.15–98.77% | 32,516–99,981 |
 | SSP245 | SSP245 | 风电 | 97.27–99.32% | 10,536–68,971 |
+| SSP245 | SSP585 | 光伏 | 97.95–98.03% | 29,110–78,041 |
+| SSP245 | SSP585 | 风电 | 97.18–97.56% | 10,008–54,842 |
+| SSP585 | SSP126 | 光伏 | 98.04–98.99% | 30,743–109,043 |
+| SSP585 | SSP126 | 风电 | 97.26–99.76% | 10,390–100,198 |
+| SSP585 | SSP245 | 光伏 | 98.15–98.77% | 32,516–99,981 |
+| SSP585 | SSP245 | 风电 | 97.27–99.33% | 10,536–68,975 |
+| SSP585 | SSP585 | 光伏 | 97.95–98.03% | 29,110–78,041 |
+| SSP585 | SSP585 | 风电 | 97.18–97.56% | 10,008–54,841 |
 
 完整目录保留未映射及未进入共同有效集合的容量；原生输出保留已映射站点的逐年指标和缺测。全球比值和图件使用上述共同有效集合。
 
@@ -91,7 +107,7 @@
 
 绘图在1866项目执行，目录为 [dispatch_2025](../paper_figures/supplementary/dispatch_2025/)。已输出8张完整三面板PNG及24张独立子图，600 dpi；三列依次为风光合并、风电、光伏。
 
-装机和暴露展示2030s、2040s、2050s三个点，暴露先对每模式取十年均值。损失和发电展示2030—2059逐年四模式均值，并叠加全30年OLS描述趋势。阴影为四模式最小—最大值，不表示置信区间。配对路径126/126与245/245的差异同时包含气候与部署变化。
+装机和暴露展示2030s、2040s、2050s三个点，暴露先对每模式取十年均值。损失和发电展示2030—2059逐年四模式均值，并叠加全30年OLS描述趋势。阴影为四模式最小—最大值，不表示置信区间。配对路径126/126、245/245、585/585的差异同时包含气候与部署变化。
 
 ### 装机容量
 
@@ -109,6 +125,9 @@
 | SSP245 | 2030 | 1.008 | 1.418 | 2.427 |
 | SSP245 | 2040 | 2.129 | 1.742 | 3.872 |
 | SSP245 | 2050 | 4.165 | 2.140 | 6.305 |
+| SSP585 | 2030 | 0.974 | 1.280 | 2.255 |
+| SSP585 | 2040 | 0.985 | 1.284 | 2.269 |
+| SSP585 | 2050 | 1.130 | 1.330 | 2.460 |
 
 ### 装机加权暴露总量
 
@@ -169,7 +188,7 @@ Extreme事件并集的年度小时数先换算为天，再按有效容量加权�
 
 ## 复现与验收
 
-- [阶段目标和运行合同](../scnet/dispatch_2025/goal.md)
+- [阶段目标和运行合同](../scnet/dispatch_2025/ssp585_goal.md)
 - [输入准备](../scnet/dispatch_2025/prepare.py)
 - [作业生成器](../scnet/create_dispatch_2025_jobs.py)
 - [监控与按账号补交](../scnet/dispatch_2025/watch.py)
@@ -179,24 +198,22 @@ Extreme事件并集的年度小时数先换算为天，再按有效容量加权�
 
 科学计算使用共享代码快照的 `.venv`。每账号所有项目活动作业上限20，提交前持账号锁并重新计数。登录节点仅作调度、元数据处理和已有小型汇总表绘图。冻结任务、源代码/输入SHA256和逐任务回执保存在共享结果根；本地 `scnet/dispatch_2025/completion_status/` 保存状态镜像。
 
-2026-11-16完成全流程验收：
+2026-11-18完成SSP585补全验收。下表增量阶段均相对于新增共享根，正式索引为完整九组合：
 
-| 阶段 | 已完成数量 | 验收记录（相对于共享结果根） |
+| 阶段 | 已完成数量 | 验收记录（相对于新增共享根） |
 |---|---:|---|
-| CF / Extreme提取 | 1,360任务；16,320分片 | `future/runtime/extraction_accepted.json` |
-| 逐事件Loss | 1,360任务；1,360 NetCDF及1,360中间NPZ | `loss_future/runtime/loss_accepted.json` |
-| 汇总发布 | 8组；32年度NPZ | `publish/runtime/publication_groups_accepted.json` |
-| 正式索引 | 1,440逐模式行；360集合行 | `runtime/completion.json` |
-| 共享读取 | 1866及1870实测通过 | `runtime/formal_access.json` |
+| CF / Extreme提取 | 新增2,040任务；20,400分片 | `future/runtime/extraction_accepted.json` |
+| 逐事件Loss | 新增1,700任务；1,700 NetCDF及1,700中间NPZ | `loss_future/runtime/loss_accepted.json` |
+| 汇总发布 | 新增10组；40年度NPZ | `publish/runtime/publication_groups_accepted.json` |
+| 正式索引 | 72年度NPZ；3,240逐模式行；810集合行 | `runtime/completion.json` |
+| 共享读取 | 1866及1775实测通过 | `runtime/formal_access.json` |
 | 独立报告副本 | 文件哈希与相对链接核对 | `report/manifest.json`、`runtime/report_access.json` |
 
-最终验收作业 `49192173` 为Slurm COMPLETED/0:0，核对全部逐事件NetCDF的目录ID、时间、事件字段、维度和单位，以及32份年度NPZ的完整目录、容量快照和支持集合；同时检查全球矩阵、能量闭合和共享访问位。发布时检查了43,894个文件、7,021个目录的其他用户读取/遍历权限。正式索引引用的文件总计587,024,190,067字节（不含分块年度中间NPZ、代码和日志）。
+最终验收作业 `49290002` 为Slurm COMPLETED/0:0，验证原发布来源与档案哈希、全部新增逐事件NetCDF的目录ID、时间、事件字段、维度和单位，以及72份年度NPZ的完整目录、容量快照和支持集合；同时检查全球矩阵、能量闭合及原四组合汇总值与原发布一致。发布时检查了新增根58,963个文件、9,109个目录的读取/遍历权限。完整统一索引引用文件总计1,204,770,510,155字节（不含分块年度中间NPZ、代码和日志）。
 
-绘图验收见 [figure_validation.json](../paper_figures/supplementary/dispatch_2025/outputs/figure_validation.json) 和 [manifest.json](../paper_figures/supplementary/dispatch_2025/outputs/manifest.json)：8张组图、24张独立子图、600 dpi、全部图值与源表一致、30条OLS拟合、组图/独立图纵轴一致；全部PNG已检查文字裁切、图例、范围和阴影。全量图值见 [source_data/](../paper_figures/supplementary/dispatch_2025/outputs/source_data/)，OLS参数见 [trend_fits.csv](../paper_figures/supplementary/dispatch_2025/outputs/source_data/trend_fits.csv)。
+绘图验收见 [figure_validation.json](../paper_figures/supplementary/dispatch_2025/outputs/figure_validation.json) 和 [manifest.json](../paper_figures/supplementary/dispatch_2025/outputs/manifest.json)：8张组图、24张独立子图、600 dpi、全部图值与源表一致、45条OLS拟合、组图/独立图纵轴一致；全部PNG已检查文字裁切、图例、范围和阴影。全量图值见 [source_data/](../paper_figures/supplementary/dispatch_2025/outputs/source_data/)，OLS参数见 [trend_fits.csv](../paper_figures/supplementary/dispatch_2025/outputs/source_data/trend_fits.csv)。
 
-准备、提取、Loss和发布均经过首批验证后再运行全矩阵。正式Loss使用1核、单Python进程；发布首批4核，实测最大1.65 GiB后剩余组使用1核，完整发布最大1.79 GiB。全部任务按气候SSP分配到1892/1520，并遵循每账号全项目20个活动作业上限。
-
-本地和1866的 `document/BCSD_v2数据使用指南.md`、`document/风电光伏数据.md`、`document/风电光伏数据.html` SHA256均与任务开始时相同；证据保存在 `runtime/protected_documents_check.json`。
+准备、提取、Loss和发布均经过首批验证后再运行全矩阵。正式提取使用2核、Loss使用1核；本轮完整Loss最大MaxRSS为1.787 GiB，发布最大为1.793 GiB。任务按气候SSP分配到1892/1520/1870，并遵循每账号全项目20个活动作业上限。
 
 ### 最小读取示例
 
@@ -207,7 +224,7 @@ import hashlib
 import json
 from pathlib import Path
 
-root = Path("/work/home/acxujo26gv/dispatch_2025_climate_storage")
+root = Path("/work/home/acxujo26gv/dispatch_2025_climate_storage/ssp585")
 completion = json.loads((root / "runtime/completion.json").read_text())
 index_path = root / "runtime/authoritative_index.json"
 assert completion["status"] == "COMPLETED"
@@ -215,8 +232,8 @@ assert hashlib.sha256(index_path.read_bytes()).hexdigest() == completion["index_
 index = json.loads(index_path.read_text())
 archive = next(a for a in index["annual_archives"]
                if a["model"] == "MPI-ESM1-2-HR"
-               and a["climate_ssp"] == "ssp245"
-               and a["station_ssp"] == "ssp126"
+               and a["climate_ssp"] == "ssp585"
+               and a["station_ssp"] == "ssp585"
                and a["tech"] == "wind")
 print(archive["path"])
 ```

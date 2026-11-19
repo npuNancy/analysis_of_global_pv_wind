@@ -12,8 +12,8 @@ from paper_figures.common.plotting import configure, export_panel_png, independe
 from paper_figures.config import SSP_COLORS
 
 HERE=Path(__file__).resolve().parent
-ROOT=Path("/work/home/acxujo26gv/dispatch_2025_climate_storage")
-SSPS=["ssp126","ssp245"]
+ROOT=Path("/work/home/acxujo26gv/dispatch_2025_climate_storage/ssp585")
+SSPS=["ssp126","ssp245","ssp585"]
 TECHS=[("wind+solar","Wind + solar"),("wind","Wind"),("solar","Solar")]
 METRICS=[
     ("capacity","catalogue_capacity_mw",1e-6,"Installed capacity (TW)","装机容量",False,False),
@@ -85,7 +85,7 @@ def metric_table(models,metric,out):
 def panel(ax,display,tech,title,letter,metric):
     name,_,_,_,_,annual,_=metric
     fits=[]
-    for ssp,marker in zip(SSPS,["o","s"]):
+    for ssp,marker in zip(SSPS,["o","s","^"]):
         f=display[display.tech.eq(tech)&display.climate_ssp.eq(ssp)].sort_values("year")
         x=f.year.to_numpy(float);y=f["mean"].to_numpy(float)
         ax.plot(x,y,color=SSP_COLORS[ssp],lw=1.15,marker=None if annual else marker,ms=3.5)
@@ -116,7 +116,7 @@ def decorate(fig,metric,solo):
     handles=[Line2D([],[],color=SSP_COLORS[s],lw=1.5,label=s.upper()) for s in SSPS]
     if metric[5]:
         handles.append(Line2D([],[],color=".4",lw=1,ls="--",label="2030–2059 linear fit"))
-    fig.legend(handles=handles,loc="lower center",bbox_to_anchor=(.53,.07),ncol=2 if solo else len(handles),fontsize=7)
+    fig.legend(handles=handles,loc="lower center",bbox_to_anchor=(.53,.11 if solo and metric[6] else .07),ncol=2 if solo and metric[5] else len(handles),fontsize=7)
     note="Total capacity snapshots" if name=="capacity" else "Four-GCM mean; shading: model min–max"
     if metric[6]:note+="; independent y axes"
     fig.text(.53,.025,note if not solo else note.replace("; ","\n"),ha="center",fontsize=6.5,color=".35")
@@ -176,7 +176,7 @@ def render(root,out):
         record,fits=render_metric(display,metric,out)
         records.append(record);allfits+=fits
     pd.DataFrame(allfits).to_csv(out/"source_data/trend_fits.csv",index=False)
-    assert len(records)==8 and len(allfits)==30
+    assert len(records)==8 and len(allfits)==45
     pngs=list(out.glob("*.png"))
     assert len(pngs)==32
     manifest=dict(status="COMPLETED",source_index=str(indexpath),source_index_sha256=digest(indexpath),
