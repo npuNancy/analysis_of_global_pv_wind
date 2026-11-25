@@ -1,0 +1,112 @@
+{
+  "question": "How do exposure, event-period loss intensity and annual net loss differ between fixed 2025 sites and suitable grids under each climate SSP?",
+  "archetype": "quantitative grid",
+  "backend": "Python/matplotlib",
+  "rows": [
+    "wind",
+    "solar"
+  ],
+  "columns": [
+    "exposure_days",
+    "intensity_pct",
+    "net_loss_per_mw"
+  ],
+  "lines_per_panel": 6,
+  "colors": "SSP126 blue; SSP245 ochre; SSP585 red",
+  "line_styles": {
+    "fixed2025": "solid",
+    "suitable": "dashed"
+  },
+  "weighting": {
+    "fixed2025": "2025 installed capacity",
+    "suitable": "native grid area"
+  },
+  "years": [
+    2030,
+    2040,
+    2050
+  ],
+  "ensemble": "equal mean of four separately computed model metrics; model range retained in source table",
+  "intensity": "net event energy divided by normal event energy; ten-year sums before ratio",
+  "source": "outputs/source_data/curve_models.csv",
+  "export": "600 dpi PNG: full six-panel figure and wind abc / solar def row groups",
+  "comparison_boundary": "domain contrasts include both spatial support and weighting differences",
+  "y_axes": {
+    "a": {
+      "segments": [
+        [
+          29.5,
+          32.5
+        ],
+        [
+          35,
+          39.5
+        ]
+      ],
+      "omitted_interval": [
+        32.5,
+        35
+      ]
+    },
+    "b": {
+      "segments": [
+        [
+          50,
+          57
+        ],
+        [
+          64,
+          74
+        ]
+      ],
+      "omitted_interval": [
+        57,
+        64
+      ]
+    },
+    "c": {
+      "segments": [
+        [
+          79,
+          85
+        ],
+        [
+          115,
+          129
+        ]
+      ],
+      "omitted_interval": [
+        85,
+        115
+      ]
+    },
+    "d": {
+      "segments": [
+        [
+          30.5,
+          34
+        ],
+        [
+          42,
+          46.5
+        ]
+      ],
+      "omitted_interval": [
+        34,
+        42
+      ]
+    },
+    "e": {
+      "segments": [
+        [
+          53.5,
+          58
+        ]
+      ]
+    },
+    "f": {
+      "segments": "automatic limits around solar net loss"
+    }
+  },
+  "axis_breaks": "Native matplotlib stacked axes; diagonal break marks; equal vertical units per physical length within each panel; no curve enters an omitted interval."
+}

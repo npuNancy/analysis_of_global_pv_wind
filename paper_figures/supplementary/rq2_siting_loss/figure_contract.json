@@ -1,0 +1,50 @@
+{
+  "question": "Do fixed 2025 sites sample a different future loss distribution from suitable grids, and how large is the contrast relative to climate-pathway differences?",
+  "backend": "Python/matplotlib",
+  "archetype": "quantitative grid",
+  "outputs": "PNG only, 600 dpi; full figures and independent rows/panels",
+  "curves": {
+    "rows": [
+      "wind",
+      "solar"
+    ],
+    "columns": [
+      "exposure_days",
+      "event_net_loss_pct",
+      "annual_net_loss_per_mw"
+    ],
+    "weight": "fixed 2025 capacity; suitable reference uses area",
+    "years": [
+      2030,
+      2040,
+      2050
+    ]
+  },
+  "histograms": {
+    "rows": [
+      "wind",
+      "solar"
+    ],
+    "columns": [
+      "ssp126",
+      "ssp245",
+      "ssp585"
+    ],
+    "period": "2050-2059",
+    "sample": "one grid, ten-year mean within each model, then four-model mean",
+    "weight": "equal grid counts divided by group grid count; relative frequency, not density",
+    "colors": [
+      "installed 2025 purple",
+      "suitable peach"
+    ],
+    "bins": "same width and limits across SSPs within each technology; retain signed losses and full tails"
+  },
+  "validation": [
+    "fixed IDs and capacities across climate paths/models",
+    "four models and ten years per grid",
+    "suitable common support matches RQ1",
+    "area/equal-weight means reproduce existing results",
+    "published fixed curves reproduced",
+    "future layout matrix audited separately from installed-versus-suitable contrast"
+  ]
+}

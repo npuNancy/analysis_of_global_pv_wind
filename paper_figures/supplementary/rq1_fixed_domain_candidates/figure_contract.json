@@ -1,0 +1,63 @@
+{
+  "backend": "Python/matplotlib",
+  "archetype": "quantitative grid",
+  "export": {
+    "format": "PNG",
+    "dpi": 600,
+    "width_mm": 183,
+    "height_mm": [
+      142,
+      200,
+      200
+    ],
+    "groups": [
+      "ab",
+      "cd",
+      "ef"
+    ]
+  },
+  "source_scope": "Existing figure source tables only; suitable grids primary; fixed GEM2025 assets supplementary",
+  "spatial_support": "Each product retains its fixed common support; no scenario-dependent future deployment",
+  "weighting": {
+    "grid_exposure": "native-cell area",
+    "grid_loss": "1 MW per valid technology-grid",
+    "fixed2025": "fixed 2025 capacity"
+  },
+  "statistics": "Within-model decadal means and paired differences; four equally weighted GCMs; points=GCMs, large symbol=mean, whisker=min-max; no significance claim",
+  "figures": [
+    {
+      "id": "rq1_01_loss",
+      "question": "Does SSP585 necessarily increase event-related net loss relative to SSP126?",
+      "claim": "Suitable-grid solar mean loss is lower under SSP585 (3/4 models); wind has no agreed sign (2/4).",
+      "panels": {
+        "a": "Wind suitable-grid decadal loss, all three SSPs",
+        "b": "Solar suitable-grid decadal loss, all three SSPs",
+        "c": "Wind paired 2050s SSP585-minus-126 loss: grid primary and fixed2025 supplementary",
+        "d": "Solar same paired contrasts"
+      },
+      "risk": "Signed losses use contemporaneous SSP-specific normal CF; lower net loss is not a general climate benefit."
+    },
+    {
+      "id": "rq1_02_exposure",
+      "question": "Do SSP contrasts in exposure have the same sign for wind and solar?",
+      "claim": "SSP585 has higher mean wind exposure and lower solar exposure; suitable-grid wind sign agrees in 3/4 models and solar in 4/4.",
+      "panels": {
+        "ab": "Suitable-grid exposure trends, wind/solar",
+        "cd": "Global-grid exposure trends, wind/solar",
+        "ef": "Paired 2050s SSP585-minus-126 exposure, suitable and global grid"
+      },
+      "risk": "Technology-specific event unions differ; exposure is cumulative duration, not frequency; not a loss result."
+    },
+    {
+      "id": "rq1_03_exposure_loss",
+      "question": "Does greater exposure over time imply greater net loss, and does the response depend on SSP?",
+      "claim": "Under SSP585, suitable-grid wind exposure rises in 4/4 models, but net-loss change splits 2/2; fixed2025 wind shows exposure rises and loss falls in all four.",
+      "panels": {
+        "ab": "Suitable-grid exposure change, 2050s minus 2030s, by SSP and technology",
+        "cd": "Suitable-grid loss change, same periods, by SSP and technology",
+        "ef": "Fixed2025 joint within-model exposure and loss changes; supplementary only"
+      },
+      "risk": "Grid exposure and loss have different spatial weights/supports, so no event-intensity quotient or causal mediation claim."
+    }
+  ]
+}
