@@ -1,5 +1,7 @@
 # Codex Instructions
 
+阅读 `.codex/rules/anti-defensive.md`，严格遵守其中的规则。
+
 ## Communication
 
 - 默认用英文思考，用中文回答，除非我明确要求用英文回答。
